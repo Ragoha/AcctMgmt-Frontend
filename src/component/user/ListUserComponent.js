@@ -1,8 +1,15 @@
+import { Box } from "@mui/material";
 import { Component } from "react";
 
 class ListUserComponent extends Component {
   render() {
-    return <div>ListUserComponent</div>;
+    return (
+      <>
+    <Box>
+      hihi
+    </Box>
+    </>
+    );
   }
 }
 
