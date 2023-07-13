@@ -1,204 +1,200 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  InputLabel,
-  TextField,
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { DensityMedium } from "@mui/icons-material";
-import "./BudgetComponent.css";
-import BudgetService from "../../service/BudgetService";
+import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiDrawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import Link from "@mui/material/Link";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+// import Chart from "../dashboard/Chart";
+import Deposits from "../dashboard/Deposits";
+import Orders from "../dashboard/Orders";
+import MainListItems from "../dashboard/listItems";
+
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
+const drawerWidth = 240;
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    // duration: theme.transitions.duration.leavingScreen,
+    duration: 300,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      // duration: theme.transitions.duration.enteringScreen,
+      duration: 300,
+    }),
+  }),
+}));
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  "& .MuiDrawer-paper": {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: 300,
+      // duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: "border-box",
+    ...(!open && {
+      overflowX: "hidden",
+      transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: 300,
+        // duration: theme.transitions.duration.leavingScreen,
+      }),
+      width: theme.spacing(7),
+      [theme.breakpoints.up("sm")]: {
+        width: theme.spacing(7),
+      },
+    }),
+  },
+}));
+
+// TODO remove, this demo shouldn't need to reset the theme.
+const defaultTheme = createTheme();
 
 class BudgetComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      divCd: "",
-      frDt: "",
-      groupCd: "",
-      grFg: "",
-      bgtCd: "",
-      bgtDTO: [],
+      open: true,
+      drawerOpen: true,
     };
   }
 
-  handleSearch = (e) => {
-    e.preventDefault();
-    const { divCd, frDt, groupCd, grFg, bgtCd } = this.state;
-    const formData = { divCd, frDt, groupCd, grFg, bgtCd };
-    BudgetService.getBGT(formData)
-      .then((bgtDTO) => {
-        console.log(bgtDTO);
-        this.setState({ bgtDTO });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  handleInputChange = (e) => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
-
-  handleAddRow = () => {
-    const { bgtDTO } = this.state;
-    const newRow = {
-      id: bgtDTO.length + 1,
-      bgtCd: "", // 예산코드 기본 값 설정
-      bgtFg: "", // 예산구분 기본 값 설정
-      bgtNm: "", // 예산과목명 기본 값 설정
-      amount: 0, // 금액 기본 값 설정
-    };
+  toggleDrawer = () => {
     this.setState((prevState) => ({
-      bgtDTO: [...prevState.bgtDTO, newRow], // 새로운 행을 기존 행 배열에 추가
-    }));
-    console.log(bgtDTO);
-  };
-
-  handleEditCellChange = (params) => {
-    const { bgtDTO } = this.state;
-    const updatedRow = {
-      ...params.row,
-      [params.field]: params.value,
-    };
-    const updatedRows = bgtDTO.map((row) =>
-      row.id === params.id ? updatedRow : row
-    );
-    this.setState((prevState) => ({
-      bgtDTO : [...prevState.bgtDTO, updatedRows],
+      open: !prevState.open,
+      drawerOpen: !prevState.drawerOpen,
     }));
   };
 
   render() {
-    const labelStyle = {
-      display: "inline",
-    };
-
-    const floatRight = {
-      float: "right",
-    };
-
-    const { bgtDTO } = this.state;
+    const { open } = this.state;
 
     return (
-      <Container>
-        <Box>
-          <DensityMedium />
-          <InputLabel style={labelStyle}>예산초기이월등록</InputLabel>
-          <Box style={floatRight}>
-            <Button onClick={this.handleSearch}>조회</Button>
-            <Button onClick={this.handleAddRow}>추가</Button>
-            <Button>저장</Button>
-            <Button>삭제</Button>
+      <ThemeProvider theme={defaultTheme}>
+        <Box sx={{ display: "flex" }}>
+          <CssBaseline />
+
+          {/* Header */}
+
+          <AppBar position="absolute" open={open}>
+            <Toolbar
+              sx={{
+                pr: "24px", // keep right padding when drawer closed
+              }}
+            >
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.toggleDrawer}
+                sx={{
+                  marginRight: "18px",
+                  ...(open && {
+                    display: "none"
+                  }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+              >
+                DOUZONE
+              </Typography>
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+
+          <Drawer variant="permanent" open={open}>
+            <Toolbar
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                px: [1],
+              }}
+            >
+              <IconButton onClick={this.toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List component="nav" >
+              <MainListItems drawerOpen={this.state.drawerOpen} />
+              <Divider sx={{ my: 1 }} />
+              {/* {secondaryListItems} */}
+            </List>
+          </Drawer>
+          <Box
+            component="main"
+            sx={{
+              backgroundColor: (theme) =>
+                theme.palette.mode === "light"
+                  ? theme.palette.grey[100]
+                  : theme.palette.grey[900],
+              flexGrow: 1,
+              height: "100vh",
+              overflow: "auto",
+            }}
+          >
+
+            {/* Main */}
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
           </Box>
         </Box>
-        <Divider variant="middle" />
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <InputLabel sx={{ display: "inline" }}>회계단위</InputLabel>
-            <TextField
-              name="divCd"
-              onChange={this.handleInputChange}
-            ></TextField>
-          </Grid>
-          <Grid item xs={6}>
-            <InputLabel sx={{ display: "inline" }}>회계기간</InputLabel>
-            <TextField
-              name="frDt"
-              onChange={this.handleInputChange}
-            ></TextField>
-          </Grid>
-          <Grid item xs={6}>
-            <InputLabel sx={{ display: "inline" }}>예산그룹</InputLabel>
-            <TextField
-              name="groupCd"
-              onChange={this.handleInputChange}
-            ></TextField>
-          </Grid>
-          <Grid item xs={6}>
-            <InputLabel sx={{ display: "inline" }}>출력구분</InputLabel>
-            <TextField
-              name="grFg"
-              onChange={this.handleInputChange}
-            ></TextField>
-          </Grid>
-          <Grid item xs={6}>
-            <InputLabel sx={{ display: "inline" }}>예산과목</InputLabel>
-            <TextField
-              name="bgtCd"
-              onChange={this.handleInputChange}
-            ></TextField>
-          </Grid>
-        </Grid>
-        <Divider variant="middle" />
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <DataGrid
-              sx={{ fontSize: 10 }}
-              columns={[
-                {
-                  field: "bgtCd",
-                  headerName: "예산코드",
-                  flex: 1,
-                  editable: true,
-                },
-                {
-                  field: "bgtFg",
-                  headerName: "예산구분",
-                  flex: 1,
-                  editable: true,
-                },
-                {
-                  field: "bgtNm",
-                  headerName: "예산과목명",
-                  minWidth: 90,
-                  flex: 1,
-                  editable: true,
-                },
-                {
-                  field: "amount",
-                  headerName: "금액",
-                  flex: 1,
-                  editable: true,
-                },
-              ]}
-              editMode="cell"
-              rows={bgtDTO}
-              hideFooter
-              hideFooterRowCount
-              hideFooterPagination
-              hideFooterSelectedRowCount
-              onEditCellChange={this.handleEditCellChange}
-            />
-          </Grid>
-          <Grid item xs={9}>
-            <DataGrid
-              columns={[
-                { field: "사업" },
-                { field: "하위사업" },
-                { field: "이월금액" },
-                { field: "사고이월금액" },
-                { field: "명시이월금액" },
-                { field: "예비이월금액" },
-                { field: "적요" },
-                { field: "입력구분" },
-                { field: "작성자" },
-              ]}
-              rows={[
-                { id: 1, name: "React" },
-                { id: 2, name: "MUI" },
-              ]}
-              hideFooterPagination
-              hideFooterSelectedRowCount
-            />
-          </Grid>
-        </Grid>
-      </Container>
+      </ThemeProvider>
     );
   }
 }
