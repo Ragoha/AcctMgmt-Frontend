@@ -39,7 +39,6 @@ class MainListItems extends Component {
     this.setState((prevState) => ({
       openOrganization: !prevState.openOrganization,
     }));
-    
   };
 
   handleBudgetClick = () => {

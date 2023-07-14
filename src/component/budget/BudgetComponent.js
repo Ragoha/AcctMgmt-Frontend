@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -18,7 +18,6 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-// import Chart from "../dashboard/Chart";
 import Deposits from "../dashboard/Deposits";
 import Orders from "../dashboard/Orders";
 import MainListItems from "../dashboard/listItems";
@@ -26,8 +25,6 @@ import { AccountCircle } from "@mui/icons-material";
 import HeaderComponent from "../common/HeaderComponent";
 import AsideComponent from "../common/AsideComponent";
 import { Outlet, Route, Routes } from "react-router";
-
-const MyContext = createContext();
 
 function Copyright(props) {
   return (
@@ -106,7 +103,6 @@ class BudgetComponent extends Component {
     this.state = {
       open: true,
       drawerOpen: true,
-      value: "context",
     };
   }
 
