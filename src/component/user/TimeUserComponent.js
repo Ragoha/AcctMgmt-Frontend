@@ -4,6 +4,7 @@ import LifeCycleSample from "../LifeCycleSample";
 
 
 
+
 class TimeUserComponent extends Component {
 
   constructor(props) {
@@ -29,8 +30,7 @@ class TimeUserComponent extends Component {
     return (
       <div>
         TestUserComponent<br/>
-        {time && <div>h{time}i</div>}<br/>
-        <LifeCycleSample/>
+        {time && <div>{time}</div>}
       </div>
     );
   }
