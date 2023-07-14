@@ -2,6 +2,7 @@ import { Component } from "react";
 import UserService from "../../service/UserService";
 
 
+
 class TimeUserComponent extends Component {
 
   constructor(props) {
@@ -28,8 +29,6 @@ class TimeUserComponent extends Component {
       <div>
         TestUserComponent<br/>
         {time && <div>{time}</div>}
-        <button>시간</button>
-        <input type="text" name="abc"></input>
       </div>
     );
   }
