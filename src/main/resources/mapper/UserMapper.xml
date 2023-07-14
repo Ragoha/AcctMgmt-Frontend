@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.acctmgmt.mapper.UserMapper">
+
+    <select id="getTime" resultType="String">
+		SELECT DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s');
+	</select>
+	<select id="getBoardData" parameterType="String" resultType="Board">
+		SELECT * FROM BOARD where writer='fads'
+	</select>
+	
+	<delete id="deleteBoardData" parameterType="Board">
+		DELETE FROM BOARD where writer=#{writer};
+	</delete>
+	<select id="getDataGridData" resultType="SBGTCD">
+		SELECT * FROM SBGTCD ;
+	</select>
+</mapper>
