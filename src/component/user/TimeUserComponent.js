@@ -1,6 +1,5 @@
 import { Component } from "react";
 import UserService from "../../service/UserService";
-import LifeCycleSample from "../LifeCycleSample";
 
 
 
@@ -29,8 +28,7 @@ class TimeUserComponent extends Component {
     return (
       <div>
         TestUserComponent<br/>
-        {time && <div>h{time}i</div>}<br/>
-        <LifeCycleSample/>
+        {time && <div>{time}</div>}
       </div>
     );
   }
