@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -22,12 +22,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Deposits from "../dashboard/Deposits";
 import Orders from "../dashboard/Orders";
 import MainListItems from "../dashboard/listItems";
-import { AccountCircle } from "@mui/icons-material";
-import HeaderComponent from "../common/HeaderComponent";
-import AsideComponent from "../common/AsideComponent";
-import { Outlet, Route, Routes } from "react-router";
-
-const MyContext = createContext();
 
 function Copyright(props) {
   return (
@@ -106,7 +100,6 @@ class BudgetComponent extends Component {
     this.state = {
       open: true,
       drawerOpen: true,
-      value: "context",
     };
   }
 
@@ -141,7 +134,7 @@ class BudgetComponent extends Component {
                 sx={{
                   marginRight: "18px",
                   ...(open && {
-                    display: "none",
+                    display: "none"
                   }),
                 }}
               >
@@ -158,7 +151,7 @@ class BudgetComponent extends Component {
               </Typography>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
-                  <AccountCircle />
+                  <NotificationsIcon />
                 </Badge>
               </IconButton>
             </Toolbar>
@@ -178,7 +171,7 @@ class BudgetComponent extends Component {
               </IconButton>
             </Toolbar>
             <Divider />
-            <List component="nav">
+            <List component="nav" >
               <MainListItems drawerOpen={this.state.drawerOpen} />
               <Divider sx={{ my: 1 }} />
               {/* {secondaryListItems} */}
@@ -196,12 +189,9 @@ class BudgetComponent extends Component {
               overflow: "auto",
             }}
           >
+
             {/* Main */}
-            <Box sx={{ mt: 10, mb: 4, ml: 2, mr: 2 }}>
-              <MyContext.Provider value={this.state.value}>
-                <Outlet />
-              </MyContext.Provider>
-            </Box>
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
           </Box>
         </Box>
       </ThemeProvider>

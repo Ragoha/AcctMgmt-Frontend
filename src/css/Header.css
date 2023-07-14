@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: red;
+  padding: 10px;
+}
+
+.banner {
+  font-size: 24px;
+}
+
+.menu-bar {
+  display: flex;
+}
+
+.menu-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: green;
+  border: none;
+  cursor: pointer;
+}
