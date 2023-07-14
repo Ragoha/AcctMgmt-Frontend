@@ -194,9 +194,7 @@ class BudgetComponent extends Component {
           >
             {/* Main */}
             <Box sx={{ mt: 10, mb: 4, ml: 2, mr: 2 }}>
-              <MyContext.Provider value={this.state.value}>
                 <Outlet />
-              </MyContext.Provider>
             </Box>
           </Box>
         </Box>
