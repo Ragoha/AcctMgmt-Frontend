@@ -22,7 +22,8 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { ApartmentOutlined } from "@mui/icons-material";
-import { Divider } from "@mui/material";
+import { Divider, Tooltip } from "@mui/material";
+import { Link } from "react-router-dom";
 
 class MainListItems extends Component {
   constructor(props) {
@@ -57,52 +58,67 @@ class MainListItems extends Component {
       >
         <Divider />
         <ListItemButton>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
+          <Tooltip title={this.props.drawerOpen ? "" : "Home"}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText primary="Home" />
         </ListItemButton>
         <Divider />
+
         <ListItemButton onClick={this.handleOrganizationClick}>
-          <ListItemIcon>
-            <GroupsIcon />
-          </ListItemIcon>
+          <Tooltip title={this.props.drawerOpen ? "" : "조직관리"}>
+            <ListItemIcon>
+              <GroupsIcon />
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText primary="조직관리" />
           {openOrganization ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openOrganization} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+            <Link to={"/btg/aside"}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <Tooltip title={this.props.drawerOpen ? "" : "사업장등록"}>
+                  <ListItemIcon>
+                    <ApartmentOutlined />
+                  </ListItemIcon>
+                </Tooltip>
+                <ListItemText primary="회사등록" />
+              </ListItemButton>
+            </Link>
+            <Link to={"/btg/header"}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <Tooltip title={this.props.drawerOpen ? "" : "사업장등록"}>
+                  <ListItemIcon>
+                    <DomainDisabledIcon />
+                  </ListItemIcon>
+                </Tooltip>
+                <ListItemText primary="사업장등록" />
+              </ListItemButton>
+            </Link>
             <ListItemButton
               sx={{
                 pl: this.props.drawerOpen ? 6.7 : 2,
                 transition: "padding-left 300ms",
               }}
             >
-              <ListItemIcon>
-                <ApartmentOutlined />
-              </ListItemIcon>
-              <ListItemText primary="회사등록" />
-            </ListItemButton>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <ListItemIcon>
-                <DomainDisabledIcon />
-              </ListItemIcon>
-              <ListItemText primary="사업장등록" />
-            </ListItemButton>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <ListItemIcon>
-                <GroupIcon />
-              </ListItemIcon>
+              <Tooltip title={this.props.drawerOpen ? "" : "부서등록"}>
+                <ListItemIcon>
+                  <GroupIcon />
+                </ListItemIcon>
+              </Tooltip>
               <ListItemText primary="부서등록" />
             </ListItemButton>
             <ListItemButton
@@ -111,18 +127,22 @@ class MainListItems extends Component {
                 transition: "padding-left 300ms",
               }}
             >
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
+              <Tooltip title={this.props.drawerOpen ? "" : "프로젝트등록"}>
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+              </Tooltip>
               <ListItemText primary="프로젝트등록" />
             </ListItemButton>
           </List>
         </Collapse>
         <Divider />
         <ListItemButton onClick={this.handleBudgetClick}>
-          <ListItemIcon>
-            <PointOfSaleIcon />
-          </ListItemIcon>
+          <Tooltip title={this.props.drawerOpen ? "" : "예산관리"}>
+            <ListItemIcon>
+              <PointOfSaleIcon />
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText primary="예산관리" />
           {openBudget ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
@@ -134,9 +154,11 @@ class MainListItems extends Component {
                 transition: "padding-left 300ms",
               }}
             >
-              <ListItemIcon>
-                <PlaylistAddIcon />
-              </ListItemIcon>
+              <Tooltip title={this.props.drawerOpen ? "" : "예산과목등록"}>
+                <ListItemIcon>
+                  <PostAddIcon />
+                </ListItemIcon>
+              </Tooltip>
               <ListItemText primary="예산과목등록" />
             </ListItemButton>
             <ListItemButton
@@ -145,18 +167,22 @@ class MainListItems extends Component {
                 transition: "padding-left 300ms",
               }}
             >
-              <ListItemIcon>
-                <PostAddIcon />
-              </ListItemIcon>
+              <Tooltip title={this.props.drawerOpen ? "" : "예산초기이월등록"}>
+                <ListItemIcon>
+                  <PlaylistAddIcon />
+                </ListItemIcon>
+              </Tooltip>
               <ListItemText primary="예산초기이월등록" />
             </ListItemButton>
           </List>
         </Collapse>
         <Divider />
         <ListItemButton>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
+          <Tooltip title={this.props.drawerOpen ? "" : "시스템환경설정"}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText primary="시스템환경설정" />
         </ListItemButton>
         <Divider />
