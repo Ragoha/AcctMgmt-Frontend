@@ -18,10 +18,13 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-// import Chart from "../dashboard/Chart";
 import Deposits from "../dashboard/Deposits";
 import Orders from "../dashboard/Orders";
 import MainListItems from "../dashboard/listItems";
+import { AccountCircle } from "@mui/icons-material";
+import HeaderComponent from "../common/HeaderComponent";
+import AsideComponent from "../common/AsideComponent";
+import { Outlet, Route, Routes } from "react-router";
 
 function Copyright(props) {
   return (
@@ -134,7 +137,7 @@ class BudgetComponent extends Component {
                 sx={{
                   marginRight: "18px",
                   ...(open && {
-                    display: "none"
+                    display: "none",
                   }),
                 }}
               >
@@ -151,7 +154,7 @@ class BudgetComponent extends Component {
               </Typography>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
-                  <NotificationsIcon />
+                  <AccountCircle />
                 </Badge>
               </IconButton>
             </Toolbar>
@@ -171,7 +174,7 @@ class BudgetComponent extends Component {
               </IconButton>
             </Toolbar>
             <Divider />
-            <List component="nav" >
+            <List component="nav">
               <MainListItems drawerOpen={this.state.drawerOpen} />
               <Divider sx={{ my: 1 }} />
               {/* {secondaryListItems} */}
@@ -189,9 +192,10 @@ class BudgetComponent extends Component {
               overflow: "auto",
             }}
           >
-
             {/* Main */}
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
+            <Box sx={{ mt: 10, mb: 4, ml: 2, mr: 2 }}>
+                <Outlet />
+            </Box>
           </Box>
         </Box>
       </ThemeProvider>
