@@ -1,11 +1,14 @@
+import { RecoilRoot } from "recoil";
 import Routers from "./router/Routers";
 
 
 function App() {
   return (
-    <div className="App">
-      <Routers/>
-    </div>
+    <RecoilRoot>
+      <div className="App">
+        <Routers />
+      </div>
+    </RecoilRoot>
   );
 }
 

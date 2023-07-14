@@ -89,7 +89,7 @@ class EditToolbar extends Component {
   }
 }
 
-class DataGridComponent extends Component {
+class BudgetComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -284,4 +284,4 @@ const newRows = [
   }
 }
 
-export default DataGridComponent;
+export default BudgetComponent;
