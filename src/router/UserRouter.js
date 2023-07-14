@@ -1,18 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import TimeUserComponent from "../component/user/TimeUserComponent";
 import ListUserComponent from "../component/user/ListUserComponent";
-import { Component } from "react";
+import LoginComponent from "../component/user/LoginComponent";
+import MainComponent from "../component/user/MainComponent";
 
-
-class UserRouter extends Component{
-  render(){
-    return (
-      <Routes>
-        <Route path="/user/time" element={<TimeUserComponent />} />
-        <Route path="/user/list" element={<ListUserComponent />} />
-      </Routes>
-    );
-  }
+export default function UserRouter() {
+  return (
+    <Routes>
+      <Route path="/time" element={<TimeUserComponent />} />
+      <Route path="/list" element={<ListUserComponent />} />
+      {/* <Route path="/Login" element={<LoginComponent />} /> */}
+      <Route path="/main" element={<MainComponent />} />
+    </Routes>
+  );
 }
-
-export default UserRouter;
