@@ -1,5 +1,7 @@
 import { Component } from "react";
 import UserService from "../../service/UserService";
+import LifeCycleSample from "../LifeCycleSample";
+
 
 
 class TimeUserComponent extends Component {
@@ -27,9 +29,8 @@ class TimeUserComponent extends Component {
     return (
       <div>
         TestUserComponent<br/>
-        {time && <div>{time}</div>}
-        <button>시간</button>
-        <input type="text" name="abc"></input>
+        {time && <div>h{time}i</div>}<br/>
+        <LifeCycleSample/>
       </div>
     );
   }
