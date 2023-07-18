@@ -74,6 +74,10 @@ class EditToolbar extends Component {
     this.props.addRow();
   };
 
+  handleClick2 = () => {
+ 
+  };
+
   render() {
     return (
       <GridToolbarContainer>
@@ -82,7 +86,14 @@ class EditToolbar extends Component {
           startIcon={<AddIcon />}
           onClick={this.handleClick}
         >
-          Add record
+          추가
+        </Button>
+        <Button
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={this.handleClick2}
+        >
+          삭제
         </Button>
       </GridToolbarContainer>
     );
@@ -95,14 +106,15 @@ class DataGridComponent extends Component {
     this.state = {
       rows: initialRows,
       rowModesModel: {},
+      selectedRowId: "",
     };
   }
 
   addRow = () => {
-const newRows = [
-  ...this.state.rows,
-  { id: randomId(), name: "", age: 0, joinDate: "", role: "", isNew: true },
-];
+    const newRows = [
+      ...this.state.rows,
+      { id: randomId(), name: "", age: 0, joinDate: "", role: "", isNew: true },
+    ];
     this.setState({ rows: newRows });
   };
 
@@ -173,8 +185,16 @@ const newRows = [
     this.setState({ rowModesModel: newRowModesModel });
   };
 
+  handleRowClick = (params) => {
+    console.log(`Movie "${params.row.id}" clicked`);
+    
+    this.setState((prevState) => ({
+      rows: prevState.rows.filter((row) => row.id !== params.row.id),
+    }));
+  };
+
   render() {
-    const { rows, rowModesModel, addRow } = this.state;
+    const { rows, rowModesModel } = this.state;
     
 
     const columns = [
@@ -272,11 +292,12 @@ const newRows = [
           onRowModesModelChange={this.handleRowModesModelChange}
           onRowEditStop={this.handleRowEditStopop}
           processRowUpdate={this.processRowUpdate}
+          onRowClick={this.handleRowClick}
           slots={{
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { addRow : this.addRow },
+            toolbar: { addRow: this.addRow },
           }}
         />
       </Box>

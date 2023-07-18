@@ -3,16 +3,10 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 import Collapse from "@mui/material/Collapse";
-import SendIcon from "@mui/icons-material/Send";
-import DraftsIcon from "@mui/icons-material/Drafts";
-import InboxIcon from "@mui/icons-material/Inbox";
-import BusinessIcon from "@mui/icons-material/Business";
 import DomainDisabledIcon from "@mui/icons-material/DomainDisabled";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -32,6 +26,7 @@ class MainListItems extends Component {
     this.state = {
       openOrganization: true,
       openBudget: true,
+      mainHeader: "",
     };
   }
 
@@ -47,8 +42,13 @@ class MainListItems extends Component {
     }));
   };
 
+  setMainHeader = () => {
+    this.setState();
+  }
+
   render() {
     const { openOrganization, openBudget } = this.state;
+    const { setStoreMainHeader } = this.props;
 
     return (
       <List
@@ -85,7 +85,7 @@ class MainListItems extends Component {
                   transition: "padding-left 300ms",
                 }}
               >
-                <Tooltip title={this.props.drawerOpen ? "" : "사업장등록"}>
+                <Tooltip title={this.props.drawerOpen ? "" : "회사등록"}>
                   <ListItemIcon>
                     <ApartmentOutlined />
                   </ListItemIcon>
@@ -93,7 +93,7 @@ class MainListItems extends Component {
                 <ListItemText primary="회사등록" />
               </ListItemButton>
             </Link>
-            <Link to={"/btg/header"}>
+            <Link to={"/bgt/header"} onClick={() => {}}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -161,19 +161,23 @@ class MainListItems extends Component {
               </Tooltip>
               <ListItemText primary="예산과목등록" />
             </ListItemButton>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <Tooltip title={this.props.drawerOpen ? "" : "예산초기이월등록"}>
-                <ListItemIcon>
-                  <PlaylistAddIcon />
-                </ListItemIcon>
-              </Tooltip>
-              <ListItemText primary="예산초기이월등록" />
-            </ListItemButton>
+            <Link to={"/bgt/icor"}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <Tooltip
+                  title={this.props.drawerOpen ? "" : "예산초기이월등록"}
+                >
+                  <ListItemIcon>
+                    <PlaylistAddIcon />
+                  </ListItemIcon>
+                </Tooltip>
+                <ListItemText primary="예산초기이월등록" />
+              </ListItemButton>
+            </Link>
           </List>
         </Collapse>
         <Divider />
