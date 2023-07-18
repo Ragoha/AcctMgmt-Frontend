@@ -7,10 +7,10 @@ import BudgetRouter from "./BudgetRouter";
 export default function Routers() {
   return (
     <BrowserRouter>
-      <BudgetRouter/>
-      <UserRouter/>
-      <LoginRouter/>
+      <LoginRouter />
+      <BudgetRouter />
+      <UserRouter />
       <SignUpRouter />
     </BrowserRouter>
-  )
+  );
 }
