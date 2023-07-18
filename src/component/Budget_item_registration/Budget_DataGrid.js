@@ -20,7 +20,7 @@ class Budget_DataGrid extends Component {
           }
          
     }
- 
+
     render() { 
         const {columns } = this.state;
         const {rows} = this.props;
@@ -32,6 +32,7 @@ class Budget_DataGrid extends Component {
         return (
             <Box>
                 <Box style={{ height: 480, width: '95%' }} >
+
                 <DataGrid
                         rows={rows}
                         columns={editableColumns}

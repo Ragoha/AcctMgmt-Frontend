@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Container, FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Detail_Info_FormControl from "./Detail_Info_FormControl/Detail_Info_FormControl";
-//import {DatePicker}  from '@mui/x-date-pickers/DatePicker'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar } from "react-icons/fi";
