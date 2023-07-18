@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import LoginComponent from "../component/user/LoginComponent";
+import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
 
 export default function UserRouter() {
   return (
     <Routes>
-      <Route path="/" element={<LoginComponent />} />
+      <Route path="/company" element={<CoMgmtComponent />} />
     </Routes>
   );
 }

@@ -1,16 +1,12 @@
 import { BrowserRouter } from "react-router-dom";
-import UserRouter from "./UserRouter";
-import LoginRouter from "./LoginRouter";
-import SignUpRouter from "./SignUpRouter";
-import ConfigRouter from "./ConfigRouter";
+import IndexRouter from "./IndexRouter";
+import MainRouter from "./MainRouter";
 
 export default function Routers() {
   return (
     <BrowserRouter>
-      <UserRouter/>
-      <LoginRouter/>
-      <SignUpRouter />
-      <ConfigRouter />
+      <IndexRouter />
+      <MainRouter />
     </BrowserRouter>
   )
 }

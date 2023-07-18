@@ -21,11 +21,10 @@ import {
 } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
 
-const roles = ["Market", "Finance", "Development"];
+const roles = ["직접입력", "직접입력"];
 const randomRole = () => {
   return randomArrayItem(roles);
 };
-
 
 const initialRows = [
   {
@@ -33,72 +32,37 @@ const initialRows = [
     name: randomTraderName(),
     age: 25,
     joinDate: randomCreatedDate(),
-    role: randomRole(),
+    bgtTy: randomRole(),
   },
   {
     id: randomId(),
     name: randomTraderName(),
     age: 36,
     joinDate: randomCreatedDate(),
-    role: randomRole(),
+    bgtTy: randomRole(),
   },
   {
     id: randomId(),
     name: randomTraderName(),
     age: 19,
     joinDate: randomCreatedDate(),
-    role: randomRole(),
+    bgtTy: randomRole(),
   },
   {
     id: randomId(),
     name: randomTraderName(),
     age: 28,
     joinDate: randomCreatedDate(),
-    role: randomRole(),
+    bgtTy: randomRole(),
   },
   {
     id: randomId(),
     name: randomTraderName(),
     age: 23,
     joinDate: randomCreatedDate(),
-    role: randomRole(),
+    bgtTy: randomRole(),
   },
 ];
-class EditToolbar extends Component {
-
-  constructor(props) {
-    super(props);
-  }
-  
-  handleClick = () => {
-    this.props.addRow();
-  };
-
-  handleClick2 = () => {
- 
-  };
-
-  render() {
-    return (
-      <GridToolbarContainer>
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={this.handleClick}
-        >
-          추가
-        </Button>
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={this.handleClick2}
-        >
-          삭제
-        </Button>
-      </GridToolbarContainer>
-    );
-  }
-}
 
 class DataGridComponent extends Component {
   constructor(props) {
@@ -110,7 +74,8 @@ class DataGridComponent extends Component {
     };
   }
 
-  addRow = () => {
+  handleRowAdd = () => {
+    console.log("Aaa");
     const newRows = [
       ...this.state.rows,
       { id: randomId(), name: "", age: 0, joinDate: "", role: "", isNew: true },
@@ -148,28 +113,6 @@ class DataGridComponent extends Component {
     }));
   };
 
-  handleCancelClick = (id) => () => {
-    this.setState((prevState) => {
-      const { rows, rowModesModel } = prevState;
-      const updatedRowModesModel = {
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      };
-
-      const editedRow = rows.find((row) => row.id === id);
-      if (editedRow.isNew) {
-        return {
-          rows: rows.filter((row) => row.id !== id),
-          rowModesModel: updatedRowModesModel,
-        };
-      }
-
-      return {
-        rowModesModel: updatedRowModesModel,
-      };
-    });
-  };
-
   processRowUpdate = (newRow) => {
     const { rows } = this.state;
     const updatedRow = { ...newRow, isNew: false };
@@ -186,88 +129,82 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = (params) => {
-    console.log(`Movie "${params.row.id}" clicked`);
-    
-    this.setState((prevState) => ({
-      rows: prevState.rows.filter((row) => row.id !== params.row.id),
-    }));
+    this.props.setSelectedRowId(params.row.id);
   };
 
   render() {
-    const { rows, rowModesModel } = this.state;
+    const { rows, rowModesModel, selectedRowId } = this.state;
     
+    const currencyFormatter = new Intl.NumberFormat("ko-KR", {
+      // style: "currency",
+      // currency: "KRW0",
+    });
+
+    const krAmount = {
+      type: "number",
+      width: 130,
+      valueFormatter: ({ value }) => currencyFormatter.format(value),
+      cellClassName: "font-tabular-nums",
+    };
 
     const columns = [
-      { field: "name", headerName: "Name", width: 180, editable: true },
       {
-        field: "age",
-        headerName: "Age",
-        type: "number",
-        width: 80,
-        align: "left",
-        headerAlign: "left",
+        field: "divCd",
+        headerName: "사업",
+        headerAlign: "center",
         editable: true,
       },
       {
-        field: "joinDate",
-        headerName: "Join date",
-        type: "date",
-        width: 180,
+        field: "bottomCd",
+        headerName: "하위사업",
+        headerAlign: "center",
         editable: true,
       },
       {
-        field: "role",
-        headerName: "Department",
-        width: 220,
+        field: "carrAm",
+        headerName: "이월금액",
+        headerAlign: "center",
         editable: true,
-        type: "singleSelect",
-        valueOptions: ["Market", "Finance", "Development"],
+        ...krAmount,
       },
       {
-        field: "actions",
-        type: "actions",
-        headerName: "Actions",
-        width: 100,
-        cellClassName: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<SaveIcon />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={this.handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CancelIcon />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={this.handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-
-          return [
-            <GridActionsCellItem
-              icon={<EditIcon />}
-              label="Edit"
-              className="textPrimary"
-              onClick={this.handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={this.handleDeleteClick(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        field: "carrAm1",
+        headerName: "사고이월금액",
+        headerAlign: "center",
+        editable: true,
+        ...krAmount,
+      },
+      {
+        field: "carrAm2",
+        headerName: "명시이월금액",
+        headerAlign: "center",
+        editable: true,
+        ...krAmount,
+      },
+      {
+        field: "carrAm3",
+        headerName: "예비이월금액",
+        headerAlign: "center",
+        editable: true,
+        ...krAmount,
+      },
+      {
+        field: "remDc",
+        headerName: "적요",
+        headerAlign: "center",
+        editable: true,
+      },
+      {
+        field: "bgtTy",
+        headerName: "입력구분",
+        headerAlign: "center",
+        editable: true,
+      },
+      {
+        field: "insertId",
+        headerName: "작성자",
+        headerAlign: "center",
+        editable: true,
       },
     ];
 
@@ -284,6 +221,7 @@ class DataGridComponent extends Component {
           },
         }}
       >
+        {selectedRowId}
         <DataGrid
           rows={rows}
           columns={columns}
@@ -293,12 +231,6 @@ class DataGridComponent extends Component {
           onRowEditStop={this.handleRowEditStopop}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { addRow: this.addRow },
-          }}
         />
       </Box>
     );
