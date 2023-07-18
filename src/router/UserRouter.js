@@ -3,8 +3,8 @@ import TimeUserComponent from "../component/user/TimeUserComponent";
 
 import CoMgmtComponent from "../component/user/CoMgmtComponent";
 import ListUserComponent from "../component/user/ListUserComponent";
-import LoginComponent from "../component/user/LoginComponent";
 import MainComponent from "../component/user/MainComponent";
+import Budget_item_registration from "../component/Budget_item_registration/Budget_item_registration";
 
 export default function UserRouter() {
   return (
@@ -14,6 +14,7 @@ export default function UserRouter() {
       <Route path="/list" element={<ListUserComponent />} />
       {/* <Route path="/Login" element={<LoginComponent />} /> */}
       <Route path="/main" element={<MainComponent />} />
+      <Route path="/Budget_item_registration" element={<Budget_item_registration/>}/>
 
     </Routes>
   );
