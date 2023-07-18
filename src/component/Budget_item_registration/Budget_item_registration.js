@@ -93,7 +93,7 @@ class Budget_item_registration extends Component {
     render() {
         const { rows, groupcd, CTL_FG ,BGAJUST_FG ,BOTTOM_FG ,BIG_FG} = this.state;
         return (
-            <Container style={{ border: '2px solid black' }}>
+            <>
                 <Grid container spacing={2} padding={5} >
                     <Grid item xs={12}>
                         <Box
@@ -126,7 +126,7 @@ class Budget_item_registration extends Component {
                         <Detail_Info CTL_FG={CTL_FG} BGAJUST_FG={BGAJUST_FG}  BOTTOM_FG={BOTTOM_FG} BIG_FG={BIG_FG}/>{/*자식컴포넌트에 state를 props로 전달 */}
                     </Grid>
                 </Grid>
-            </Container>
+            </>
         )
     }
 }
