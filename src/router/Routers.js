@@ -2,6 +2,7 @@ import { BrowserRouter } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import LoginRouter from "./LoginRouter";
 import SignUpRouter from "./SignUpRouter";
+import ConfigRouter from "./ConfigRouter";
 
 export default function Routers() {
   return (
@@ -9,6 +10,7 @@ export default function Routers() {
       <UserRouter/>
       <LoginRouter/>
       <SignUpRouter />
+      <ConfigRouter />
     </BrowserRouter>
   )
 }
