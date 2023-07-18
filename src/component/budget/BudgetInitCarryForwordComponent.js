@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import {
   Autocomplete,
   Box,
@@ -16,6 +16,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const BGTCD_COLUMN = [
+  {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
+  {field: "bgtFg", headerName: "예산구분", flex: 1, /* editable: true, */ },
+  {field: "bgtNm", headerName: "예산과목명", minWidth: 90, flex: 1, /* editable: true, */},
+  {field: "amount", headerName: "금액", flex: 1, /* editable: true, */ },
+]
+              
+
+
+
 
 class BudgetInitCarryForwordComponent extends Component {
   constructor(props) {
@@ -27,7 +37,10 @@ class BudgetInitCarryForwordComponent extends Component {
       grFg: "",
       bgtCd: "",
       bgtDTO: [],
+      selectedRowId: "",
     };
+
+    this.childRef = createRef();
   }
 
   handleSearch = (e) => {
@@ -46,6 +59,15 @@ class BudgetInitCarryForwordComponent extends Component {
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  handleRowAdd = () => {
+    this.childRef.current.handleRowAdd();
+  };
+
+  handleRowDelete = () => {
+    console.log(this.state.selectedRowId);
+    this.childRef.current.handleDeleteClick(this.state.selectedRowId)();
   };
 
   handleInputChange = (e) => {
@@ -82,6 +104,13 @@ class BudgetInitCarryForwordComponent extends Component {
     }));
   };
 
+  setSelectedRowId = (selectedId) => {
+    console.log(`여기잖아 "${selectedId}"`);
+    this.setState({ selectedRowId: selectedId }, () => {
+      console.log(this.state);
+    });
+  }
+
   render() {
     const labelStyle = {
       display: "inline",
@@ -91,11 +120,7 @@ class BudgetInitCarryForwordComponent extends Component {
       float: "right",
     };
 
-    const { bgtDTO } = this.state;
-
-    const { startDate } = this.state;
-
-    const { mainHeader } = this.props;
+    const { bgtDTO, startDate, mainHeader, selectedRowId } = this.state;
 
     return (
       <>
@@ -103,10 +128,8 @@ class BudgetInitCarryForwordComponent extends Component {
           {/* <InputLabel style={labelStyle}>예산초기이월등록</InputLabel> */}
           <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
           <Box style={floatRight}>
-            <Button onClick={this.handleSearch}>조회</Button>
-            <Button onClick={this.handleAddRow}>추가</Button>
-            <Button>저장</Button>
-            <Button>삭제</Button>
+            <Button onClick={this.handleRowAdd}>추가</Button>
+            <Button onClick={this.handleRowDelete}>삭제</Button>
           </Box>
         </Box>
         <Divider variant="middle" />
@@ -117,8 +140,8 @@ class BudgetInitCarryForwordComponent extends Component {
           justifyContent="space-evenly"
           alignItems="center"
           sx={{
-            marginLeft: "20px",
-            marginRight: "20px",
+            // marginLeft: "20px",
+            // marginRight: "20px",
             marginTop: "10px",
             marginBottom: "20px",
           }}
@@ -224,7 +247,9 @@ class BudgetInitCarryForwordComponent extends Component {
               ></TextField>
             </Grid>
           </Grid>
-          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            <Button onClick={this.handleSearch}>조회</Button>
+          </Grid>
         </Grid>
         <Divider variant="middle" />
         <Grid container spacing={2}>
@@ -236,33 +261,7 @@ class BudgetInitCarryForwordComponent extends Component {
                   outline: "none !important",
                 },
               }}
-              columns={[
-                {
-                  field: "bgtCd",
-                  headerName: "예산코드",
-                  flex: 1,
-                  // editable: true,
-                },
-                {
-                  field: "bgtFg",
-                  headerName: "예산구분",
-                  flex: 1,
-                  // editable: true,
-                },
-                {
-                  field: "bgtNm",
-                  headerName: "예산과목명",
-                  minWidth: 90,
-                  flex: 1,
-                  // editable: true,
-                },
-                {
-                  field: "amount",
-                  headerName: "금액",
-                  flex: 1,
-                  // editable: true,
-                },
-              ]}
+              columns={BGTCD_COLUMN}
               // editMode="cell"
               rows={bgtDTO}
               hideFooter
@@ -273,7 +272,10 @@ class BudgetInitCarryForwordComponent extends Component {
             />
           </Grid>
           <Grid item xs={9}>
-            <DataGridComponent />
+            <DataGridComponent
+              ref={this.childRef}
+              setSelectedRowId={this.setSelectedRowId}
+            />
             {/* <DataGrid
               columns={[
                 { field: "사업" },

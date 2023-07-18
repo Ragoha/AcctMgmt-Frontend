@@ -13,27 +13,9 @@ import Badge from "@mui/material/Badge";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import MainListItems from "../dashboard/listItems";
+import MainListItems from "./MainListItems";
 import { AccountCircle } from "@mui/icons-material";
 import { Outlet, Route, Routes } from "react-router";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -88,7 +70,7 @@ const Drawer = styled(MuiDrawer, {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-class BudgetComponent extends Component {
+class MainComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -113,7 +95,6 @@ class BudgetComponent extends Component {
           <CssBaseline />
 
           {/* Header */}
-
           <AppBar position="absolute" open={open}>
             <Toolbar
               sx={{
@@ -171,27 +152,15 @@ class BudgetComponent extends Component {
               {/* {secondaryListItems} */}
             </List>
           </Drawer>
-          <Box
-            component="main"
-            sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === "light"
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
-              flexGrow: 1,
-              height: "100vh",
-              overflow: "auto",
-            }}
-          >
+          
             {/* Main */}
             <Box sx={{ mt: 10, mb: 4, ml: 2, mr: 2 }}>
-                <Outlet />
+              <Outlet />
             </Box>
           </Box>
-        </Box>
       </ThemeProvider>
     );
   }
 }
 
-export default BudgetComponent;
+export default MainComponent;

@@ -58,54 +58,84 @@ class MainListItems extends Component {
       >
         <Divider />
         <ListItemButton>
-          <Tooltip title={this.props.drawerOpen ? "" : "Home"}>
-            <ListItemIcon>
+          <ListItemIcon>
+            <Tooltip
+              title={this.props.drawerOpen ? "" : "Home"}
+              placement="right"
+            >
               <HomeIcon />
-            </ListItemIcon>
-          </Tooltip>
+            </Tooltip>
+          </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItemButton>
         <Divider />
 
         <ListItemButton onClick={this.handleOrganizationClick}>
-          <Tooltip title={this.props.drawerOpen ? "" : "조직관리"}>
-            <ListItemIcon>
+          <ListItemIcon>
+            <Tooltip
+              title={this.props.drawerOpen ? "" : "조직관리"}
+              placement="right"
+            >
               <GroupsIcon />
-            </ListItemIcon>
-          </Tooltip>
+            </Tooltip>
+          </ListItemIcon>
           <ListItemText primary="조직관리" />
           {openOrganization ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openOrganization} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link to={"/btg/aside"}>
+            <Link to={"ozt/co"}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <Tooltip title={this.props.drawerOpen ? "" : "회사등록"}>
-                  <ListItemIcon>
+                <ListItemIcon>
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "회사등록"}
+                    placement="right"
+                  >
                     <ApartmentOutlined />
-                  </ListItemIcon>
-                </Tooltip>
+                  </Tooltip>
+                </ListItemIcon>
                 <ListItemText primary="회사등록" />
               </ListItemButton>
             </Link>
-            <Link to={"/bgt/header"} onClick={() => {}}>
+            <Link to={"ozt/div"}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <Tooltip title={this.props.drawerOpen ? "" : "사업장등록"}>
-                  <ListItemIcon>
+                <ListItemIcon>
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "사업장등록"}
+                    placement="right"
+                  >
                     <DomainDisabledIcon />
-                  </ListItemIcon>
-                </Tooltip>
+                  </Tooltip>
+                </ListItemIcon>
                 <ListItemText primary="사업장등록" />
+              </ListItemButton>
+            </Link>
+            <Link to={"ozt/dept"}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <ListItemIcon>
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "부서등록"}
+                    placement="right"
+                  >
+                    <GroupIcon />
+                  </Tooltip>
+                </ListItemIcon>
+                <ListItemText primary="부서등록" />
               </ListItemButton>
             </Link>
             <ListItemButton
@@ -114,67 +144,59 @@ class MainListItems extends Component {
                 transition: "padding-left 300ms",
               }}
             >
-              <Tooltip title={this.props.drawerOpen ? "" : "부서등록"}>
-                <ListItemIcon>
-                  <GroupIcon />
-                </ListItemIcon>
-              </Tooltip>
-              <ListItemText primary="부서등록" />
-            </ListItemButton>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <Tooltip title={this.props.drawerOpen ? "" : "프로젝트등록"}>
-                <ListItemIcon>
+              <ListItemIcon>
+                <Tooltip
+                  title={this.props.drawerOpen ? "" : "프로젝트등록"}
+                  placement="right"
+                >
                   <AssignmentIcon />
-                </ListItemIcon>
-              </Tooltip>
+                </Tooltip>
+              </ListItemIcon>
               <ListItemText primary="프로젝트등록" />
             </ListItemButton>
           </List>
         </Collapse>
         <Divider />
         <ListItemButton onClick={this.handleBudgetClick}>
-          <Tooltip title={this.props.drawerOpen ? "" : "예산관리"}>
-            <ListItemIcon>
+          <ListItemIcon>
+            <Tooltip title={this.props.drawerOpen ? "" : "예산관리"} placement="right">
               <PointOfSaleIcon />
-            </ListItemIcon>
-          </Tooltip>
+            </Tooltip>
+          </ListItemIcon>
           <ListItemText primary="예산관리" />
           {openBudget ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openBudget} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <Tooltip title={this.props.drawerOpen ? "" : "예산과목등록"}>
-                <ListItemIcon>
-                  <PostAddIcon />
-                </ListItemIcon>
-              </Tooltip>
-              <ListItemText primary="예산과목등록" />
-            </ListItemButton>
-            <Link to={"/bgt/icor"}>
+            <Link to={"bgt/bgtcd"}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <Tooltip
-                  title={this.props.drawerOpen ? "" : "예산초기이월등록"}
-                >
-                  <ListItemIcon>
+                <ListItemIcon>
+                  <Tooltip title={this.props.drawerOpen ? "" : "예산과목등록"} placement="right">
+                    <PostAddIcon />
+                  </Tooltip>
+                </ListItemIcon>
+                <ListItemText primary="예산과목등록" />
+              </ListItemButton>
+            </Link>
+            <Link to={"bgt/bgticf"}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <ListItemIcon>
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "예산초기이월등록"}
+                    placement="right">
                     <PlaylistAddIcon />
-                  </ListItemIcon>
-                </Tooltip>
+                  </Tooltip>
+                </ListItemIcon>
                 <ListItemText primary="예산초기이월등록" />
               </ListItemButton>
             </Link>
@@ -182,11 +204,12 @@ class MainListItems extends Component {
         </Collapse>
         <Divider />
         <ListItemButton>
-          <Tooltip title={this.props.drawerOpen ? "" : "시스템환경설정"}>
             <ListItemIcon>
-              <SettingsIcon />
+            <Tooltip title={this.props.drawerOpen ? "" : "시스템환경설정"}
+            placement="right">
+                <SettingsIcon />
+              </Tooltip>
             </ListItemIcon>
-          </Tooltip>
           <ListItemText primary="시스템환경설정" />
         </ListItemButton>
         <Divider />

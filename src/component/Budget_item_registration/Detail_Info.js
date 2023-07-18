@@ -6,7 +6,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar } from "react-icons/fi";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import SignIn from './SignIn';
 import { DataGrid } from '@mui/x-data-grid';
 
 class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
