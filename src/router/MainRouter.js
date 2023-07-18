@@ -7,6 +7,7 @@ import Budget_item_registration from "../component/Budget_item_registration/Budg
 import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
 import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
 import MainComponent from "../component/common/MainComponent";
+import ConfigComponent from "../component/user/ConfigComponent";
 
 
 class MainRouter extends Component {
@@ -22,6 +23,7 @@ class MainRouter extends Component {
             path="bgt/bgticf"
             element={<BudgetInitCarryForwordComponent />}
           />
+          <Route path="syscfg" element={<ConfigComponent />} />
         </Route>
         <Route path="/t2" element={<CounterContainer />} />
       </Routes>

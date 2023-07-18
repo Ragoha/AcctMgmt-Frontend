@@ -203,6 +203,7 @@ class MainListItems extends Component {
           </List>
         </Collapse>
         <Divider />
+        <Link to={"syscfg"}>
         <ListItemButton>
             <ListItemIcon>
             <Tooltip title={this.props.drawerOpen ? "" : "시스템환경설정"}
@@ -212,6 +213,7 @@ class MainListItems extends Component {
             </ListItemIcon>
           <ListItemText primary="시스템환경설정" />
         </ListItemButton>
+        </Link>
         <Divider />
       </List>
     );
