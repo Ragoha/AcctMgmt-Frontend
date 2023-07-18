@@ -19,9 +19,6 @@ import { ApartmentOutlined } from "@mui/icons-material";
 import { Divider, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import * as actions from "../../action/MainAction";
-import { connect } from "react-redux";
-
 class MainListItems extends Component {
   constructor(props) {
     super(props);
@@ -81,12 +78,7 @@ class MainListItems extends Component {
         </ListItemButton>
         <Collapse in={openOrganization} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link
-              to={"/bgt/aside"}
-              onClick={() => {
-                setStoreMainHeader();
-              }}
-            >
+            <Link to={"/btg/aside"}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
