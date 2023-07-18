@@ -5,7 +5,7 @@ import Link from '@mui/material/Link';
 import React, { Component } from 'react';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material';
-
+import SignUpComponent from '../user/SignUpComponent';
 
 class SignUpDialog extends Component {
     constructor(props) {
@@ -32,13 +32,14 @@ class SignUpDialog extends Component {
             Sign Up
             <CheckIcon />
           </Link>
-          <Dialog open={open} onClose={this.handleOpen} 
+          <Dialog open={open} onClose={this.handleOpen}
           PaperProps={{sx:{width : 700}}}>
             <DialogTitle bgcolor={'#4A55A2'} color={'white'}
             marginBottom={'15'}>Sign Up</DialogTitle>
             <DialogContent >
               {/* 다이얼로그 내용 */}
-              <iframe src="/sign" frameBorder="0" width="100%" height="600px" />
+              {/* <iframe src="/sign" frameBorder="0" width="100%" height="600px" /> */}
+              <SignUpComponent handleClose={this.handleClose} />
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleClose} color="primary">Close</Button>

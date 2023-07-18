@@ -14,9 +14,6 @@ import SignUpDialog from '../dialog/SignUpDialog';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import '../../css/font.css';
 import { createTheme } from '@material-ui/core/styles';
-import Image from './back.gif';
-import Image2 from './back2.gif';
-import Image3 from './back3.gif';
 import Image4 from './back4.jpg';
 import { CSSTransition } from 'react-transition-group';
 
@@ -94,146 +91,162 @@ class LoginComponent extends Component {
 
         return (
             <Box
-                component="div"
-                sx={{
-                    display: 'flex',
-                    height: '100vh',
-                }}
+              component="div"
+              sx={{
+                display: 'flex',
+                height: '100vh',
+              }}
             >
+              <Box
+                sx={{
+                  width: '90%',
+                  backgroundImage: `url(${Image4})`,
+                  backgroundSize: 'cover',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <Box
+                sx={{
+                  width: '40%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '@media (max-width: 768px)': {
+                    width: '100%',
+                  },
+                }}
+              >
+                {/* 나머지 요소들을 배치해주세요 */}
+                <Avatar sx={{ m: 1, bgcolor: '#7895CB' }}>
+                  {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
+                </Avatar>
                 <Box
-                    sx={{
-                        width: '90%',
-                        backgroundImage: `url(${Image4})`,
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                    }}
-                />
-                <Box
-                    sx={{
-                        width: '40%',
+                  sx={{
+                    mb: '40px',
+                    bgcolor: '#4A55A2',
+                    width: '70%',
+                    height: '10vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    borderRadius: '25px',
+                    '@media (max-width: 768px)': {
+                      width: '90%',
+                    },
+                  }}
+                >
+                  <CSSTransition
+                    in={showForm}
+                    timeout={500}
+                    classNames="text-slide"
+                    unmountOnExit
+                  >
+                    <Typography
+                      component="h1"
+                      variant="h5"
+                      style={{
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontSize: '4vh',
+                      }}
+                    >
+                      DOUZONE
+                    </Typography>
+                  </CSSTransition>
+                </Box>
+                <CSSTransition
+                  in={showForm}
+                  timeout={500}
+                  classNames="form-slide"
+                  unmountOnExit
+                >
+                  {/* 나머지 폼 요소들을 배치해주세요 */}
+                  <form onSubmit={this.handleFormSubmit}>
+                    <Box
+                      sx={{
+                        mt: '4vh',
+                        width: '30vh',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                    }}
-                >
-                    {/* 나머지 요소들을 배치해주세요 */}
-                    <Avatar sx={{ m: 1, bgcolor: '#7895CB' }}>
-                        {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
-                    </Avatar>
-                    <Box
+                        '@media (max-width: 768px)': {
+                          width: '100%',
+                        },
+                      }}
+                    >
+                      <TextField
+                        InputProps={{ style: { borderRadius: '8px', color: 'blue' } }}
+                        margin="normal"
+                        label="ID"
+                        required
+                        fullWidth
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={email}
+                        onChange={this.handleInputChange}
                         sx={{
-                            mb: '40px',
-                            bgcolor: '#4A55A2',
-                            width: '70%',
-                            height: '70px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            borderRadius: '25px',
+                          mb: '2vh',
                         }}
-                    >
-                        <CSSTransition
-                            in={showForm}
-                            timeout={500}
-                            classNames="text-slide"
-                            unmountOnExit
-                        >
-                            <Typography
-                                component="h1"
-                                variant="h5"
-                                style={{
-                                    fontFamily: '"Montserrat", sans-serif',
-                                    fontSize: '40px',
-                                }}
-                            >
-                                DOUZONE
-                            </Typography>
-                        </CSSTransition>
+                      />
+                      <TextField
+                        InputProps={{ style: { borderRadius: '8px' } }}
+                        label="Password"
+                        type="password"
+                        required
+                        fullWidth
+                        name="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={this.handleInputChange}
+                        sx={{
+                          mb: '2vh',
+                        }}
+                      />
+                      <FormControlLabel
+                        control={<Checkbox value="remember" />}
+                        label="아이디 저장"
+                        sx={{
+                          mb: '2vh',
+                        }}
+                      />
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        onMouseEnter={this.handleMouseEnter}
+                        onMouseLeave={this.handleMouseLeave}
+                        sx={{
+                          mt: '5vh',
+                          mb: '3vh',
+                          bgcolor: '#7895CB',
+                          color: '#FFFFFF',
+                          '&:hover': { bgcolor: '#4A55A2', cursor: 'pointer' },
+                          fontFamily: '"Lilita One", cursive',
+                        }}
+                      >
+                        {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
+                        Sign in
+                      </Button>
+                      <Grid container>
+                        <Grid item xs sx={{ '&:hover': { cursor: 'pointer' } }}>
+                          <ForgotPasswordDialog />
+                        </Grid>
+                        <Grid item sx={{ '&:hover': { cursor: 'pointer' } }}>
+                          <SignUpDialog />
+                        </Grid>
+                      </Grid>
                     </Box>
-                    <CSSTransition
-                        in={showForm}
-                        timeout={500}
-                        classNames="form-slide"
-                        unmountOnExit
-                    >
-                        {/* <form onSubmit={this.handleFormSubmit}> */}
-                            {/* 나머지 폼 요소들을 배치해주세요 */}
-                            <form onSubmit={this.handleFormSubmit}>
-                                <Box
-                                    sx={{
-                                        mt: '40px',
-                                        width: '300px',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <TextField
-                                        InputProps={{ style: { borderRadius: '8px', color:'blue' } }}
-                                        margin="normal"
-                                        label="Email Address"
-                                        required
-                                        fullWidth
-                                        name="email"
-                                        autoComplete="email"
-                                        autoFocus
-                                        value={email}
-                                        onChange={this.handleInputChange}
-                                    />
-                                    <TextField
-                                        InputProps={{ style: { borderRadius: '8px' } }}
-                                        label="Password"
-                                        type="password"
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        autoComplete="current-password"
-                                        value={password}
-                                        onChange={this.handleInputChange}
-                                    />
-                                    <FormControlLabel
-                                        control={<Checkbox value="remember" />}
-                                        label="아이디 저장"
-                                    />
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        onMouseEnter={this.handleMouseEnter}
-                                        onMouseLeave={this.handleMouseLeave}
-                                        sx={{
-                                            mt: 5,
-                                            mb: 3,
-                                            bgcolor: '#7895CB',
-                                            color: '#FFFFFF',
-                                            '&:hover': { bgcolor: '#4A55A2', cursor: 'pointer',},
-                                            fontFamily: '"Lilita One", cursive',
-                                        }}
-                                    >
-                                        {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
-                                        Sign in
-                                    </Button>
-
-                                    <Grid container>
-                                        <Grid item xs  sx={{'&:hover': { cursor: 'pointer',}}}>
-                                            <ForgotPasswordDialog />
-                                        </Grid>
-                                        <Grid item sx={{'&:hover': { cursor: 'pointer',}}}>
-                                            <SignUpDialog />
-                                        </Grid>
-                                    </Grid>
-                                </Box >
-                            </form>
-                        {/* </form> */}
-                    </CSSTransition>
-                </Box>
+                  </form>
+                </CSSTransition>
+              </Box>
             </Box>
-        );
+          );
+          
     }
 }
 
