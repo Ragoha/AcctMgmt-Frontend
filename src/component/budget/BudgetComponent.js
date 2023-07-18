@@ -10,20 +10,11 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Deposits from "../dashboard/Deposits";
-import Orders from "../dashboard/Orders";
 import MainListItems from "../dashboard/listItems";
 import { AccountCircle } from "@mui/icons-material";
-import HeaderComponent from "../common/HeaderComponent";
-import AsideComponent from "../common/AsideComponent";
 import { Outlet, Route, Routes } from "react-router";
 
 function Copyright(props) {

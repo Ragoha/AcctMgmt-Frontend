@@ -1,22 +1,28 @@
 import { Component } from "react";
 import { Route, Routes } from "react-router-dom";
 import BudgetComponent from "../component/budget/BudgetComponent"; 
-import AsideComponent from "../component/common/AsideComponent";
 import HeaderComponent from "../component/common/HeaderComponent";
-import BudgetInitCarryOverRegComponent from "../component/budget/BudgetInitCarryOverRegComponent";
-import ParentComponent from "../component/budget/ParentComponent";
-import ChildComponent from "../component/budget/ChildComponent";
+import Count from "../component/Count";
+import AsideComponent from "../component/common/AsideComponent";
+import CounterContainer from "../component/CounterContainer";
+import BudgetInitCarryForwordComponent from "../component/budget/BudgetInitCarryForwordComponent";
 
 
 class BudgetRouter extends Component {
   render() {
     return (
       <Routes>
-        <Route path="/btg/*" element={<BudgetComponent />}>
-          <Route path="aside" element={<ParentComponent />} />
-          <Route path="header" element={<ChildComponent />} />
-          <Route path="icor" element={<BudgetInitCarryOverRegComponent/> }/>
+        <Route path="/bgt/*" element={<BudgetComponent />}>
+          {/* <Route
+            path="/Budget_item_registration"
+            element={<Budget_item_registration />}
+          /> */}
+          {/* <Route path="aside" element={<AsideComponent />} /> */}
+          <Route path="header" element={<HeaderComponent />} />
+          <Route path="test" element={<Count />} />
+          <Route path="icor" element={<BudgetInitCarryForwordComponent />} />
         </Route>
+        <Route path="/t" element={<CounterContainer />} />
       </Routes>
     );
   
