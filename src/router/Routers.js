@@ -8,5 +8,5 @@ export default function Routers() {
       <IndexRouter />
       <MainRouter />
     </BrowserRouter>
-  );
+  )
 }
