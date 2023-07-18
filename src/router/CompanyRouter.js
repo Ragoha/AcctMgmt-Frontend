@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import CoMgmtComponent from "../component/user/CoMgmtComponent";
+import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
 
 export default function UserRouter() {
   return (
