@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from "axios";
-
+import validator from 'validator';
+import { NextPlanSharp } from '@mui/icons-material';
 class SignUpComponent extends Component {
   constructor(props) {
     super(props);
@@ -20,18 +21,84 @@ class SignUpComponent extends Component {
       company: '',
       department: '',
       position: '',
-      isIdDuplicated: false,
-      isAddressDialogOpen: false,
-      isIdValid: false,
+      isIdDuplicated: false,  //중복확인 변수
+      isIdValid: false, // 실시간 
       isPasswordValid: false,
       isConfirmPasswordValid: false,
+      value: '',
+      error: false,
+      errorMessage: '',
     };
   }
 
+  handleChange2 = (e) => {
+    const { value } = e.target;
+    const isIdValid = validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ''; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
+    const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value); // 입력된 값에 한글이 포함되어 있는지 확인합니다.
+    this.setState({ isIdDuplicated: false });
+    this.setState({
+      id: isIdValid ? value : '',
+      // error: !isIdValid,
+      errorMessage: isKoreanInput
+        ? '알파벳 대소문자와 숫자만 사용 가능합니다.'
+        : !isIdValid
+          ? '알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다.'
+          : '',
+      isIdValid: isIdValid && !isKoreanInput,
+    });
+  };
+
+
+
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
-    this.setState({ isIdDuplicated: false });
+
   };
+
+  handleBlur = () => {
+    const { error, id } = this.state;
+    const isIdValid = validator.matches(
+      id, /^[a-z0-9_-]{2,10}$/);
+    if (!error && id !== '') {
+      this.setState({
+        errorMessage: !isIdValid ? '알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다.' : '사용 가능한 양식입니다.',
+      });
+    }
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { id, name, password, email, gender, phone, company, position } = this.state;
+    const signData = { id, name, password, email, gender, phone, company, position };
+
+    // 폼 필드의 값이 비어있는지 확인
+    if (Object.values(signData).some(value => value === '')) {
+      alert('모든 필드에 값을 입력해주세요.');
+      return;
+    }
+
+    const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+    // 회원가입 API 호출
+    axios.post(ACCTMGMT_API_BASE_URL + '/api/signUp', signData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        // 회원가입 성공 시 처리 로직
+        alert("회원가입 성공", response);
+        console.log(response.data);
+        this.props.handleClose();
+        // 다이얼로그 창 닫기
+      })
+      .catch((error) => {
+        // 회원가입 실패 시 처리 로직
+        alert("회원가입 실패", error);
+        console.error(error);
+      });
+    // handle form submission logic here
+  };
+
 
   handleIdCheck = (e) => {
     // 중복 확인 로직 처리
@@ -46,58 +113,28 @@ class SignUpComponent extends Component {
         // 아이디 중복일 때 처리 로직
         alert("아이디 중복이요", response);
         console.log(response.data);
-        this.setState({ isIdDuplicated: false });
+        this.setState({
+          isIdDuplicated: false,
+          errorMessage: '중복된 아이디 입니다.',
+        });
       })
       .catch((error) => {
         // 아이디 중복 없을 때 처리 로직
         alert("사용가능한 아이디 입니다.", error);
         console.error(error);
-        this.setState({ isIdDuplicated: true });
-      });
+        this.setState({ isIdDuplicated: true, });
+      })
 
-  };
-
-  handleAddressSearch = () => {
-    // 주소 검색 로직 처리
-    // DB에서 주소를 검색하는 API 호출 등을 수행
-    // 여기에서는 예시로 주소를 무조건 설정
-    this.setState({ address: '서울특별시 강남구' });
-  };
-
-  handleOpenAddressDialog = () => {
-    this.setState({ isAddressDialogOpen: true });
-  };
-
-  handleCloseAddressDialog = () => {
-    this.setState({ isAddressDialogOpen: false });
-  };
-
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
-
-  handleIdCheck = () => {
-    // Perform duplicate ID check logic here
-    // ...
-    const isIdDuplicated = false; // Example value, replace with actual logic
-
-    this.setState({ isIdDuplicated });
-  };
-
-  validateId = (id) => {
-    const idRegex = /^[a-zA-Z0-9]+$/;
-    return idRegex.test(id);
   };
 
   validatePassword = (password) => {
     // Add your password validation logic here
     // For example, to check if it has at least 8 characters and contains a special character:
-    // const passwordRegex = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-    // return passwordRegex.test(password);
+    const passwordRegex = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    return passwordRegex.test(password);
 
     // For simplicity, let's assume any password longer than 8 characters is valid
-    return password.length >= 8;
+    // return password.length >= 8;
   };
 
   render() {
@@ -111,128 +148,170 @@ class SignUpComponent extends Component {
       phone,
       company,
       position,
+      isIdValid,
       isIdDuplicated,
-      isIdDuplicated2,
-    } = this.state;
-    const isIdValid = this.validateId(id);
-    const isPasswordValid = this.validatePassword(password);
-    const isConfirmPasswordValid = password === confirmPassword;
-    // const displayInline = {
-    //   display:"inline"
-    // const idRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
-    // const passwordRegEx = /^[A-Za-z0-9]{8,20}$/
+      error, errorMessage,
 
-    // }
+    } = this.state;
+
+
+    const isPasswordValid = this.validatePassword(password);
     return (
-      <form onSubmit={this.handleSubmit} >
+      <form onSubmit={this.handleSubmit}>
         <Grid container spacing={2} marginTop={2}>
           <Grid item xs={12} >
-            <InputLabel>ID</InputLabel>
+            <InputLabel>아이디</InputLabel>
             <TextField
               name="id"
-              placeholder="ID"
-              variant="outlined"//required
-              // color={isIdValid ? 'success' : 'error'}
+              placeholder="알파벳 대소문자와 숫자만 사용 가능"
+              variant="outlined"
               value={id}
-              onChange={this.handleChange}
+              onChange={this.handleChange2}
+              onBlur={this.handleBlur}
+              disabled={error}
+              error={error}
+              helperText={errorMessage}
               sx={{
-                width: '95%', 
+                width: '46%',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: isIdValid ? 'success.main' : 'error.main',
                 },
-                '& .MuiFormHelperText-root': {
-                  color: isIdValid ? 'success.main' : 'error.main',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
                 },
               }}
-              // value={id}
-              // onChange={this.handleChange}
-            // error={!isIdValid}
             />
+
+
             <Button onClick={this.handleIdCheck} disabled={isIdDuplicated}>
               중복확인
             </Button>
           </Grid>
           <Grid item xs={12}>
+            <InputLabel>이름</InputLabel>
             <TextField
               name="name"
-              label="Name"
-              variant="standard"
+              placeholder="이름을 입력하세요"
+              variant="outlined"
               color="secondary"
               value={name}
               onChange={this.handleChange}
-              sx={{ width: '95%' }}
+              sx={{
+                width: '46%',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <InputLabel>패스워드</InputLabel>
             <TextField
-              variant="standard"
-              color={isPasswordValid ? 'success' : 'error'}
+              variant="outlined"
+              color="secondary"
               name="password"
-              label="Password"
+              placeholder="알파벳 대소문자, 숫자, 특수문자를 포함"
               type="password"
               value={password}
+              error={password && !isPasswordValid}
+              helperText={
+                password && !isPasswordValid ? (
+                  <>
+                    알파벳 대소문자, 숫자, 특수문자를 포함한<br />8글자 이상을 입력하세요
+                  </>
+                ) : (
+                  ''
+                )
+              }
               onChange={this.handleChange}
-              sx={{ width: '95%' }}
-              error={!isPasswordValid}
+              onBlur={this.handleBlur}
+              sx={{
+                width: '95%', whiteSpace: 'pre-wrap',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <InputLabel>패스워드 확인</InputLabel>
             <TextField
-              variant="standard"
-              color={isConfirmPasswordValid ? 'success' : 'error'}
+              variant="outlined"
+              color={confirmPassword ? (password === confirmPassword ? 'success' : 'error') : 'secondary'}
               name="confirmPassword"
-              label="Confirm Password"
+              placeholder="한번 더 입력하세요"
               type="password"
               value={confirmPassword}
               onChange={this.handleChange}
-              sx={{ width: '95%' }}
-              error={!isConfirmPasswordValid}
+              onBlur={this.handleBlur}
+              sx={{
+                width: '95%',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
+                },
+              }}
+              error={confirmPassword && password !== confirmPassword}
+              helperText={confirmPassword && password !== confirmPassword ? '비밀번호가 일치하지 않습니다.' : ''}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <InputLabel>이메일</InputLabel>
             <TextField
-              variant="standard"
+              variant="outlined"
               color="secondary"
               name="email"
-              label="Email"
+              placeholder="exaple@example.com"
               type="email"
               value={email}
               onChange={this.handleChange}
-              sx={{ width: '95%' }}
+              sx={{
+                width: '95%',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl sx={{ width: '95%' }}>
-              <InputLabel>Gender</InputLabel>
+          <InputLabel>성별</InputLabel>
+            <FormControl sx={{ width: '95%',}}>
               <Select
-                variant="standard"
+                variant="outlined"
                 color="secondary"
                 name="gender"
-                value={gender}
+                value='male'
                 onChange={this.handleChange}
               >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
+                <MenuItem value="male">남자</MenuItem>
+                <MenuItem value="female">여자</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
+            <InputLabel>휴대전화</InputLabel>
             <TextField
-              variant="standard"
+              variant="outlined"
               color="secondary"
               name="phone"
-              label="Phone"
+              placeholder="01012341234"
               value={phone}
               onChange={this.handleChange}
-              sx={{ width: '95%' }}
+              sx={{
+                width: '95%',
+                '& .MuiOutlinedInput-input::placeholder': {
+                  fontSize: '12px', // 원하는 폰트 크기로 설정
+                },
+              }}
             />
           </Grid>
+
           <Grid item xs={12} sm={6}>
+            <InputLabel>회사</InputLabel>
             <TextField
-              variant="standard"
+              variant="outlined"
               color="secondary"
               name="company"
-              label="Company"
+              placeholder="dz00"
               value={company}
               onChange={this.handleChange}
               fullWidth
@@ -242,13 +321,15 @@ class SignUpComponent extends Component {
             </Button>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl sx={{ width: '95%' }}>
-              <InputLabel>Position</InputLabel>
+          <InputLabel>직책</InputLabel>
+            <FormControl
+              sx={{ width: '95%',}}
+            >
               <Select
-                variant="standard"
+                variant="outlined"
                 color="secondary"
                 name="position"
-                value={position}
+                value={'사원'}
                 onChange={this.handleChange}
               >
                 <MenuItem value="사원">사원</MenuItem>
@@ -260,7 +341,7 @@ class SignUpComponent extends Component {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
+            <Button onClick={this.handleSubmit} variant="contained" color="primary" >
               Sign Up
             </Button>
           </Grid>
