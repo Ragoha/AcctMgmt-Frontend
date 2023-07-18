@@ -4,8 +4,8 @@ import BoardDataComponent from "../component/user/BoardDataComponent";
 import Budget_item_registration from "../component/Budget_item_registration/Budget_item_registration";
 import CoMgmtComponent from "../component/user/CoMgmtComponent";
 import ListUserComponent from "../component/user/ListUserComponent";
-import LoginComponent from "../component/user/LoginComponent";
 import MainComponent from "../component/user/MainComponent";
+import Budget_item_registration from "../component/Budget_item_registration/Budget_item_registration";
 
 export default function UserRouter() {
   return (
