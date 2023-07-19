@@ -159,7 +159,10 @@ class MainListItems extends Component {
         <Divider />
         <ListItemButton onClick={this.handleBudgetClick}>
           <ListItemIcon>
-            <Tooltip title={this.props.drawerOpen ? "" : "예산관리"} placement="right">
+            <Tooltip
+              title={this.props.drawerOpen ? "" : "예산관리"}
+              placement="right"
+            >
               <PointOfSaleIcon />
             </Tooltip>
           </ListItemIcon>
@@ -176,7 +179,10 @@ class MainListItems extends Component {
                 }}
               >
                 <ListItemIcon>
-                  <Tooltip title={this.props.drawerOpen ? "" : "예산과목등록"} placement="right">
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "예산과목등록"}
+                    placement="right"
+                  >
                     <PostAddIcon />
                   </Tooltip>
                 </ListItemIcon>
@@ -193,7 +199,8 @@ class MainListItems extends Component {
                 <ListItemIcon>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "예산초기이월등록"}
-                    placement="right">
+                    placement="right"
+                  >
                     <PlaylistAddIcon />
                   </Tooltip>
                 </ListItemIcon>
@@ -204,15 +211,17 @@ class MainListItems extends Component {
         </Collapse>
         <Divider />
         <Link to={"syscfg"}>
-        <ListItemButton>
+          <ListItemButton>
             <ListItemIcon>
-            <Tooltip title={this.props.drawerOpen ? "" : "시스템환경설정"}
-            placement="right">
+              <Tooltip
+                title={this.props.drawerOpen ? "" : "시스템환경설정"}
+                placement="right"
+              >
                 <SettingsIcon />
               </Tooltip>
             </ListItemIcon>
-          <ListItemText primary="시스템환경설정" />
-        </ListItemButton>
+            <ListItemText primary="시스템환경설정" />
+          </ListItemButton>
         </Link>
         <Divider />
       </List>
