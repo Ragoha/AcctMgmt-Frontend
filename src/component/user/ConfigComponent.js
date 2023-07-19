@@ -15,14 +15,10 @@ import {
     Grid,
     Tabs,
     Tab,
-    Box,
-    ThemeProvider,
     TextField,
     createTheme,
     InputLabel,
-} from '@material-ui/core';
-import { Label } from '@mui/icons-material';
-
+} from '@mui/material';
 class ConfigComponent extends React.Component {
     constructor(props) {
         super(props);
