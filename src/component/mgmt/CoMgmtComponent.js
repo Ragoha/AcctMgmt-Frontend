@@ -15,6 +15,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
 import DaumPostcode from 'react-daum-postcode';
 
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import UserService from '../../service/UserService';
 
 
@@ -27,7 +32,11 @@ class CoMgmtComponent extends Component {
       searchWord: '',
       searchResult: '',
       nbRows: 3,
+
       openAddr: false,
+      zipcode: '',
+      address: '',
+
       data: {
         columns: [
           { field: 'id', headerName: 'ID', width: 90 },
@@ -53,20 +62,39 @@ class CoMgmtComponent extends Component {
   }
 
   addrButton = () => {
-    this.setState((current) => ({
-      openAddr: !current.openAddr
-    }));
+    // this.setState((current) => ({
+    //   openAddr: !current.openAddr
+    // }));
+    this.setState({ openAddr: true });
   }
 
-//   // 주소 선택 이벤트
-//   selectAddress = (data) => {
-//     console.log( data.address, data.zonecode)
-    
-//     openAddr: !openAddr
-// };
+  // 주소 선택 이벤트
+  selectAddress = (data) => {
+    let fullAddr = data.address;
+    let extraAddr = '';
 
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddr += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddr += extraAddr !== '' ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
+    }
 
-  helpClick = () =>{
+    console.log(fullAddr, data.zonecode);
+    this.setState({ zipcode: data.zonecode });
+    this.setState({ address: fullAddr });
+    this.setState({ openAddr: false });// dialog창 꺼주기
+
+    // 추가 코드: 주소 정보를 텍스트 필드에 설정
+    document.getElementById("zipcode").value = data.zonecode;
+    document.getElementById("address").value = fullAddr;
+
+  };
+
+  helpClick = () => {
     this.setState({ open: true });
   };
 
@@ -74,7 +102,7 @@ class CoMgmtComponent extends Component {
     this.setState({ searchWord: e.target.value });
   }
 
-  
+
   removeRow = () => {
     this.setState((prevState) => ({ nbRows: Math.max(0, prevState.nbRows - 1) }));
   };
@@ -84,28 +112,29 @@ class CoMgmtComponent extends Component {
   };
 
   render() {
-    const { open, userList,openAddr, cardCount } = this.state;
+    const { open, userList, openAddr, cardCount } = this.state;
 
     const { searchWord, searchResult } = this.state;
     const { nbRows, data } = this.state;
+
     const currentDate = new Date();
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate()}`;
 
     const cards = Array.from({ length: cardCount }).map((_, index) => (
-      <Card sx={{ mt: 1, mb: 1, border: '1px solid #000' }}>
+      <Card key={index} sx={{ mt: 1, mb: 1, border: '1px solid #000' }}>
         <CardActionArea >
           <CardContent>
-            <Typography sx={{ fontSize: 15 }} gutterBottom component='div'>
+            <Typography sx={{ fontSize: 15 }} gutterBottom >
               ss
             </Typography>
-            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginTop: '-28px' }} component='div'>
+            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginTop: '-28px' }} >
               {formattedDate}
             </Typography>
             <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginBottom: '-20px' }}>
               {index + 1}
             </Typography>
-            <Typography sx={{ fontSize: 25 }} variant='h3' component='div'>
+            <Typography sx={{ fontSize: 25 }} variant='h3'>
               ss
             </Typography>
           </CardContent>
@@ -115,7 +144,7 @@ class CoMgmtComponent extends Component {
     ));
 
     return (
-      <Container sx={{ mt: 2 }}>
+      <>
         <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
           <Box sx={{ display: 'flex' }}>
             <Grid container sx={{ justifyContent: "flex-start", width: '25%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
@@ -131,7 +160,7 @@ class CoMgmtComponent extends Component {
                       sx={{ width: '83%', ml: 1 }}
                       placeholder="회사코드/회사명을 입력하세요"
                     // inputProps={{ 'aria-label': 'search' }}
-                    
+
                     />
                     <IconButton type="button">
                       <SearchIcon />
@@ -142,52 +171,50 @@ class CoMgmtComponent extends Component {
                     {cards}
                   </Card>
 
+                  <Dialog open={open} PaperProps={{ sx: { width: 550, minHeight: 500, maxHeight: 600 } }}>
 
+                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>CodeHelp<IconButton size='small' onClick={() => this.setState({ open: false, userList: [], searchResult: [] })}>
 
+                      <CloseIcon fontSize='large' />
+                    </IconButton>
 
-                  <Dialog open={open} PaperProps={{sx:{width: 550 , minHeight:500, maxHeight: 600}}}>
-            
-                  <DialogTitle sx={{backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>CodeHelp<IconButton size='small' onClick={() => this.setState({ open: false, userList: [],searchResult:[]})}>
-                  
-                  <CloseIcon fontSize='large'/>
-                  </IconButton>
-                  
-                  </DialogTitle>
-                  <DialogContent>
-                  <Box mb={2}></Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'center' , alignItems: 'center'}}>
-                  <InputLabel >검색</InputLabel>
-                  <TextField id="searchWord" variant="outlined" onChange={this.handleSearch}></TextField>
-                  <Button variant="outlined" sx={{ marginLeft: '10px' }} onClick={this.keywordClick}>Search</Button></Box>
-                  <Box mb={1}></Box>
-                  <Divider />
-                  <Box mb={2}></Box>
-                   <Typography>
-                  keyword: {searchWord} <br />
-                  result:  {searchResult}
+                    </DialogTitle>
+                    <DialogContent>
+                      <Box mb={2}></Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <InputLabel >검색</InputLabel>
+                        <TextField id="searchWord" variant="outlined" onChange={this.handleSearch}></TextField>
+                        <Button variant="outlined" sx={{ marginLeft: '10px' }} >Search</Button></Box>
+                      {/* onClick={this.keywordClick} */}
+                      <Box mb={1}></Box>
+                      <Divider />
+                      <Box mb={2}></Box>
+                      <Typography>
+                        keyword: {searchWord} <br />
+                        result:  {searchResult}
 
-                  <Box sx={{ width: '100%' }}>
-                    <Button size="small" onClick={this.removeRow}>
-                      Remove a row
-                    </Button>
-                    <Button size="small" onClick={this.addRow}>
-                       Add a row
-                    </Button>
-                  <div style={{ height: 500, width: '100%' }}>
-                  <DataGrid rows={data.rows.slice(0, nbRows)} columns={data.columns} pageSize={5} />
-                  </div>
-                  </Box>
+                        <Box sx={{ width: '100%' }}>
+                          <Button size="small" onClick={this.removeRow}>
+                            Remove a row
+                          </Button>
+                          <Button size="small" onClick={this.addRow}>
+                            Add a row
+                          </Button>
+                          <Box style={{ height: 500, width: '100%' }}>
+                            <DataGrid rows={data.rows.slice(0, nbRows)} columns={data.columns} pageSize={5} />
+                          </Box>
+                        </Box>
 
-                  </Typography>
-                  </DialogContent>
-                  <Divider />
-                  <DialogActions>
-                  <Button variant="outlined" onClick={this.listClick}>Confirm</Button>
-                  
-                    <Button variant="outlined" onClick={() => this.setState({ open: false, userList: [],searchResult:[]})} >Cancel</Button>
-                  </DialogActions>   
-            </Dialog>
-   
+                      </Typography>
+                    </DialogContent>
+                    <Divider />
+                    <DialogActions>
+                      <Button variant="outlined" onClick={this.listClick}>Confirm</Button>
+
+                      <Button variant="outlined" onClick={() => this.setState({ open: false, userList: [], searchResult: [] })} >Cancel</Button>
+                    </DialogActions>
+                  </Dialog>
+
 
 
                 </Grid>
@@ -234,14 +261,14 @@ class CoMgmtComponent extends Component {
                   direction="colummn"
                   justifyContent="space-evenly"
                   alignItems="center" sx={{ width: '100%', height: '50px' }}>
-                  
-            
+
+
                   <Grid item xs={6} >
-                  <Grid container direction="row"
-                  justifyContent="center"
-                  alignItems="center" sx={{border: '1px solid #000'}}> 
-                  <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight:"10px" }} >회사코드</InputLabel><TextField placeholder='필수입력값' sx={{ backgroundColor: '#FFA7A7' }}></TextField>
-                  </Grid>
+                    <Grid container direction="row"
+                      justifyContent="center"
+                      alignItems="center" sx={{ border: '1px solid #000' }}>
+                      <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }} >회사코드</InputLabel><TextField placeholder='필수입력값' sx={{ backgroundColor: '#FFA7A7' }}></TextField>
+                    </Grid>
                   </Grid>
                   {/* <Grid item xs={2} >
                     <InputLabel sx={{ textAlign: 'center', color: 'black' }} >회사코드</InputLabel>
@@ -249,7 +276,7 @@ class CoMgmtComponent extends Component {
                   <Grid item xs={4}>
                     <TextField placeholder='필수입력값' sx={{ backgroundColor: '#FFA7A7' }}></TextField>
                   </Grid> */}
-                  
+
 
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>회사명</InputLabel>
@@ -278,7 +305,7 @@ class CoMgmtComponent extends Component {
                     <TextField></TextField>
                   </Grid>
                   <Grid item xs={2}>
-                    <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>법인번호</InputLabel>
+                    <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>사업자번호</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
                     <TextField></TextField>
@@ -288,17 +315,27 @@ class CoMgmtComponent extends Component {
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>회사주소</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField sx={{
-                      width: '150px' // 원하는 가로 크기를 지정 '기본크기는 약 222px'
-                    }}></TextField> <Button sx={{ ml: 2, mt: 1 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
-
-                {openAddr && 
-                <DaumPostcode 
-                    // onComplete={selectAddress}  // 값을 선택할 경우 실행되는 이벤트
-                    // autoClose={false} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
-                    // defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
-                    />}
+                    <TextField id="zipcode" InputProps={{ readOnly: true }}
+                      sx={{
+                        width: '150px' // 원하는 가로 크기를 지정 '기본크기는 약 222px'
+                      }}></TextField> <Button sx={{ ml: 2, mt: 1 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
                   </Grid>
+
+                  <Dialog open={openAddr} PaperProps={{ sx: { width: 550, minHeight: 500, maxHeight: 600 } }}>
+                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Address Help<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
+                      <CloseIcon fontSize='large' />
+                    </IconButton>
+                    </DialogTitle>
+
+                    <DialogContent>
+                      <DaumPostcode
+                        onComplete={this.selectAddress}  // 값을 선택할 경우 실행되는 이벤트
+                        autoClose={true} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
+                      // defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
+                      />
+                    </DialogContent>
+                  </Dialog>
+
 
                   <Grid item xs={6}></Grid>
 
@@ -306,9 +343,15 @@ class CoMgmtComponent extends Component {
                     <InputLabel></InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField sx={{
-                      width: '400px'
-                    }}></TextField>
+                    <TextField sx={{ width: '400px' }} id="address" InputProps={{ readOnly: true }}></TextField>
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+
+                  <Grid item xs={2}>
+                    <InputLabel></InputLabel>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField sx={{ width: '400px' }} id="addressDetail" ></TextField>
                   </Grid>
                   <Grid item xs={6}></Grid>
 
@@ -317,18 +360,25 @@ class CoMgmtComponent extends Component {
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>회계기수</InputLabel>
                   </Grid>
                   <Grid item xs={1}>
-                    <InputLabel style={{ textAlign: 'right' }}>기</InputLabel>
+                    <InputLabel sx={{ textAlign: 'right' }}>기</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['DatePicker']}>
+                        <DatePicker />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </Grid>
                   <Grid item xs={1}>
-                    <InputLabel>~</InputLabel>
+                    <InputLabel sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, mr:2,mt:1 }}>~</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['DatePicker']}>
+                        <DatePicker />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </Grid>
-
 
                 </Grid>
               </Grid>
@@ -336,9 +386,9 @@ class CoMgmtComponent extends Component {
             {/* </Box> */}
           </Box>
         </Grid>
-      </Container>
+      </>
     );
-                  }
-                }
+  }
+}
 
 export default CoMgmtComponent;

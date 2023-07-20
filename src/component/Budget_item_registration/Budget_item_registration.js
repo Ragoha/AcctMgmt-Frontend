@@ -85,6 +85,7 @@ class Budget_item_registration extends Component {
         return (
             <>
                 <Grid container spacing={2} padding={5} >
+
                     <Grid item xs={12}>
                         <Box
                             sx={{ backgroundColor: '#7895CB', height: '50px', alignItems: 'center', display: 'flex', border: '1px solid' }}

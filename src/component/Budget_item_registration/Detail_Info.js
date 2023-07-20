@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar } from "react-icons/fi";
 import BudgetRegService from '../../service/BudgetRegService';
 
+
 class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
   constructor(props) {
     super(props);
