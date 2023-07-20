@@ -131,6 +131,9 @@ class MainComponent extends Component {
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
+                <div style={{ marginLeft: '15px' }}>
+                <a href="/">LogOut</a>
+                </div>
               </IconButton>
             </Toolbar>
           </AppBar>
