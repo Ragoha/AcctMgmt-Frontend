@@ -157,7 +157,7 @@ class MainComponent extends Component {
           </Drawer>
           
             {/* Main */}
-            <Box sx={{ mt: 10, mb: 4, ml: 2, mr: 2 }}>
+            <Box sx={{ mt: 10, mb: 2, ml: 2, mr: 2 }}>
               <Outlet />
             </Box>
           </Box>

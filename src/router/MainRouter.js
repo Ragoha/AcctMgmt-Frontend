@@ -19,10 +19,7 @@ class MainRouter extends Component {
           <Route path="ozt/dept" element={<DeptMgmtComponent />} />
           <Route path="bgt/t1" element={<Count />} />
           <Route path="bgt/bgtcd" element={<Budget_item_registration />} />
-          <Route
-            path="bgt/bgticf"
-            element={<BudgetInitCarryForwordComponent />}
-          />
+          <Route path="bgt/bgticf" element={<BudgetInitCarryForwordComponent />}/>
           <Route path="syscfg" element={<ConfigComponent />} />
         </Route>
         <Route path="/t2" element={<CounterContainer />} />

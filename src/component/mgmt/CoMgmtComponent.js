@@ -144,7 +144,7 @@ class CoMgmtComponent extends Component {
     ));
 
     return (
-      <Container sx={{ mt: 2 }}>
+      <>
         <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
           <Box sx={{ display: 'flex' }}>
             <Grid container sx={{ justifyContent: "flex-start", width: '25%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
@@ -386,7 +386,7 @@ class CoMgmtComponent extends Component {
             {/* </Box> */}
           </Box>
         </Grid>
-      </Container>
+      </>
     );
   }
 }
