@@ -11,10 +11,9 @@ class Budget_DataGrid extends Component {
         super(props);
         this.state = {
             columns: [
-                //{ field: 'id', headerName : 'id' , width:100},
-                { field: 'bgt_CD', headerName: '예산코드', width: 100 },
-                { field: 'bgt_NM', headerName: '예산과목명', width: 250 },
-                { field: 'big_FG', headerName: '구매구분', width: 250 }
+                { field: 'bgtCd', headerName: '예산코드', width: 100 },
+                { field: 'bgtNm', headerName: '예산과목명', width: 250 },
+                { field: 'bizFg', headerName: '구매구분', width: 250 }
             ],
             rows:[]
           }
@@ -36,7 +35,7 @@ class Budget_DataGrid extends Component {
                 <DataGrid
                         rows={rows}
                         columns={editableColumns}
-                        getRowId={(row) => row.bgt_CD}
+                        getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                         onRowClick={this.props.clickedRow}
                     />

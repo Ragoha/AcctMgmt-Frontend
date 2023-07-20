@@ -279,7 +279,7 @@ class SignUpComponent extends Component {
                 variant="outlined"
                 color="secondary"
                 name="gender"
-                value='male'
+                // value='male'
                 onChange={this.handleChange}
               >
                 <MenuItem value="male">남자</MenuItem>
@@ -329,7 +329,7 @@ class SignUpComponent extends Component {
                 variant="outlined"
                 color="secondary"
                 name="position"
-                value={'사원'}
+                // value={'사원'}
                 onChange={this.handleChange}
               >
                 <MenuItem value="사원">사원</MenuItem>
