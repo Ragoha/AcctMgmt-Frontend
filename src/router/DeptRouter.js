@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import DeptMgmtComponent from "../component/user/DeptMgmtComponent";
+import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
 
 export default function UserRouter() {
   return (
