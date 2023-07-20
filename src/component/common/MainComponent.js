@@ -16,6 +16,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MainListItems from "./MainListItems";
 import { AccountCircle } from "@mui/icons-material";
 import { Outlet, Route, Routes } from "react-router";
+import Scrollbars from "react-custom-scrollbars";
 
 const drawerWidth = 240;
 
@@ -91,11 +92,13 @@ class MainComponent extends Component {
 
     return (
       <ThemeProvider theme={defaultTheme}>
-        <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+        >
           <CssBaseline />
 
           {/* Header */}
-          <AppBar position="absolute" open={open}>
+          <AppBar position="fixed" open={open}>
             <Toolbar
               sx={{
                 pr: "24px", // keep right padding when drawer closed
@@ -132,7 +135,15 @@ class MainComponent extends Component {
             </Toolbar>
           </AppBar>
 
-          <Drawer variant="permanent" open={open}>
+          <Drawer
+            variant="permanent"
+            open={open}
+            PaperProps={{
+              style: {
+                position: "fixed",
+              },
+            }}
+          >
             <Toolbar
               sx={{
                 display: "flex",
@@ -146,17 +157,19 @@ class MainComponent extends Component {
               </IconButton>
             </Toolbar>
             <Divider />
-            <List component="nav">
-              <MainListItems drawerOpen={this.state.drawerOpen} />
-              <Divider sx={{ my: 1 }} />
-              {/* {secondaryListItems} */}
-            </List>
+            <Scrollbars style={{ height: "100vh" }}>
+              <List component="nav">
+                <MainListItems drawerOpen={this.state.drawerOpen} />
+              </List>
+            </Scrollbars>
           </Drawer>
-          
+
             {/* Main */}
-            <Box sx={{ mt: 10, mb: 2, ml: 2, mr: 2 }}>
-              <Outlet />
-            </Box>
+            <Scrollbars style={{ height: "100vh" }}>
+              <Box sx={{ pt: 10, pb: 2, pl: open ? 32 : 9, pr: 2, transition: "padding 0.4s" }}>
+                <Outlet />
+              </Box>
+            </Scrollbars>
           </Box>
       </ThemeProvider>
     );
