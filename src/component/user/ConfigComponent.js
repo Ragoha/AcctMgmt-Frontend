@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from "axios";
 import {
     Table,
     TableBody,
@@ -16,12 +17,10 @@ import {
     Tabs,
     Tab,
     Box,
-    ThemeProvider,
     TextField,
     createTheme,
     InputLabel,
 } from '@mui/material';
-import { Label } from '@mui/icons-material';
 
 class ConfigComponent extends React.Component {
     constructor(props) {
@@ -32,7 +31,6 @@ class ConfigComponent extends React.Component {
                     id: 1,
                     option: "예산관리구분",
                     commonSettingValue: "1.부서예산",
-                    decisionSettingValue: "1.부서예산",
                     options: ["1.부서예산", "2.프로젝트예산"],
                     value: ['1', '2'],
                 },
@@ -40,7 +38,6 @@ class ConfigComponent extends React.Component {
                     id: 2,
                     option: "품의서 사용여부",
                     commonSettingValue: "0.미사용",
-                    decisionSettingValue: "0.미사용",
                     options: ["0.미사용", "1.사용"],
                     value: ['0', '1'],
                 },
@@ -48,7 +45,6 @@ class ConfigComponent extends React.Component {
                     id: 3,
                     option: "승인번호부여",
                     commonSettingValue: "1.일별",
-                    decisionSettingValue: "1.일별",
                     options: [
                         "1.일별",
                         "2.월별",
@@ -61,7 +57,6 @@ class ConfigComponent extends React.Component {
                     id: 4,
                     option: "이월대상구분",
                     commonSettingValue: "1.이월안함",
-                    decisionSettingValue: "1.이월안함",
                     options: [
                         "1.이월안함",
                         "2.사고+명시+계속비",
@@ -74,7 +69,6 @@ class ConfigComponent extends React.Component {
                     id: 5,
                     option: "프로젝트/부서별 하위사업 관리여부",
                     commonSettingValue: "1.사용",
-                    decisionSettingValue: "1.사용",
                     options: ["0.미사용", "1.사용"],
                     value: ['0', '1'],
                 },
@@ -88,30 +82,41 @@ class ConfigComponent extends React.Component {
     // 테이블의 행 클릭 시 실행되는 함수
     handleRowClick = (rowData) => {
         this.setState({
-            selectedValue: this.state.selectedTab === 'common' ? rowData.commonSettingValue : rowData.decisionSettingValue,
+            selectedValue: rowData.commonSettingValue,
             selectedRowId: rowData.id,
-
         });
-        console.log(rowData.id);
-
+        const option = rowData.id;
+        console.log(option);
     };
+    
 
     // 라디오 버튼 선택 시 실행되는 함수
     handleRadioChange = (e) => {
         const selectedValue = e.target.value;
         const selectedLabel = e.target.labels[0].textContent;
-        console.log(selectedLabel);
         this.setState((prevState) => ({
             data: prevState.data.map((row) =>
                 row.id === prevState.selectedRowId
-                    ? this.state.selectedTab === "common"
-                        ? { ...row, commonSettingValue: selectedLabel }
-                        : { ...row, decisionSettingValue: selectedValue }
+                    ? { ...row, commonSettingValue: selectedLabel }
                     : row
             ),
             selectedValue,
         }));
         console.log(selectedValue);
+        
+        const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+        const option = this.state.selectedRowId;
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option +'/'+ selectedValue, { withCredentials: true })
+        
+            .then((response) => {
+                // 성공적으로 응답을 받은 경우 처리할 작업
+                // console.log(response.data);
+            })
+            .catch((error) => {
+                // 에러가 발생한 경우 처리할 작업
+                console.error(error);
+            });
+
     };
 
     // 탭 변경 시 실행되는 함수
@@ -120,11 +125,7 @@ class ConfigComponent extends React.Component {
     };
 
     render() {
-        const theme = createTheme({
-            // 테마 설정
-        });
-
-        const { selectedTab, data } = this.state;
+        const { selectedTab} = this.state;
         const settingsKey =
             selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
 
@@ -139,21 +140,20 @@ class ConfigComponent extends React.Component {
                 <Grid item xs={12}>
                     <Tabs value={selectedTab} onChange={this.handleTabChange}>
                         <Tab label="Common Settings" value="common" />
-                        <Tab label="Decision Settings" value="decision" />
                     </Tabs>
                 </Grid>
                 <Grid item xs={8}>
                     <TableContainer component={Paper}>
                         <Table style={{ border: "1px solid #ccc" }}>
-                            <TableHead>
+                            <TableHead sx={{bgcolor : 'beige'}}>
                                 <TableRow>
                                     <TableCell style={{ border: "1px solid #ccc" }}>
-                                        Option
+                                        옵션명(option)
                                     </TableCell>
                                     <TableCell
                                         style={{ border: "1px solid #ccc", width: "20vh" }}
                                     >
-                                        Setting Value
+                                        설정값(SettingValue)
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
@@ -184,10 +184,9 @@ class ConfigComponent extends React.Component {
                 </Grid>
                 <Grid item xs={4}>
                     <Paper style={{ padding: 10 }}>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">
-                                Edit {selectedTab === "common" ? "Common" : "Decision"}{" "}
-                                Setting Value:
+                        <FormControl component="fieldset" sx={{width : '30vh'}}>
+                            <FormLabel component="legend" >
+                                설정
                             </FormLabel>
                             <RadioGroup
                                 name="settingValue"
