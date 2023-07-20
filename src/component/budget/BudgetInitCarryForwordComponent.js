@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import { DataGrid} from "@mui/x-data-grid";
-import BudgetService from "../../service/BudgetService";
+import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import ReactDatePicker from "react-datepicker";
@@ -38,27 +38,18 @@ class BudgetInitCarryForwordComponent extends Component {
       bgtCd: "",
       bgtDTO: [],
       selectedRowId: "",
+      isNew: false,
     };
 
     this.childRef = createRef();
   }
 
-  handleSearch = (e) => {
-    e.preventDefault();
-    const { divCd, frDt, groupCd, grFg, bgtCd } = this.state;
-    const formData = { divCd, frDt, groupCd, grFg, bgtCd };
-    BudgetService.getBGT(formData)
-      .then((bgtDTO) => {
-        console.log(bgtDTO);
-        this.setState({ bgtDTO });
-        const data = {
-          id: bgtDTO.bgtCd,
-          bgtNm: bgtDTO.bgtNm,
-        };
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  handleSet = (e) => {
+    this.setState({ [e.target.id] : e.target.value });
+  }
+
+  handleGetBgtICFList = (e) => {
+    this.childRef.current.handleGetBgtICFList();
   };
 
   handleRowAdd = () => {
@@ -66,8 +57,11 @@ class BudgetInitCarryForwordComponent extends Component {
   };
 
   handleRowDelete = () => {
-    console.log(this.state.selectedRowId);
+
     this.childRef.current.handleDeleteClick(this.state.selectedRowId)();
+
+
+    
   };
 
   handleInputChange = (e) => {
@@ -105,11 +99,8 @@ class BudgetInitCarryForwordComponent extends Component {
   };
 
   setSelectedRowId = (selectedId) => {
-    console.log(`여기잖아 "${selectedId}"`);
-    this.setState({ selectedRowId: selectedId }, () => {
-      console.log(this.state);
-    });
-  }
+    this.setState({ selectedRowId: selectedId });
+  };
 
   render() {
     const labelStyle = {
@@ -248,7 +239,7 @@ class BudgetInitCarryForwordComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            <Button onClick={this.handleSearch}>조회</Button>
+            <Button onClick={this.handleGetBgtICFList}>조회</Button>
           </Grid>
         </Grid>
         <Divider variant="middle" />

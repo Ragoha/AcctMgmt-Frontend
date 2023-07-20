@@ -20,55 +20,46 @@ import {
   randomArrayItem,
 } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
+import BgtICFService from "../../service/BgtICFService";
+import { Stack } from "@mui/material";
 
-const roles = ["직접입력", "직접입력"];
-const randomRole = () => {
-  return randomArrayItem(roles);
-};
-
-const initialRows = [
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    bgtTy: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    bgtTy: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    bgtTy: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    bgtTy: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    bgtTy: randomRole(),
-  },
-];
+const newRow = {
+  coCd: 'ABC', 
+  gisu: 123,
+  sq: 1,
+  divCd: 'XYZ',
+  deptCd: 'DEF',
+  bgtCd: "BGT001",
+  bgtCnt: "1",
+  bgtFg: "FG001",
+  bgtTy: "A",
+  bottomCd: "BT001",
+  carrAm: 1000,
+  carrAm1: 2000,
+  carrAm2: 1500,
+  carrAm3: 1800,
+  coCd: "ABC",
+  deptCd: "DEF",
+  divCd: "XYZ",
+  empCd: "EMP001",
+  gisu: 123,
+  id: 1,
+  insertDt: 1689834394000,
+  insertId: "127.0.0.1",
+  insertIp: null,
+  mgtCd: "MGT001",
+  modifyDt: 1689834394000,
+  modifyId: "ID001",
+  modifyIp: "127.0.0.1",
+  remDc:  "Dummy description 1",
+  sq: 1
+}
 
 class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rows: initialRows,
+      rows: [],
       rowModesModel: {},
       selectedRowId: "",
     };
@@ -90,6 +81,7 @@ class DataGridComponent extends Component {
   };
 
   handleEditClick = (id) => () => {
+    console.log("aaaaaaaa");
     this.setState((prevState) => ({
       rowModesModel: {
         ...prevState.rowModesModel,
@@ -107,13 +99,26 @@ class DataGridComponent extends Component {
     }));
   };
 
+  handleGetBgtICFList() {
+    BgtICFService.getBgtICFList().then((response) => {
+      const rowsWithId = response.map((row) => ({
+        ...row,
+        id: row.sq,
+      }));
+      this.setState({ rows: rowsWithId });
+    });
+  }
+
   handleDeleteClick = (id) => () => {
-    this.setState((prevState) => ({
-      rows: prevState.rows.filter((row) => row.id !== id),
-    }));
+    BgtICFService.deleteBgtICF(id).then(
+      () => {
+        this.handleGetBgtICFList();
+      });
+    
   };
 
   processRowUpdate = (newRow) => {
+    console.log("asdfasdf");
     const { rows } = this.state;
     const updatedRow = { ...newRow, isNew: false };
     this.setState((prevState) => ({
@@ -129,15 +134,17 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = (params) => {
+    console.log(params.row);
     this.props.setSelectedRowId(params.row.id);
   };
 
+  componentDidMount() {}
+
   render() {
     const { rows, rowModesModel, selectedRowId } = this.state;
-    
+
     const currencyFormatter = new Intl.NumberFormat("ko-KR", {
-      // style: "currency",
-      // currency: "KRW0",
+      /* style: "currency", currency: "KRW", */
     });
 
     const krAmount = {
@@ -231,6 +238,9 @@ class DataGridComponent extends Component {
           onRowEditStop={this.handleRowEditStopop}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
+          components={{
+            NoRowsOverlay: () => "",
+          }}
         />
       </Box>
     );
