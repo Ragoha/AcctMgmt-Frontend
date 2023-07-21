@@ -84,8 +84,7 @@ class Budget_item_registration extends Component {
         const { rows, groupcd, ctlFg ,bgajustFg ,bottomFg ,bizFg,prevBgtCd} = this.state;
         return (
             <>
-                <Grid container spacing={2} padding={5} >
-
+                <Grid container>
                     <Grid item xs={12}>
                         <Box
                             sx={{ backgroundColor: '#7895CB', height: '50px', alignItems: 'center', display: 'flex', border: '1px solid' }}
