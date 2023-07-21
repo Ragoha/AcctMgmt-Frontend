@@ -69,7 +69,19 @@ class SignUpComponent extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { id, name, password, email, gender, phone, company, position } = this.state;
-    const signData = { id, name, password, email, gender, phone, company, position };
+    const signData = 
+    { 
+       coCd : company,
+       empId : id,
+       empPs: password,
+       empEmail: email,
+       empTel: phone,
+       empName: name,
+       empSx: gender,
+       empOd: position, 
+       empAuth: 'user',
+       
+    };
 
     // 폼 필드의 값이 비어있는지 확인
     if (Object.values(signData).some(value => value === '')) {
