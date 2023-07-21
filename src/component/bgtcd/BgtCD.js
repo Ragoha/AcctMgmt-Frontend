@@ -1,15 +1,11 @@
 import { Box, Button, Container, Grid, InputLabel, TextField } from "@mui/material";
 import React, { Component } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import Budget_DataGrid from "./Budget_DataGrid";
-import Detail_Info from "./Detail_Info";
-import BudgetRegService from "../../service/BudgetRegService";
-import { InputAdornment } from "@material-ui/core";
+import BgtCDDetailInfo from "./BgtCDDetailInfo";
 import SearchIcon from '@mui/icons-material/Search';
-import { WidthFull } from "@mui/icons-material";
+import BgtCDDatagrid from "./BgtCDDatagrid";
+import BgtCDService from "../../service/BgtCDService";
 
-
-class Budget_item_registration extends Component {
+class BgtCD extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +32,7 @@ class Budget_item_registration extends Component {
 
     /*데이터그리드 부분 start*/
     getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-        BudgetRegService.getGridData(groupcd)
+        BgtCDService.getGridData(groupcd)
             .then(rows => {
                 console.log('통신성공')
                 console.dir(rows) //데이터 받았음 .
@@ -49,7 +45,7 @@ class Budget_item_registration extends Component {
         if(this.state.prevBgtCd===params.row.bgtCd){
             console.log('이땐 값을 바꿀 필요가 없어 친구')
         }else{
-            BudgetRegService.getDetailInfo(params.row.bgtCd)
+            BgtCDService.getDetailInfo(params.row.bgtCd)
             .then(response => {
                 console.dir(response)
                 
@@ -110,15 +106,15 @@ class Budget_item_registration extends Component {
                         </Box>
                     </Grid>
                     <Grid item xs={7}>
-                        <Budget_DataGrid rows={rows} clickedRow={this.clickedRow} /> 
+                        <BgtCDDatagrid rows={rows} clickedRow={this.clickedRow} /> 
                         {/*<BudgetComponent/>*/}
                     </Grid>
                     <Grid item xs={5} border={3} sx={{ marginTop: '5px' }}>
-                        <Detail_Info prevBgtCd={prevBgtCd} ctlFg={ctlFg} bgajustFg={bgajustFg}  bottomFg={bottomFg} bizFg={bizFg}/>{/*자식컴포넌트에 state를 props로 전달 */}
+                        <BgtCDDetailInfo prevBgtCd={prevBgtCd} ctlFg={ctlFg} bgajustFg={bgajustFg}  bottomFg={bottomFg} bizFg={bizFg}/>{/*자식컴포넌트에 state를 props로 전달 */}
                     </Grid>
                 </Grid>
             </>
         )
     }
 }
-export default Budget_item_registration;
+export default BgtCD;

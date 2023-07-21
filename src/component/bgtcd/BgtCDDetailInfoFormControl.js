@@ -1,8 +1,7 @@
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { Component } from "react"
-import UserService from "../../../service/UserService";
 
-class Detail_Info_FormControl extends Component {
+class BgtCDDetailInfoFormControl extends Component {
   constructor(props) {
     super(props);
     this.state = { //ctlFg, bgajustFg, bottomFg, bizFg 
@@ -78,8 +77,7 @@ class Detail_Info_FormControl extends Component {
             {menuItemValues.map((menuItemValue, index) => (
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
-              </MenuItem>
-            ))}
+              </MenuItem> ))}
           </Select>
         </Grid>
       </Grid>
@@ -87,4 +85,4 @@ class Detail_Info_FormControl extends Component {
   }
 }
 
-export default Detail_Info_FormControl;
+export default BgtCDDetailInfoFormControl;
