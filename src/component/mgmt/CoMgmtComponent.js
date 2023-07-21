@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { Box, Button, TextField, Card, CardContent, Typography, CardActionArea, Container, IconButton, InputLabel, Divider, colors } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
@@ -20,22 +21,47 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import UserService from '../../service/UserService';
+import CompanyService from '../../service/CompanyService';
+import axios from 'axios';
 
+const postStyle = {
+  height: 470
+};
+const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class CoMgmtComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
+      cards: [],
       cardCount: 0,
       searchWord: '',
       searchResult: '',
+        coCd: '',
+        coNm: '', 
+        //gisu: '',   
+        //frDt: '', //기수 시작일
+        //toDt: '', //기수 종료일
+        //insertId: '', //등록자
+        //insertDt: '', //등록일  String???
+        //insertIp: '', //등록자 ip
+        //modifyId: '', //수정자
+        //modifyDt: '', //수정일
+        //modifyIp: '', //수정 ip
+        jongmok: '', //종목
+        businessType: '', //업태
+        coNb: '', //사업자번호
+        ceoNm: '', //대표자명
+        coZip: '', //우편번호
+        coAddr: '', //주소
+        coAddr1: '', //상세주소
+
       nbRows: 3,
 
       openAddr: false,
-      zipcode: '',
-      address: '',
+      // zipcode: '',
+      // address: '',
 
       data: {
         columns: [
@@ -55,10 +81,61 @@ class CoMgmtComponent extends Component {
     }
   }
 
+  // componentDidMount() {
+  //   CompanyService.getCoList()
+  //     // .then((coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1, cardCount) => {
+  //     //   this.setState({ coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 });
+  //     //   this.setState({cardCount: CompanyService.getCoList().length})
+  //     //   console.log(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1,cardCount)
+  //     //   console.log(cardCount)
+  //   //})
+  //   .then((response) => {
+  //     // DB에서 가져온 데이터를 cards 배열에 저장합니다.
+  //     this.setState({ cards: response.data });
+  //   })
+  //     .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   }
+
+  handleCompany = (e) => {
+    // console.log(e.target.id);
+    this.setState({
+      [e.target.name] : e.target.value
+    })
+    // console.log(this.state);
+  }
+
   addCardButton = () => {
     this.setState((prevState) => ({
       cardCount: prevState.cardCount + 1
     }));
+  }
+
+  insertCo = () =>{
+    const {coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    CompanyService.insertCo(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
+    
+      .then((response) => {
+        console.log(response.data);
+        window.confirm('회사등록 완료!');
+        this.setState({
+          coCd: '',
+          coNm: '',
+          jongmok: '',
+          businessType: '',
+          coNb: '',
+          ceoNm: '',
+          coZip: '',
+          coAddr: '',
+          coAddr1: '',
+        });
+      })
+      .catch((error) => {
+        // 오류 발생 시의 처리
+        console.error(error);
+        alert("중복된 회사 또는 모두 입력해주세요");
+      });
   }
 
   addrButton = () => {
@@ -66,6 +143,21 @@ class CoMgmtComponent extends Component {
     //   openAddr: !current.openAddr
     // }));
     this.setState({ openAddr: true });
+  }
+
+  cardClick =(index) =>{
+    this.setState({ coCd: (index+1) });
+    // CompanyService.getCo(coCd)
+    
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     window.confirm('회사조회 완료!');
+    //   })
+    //   .catch((error) => {
+    //     // 오류 발생 시의 처리
+    //     console.error(error);
+    //     alert("회사조회 실패..ㅠ");
+    //   });
   }
 
   // 주소 선택 이벤트
@@ -84,13 +176,13 @@ class CoMgmtComponent extends Component {
     }
 
     console.log(fullAddr, data.zonecode);
-    this.setState({ zipcode: data.zonecode });
-    this.setState({ address: fullAddr });
+    this.setState({ coZip: data.zonecode });
+    this.setState({ coAddr: fullAddr });
     this.setState({ openAddr: false });// dialog창 꺼주기
 
     // 추가 코드: 주소 정보를 텍스트 필드에 설정
-    document.getElementById("zipcode").value = data.zonecode;
-    document.getElementById("address").value = fullAddr;
+    document.getElementById("coZip").value = data.zonecode;
+    document.getElementById("coAddr").value = fullAddr;
 
   };
 
@@ -112,30 +204,34 @@ class CoMgmtComponent extends Component {
   };
 
   render() {
-    const { open, userList, openAddr, cardCount } = this.state;
-
+    const { open, coCd,coNm,jongmok,businessType,ceoNm,coNb,coZip,coAddr,coAddr1, openAddr } = this.state;
     const { searchWord, searchResult } = this.state;
     const { nbRows, data } = this.state;
+    const { cards ,cardCount } = this.state;
 
     const currentDate = new Date();
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate()}`;
 
-    const cards = Array.from({ length: cardCount }).map((_, index) => (
+    // {cards.map((cardData) => (
+    //   <Card key={cardData.id} data={cardData} />
+    // ))}
+    
+    const card = Array.from({ length: cardCount }).map((_, index) => (
       <Card key={index} sx={{ mt: 1, mb: 1, border: '1px solid #000' }}>
-        <CardActionArea >
-          <CardContent>
+        <CardActionArea onClick={() => this.cardClick(index)}> 
+          <CardContent sx={{height:60}}>
             <Typography sx={{ fontSize: 15 }} gutterBottom >
-              ss
+              {index + 1}
             </Typography>
-            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginTop: '-28px' }} >
+            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginTop: '-20px' }} >
               {formattedDate}
             </Typography>
             <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginBottom: '-20px' }}>
               {index + 1}
             </Typography>
             <Typography sx={{ fontSize: 25 }} variant='h3'>
-              ss
+              {coNm}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -147,6 +243,7 @@ class CoMgmtComponent extends Component {
       <>
         <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
           <Box sx={{ display: 'flex' }}>
+    
             <Grid container sx={{ justifyContent: "flex-start", width: '25%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
               <Grid container sx={{ width: '100%', height: 'calc(100% - 7%)' }}>
                 <Grid item xs={12} >
@@ -173,7 +270,7 @@ class CoMgmtComponent extends Component {
 
                   <Dialog open={open} PaperProps={{ sx: { width: 550, minHeight: 500, maxHeight: 600 } }}>
 
-                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>CodeHelp<IconButton size='small' onClick={() => this.setState({ open: false, userList: [], searchResult: [] })}>
+                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 25 }}>회사검색<IconButton size='small' onClick={() => this.setState({ open: false, userList: [], searchResult: [] })}>
 
                       <CloseIcon fontSize='large' />
                     </IconButton>
@@ -228,7 +325,7 @@ class CoMgmtComponent extends Component {
                 </Fab>
               </Grid>
             </Grid>
-
+      
             {/* <Box sx={{ width: '25%', minHeight:700 , backgroundColor: '#EAEAEA'}}>
             </Box> */}
             {/* <Box sx={{ width: '75%', minHeight: 700 , ml: 2, backgroundColor: '#EAEAEA'}}> */}
@@ -247,7 +344,7 @@ class CoMgmtComponent extends Component {
                 <Grid item xs={8}></Grid>
 
                 <Grid item xs={1} >
-                  <Button variant="outlined">수정</Button>
+                  <Button variant="outlined" onClick={this.insertCo}>저장</Button> 
                 </Grid>
 
                 <Grid item xs={1} >
@@ -267,7 +364,8 @@ class CoMgmtComponent extends Component {
                     <Grid container direction="row"
                       justifyContent="center"
                       alignItems="center" sx={{ border: '1px solid #000' }}>
-                      <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }} >회사코드</InputLabel><TextField placeholder='필수입력값' sx={{ backgroundColor: '#FFA7A7' }}></TextField>
+                      <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }}  >회사코드</InputLabel>
+                      <TextField placeholder='필수입력값' sx={{ backgroundColor: '#FFA7A7' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }}></TextField>
                     </Grid>
                   </Grid>
                   {/* <Grid item xs={2} >
@@ -282,53 +380,54 @@ class CoMgmtComponent extends Component {
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>회사명</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <TextField name='coNm' onChange={this.handleCompany} value={coNm || ''}></TextField>
                   </Grid>
 
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>종목</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField ></TextField>
+                    <TextField name='jongmok' onChange={this.handleCompany} value={jongmok || ''}></TextField>
                   </Grid>
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>업태</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <TextField name='businessType' onChange={this.handleCompany} value={businessType || ''}></TextField>
                   </Grid>
 
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>대표자명</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <TextField name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></TextField>
                   </Grid>
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>사업자번호</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField></TextField>
+                    <TextField name='coNb' onChange={this.handleCompany} value={coNb || ''}></TextField>
                   </Grid>
 
                   <Grid item xs={2}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center' }}>회사주소</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField id="zipcode" InputProps={{ readOnly: true }}
+                    <TextField id="coZip" name="coZip" onChange={this.handleCompany} value={coZip || ''} InputProps={{ readOnly: true }}
                       sx={{
                         width: '150px' // 원하는 가로 크기를 지정 '기본크기는 약 222px'
                       }}></TextField> <Button sx={{ ml: 2, mt: 1 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
                   </Grid>
 
-                  <Dialog open={openAddr} PaperProps={{ sx: { width: 550, minHeight: 500, maxHeight: 600 } }}>
-                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Address Help<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
+                  <Dialog open={openAddr} PaperProps={{ sx: { width: 400, height: 550 } }}>
+                    <DialogTitle sx={{ backgroundColor: '#6799FF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 20 }}>주소검색<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
                       <CloseIcon fontSize='large' />
                     </IconButton>
                     </DialogTitle>
 
-                    <DialogContent>
+                    <DialogContent sx={{ mt: 1 }}>
                       <DaumPostcode
+                        style={postStyle}
                         onComplete={this.selectAddress}  // 값을 선택할 경우 실행되는 이벤트
                         autoClose={true} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
                       // defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
@@ -343,7 +442,7 @@ class CoMgmtComponent extends Component {
                     <InputLabel></InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField sx={{ width: '400px' }} id="address" InputProps={{ readOnly: true }}></TextField>
+                    <TextField sx={{ width: '400px' }} id="coAddr" name="coAddr" onChange={this.handleCompany} value={coAddr || ''} InputProps={{ readOnly: true }}></TextField>
                   </Grid>
                   <Grid item xs={6}></Grid>
 
@@ -351,7 +450,7 @@ class CoMgmtComponent extends Component {
                     <InputLabel></InputLabel>
                   </Grid>
                   <Grid item xs={4}>
-                    <TextField sx={{ width: '400px' }} id="addressDetail" ></TextField>
+                    <TextField sx={{ width: '400px' }} name="coAddr1" onChange={this.handleCompany} value={coAddr1 || ''}></TextField>
                   </Grid>
                   <Grid item xs={6}></Grid>
 
@@ -370,7 +469,7 @@ class CoMgmtComponent extends Component {
                     </LocalizationProvider>
                   </Grid>
                   <Grid item xs={1}>
-                    <InputLabel sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, mr:2,mt:1 }}>~</InputLabel>
+                    <InputLabel sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, mr: 2, mt: 1 }}>~</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
