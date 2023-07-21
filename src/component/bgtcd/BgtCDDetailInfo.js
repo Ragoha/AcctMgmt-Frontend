@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Box, Button, Container, FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import Detail_Info_FormControl from "./Detail_Info_FormControl/Detail_Info_FormControl";
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar } from "react-icons/fi";
-import BudgetRegService from '../../service/BudgetRegService';
+import BgtCDService from '../../service/BgtCDService';
+import BgtCDDetailInfoFormControl from './BgtCDDetailInfoFormControl';
 
 
-class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
+class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구현.
   constructor(props) {
     super(props);
     this.state = {
@@ -72,7 +72,7 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
       bizFg: bizFgIndex,
       /*--------*/
     }
-    BudgetRegService.updateDetailInfo(updateData)
+    BgtCDService.updateDetailInfo(updateData)
       .then(data => {
         console.log('여긴 detailINfo야 ~' + data)
       }).catch(error => {
@@ -82,7 +82,7 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
   deleteRow =()=>{
     console.log('deleteRow에서this.props.prevBgtCd 찍어봄  :  '+this.props.prevBgtCd)
     const data = this.props.prevBgtCd;
-    BudgetRegService.deleteRow(data).catch(error => {
+    BgtCDService.deleteRow(data).catch(error => {
       console.error("deleteRow 에러야 :", error);
     });
   /*[230720] : 지금 삭제는 되는데 삭제하고나서 DataGrid가 바뀌질 않음 -230721-에 해볼예정 */
@@ -101,10 +101,10 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
         <Grid container spacing={5}>
           <Grid item xs={12}>
             <Grid container spacing={2} alignItems="center" sx={{ marginTop: '11px' }}>
-              <Detail_Info_FormControl title={'예산통제구분'} ctlFg={ctlFg} menuItemValues={menuItemValues[0]}
+              <BgtCDDetailInfoFormControl title={'예산통제구분'} ctlFg={ctlFg} menuItemValues={menuItemValues[0]}
                 ref={(ref) => (this.ctlFgControl = ref)}
               />
-              <Detail_Info_FormControl title={'예산전용구분'} bgajustFg={bgajustFg} menuItemValues={menuItemValues[1]}
+              <BgtCDDetailInfoFormControl title={'예산전용구분'} bgajustFg={bgajustFg} menuItemValues={menuItemValues[1]}
                 ref={(ref) => (this.bgajustFgControl = ref)}
               />
               <Grid container >
@@ -118,11 +118,11 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
                 } />
                 {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
               </Grid>
-              <Detail_Info_FormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]} />
-              <Detail_Info_FormControl title={'최하위과목여부'} bottomFg={bottomFg} menuItemValues={menuItemValues[2]}
+              <BgtCDDetailInfoFormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]} />
+              <BgtCDDetailInfoFormControl title={'최하위과목여부'} bottomFg={bottomFg} menuItemValues={menuItemValues[2]}
                 ref={(ref) => (this.bottomFgControl = ref)}
               />
-              <Detail_Info_FormControl title={'구매성격'} bizFg={bizFg} menuItemValues={menuItemValues[3]}
+              <BgtCDDetailInfoFormControl title={'구매성격'} bizFg={bizFg} menuItemValues={menuItemValues[3]}
                 ref={(ref) => (this.bizFgControl = ref)}
               />
             </Grid>
@@ -136,4 +136,4 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
     );
   }
 }
-export default Detail_Info;
+export default BgtCDDetailInfo;

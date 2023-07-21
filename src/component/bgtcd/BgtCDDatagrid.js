@@ -2,11 +2,11 @@
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Component } from 'react';
-import Detail_Info from './Detail_Info';
+import Detail_Info from './BgtCDDetailInfo';
 import UserService from '../../service/UserService';
-import BudgetRegService from '../../service/BudgetRegService';
+import BudgetRegService from '../../service/BgtCDService';
 
-class Budget_DataGrid extends Component {
+class BgtCDDatagrid extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,4 +44,4 @@ class Budget_DataGrid extends Component {
         )
     }
 };
-export default Budget_DataGrid;
+export default BgtCDDatagrid;
