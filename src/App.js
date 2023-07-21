@@ -7,6 +7,7 @@ import CountComponent from './component/Count';
 import { legacy_createStore as createStore } from "redux";
 import rootReducer from "./modules";
 import { composeWithDevTools } from "redux-devtools-extension";
+import Scrollbars from "react-custom-scrollbars";
 
 // import createStore from "./store";
 // import reducers from "./reducer";
@@ -20,9 +21,11 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <div className="App">
-          <Routers />
-        </div>
+        <Scrollbars style={{ height: "100vh" }}>
+          <div className="App">
+            <Routers />
+          </div>
+        </Scrollbars>
       </Provider>
     );
   }
