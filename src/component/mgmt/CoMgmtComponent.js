@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Box, Button, TextField, Card, CardContent, Typography, CardActionArea, Container, IconButton, InputLabel, Divider, colors } from '@mui/material';
+import { Box, Button, TextField, Card, CardContent, Typography, CardActionArea, IconButton, InputLabel } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,8 +11,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
 import DaumPostcode from 'react-daum-postcode';
 
@@ -22,18 +20,17 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import CompanyService from '../../service/CompanyService';
-import axios from 'axios';
-import { border } from '@mui/system';
-
-const postStyle = {
-  height: 470
-};
+import DialogComponent from '../common/DialogComponent';
+import { createRef } from 'react';
+import AddressComponent from './dialog/AddressComponent';
 
 class CoMgmtComponent extends Component {
   constructor(props) {
     super(props);
+    this.dialogRef= React.createRef();
+    this.addrRef = React.createRef();
     this.state = {
-      open: false,
+      
       cards: [],
       cardCount: 0,
       searchWord: '',
@@ -57,39 +54,8 @@ class CoMgmtComponent extends Component {
       coAddr: '', //주소
       coAddr1: '', //상세주소
 
-      openAddr: false,
-
-      data: {
-        columns: [
-          { field: 'id', headerName: '회사코드', width: 180, headerAlign: 'center' },
-          { field: 'firstName', headerName: '회사명', width: 270, headerAlign: 'center' }
-        ],
-        rows: [
-          { id: 1, firstName: 'John' },
-          { id: 2, firstName: 'Jane' },
-          { id: 3, firstName: 'Bob' },
-          // Add more rows here...
-        ]
-      },
     }
   }
-
-  // componentDidMount() {
-  //   CompanyService.getCoList()
-  //     // .then((coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1, cardCount) => {
-  //     //   this.setState({ coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 });
-  //     //   this.setState({cardCount: CompanyService.getCoList().length})
-  //     //   console.log(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1,cardCount)
-  //     //   console.log(cardCount)
-  //   //})
-  //   .then((response) => {
-  //     // DB에서 가져온 데이터를 cards 배열에 저장합니다.
-  //     this.setState({ cards: response.data });
-  //   })
-  //     .catch((error) => {
-  //         console.error("Error:", error);
-  //       });
-  //   }
 
   handleCompany = (e) => {
     // console.log(e.target.id);
@@ -135,7 +101,16 @@ class CoMgmtComponent extends Component {
     // this.setState((current) => ({
     //   openAddr: !current.openAddr
     // }));
-    this.setState({ openAddr: true });
+    // this.setState({ openAddr: true });
+    this.addrRef.current.handleUp();
+        //  this.setState({ coZip: this.addrRef.current.value.coZip });
+        //  this.setState({ coAddr: this.addrRef.current.value.coAddr });
+
+    // console.log(this.addrRef.current.value.coZip, this.addrRef.current.value.coAddr);
+  }
+
+  closeAddrDialog = () =>{
+    this.addrRef.current.handleDown();
   }
 
   cardClick = (index) => {
@@ -153,48 +128,34 @@ class CoMgmtComponent extends Component {
     //   });
   }
 
-  // 주소 선택 이벤트
-  selectAddress = (data) => {
-    let fullAddr = data.address;
-    let extraAddr = '';
-
-    if (data.addressType === 'R') {
-      if (data.bname !== '') {
-        extraAddr += data.bname;
-      }
-      if (data.buildingName !== '') {
-        extraAddr += extraAddr !== '' ? `, ${data.buildingName}` : data.buildingName;
-      }
-      fullAddr += extraAddr !== '' ? ` (${extraAddr})` : '';
-    }
-
-    console.log(fullAddr, data.zonecode);
-    this.setState({ coZip: data.zonecode });
-    this.setState({ coAddr: fullAddr });
-    this.setState({ openAddr: false });// dialog창 꺼주기
-
-    // 추가 코드: 주소 정보를 텍스트 필드에 설정
-    document.getElementById("coZip").value = data.zonecode;
-    document.getElementById("coAddr").value = fullAddr;
-
-  };
+  
 
   helpClick = () => {
-    this.setState({ open: true });
+    this.dialogRef.current.handleUp();
   };
 
-  handleSearch = (e) => {
-    this.setState({ searchWord: e.target.value });
+  
+  closeDialog =() => {
+    this.dialogRef.current.handleDown();
   }
 
+  setCoZipAddr =(data) =>{
+    this.setState({coZip: data.coZip});
+    this.setState({coAddr: data.coAddr});
+  }
 
-  removeRow = () => {
-    this.setState((prevState) => ({ nbRows: Math.max(0, prevState.nbRows - 1) }));
-  };
+  // handleSearch = (e) => {
+  //   this.setState({ searchWord: e.target.value });
+  // }
 
-  addRow = () => {
-    this.setState((prevState) => ({ nbRows: Math.min(100, prevState.nbRows + 1) }));
-  };
+
+  // removeRow = () => {
+  //   this.setState((prevState) => ({ nbRows: Math.max(0, prevState.nbRows - 1) }));
+  // };
+
+  // addRow = () => {
+  //   this.setState((prevState) => ({ nbRows: Math.min(100, prevState.nbRows + 1) }));
+  // };
 
   render() {
     const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr } = this.state;
@@ -233,6 +194,7 @@ class CoMgmtComponent extends Component {
     ));
 
     return (
+      <>
       <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
         <Box sx={{ display: 'flex' }}>
 
@@ -260,65 +222,9 @@ class CoMgmtComponent extends Component {
                   {cards}
                 </Card>
 
-                <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+              
 
-                  <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>회사검색<IconButton size='small' onClick={() => this.setState({ open: false, userList: [], searchResult: [] })}>
-
-                    <CloseIcon fontSize='medium' sx={{ color: 'white' }} />
-                  </IconButton>
-
-                  </DialogTitle>
-                  <DialogContent >
-                    <Box sx={{ border: '3px solid #EAEAEA', display: 'flex', justifyContent: 'space-between', mt: 1, mb: 1 }}>
-                      <Box mb={2}></Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, mb: 1 }}>
-                        <InputLabel sx={{ fontWeight: 'bold', mr: 1 }}>검색</InputLabel>
-                        <TextField id="searchWord" variant="outlined" size='small' onChange={this.handleSearch}></TextField>
-                        <Button variant="outlined" style={{ padding: '0px', minWidth: '5px' }}>
-                          <SearchIcon fontSize='medium' /></Button></Box>
-                      {/* <Button variant="outlined" sx={{ marginLeft: '10px' }} >검색</Button></Box> */}
-                      {/* onClick={this.keywordClick} */}
-                      <Box mb={1}></Box>
-                    </Box>
-                    <Box mb={2}></Box>
-                    {/* <Typography>
-                        keyword: {searchWord} <br />
-                        result:  {searchResult} */}
-                    <Divider sx={{ border: '1px solid #EAEAEA' }} />
-                    <Box sx={{ mt: 1, width: '100%' }}>
-                      {/* <Button size="small" onClick={this.removeRow}>
-                            Remove a row
-                          </Button>
-                          <Button size="small" onClick={this.addRow}>
-                            Add a row
-                          </Button> */}
-                      <Box style={{ height: 350, width: '100%'}} >
-                      <DataGrid rows={data.rows} columns={data.columns} showColumnVerticalBorder={true}
-                        showCellVerticalBorder={true}
-                        components={{
-                          // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                          Pagination: () => null,
-                          Footer: () => null
-                        }}
-                      />
-
-                    </Box>
-                  </Box>
-
-                  {/* </Typography> */}
-                </DialogContent>
-                <Divider />
-                <DialogActions>
-                  <Button variant="outlined" onClick={this.listClick}
-                    sx={{
-                      backgroundColor: '#4A55A2', color: 'white', "&:hover": {
-                        backgroundColor: '#4A55A2'
-                      }
-                    }} >확인</Button>
-
-                  <Button variant="outlined" onClick={() => this.setState({ open: false, userList: [], searchResult: [] })} >취소</Button>
-                </DialogActions>
-              </Dialog>
+               
 
             </Grid>
           </Grid>
@@ -430,22 +336,6 @@ class CoMgmtComponent extends Component {
               }}></TextField> <Button sx={{ direction: "row", justifyContent: "center", alignItems: "center", mt: 0.2 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
           </Grid>
 
-          <Dialog open={openAddr} PaperProps={{ sx: { width: 430, height: 560 } }}>
-            <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>주소검색<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
-              <CloseIcon sx={{ color: "white" }} fontSize='medium' />
-            </IconButton>
-            </DialogTitle>
-
-            <DialogContent sx={{ mt: 1 }} >
-              <DaumPostcode
-                style={postStyle}
-                onComplete={this.selectAddress}  // 값을 선택할 경우 실행되는 이벤트
-                autoClose={true} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
-              //defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
-              />
-            </DialogContent>
-          </Dialog>
-
 
           <Grid item xs={6}></Grid>
 
@@ -496,6 +386,9 @@ class CoMgmtComponent extends Component {
     {/* </Box> */ }
           </Box >
         </Grid >
+        <AddressComponent  setCoZipAddr={this.setCoZipAddr}  ref={this.addrRef}/>
+        <DialogComponent ref={this.dialogRef} />
+        </>
     );
   }
 }
