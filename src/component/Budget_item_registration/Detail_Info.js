@@ -115,7 +115,7 @@ class Detail_Info extends Component { //DataGrid 옆의 상세정보 창 구현.
                     <input type='text' value={startDate} readOnly />
                     <FiCalendar style={{ position: 'absolute', right: '10px', top: '5px' }} />
                   </div>
-                } />
+                } />  
                 {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
               </Grid>
               <Detail_Info_FormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]} />

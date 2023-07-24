@@ -8,7 +8,7 @@ import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
 import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
 import MainComponent from "../component/common/MainComponent";
 import ConfigComponent from "../component/user/ConfigComponent";
-
+import PjtComponent from "../component/user/PjtComponent";
 
 class MainRouter extends Component {
   render() {
@@ -21,6 +21,7 @@ class MainRouter extends Component {
           <Route path="bgt/bgtcd" element={<Budget_item_registration />} />
           <Route path="bgt/bgticf" element={<BudgetInitCarryForwordComponent />}/>
           <Route path="syscfg" element={<ConfigComponent />} />
+          <Route path="pjt" element={<PjtComponent/>} />
         </Route>
         <Route path="/t2" element={<CounterContainer />} />
       </Routes>
