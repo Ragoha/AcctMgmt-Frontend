@@ -118,14 +118,13 @@ class DataGridComponent extends Component {
   };
 
   processRowUpdate = (newRow) => {
-    console.log("asdfasdf");
-    const { rows } = this.state;
     const updatedRow = { ...newRow, isNew: false };
     this.setState((prevState) => ({
       rows: prevState.rows.map((row) =>
         row.id === newRow.id ? updatedRow : row
       ),
     }));
+
     return updatedRow;
   };
 

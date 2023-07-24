@@ -37,55 +37,110 @@ class DialogComponent extends Component {
     render() {
         const { open , data } = this.state;
 
-        return ( //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
-            <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-                <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>회사검색<IconButton size='small' onClick={() => this.setState({ open: false, userList: [], searchResult: [] })}>
+        return (
+          //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
+          <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+            <DialogTitle
+              sx={{
+                backgroundColor: "#7895CB",
+                color: "white",
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              {this.props.DialogTitle}
+              <IconButton
+                size="small"
+                onClick={() =>
+                  this.setState({ open: false, userList: [], searchResult: [] })
+                }
+              >
+                <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <Box
+                sx={{
+                  border: "3px solid #EAEAEA",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mt: 1,
+                  mb: 1,
+                }}
+              >
+                <Box mb={2}></Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 1,
+                    mb: 1,
+                  }}
+                >
+                  <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
+                    검색
+                  </InputLabel>
+                  <TextField
+                    id="searchWord"
+                    variant="outlined"
+                    size="small"
+                  ></TextField>
+                  <Button
+                    variant="outlined"
+                    style={{ padding: "0px", minWidth: "5px" }}
+                  >
+                    <SearchIcon fontSize="medium" />
+                  </Button>
+                </Box>
+                <Box mb={1}></Box>
+              </Box>
+              <Box mb={2}></Box>
 
-                    <CloseIcon fontSize='medium' sx={{ color: 'white' }} />
-                </IconButton>
+              <Divider sx={{ border: "1px solid #EAEAEA" }} />
+              <Box sx={{ mt: 1, width: "100%" }}>
+                <Box style={{ height: 350, width: "100%" }}>
+                  <DataGrid
+                    rows={data.rows}
+                    columns={data.columns}
+                    showColumnVerticalBorder={true}
+                    showCellVerticalBorder={true} // 각 셀마다 영역주기
+                    components={{
+                      // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
+                      Pagination: () => null,
+                      Footer: () => null,
+                    }}
+                  />
+                </Box>
+              </Box>
+            </DialogContent>
+            <Divider />
+            <DialogActions>
+              <Button
+                variant="outlined"
+                sx={{
+                  backgroundColor: "#4A55A2",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#4A55A2",
+                  },
+                }}
+              >
+                확인
+              </Button>
 
-                </DialogTitle>
-                <DialogContent >
-                    <Box sx={{ border: '3px solid #EAEAEA', display: 'flex', justifyContent: 'space-between', mt: 1, mb: 1 }}>
-                        <Box mb={2}></Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, mb: 1 }}>
-                            <InputLabel sx={{ fontWeight: 'bold', mr: 1 }}>검색</InputLabel>
-                            <TextField id="searchWord" variant="outlined" size='small' ></TextField>
-                            <Button variant="outlined" style={{ padding: '0px', minWidth: '5px' }}>
-                                <SearchIcon fontSize='medium' /></Button></Box>
-                        <Box mb={1}></Box>
-                    </Box>
-                    <Box mb={2}></Box>
-
-                    <Divider sx={{ border: '1px solid #EAEAEA' }} />
-                    <Box sx={{ mt: 1, width: '100%' }}>
-
-                        <Box style={{ height: 350, width: '100%' }} >
-                            <DataGrid rows={data.rows} columns={data.columns} 
-                                showColumnVerticalBorder={true}
-                                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                                components={{
-                                    // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                                    Pagination: () => null,
-                                    Footer: () => null
-                                }} />
-                        </Box>
-                    </Box>
-
-                </DialogContent>
-                <Divider />
-                <DialogActions>
-                    <Button variant="outlined"
-                        sx={{
-                            backgroundColor: '#4A55A2', color: 'white', 
-                            "&:hover": {
-                                backgroundColor: '#4A55A2'
-                                }}}>확인</Button>
-
-                    <Button variant="outlined" onClick={() => this.setState({ open: false })} >취소</Button>
-                </DialogActions>
-            </Dialog>
-        )
+              <Button
+                variant="outlined"
+                onClick={() => this.setState({ open: false })}
+              >
+                취소
+              </Button>
+            </DialogActions>
+          </Dialog>
+        );
     }
 }
 export default DialogComponent;
