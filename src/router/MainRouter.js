@@ -2,12 +2,13 @@ import { Component } from "react";
 import { Route, Routes } from "react-router-dom";
 import Count from "../component/Count";
 import CounterContainer from "../component/CounterContainer";
-import BudgetInitCarryForwordComponent from "../component/budget/BudgetInitCarryForwordComponent";
+
 import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
 import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
 import MainComponent from "../component/common/MainComponent";
 import ConfigComponent from "../component/user/ConfigComponent";
 import BgtCD from "../component/bgtcd/BgtCD";
+import BudgetInitCarryForwordComponent from "../component/budget/BudgetInitCarryForwordComponent";
 
 class MainRouter extends Component {
   render() {
