@@ -22,36 +22,6 @@ class BtgICFService {
   deleteBgtICF(sq) {
     return axios.delete(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/" + sq);
   }
-
-  findDivCdAndDivNmByCoCd(coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/div", {
-        params: {
-          coCd: coCd,
-        },
-      })
-      .then((response) => response.data);
-  }
-
-  findDivCdAndDivNmByKeyword(keyword) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/div/search", {
-        params: {
-          coCd: "1",
-          keyword: keyword,
-        },
-      })
-      .then((response) => response.data);
-  }
-
-  findBgtGrCdAndBgtGrNmByCoCd(coCd) {
-    return axios.get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr", {
-      params: {
-        coCd: coCd,
-      },
-    })
-      .then((response) => response.data);
-  }
 }
 
 export default new BtgICFService();
