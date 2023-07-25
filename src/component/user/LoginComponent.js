@@ -25,7 +25,7 @@ class LoginComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: '',
+            email: '',
             password: '',
             isIconOpen: false,
             showForm: false,
@@ -52,11 +52,11 @@ class LoginComponent extends Component {
 
     handleFormSubmit = (e) => {
         e.preventDefault();
-        const { id, password } = this.state;
-        const loginData = { empId : id, empPw : password }; // 입력한 아이디와 패스워드를 JSON 데이터로 구성
+        const { email, password } = this.state;
+        const loginData = { email, password }; // 입력한 아이디와 패스워드를 JSON 데이터로 구성
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         // 로그인 API 호출
-        axios.post(ACCTMGMT_API_BASE_URL +'/login', loginData, {
+        axios.post(ACCTMGMT_API_BASE_URL +'/api/login', loginData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -65,11 +65,11 @@ class LoginComponent extends Component {
                 // 로그인 성공 시 처리 로직
                 alert("로그인 성공", response);
                 console.log(response.data);
-                // window.location.href = "/acctmgmt/bgt";
+                window.location.href = "/acctmgmt/bgt";
             })
             .catch((error) => {
                 // 로그인 실패 시 처리 로직
-                alert("아이디 또는 비밀번호가 다릅니다.", error);
+                alert("로그인 실패", error);
                 console.error(error);
                 // window.location.href = "/login";
             });
@@ -77,7 +77,7 @@ class LoginComponent extends Component {
 
     render() {
         const { showForm } = this.state;
-        const { id, password } = this.state;
+        const { email, password } = this.state;
         const { isIconOpen } = this.state
         const theme = createTheme({
             typography: {
@@ -184,10 +184,10 @@ class LoginComponent extends Component {
                         label="ID"
                         required
                         fullWidth
-                        name="id"
-                        autoComplete="id"
+                        name="email"
+                        autoComplete="email"
                         autoFocus
-                        value={id}
+                        value={email}
                         onChange={this.handleInputChange}
                         sx={{
                           mb: '2vh',
