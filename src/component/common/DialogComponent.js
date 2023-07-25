@@ -35,7 +35,7 @@ class DialogComponent extends Component {
     }
 
     render() {
-        const { open , data } = this.state;
+        const { open ,data } = this.state;
 
         return (
           //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
