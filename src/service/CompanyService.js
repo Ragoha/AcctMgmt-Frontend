@@ -29,10 +29,9 @@ class CompanyService {
       })
   }
 
-  insertCo(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+  insertCo(coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
-        coCd: coCd,
         coNm: coNm,
         jongmok: jongmok,
         businessType: businessType,
@@ -59,6 +58,21 @@ class CompanyService {
       coCd: coCd
     })
   };
+
+  // updateCo(coCd,coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1){
+  //   return axios
+  //   .post(ACCTMGMT_API_BASE_URL + "/ozt/uco",{
+  //       coCd : coCd,
+  //       coNm: coNm,
+  //       jongmok: jongmok,
+  //       businessType: businessType,
+  //       coNb: coNb,
+  //       ceoNm: ceoNm,
+  //       coZip: coZip,
+  //       coAddr: coAddr,
+  //       coAddr1: coAddr1
+  //   })
+  // };
 
 }
 
