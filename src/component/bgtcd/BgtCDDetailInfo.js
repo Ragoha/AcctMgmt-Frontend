@@ -115,7 +115,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
                     <input type='text' value={startDate} readOnly />
                     <FiCalendar style={{ position: 'absolute', right: '10px', top: '5px' }} />
                   </div>
-                } />
+                } />  
                 {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
               </Grid>
               <BgtCDDetailInfoFormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]} />
