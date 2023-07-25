@@ -195,7 +195,6 @@ class CoMgmtComponent extends Component {
       // alert("중복된 회사 또는 모두 입력해주세요");
     });
   }
-
   helpClick = () => {
     this.dialogRef.current.handleUp();
   };
