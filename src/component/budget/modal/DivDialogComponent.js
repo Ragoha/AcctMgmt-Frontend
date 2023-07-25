@@ -124,10 +124,18 @@ class DivDialogComponent extends Component {
                 id="searchWord"
                 variant="outlined"
                 size="small"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    console.log(`Pressed keyCode ${e.key}`);
+                  }
+                }}
               ></TextField>
               <Button
                 variant="outlined"
-                style={{ padding: "0px", minWidth: "5px" }}
+                style={{ padding: "0px", minWidth: "5px", position: "absolute", right: "33px" }}
+                onClick={() => {
+                  console.log("검색");
+                }}
               >
                 <SearchIcon fontSize="medium" />
               </Button>
