@@ -2,7 +2,7 @@ import axios from "axios";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt/bgt/bgtcd";
 class BgtCDService {
     /*---select  start ---*/
-    getGridData(groupcd) { //예산코드 그룹을 만들면 해당 그룹명을 조회해서 가져옴. (★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!)
+    getGridData(groupcd) { //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!)예산코드 그룹을 만들면 해당 그룹명을 조회해서 가져옴.
         console.log("BudgetReg 서비스의 getGrid Data  ::::" + groupcd);
         const returnData = axios
             .get(ACCTMGMT_API_BASE_URL + "/getGridData", {
@@ -30,8 +30,25 @@ class BgtCDService {
 
         return returnData1;
     }
-    getSearchData() {
-
+    getSbgtCDTerm(CO_CD){ //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!) BgtCD 그룹레벨설정 할때 초기값.
+       
+        console.log("찍어보자 : " + CO_CD)
+        const returnData=axios.get(ACCTMGMT_API_BASE_URL + "/getSbgtCDTerm" ,{
+            params:{
+                CO_CD : CO_CD
+            }
+        })
+        .then((response)=> response.data);
+        return returnData;
+    }
+    updateBgtCDTerm(data){
+        console.log(' hi ')
+        const returnData =axios.put(ACCTMGMT_API_BASE_URL + "/updateBgtCDTerm", data)
+        .then((response)=>response.data);
+        
+        console.log('흠!')
+        console.log(returnData)
+        return returnData ;
     }
     /*---select  end  ---*/
     /*---update  start---*/

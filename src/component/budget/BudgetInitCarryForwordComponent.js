@@ -15,8 +15,8 @@ import DataGridComponent from "./DatGridComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import DialogComponent from "./modal/DivDialogComponent";
 import DivDialogComponent from "./modal/DivDialogComponent";
+import BgtGrDialogComponent from "./modal/BgtGrDialogComponent";
 
 const BGTCD_COLUMN = [
   {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
@@ -43,7 +43,8 @@ class BudgetInitCarryForwordComponent extends Component {
     };
 
     this.childRef = createRef();
-    this.coRef = createRef();
+    this.divRef = createRef();
+    this.bgtGrRef = createRef();
   }
 
   handleSet = (e) => {
@@ -108,6 +109,18 @@ class BudgetInitCarryForwordComponent extends Component {
     console.log(this.state);
   };
 
+  handleClickDivSearchIcon = () => {
+    BgtICFService.findDivCdAndDivNmByCoCd("1").then(async (response) => {
+      const divRows = response.map((row) => ({
+        id: row.divCd,
+        divCd: row.divCd,
+        divNm: row.divNm,
+      }));
+      this.divRef.current.setDivRows(divRows);
+    });
+    this.divRef.current.handleUp();
+  }
+
   render() {
     const labelStyle = {
       display: "inline",
@@ -117,7 +130,7 @@ class BudgetInitCarryForwordComponent extends Component {
       float: "right",
     };
 
-    const { bgtDTO, startDate, mainHeader, divCd, divNm, divTextField } =
+    const { bgtDTO, startDate, mainHeader, divTextField } =
       this.state;
 
     return (
@@ -151,28 +164,12 @@ class BudgetInitCarryForwordComponent extends Component {
                 name="divTextField"
                 value={divTextField}
                 onChange={this.handleInputChange}
-                // onBlur={this.handleInputChange}
                 size="small"
                 sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={  () => {
-                          BgtICFService.findDivCdAndDivNmByCoCd("1").then(
-                            async (response) => {
-                              const divRows = response.map((row) => ({
-                                id: row.divCd,
-                                divCd: row.divCd,
-                                divNm: row.divNm,
-                              }));
-                              await this.setState({ divRows: divRows });
-                              console.log(this.state);
-                            }
-                          );
-                          this.coRef.current.handleUp();
-                        }}
-                      />
+                      <SearchIcon onClick={this.handleClickDivSearchIcon} />
                     </InputAdornment>
                   ),
                 }}
@@ -219,14 +216,19 @@ class BudgetInitCarryForwordComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <InputLabel sx={{ marginRight: "10px" }}>예산그룹</InputLabel>
               <TextField
-                name="groupCd"
+                name="bgtGr"
                 onChange={this.handleInputChange}
+                onClick={() => {
+                  this.bgtGrRef.current.handleUp();
+                }}
                 size="small"
                 sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon />
+                      <SearchIcon
+                        onClick={this.bgtGrRef.current.handleInitBgtGrRows}
+                      />
                     </InputAdornment>
                   ),
                 }}
@@ -240,6 +242,7 @@ class BudgetInitCarryForwordComponent extends Component {
                 disableClearable
                 disablePortal
                 id="combo-box-demo"
+                defaultValue="전체"
                 options={[
                   { label: "전체", value: "전체" },
                   { label: "수입", value: "수입" },
@@ -313,11 +316,11 @@ class BudgetInitCarryForwordComponent extends Component {
           </Grid>
         </Grid>
         <DivDialogComponent
-          ref={this.coRef}
-          // DialogContentComponent={<CoDialogComponent divTF={divTF} />}
+          ref={this.divRef}
           setDivTextField={this.setDivTextField}
-          divRows = {this.state.divRows}
         />
+
+        {/* <BgtGrDialogComponent ref={this.bgtGrRef} /> */}
       </>
     );
   }

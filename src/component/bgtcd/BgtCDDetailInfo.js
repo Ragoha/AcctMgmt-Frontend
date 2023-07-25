@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Box, Button, Container, FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button, Container, Grid, InputLabel } from "@mui/material";
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import { FiCalendar } from "react-icons/fi";
@@ -59,8 +59,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     const bizFgIndex = this.bizFgControl.state.dataindex;
     //console.log('여기서  prevBgtCd:' + this.props.prevBgtCd)
     console.log('깐솔로그')
-    console.log(this.props.prevBgtCd)
-    console.log('위에서 일단 this.props 보자')
     const updateData = {
       /*변경될 item */
       //bgtCd : 
@@ -72,6 +70,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bizFg: bizFgIndex,
       /*--------*/
     }
+    console.log(updateData)
     BgtCDService.updateDetailInfo(updateData)
       .then(data => {
         console.log('여긴 detailINfo야 ~' + data)
