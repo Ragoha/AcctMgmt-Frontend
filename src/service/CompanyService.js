@@ -16,7 +16,7 @@ class CompanyService {
 
   getCoList(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
+      .get(ACCTMGMT_API_BASE_URL + "/company", {
         coCd: coCd,
         coNm: coNm,
         jongmok: jongmok,
@@ -45,19 +45,10 @@ class CompanyService {
 
   getCo(coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/sco",{
-        params: {
-          coCd: coCd
-        }
-      }
-      )};
-
-  deleteCo(coCd){
-    return axios
-    .post(ACCTMGMT_API_BASE_URL + "/ozt/dco",{
-      coCd: coCd
-    })
-  };
+      .get(ACCTMGMT_API_BASE_URL + "/scompany", {
+        coCd: coCd
+      })
+  }
 
   // updateCo(coCd,coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1){
   //   return axios
