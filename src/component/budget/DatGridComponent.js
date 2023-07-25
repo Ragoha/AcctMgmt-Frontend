@@ -1,27 +1,15 @@
 import React, { Component } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+
 import {
   GridRowModes,
-  DataGridPro,
-  GridToolbarContainer,
-  GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid-pro";
 import {
-  randomCreatedDate,
-  randomTraderName,
   randomId,
-  randomArrayItem,
 } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
-import { Stack } from "@mui/material";
 
 const newRow = {
   coCd: 'ABC', 
@@ -33,14 +21,11 @@ const newRow = {
   bgtCnt: "1",
   bgtFg: "FG001",
   bgtTy: "A",
-  bottomCd: "BT001",
+  bottomNm: "BT001",
   carrAm: 1000,
   carrAm1: 2000,
   carrAm2: 1500,
   carrAm3: 1800,
-  coCd: "ABC",
-  deptCd: "DEF",
-  divCd: "XYZ",
   empCd: "EMP001",
   gisu: 123,
   id: 1,
@@ -118,13 +103,13 @@ class DataGridComponent extends Component {
   };
 
   processRowUpdate = (newRow) => {
-    console.log("asdfasdf");
     const updatedRow = { ...newRow, isNew: false };
     this.setState((prevState) => ({
       rows: prevState.rows.map((row) =>
         row.id === newRow.id ? updatedRow : row
       ),
     }));
+
     return updatedRow;
   };
 
@@ -161,7 +146,7 @@ class DataGridComponent extends Component {
         editable: true,
       },
       {
-        field: "bottomCd",
+        field: "bottomNm",
         headerName: "하위사업",
         headerAlign: "center",
         editable: true,
@@ -234,11 +219,14 @@ class DataGridComponent extends Component {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={this.handleRowModesModelChange}
+          onRowEditStop={this.handleRowEditStopop}
+          showCellVerticalBorder
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{
             NoRowsOverlay: () => "",
           }}
+          hideFooter
         />
       </Box>
     );
