@@ -12,16 +12,17 @@ class DialogComponent extends Component {
             open: false,
 
             data: {
-                columns: [
-                    { field: 'id', headerName: '회사코드', width: 180, headerAlign: 'center' },
-                    { field: 'firstName', headerName: '회사명', width: 270, headerAlign: 'center' }
-                ],
-                rows: [
-                    { id: 1, firstName: 'John' },
-                    { id: 2, firstName: 'Jane' },
-                    { id: 3, firstName: 'Bob' },
-                    // Add more rows here...
-                ]
+              columns: [
+                { field: 'id', headerName: '기수', width: 90, headerAlign: 'center' },
+                { field: 'firstName', headerName: '시작일', width: 180, headerAlign: 'center' },
+                { field: 'firstName', headerName: '종료일', width: 180, headerAlign: 'center' }
+              ],
+              rows: [
+                { id: 1, firstName: 'John' },
+                { id: 2, firstName: 'Jane' },
+                { id: 3, firstName: 'Bob' },
+                // Add more rows here...
+              ]
             }
         }
     }
@@ -35,7 +36,7 @@ class DialogComponent extends Component {
     }
 
     render() {
-        const { open ,data } = this.state;
+        const { open , data } = this.state;
 
         return (
           //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
@@ -56,8 +57,7 @@ class DialogComponent extends Component {
                 size="small"
                 onClick={() =>
                   this.setState({ open: false, userList: [], searchResult: [] })
-                }
-              >
+                }>
                 <CloseIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </DialogTitle>
@@ -69,9 +69,10 @@ class DialogComponent extends Component {
                   justifyContent: "space-between",
                   mt: 1,
                   mb: 1,
+                  position: 'relative'
                 }}
               >
-                <Box mb={2}></Box>
+                <Box mb={2} sx={{ position: 'relative'}}></Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -91,7 +92,7 @@ class DialogComponent extends Component {
                   ></TextField>
                   <Button
                     variant="outlined"
-                    style={{ padding: "0px", minWidth: "5px" }}
+                    style={{ padding: "0px", minWidth: "5px", position: 'absolute', right: "5px" }}
                   >
                     <SearchIcon fontSize="medium" />
                   </Button>
@@ -108,11 +109,7 @@ class DialogComponent extends Component {
                     columns={data.columns}
                     showColumnVerticalBorder={true}
                     showCellVerticalBorder={true} // 각 셀마다 영역주기
-                    components={{
-                      // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                      Pagination: () => null,
-                      Footer: () => null,
-                    }}
+                    hideFooter
                   />
                 </Box>
               </Box>
@@ -127,6 +124,9 @@ class DialogComponent extends Component {
                   "&:hover": {
                     backgroundColor: "#4A55A2",
                   },
+                }}
+                onClick={() => {
+                  this.setState({divTF : {cd:"asdf", nm:"Asdf"}})
                 }}
               >
                 확인

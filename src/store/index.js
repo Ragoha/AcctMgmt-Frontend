@@ -1,18 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import tokenReducer from './Auth';
+import { createStore } from "redux";
 
+const create = (reducers) => {
+  return createStore(reducers);
+};
 
-export default configureStore({
-  reducer: {
-      authToken: tokenReducer,
-  },
-});
-
-// class CustomStore {
-//   constructor() {
-//     this.store = configureStore({
-//       reducer: {
-//         authToken: tokenReducer,
-//       },
-//     });
-//   }
+export default create;
