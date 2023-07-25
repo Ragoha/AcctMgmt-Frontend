@@ -16,8 +16,9 @@ import '../../css/font.css';
 import { createTheme } from '@material-ui/core/styles';
 import Image4 from './back4.jpg';
 import { CSSTransition } from 'react-transition-group';
-
-// import { useNavigate } from "react-router-dom";
+import Cookie from '../../storage/Cookie';
+import { SET_TOKEN }  from '../../store/Auth';
+import { connect } from 'react-redux';
 
 
 class LoginComponent extends Component {
@@ -30,6 +31,7 @@ class LoginComponent extends Component {
             isIconOpen: false,
             showForm: false,
         };
+        // this.dispatch = useDispatch();
     }//2초뒤에 나오는 효과
     componentDidMount() {
         setTimeout(() => {
@@ -64,13 +66,20 @@ class LoginComponent extends Component {
             .then((response) => {
                 // 로그인 성공 시 처리 로직
                 alert("로그인 성공", response);
+                const jwtToken = response.data.refreshToken; // 응답에서 토큰 추출
+                Cookie.setRefreshToken(jwtToken); // 토큰을 쿠키에 저장
+                const accToken = response.data.accessToken;
+                const acwte = this.props.setAccessToken(accToken);
                 console.log(response.data);
-                // window.location.href = "/acctmgmt/bgt";
+                console.log(jwtToken);
+                console.log(accToken);
+                console.log("가자 : "+acwte);
+                window.location.href = "/acctmgmt/bgt";
             })
             .catch((error) => {
                 // 로그인 실패 시 처리 로직
                 alert("아이디 또는 비밀번호가 다릅니다.", error);
-                console.error(error);
+                // console.error(error);
                 // window.location.href = "/login";
             });
     };
@@ -249,5 +258,12 @@ class LoginComponent extends Component {
           
     }
 }
+//setAccessToken 액션 생성자를 LoginComponent 컴포넌트의 props로 매핑
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAccessToken: (accessToken) => dispatch(SET_TOKEN(accessToken)),
+  };
+};
 
-export default LoginComponent;
+
+export default connect(null, mapDispatchToProps)(LoginComponent);

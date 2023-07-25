@@ -1,5 +1,8 @@
 import React from 'react';
 import axios from "axios";
+import { SET_TOKEN } from '../../store/Auth';
+import { connect } from 'react-redux';
+
 import {
     Table,
     TableBody,
@@ -88,7 +91,7 @@ class ConfigComponent extends React.Component {
         const option = rowData.id;
         console.log(option);
     };
-    
+
 
     // 라디오 버튼 선택 시 실행되는 함수
     handleRadioChange = (e) => {
@@ -103,11 +106,11 @@ class ConfigComponent extends React.Component {
             selectedValue,
         }));
         console.log(selectedValue);
-        
+
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const option = this.state.selectedRowId;
-        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option +'/'+ selectedValue, { withCredentials: true })
-        
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue, { withCredentials: true })
+
             .then((response) => {
                 // 성공적으로 응답을 받은 경우 처리할 작업
                 // console.log(response.data);
@@ -124,8 +127,28 @@ class ConfigComponent extends React.Component {
         this.setState({ selectedTab: newValue });
     };
 
+    componentDidMount() {
+        const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+        const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
+        console.log("엑세스 토큰 : "+ accessToken );
+
+        axios.get(ACCTMGMT_API_BASE_URL + '/info', {}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
+        })
+            .then((response) => {
+                // 요청 성공 시 처리할 작업
+                console.log('hihi : '+response.data);
+            })
+            .catch((error) => {
+                // 요청 실패 시 처리할 작업
+                console.error(error);
+            });
+    }
     render() {
-        const { selectedTab} = this.state;
+        const { selectedTab } = this.state;
         const settingsKey =
             selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
 
@@ -145,7 +168,7 @@ class ConfigComponent extends React.Component {
                 <Grid item xs={8}>
                     <TableContainer component={Paper}>
                         <Table style={{ border: "1px solid #ccc" }}>
-                            <TableHead sx={{bgcolor : 'beige'}}>
+                            <TableHead sx={{ bgcolor: 'beige' }}>
                                 <TableRow>
                                     <TableCell style={{ border: "1px solid #ccc" }}>
                                         옵션명(option)
@@ -184,7 +207,7 @@ class ConfigComponent extends React.Component {
                 </Grid>
                 <Grid item xs={4}>
                     <Paper style={{ padding: 10 }}>
-                        <FormControl component="fieldset" sx={{width : '30vh'}}>
+                        <FormControl component="fieldset" sx={{ width: '30vh' }}>
                             <FormLabel component="legend" >
                                 설정
                             </FormLabel>
@@ -210,4 +233,14 @@ class ConfigComponent extends React.Component {
     }
 }
 
-export default ConfigComponent;
+// const mapStateToProps = (state) => ({
+//     accessToken: state.authToken.accessToken,
+//   });  
+
+// export default connect(mapStateToProps, { SET_TOKEN })(ConfigComponent);
+const mapStateToProps = (state) => ({
+    accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  });
+  
+  export default connect(mapStateToProps)(ConfigComponent);
+  
