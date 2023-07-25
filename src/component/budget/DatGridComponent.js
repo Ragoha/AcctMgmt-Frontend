@@ -119,7 +119,6 @@ class DataGridComponent extends Component {
 
   processRowUpdate = (newRow) => {
     console.log("asdfasdf");
-    const { rows } = this.state;
     const updatedRow = { ...newRow, isNew: false };
     this.setState((prevState) => ({
       rows: prevState.rows.map((row) =>
@@ -235,7 +234,6 @@ class DataGridComponent extends Component {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={this.handleRowModesModelChange}
-          onRowEditStop={this.handleRowEditStopop}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{

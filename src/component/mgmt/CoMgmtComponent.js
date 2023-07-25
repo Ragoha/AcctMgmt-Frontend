@@ -127,9 +127,6 @@ class CoMgmtComponent extends Component {
     //     alert("회사조회 실패..ㅠ");
     //   });
   }
-
-  
-
   helpClick = () => {
     this.dialogRef.current.handleUp();
   };
