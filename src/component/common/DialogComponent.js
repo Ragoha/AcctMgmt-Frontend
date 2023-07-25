@@ -56,9 +56,10 @@ class DialogComponent extends Component {
                   justifyContent: "space-between",
                   mt: 1,
                   mb: 1,
+                  position: 'relative'
                 }}
               >
-                <Box mb={2}></Box>
+                <Box mb={2} sx={{ position: 'relative'}}></Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -78,7 +79,7 @@ class DialogComponent extends Component {
                   ></TextField>
                   <Button
                     variant="outlined"
-                    style={{ padding: "0px", minWidth: "5px" }}
+                    style={{ padding: "0px", minWidth: "5px", position: 'absolute', right: "5px" }}
                   >
                     <SearchIcon fontSize="medium" />
                   </Button>
@@ -95,11 +96,7 @@ class DialogComponent extends Component {
                     columns={data.columns}
                     showColumnVerticalBorder={true}
                     showCellVerticalBorder={true} // 각 셀마다 영역주기
-                    components={{
-                      // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                      Pagination: () => null,
-                      Footer: () => null,
-                    }}
+                    hideFooter
                   />
                 </Box>
               </Box>

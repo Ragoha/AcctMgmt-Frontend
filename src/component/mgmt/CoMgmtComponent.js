@@ -13,6 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import DaumPostcode from 'react-daum-postcode';
+import ListIcon from '@mui/icons-material/List';
 
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -60,16 +61,17 @@ class CoMgmtComponent extends Component {
 
       data: {
         columns: [
-            { field: 'id', headerName: '기수', width: 90, headerAlign: 'center' },
-            { field: 'firstName', headerName: '시작일', width: 180, headerAlign: 'center' },
-            { field: 'firstName', headerName: '종료일', width: 180, headerAlign: 'center' }
+          { field: 'id', headerName: '기수', width: 90, headerAlign: 'center' },
+          { field: 'firstName', headerName: '시작일', width: 180, headerAlign: 'center' },
+          { field: 'firstName', headerName: '종료일', width: 180, headerAlign: 'center' }
         ],
         rows: [
-            { id: 1, firstName: 'John' },
-            { id: 2, firstName: 'Jane' },
-            { id: 3, firstName: 'Bob' },
-            // Add more rows here...
-        ]}
+          { id: 1, firstName: 'John' },
+          { id: 2, firstName: 'Jane' },
+          { id: 3, firstName: 'Bob' },
+          // Add more rows here...
+        ]
+      }
     }
   }
 
@@ -102,29 +104,44 @@ class CoMgmtComponent extends Component {
   }
 
   addCardButton = () => {
-    this.setState((prevState) => ({
-      cardCount: prevState.cardCount + 1,
-        coNm: '',
-        jongmok: '',
-        businessType: '',
-        coNb: '',
-        ceoNm: '',
-        coZip: '',
-        coAddr: '',
-        coAddr1: '',
-   
-    }));
+    const newCardCount = this.state.cardCount + 1;
+    const newCoCdList = [...this.state.coCdList, '0000'];
+    // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
+
+    // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
+    this.setState({
+      cardCount: newCardCount,
+      coCdList: newCoCdList,
+      // coNmList: newCoNmList,
+      coCd: '',
+      coNm: '',
+      jongmok: '',
+      businessType: '',
+      coNb: '',
+      ceoNm: '',
+      coZip: '',
+      coAddr: '',
+      coAddr1: '',
+
+    });
   } //여기에 모든 state값 초기화 하면 됨 !!!!!
 
   insertCo = () => {
-    const { coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
-    CompanyService.insertCo(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
+    const {coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    CompanyService.insertCo(coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
 
       .then((response) => {
         console.log(response.data);
         window.confirm('회사등록 완료!');
+        const coCdList = response.data.map((item) => item.coCd);
+        const coNmList = response.data.map((item) => item.coNm);
+        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
         this.setState({
-          coCd: 0,
+          cardCount: cardCount, // state에 값을 저장
+          coCdList: coCdList,
+          coNmList: coNmList,
+          coCd: '',
           coNm: '',
           jongmok: '',
           businessType: '',
@@ -132,9 +149,9 @@ class CoMgmtComponent extends Component {
           ceoNm: '',
           coZip: '',
           coAddr: '',
-          coAddr1: '',
+          coAddr1: ''
         });
-        window.location.reload();
+        // window.location.reload();
         // window.location.href="/acctmgmt/ozt/co";
       })
       .catch((error) => {
@@ -160,41 +177,53 @@ class CoMgmtComponent extends Component {
     this.addrRef.current.handleDown();
   }
 
-  cardClick = (index) => {
-    this.setState({ coCd: index });
-    console.log(index)
-    CompanyService.getCo(index)
-    .then((response) => {
-      const coCd = response.data[0].coCd;
-      const coNm = response.data[0].coNm;
-      const jongmok = response.data[0].jongmok;
-      const businessType = response.data[0].businessType;
-      const coNb = response.data[0].coNb;
-      const ceoNm = response.data[0].ceoNm;
-      const coZip = response.data[0].coZip;
-      const coAddr = response.data[0].coAddr;
-      const coAddr1 = response.data[0].coAddr1;
-      // console.log(response.data[0])
-      // console.log(coCd)
-      // console.log(coNm)
-      this.setState({
-        coCd: coCd,
-        coNm: coNm,
-        jongmok: jongmok,
-        businessType: businessType,
-        coNb: coNb,
-        ceoNm: ceoNm,
-        coZip: coZip,
-        coAddr: coAddr,
-        coAddr1: coAddr1
-      });
-    })
-    .catch((error) => {
-      // 오류 발생 시의 처리
-      console.error(error);
-      // alert("중복된 회사 또는 모두 입력해주세요");
-    });
-  }
+  cardClick = (coCd) => {
+    console.log(coCd);
+    // this.setState({ coCd: coCdList[index] });
+    // console.log(index)
+    {coCd!='0000'?
+    CompanyService.getCo(coCd)
+    
+      .then((response) => {
+        const coCd = response.data[0].coCd;
+        const coNm = response.data[0].coNm;
+        const jongmok = response.data[0].jongmok;
+        const businessType = response.data[0].businessType;
+        const coNb = response.data[0].coNb;
+        const ceoNm = response.data[0].ceoNm;
+        const coZip = response.data[0].coZip;
+        const coAddr = response.data[0].coAddr;
+        const coAddr1 = response.data[0].coAddr1;
+  
+        this.setState({
+          coCd: coCd,
+          coNm: coNm,
+          jongmok: jongmok,
+          businessType: businessType,
+          coNb: coNb,
+          ceoNm: ceoNm,
+          coZip: coZip,
+          coAddr: coAddr,
+          coAddr1: coAddr1})
+        })
+          .catch((error) => {
+            // 오류 발생 시의 처리
+            console.error(error);
+            // alert("중복된 회사 또는 모두 입력해주세요");
+        })
+        :
+        this.setState({
+          coCd: '',
+          coNm: '',
+          jongmok: '',
+          businessType: '',
+          coNb: '',
+          ceoNm: '',
+          coZip: '',
+          coAddr: '',
+          coAddr1: ''
+  })}}
+
   helpClick = () => {
     this.dialogRef.current.handleUp();
   };
@@ -210,21 +239,81 @@ class CoMgmtComponent extends Component {
   }
 
   handleGisu = () => {
-    this.setState({open : true});
+    this.setState({ open: true });
   }
 
+  // updateCo =() => {
+  //   const {coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+  //   //console.log(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 )
+  //   const co = {
+  //     coCd: coCd,
+  //     coNm: coNm,
+  //     jongmok: jongmok,
+  //     businessType: businessType,
+  //     coNb: coNb,
+  //     ceoNm: ceoNm,
+  //     coZip: coZip,
+  //     coAddr: coAddr,
+  //     coAddr1: coAddr1
+  //   };
+
+  //   CompanyService.updateCo(co)
+  //   .then((response) => {
+  //     console.log(response.data);
+  //     window.confirm('업데이트 완료!');
+  //     const coCdList = response.data.map((item) => item.coCd);
+  //     const coNmList = response.data.map((item) => item.coNm);
+  //     const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+  //     this.setState({
+  //       cardCount: cardCount, // state에 값을 저장
+  //       coCdList: coCdList,
+  //       coNmList: coNmList,
+  //       coCd: '',
+  //       coNm: '',
+  //       jongmok: '',
+  //       businessType: '',
+  //       coNb: '',
+  //       ceoNm: '',
+  //       coZip: '',
+  //       coAddr: '',
+  //       coAddr1: ''
+  //     })})
+ 
+  //   .catch((error) => {
+  //     // 오류 발생 시의 처리
+  //     console.error(error);
+  //     alert("업데이트 실패..");
+  //   });
+  // }
+
   deleteCo = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
-    const {coCd} =this.state;
-    this.setState({ coCd });
-    console.log(coCd)
+    const { coCd } = this.state;
+    // this.setState({ coCd });
+    // console.log(coCd)
+    // this.setState({ index: coCd })
     CompanyService.deleteCo(coCd)
       .then((response) => {
         console.log(response.data);
         window.confirm('회사삭제 완료!');
-        this.setState({index:coCd})
-        window.location.reload();
+        const coCdList = response.data.map((item) => item.coCd);
+        const coNmList = response.data.map((item) => item.coNm);
+        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+        this.setState({
+          cardCount: cardCount, // state에 값을 저장
+          coCdList: coCdList,
+          coNmList: coNmList,
+          coCd: '',
+          coNm: '',
+          jongmok: '',
+          businessType: '',
+          coNb: '',
+          ceoNm: '',
+          coZip: '',
+          coAddr: '',
+          coAddr1: ''
+        })
+        })
         // window.location.href="/acctmgmt/ozt/co";
-      })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
@@ -255,20 +344,20 @@ class CoMgmtComponent extends Component {
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate()}`;
 
-    const cards = Array.from({ length: cardCount }).map((_, index) => ( //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
-      <Card key={index} sx={{ mt: 1, mb: 1, border: '1px solid #000' }}>
-        <CardActionArea onClick={() => this.cardClick(index)}>
+    const cards = coCdList.map((coCd, index) => ( //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
+      <Card key={coCd} sx={{ mt: 1, mb: 1, border: '1px solid #000', position: 'relative' }}>
+        <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 15 }} gutterBottom >
+            <Typography sx={{ fontSize: 15 }} gutterBottom style={{ position: 'absolute', top: '7px' }}>
               {coCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginTop: '-20px' }} >
+            <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "9px", bottom: '4px' }} >
               {formattedDate}
             </Typography>
-            <Typography sx={{ fontSize: 15 }} style={{ textAlign: 'right', marginBottom: '-20px' }}>
+            {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
               {index + 1}
-            </Typography>
-            <Typography sx={{ fontSize: 25 }} variant='h3'>
+            </Typography> */}
+            <Typography sx={{ fontSize: 25 }} variant='h3' style={{ position: 'absolute', bottom: '8px' }}>
               {coNmList[index]}
             </Typography>
           </CardContent>
@@ -278,7 +367,17 @@ class CoMgmtComponent extends Component {
 
 
     return (
-      <>
+      <container>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <ListIcon fontSize="large" />
+          </Grid>
+          <Grid item>
+            <span>회사관리</span>
+          </Grid>
+        </Grid>
+        <Divider sx={{ my: 2 }} />
+
         <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
           <Box sx={{ display: 'flex' }}>
 
@@ -340,8 +439,12 @@ class CoMgmtComponent extends Component {
 
                 <Grid item xs={8}></Grid>
 
-                <Grid item xs={1} >
-                  <Button variant="outlined" onClick={this.insertCo}>저장</Button>
+                <Grid item xs={1} > 
+                  {coCd?
+                  <Button  variant="outlined" onClick={this.updateCo}>수정</Button>
+                    :
+                  <Button  variant="outlined" onClick={this.insertCo}>저장</Button>
+                  }
                 </Grid>
 
                 <Grid item xs={1} >
@@ -447,49 +550,47 @@ class CoMgmtComponent extends Component {
                       <DemoContainer components={['DatePicker']} >
                         <DatePicker />
                         <Button size="small" sx={{ direction: "row", justifyContent: "center", alignItems: "center" }} variant="outlined" onClick={this.handleGisu}>
-                      기수등록
-                    </Button>
+                          기수등록
+                        </Button>
                       </DemoContainer>
                     </LocalizationProvider>
                   </Grid>
 
                   <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-                <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>
-                  회계기수 등록
-                  <IconButton size='small' sx={{ml:36}} onClick={() => this.setState({ open: false})}>
-                    <CloseIcon fontSize='medium' sx={{ color: 'white' }} />
-                </IconButton>
-                <Divider sx={{ border: '1px solid #EAEAEA' }} />
-                </DialogTitle>
-                <DialogContent >
-                  
-                    <Box sx={{ mt: 1, width: '100%' }}>
+                    <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>
+                      회계기수 등록
+                      <IconButton size='small' sx={{ ml: 36 }} onClick={() => this.setState({ open: false })}>
+                        <CloseIcon fontSize='medium' sx={{ color: 'white' }} />
+                      </IconButton>
+                      <Divider sx={{ border: '1px solid #EAEAEA' }} />
+                    </DialogTitle>
+                    <DialogContent >
+
+                      <Box sx={{ mt: 1, width: '100%' }}>
 
                         <Box style={{ height: 350, width: '100%' }} >
-                            <DataGrid rows={data.rows} columns={data.columns} 
-                                showColumnVerticalBorder={true}
-                                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                                components={{
-                                    // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                                    Pagination: () => null,
-                                    Footer: () => null
-                                }} />
+                          <DataGrid rows={data.rows} columns={data.columns}
+                            showColumnVerticalBorder={true}
+                            showCellVerticalBorder={true} // 각 셀마다 영역주기
+                            hideFooter
+                            />
                         </Box>
-                    </Box>
+                      </Box>
 
-                </DialogContent>
-                <Divider />
-                <DialogActions>
-                    <Button variant="outlined"
+                    </DialogContent>
+                    <Divider />
+                    <DialogActions>
+                      <Button variant="outlined"
                         sx={{
-                            backgroundColor: '#4A55A2', color: 'white', 
-                            "&:hover": {
-                                backgroundColor: '#4A55A2'
-                                }}}>확인</Button>
+                          backgroundColor: '#4A55A2', color: 'white',
+                          "&:hover": {
+                            backgroundColor: '#4A55A2'
+                          }
+                        }}>확인</Button>
 
-                    <Button variant="outlined" onClick={() => this.setState({ open: false })} >취소</Button>
-                </DialogActions>
-            </Dialog>
+                      <Button variant="outlined" onClick={() => this.setState({ open: false })} >취소</Button>
+                    </DialogActions>
+                  </Dialog>
 
                   <Grid item xs={5}>
                   </Grid>
@@ -512,9 +613,9 @@ class CoMgmtComponent extends Component {
         </Grid >
         <AddressComponent setCoZipAddr={this.setCoZipAddr} ref={this.addrRef} />
         <DialogComponent ref={this.dialogRef} />
-      </>
+      </container>
     );
-  }
-}
+  }}
+
 
 export default CoMgmtComponent;
