@@ -10,6 +10,20 @@ class DialogComponent extends Component {
         super(props);
         this.state = {
             open: false,
+
+            data: {
+              columns: [
+                { field: 'id', headerName: '기수', width: 90, headerAlign: 'center' },
+                { field: 'firstName', headerName: '시작일', width: 180, headerAlign: 'center' },
+                { field: 'firstName', headerName: '종료일', width: 180, headerAlign: 'center' }
+              ],
+              rows: [
+                { id: 1, firstName: 'John' },
+                { id: 2, firstName: 'Jane' },
+                { id: 3, firstName: 'Bob' },
+                // Add more rows here...
+              ]
+            }
         }
     }
 
