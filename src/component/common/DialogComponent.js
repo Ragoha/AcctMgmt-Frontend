@@ -47,7 +47,59 @@ class DialogComponent extends Component {
                 <CloseIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </DialogTitle>
-            <DialogContent>{this.props.DialogContentComponent}</DialogContent>
+            <DialogContent>
+              <Box
+                sx={{
+                  border: "3px solid #EAEAEA",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mt: 1,
+                  mb: 1,
+                  position: 'relative'
+                }}
+              >
+                <Box mb={2} sx={{ position: 'relative'}}></Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 1,
+                    mb: 1,
+                  }}
+                >
+                  <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
+                    검색
+                  </InputLabel>
+                  <TextField
+                    id="searchWord"
+                    variant="outlined"
+                    size="small"
+                  ></TextField>
+                  <Button
+                    variant="outlined"
+                    style={{ padding: "0px", minWidth: "5px", position: 'absolute', right: "5px" }}
+                  >
+                    <SearchIcon fontSize="medium" />
+                  </Button>
+                </Box>
+                <Box mb={1}></Box>
+              </Box>
+              <Box mb={2}></Box>
+
+              <Divider sx={{ border: "1px solid #EAEAEA" }} />
+              <Box sx={{ mt: 1, width: "100%" }}>
+                <Box style={{ height: 350, width: "100%" }}>
+                  <DataGrid
+                    rows={data.rows}
+                    columns={data.columns}
+                    showColumnVerticalBorder={true}
+                    showCellVerticalBorder={true} // 각 셀마다 영역주기
+                    hideFooter
+                  />
+                </Box>
+              </Box>
+            </DialogContent>
             <Divider />
             <DialogActions>
               <Button
