@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Autocomplete from '@mui/material/Autocomplete';
 import UserService from '../../service/UserService';
+import ListIcon from '@mui/icons-material/List';
 
 
 class DeptMgmtComponent extends Component {
@@ -22,20 +23,29 @@ class DeptMgmtComponent extends Component {
 
         }
     }
-    
+
 
     render() {
         const { open, userList, cardCount } = this.state;
-       
+
         const topCompany = [
-            {label: 'Samsung', year: 1987 },
-            {label: 'Douzone', year: 1994 },
-            {label: 'LG', year: 1980 },
-            {label: 'SKT', year: 2000 },
+            { label: 'Samsung', year: 1987 },
+            { label: 'Douzone', year: 1994 },
+            { label: 'LG', year: 1980 },
+            { label: 'SKT', year: 2000 },
         ];
 
         return (
-            <>
+            <container>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item>
+                        <ListIcon fontSize="large" />
+                    </Grid>
+                    <Grid item>
+                        <span>부서관리</span>
+                    </Grid>
+                </Grid>
+                <Divider sx={{ my: 2 }} />
                 <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
                     <Box sx={{ display: 'flex' }}>
                         <Grid container sx={{ justifyContent: "flex-start", width: '25%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
@@ -44,7 +54,7 @@ class DeptMgmtComponent extends Component {
                                     disablePortal
                                     id="combo-box-demo"
                                     options={topCompany}
-                                    sx={{ width: '100%' , backgroundColor:'white'}}
+                                    sx={{ width: '100%', backgroundColor: 'white' }}
                                     renderInput={(params) => <TextField {...params} label="회사를 선택하세요" />}
                                 />
                                 {/* <TextField label="회사를 선택하세요"></TextField> */}
@@ -194,7 +204,7 @@ class DeptMgmtComponent extends Component {
                         {/* </Box> */}
                     </Box>
                 </Grid>
-            </>
+            </container>
         );
     }
 }

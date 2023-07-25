@@ -23,16 +23,6 @@ class BtgICFService {
   deleteBgtICF(sq) {
     return axios.delete(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/" + sq);
   }
-
-  findDivCdAndDivNmByCoCd(coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/div", {
-        params: {
-          coCd : coCd
-        }
-      })
-      .then((response) => response.data);
-  }
 }
 
 export default new BtgICFService();
