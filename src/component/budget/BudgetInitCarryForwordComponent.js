@@ -15,6 +15,8 @@ import DataGridComponent from "./DatGridComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DialogComponent from "./modal/DivDialogComponent";
+import DivDialogComponent from "./modal/DivDialogComponent";
 
 const BGTCD_COLUMN = [
   {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
@@ -22,31 +24,31 @@ const BGTCD_COLUMN = [
   {field: "bgtNm", headerName: "예산과목명", minWidth: 90, flex: 1, /* editable: true, */},
   {field: "amount", headerName: "금액", flex: 1, /* editable: true, */ },
 ]
-              
-
-
-
 
 class BudgetInitCarryForwordComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       divCd: "",
+      divNm: "",
+      divTextField: "",
       frDt: "",
       groupCd: "",
       grFg: "",
       bgtCd: "",
       bgtDTO: [],
+      divRows: [],
       selectedRowId: "",
       isNew: false,
     };
 
     this.childRef = createRef();
+    this.coRef = createRef();
   }
 
   handleSet = (e) => {
-    this.setState({ [e.target.id] : e.target.value });
-  }
+    this.setState({ [e.target.id]: e.target.value });
+  };
 
   handleGetBgtICFList = (e) => {
     this.childRef.current.handleGetBgtICFList();
@@ -57,17 +59,15 @@ class BudgetInitCarryForwordComponent extends Component {
   };
 
   handleRowDelete = () => {
-
     this.childRef.current.handleDeleteClick(this.state.selectedRowId)();
-
-
-    
   };
 
-  handleInputChange = (e) => {
+  handleInputChange = async (e) => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    await this.setState({ [name]: value });
+    console.log(this.state);
   };
+
 
   handleAddRow = () => {
     const { bgtDTO } = this.state;
@@ -102,6 +102,12 @@ class BudgetInitCarryForwordComponent extends Component {
     this.setState({ selectedRowId: selectedId });
   };
 
+  setDivTextField = async (data) => {
+    console.log(data);
+    await this.setState({ divTextField: data.divCd+" / "+data.divNm });
+    console.log(this.state);
+  };
+
   render() {
     const labelStyle = {
       display: "inline",
@@ -111,7 +117,8 @@ class BudgetInitCarryForwordComponent extends Component {
       float: "right",
     };
 
-    const { bgtDTO, startDate, mainHeader, selectedRowId } = this.state;
+    const { bgtDTO, startDate, mainHeader, divCd, divNm, divTextField } =
+      this.state;
 
     return (
       <>
@@ -141,14 +148,31 @@ class BudgetInitCarryForwordComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <InputLabel sx={{ marginRight: "10px" }}>회계단위</InputLabel>
               <TextField
-                name="divCd"
+                name="divTextField"
+                value={divTextField}
                 onChange={this.handleInputChange}
+                // onBlur={this.handleInputChange}
                 size="small"
                 sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon />
+                      <SearchIcon
+                        onClick={  () => {
+                          BgtICFService.findDivCdAndDivNmByCoCd("1").then(
+                            async (response) => {
+                              const divRows = response.map((row) => ({
+                                id: row.divCd,
+                                divCd: row.divCd,
+                                divNm: row.divNm,
+                              }));
+                              await this.setState({ divRows: divRows });
+                              console.log(this.state);
+                            }
+                          );
+                          this.coRef.current.handleUp();
+                        }}
+                      />
                     </InputAdornment>
                   ),
                 }}
@@ -288,6 +312,12 @@ class BudgetInitCarryForwordComponent extends Component {
             /> */}
           </Grid>
         </Grid>
+        <DivDialogComponent
+          ref={this.coRef}
+          // DialogContentComponent={<CoDialogComponent divTF={divTF} />}
+          setDivTextField={this.setDivTextField}
+          divRows = {this.state.divRows}
+        />
       </>
     );
   }
