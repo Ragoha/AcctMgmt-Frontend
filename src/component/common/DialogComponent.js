@@ -36,7 +36,7 @@ class DialogComponent extends Component {
     }
 
     render() {
-        const { open ,data } = this.state;
+        const { open , data } = this.state;
 
         return (
           //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
@@ -57,8 +57,7 @@ class DialogComponent extends Component {
                 size="small"
                 onClick={() =>
                   this.setState({ open: false, userList: [], searchResult: [] })
-                }
-              >
+                }>
                 <CloseIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </DialogTitle>
@@ -125,6 +124,9 @@ class DialogComponent extends Component {
                   "&:hover": {
                     backgroundColor: "#4A55A2",
                   },
+                }}
+                onClick={() => {
+                  this.setState({divTF : {cd:"asdf", nm:"Asdf"}})
                 }}
               >
                 확인

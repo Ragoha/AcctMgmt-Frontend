@@ -73,13 +73,14 @@ class SignUpComponent extends Component {
     { 
        coCd : company,
        empId : id,
-       empPw: password,
+       empPs: password,
        empEmail: email,
        empTel: phone,
        empName: name,
        empSx: gender,
        empOd: position, 
-       empAuth: 'ROLE_USER',
+       empAuth: 'user',
+       
     };
 
     // 폼 필드의 값이 비어있는지 확인
@@ -90,8 +91,7 @@ class SignUpComponent extends Component {
 
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     // 회원가입 API 호출
-    console.log(signData);
-    axios.post(ACCTMGMT_API_BASE_URL + '/join', signData, {
+    axios.post(ACCTMGMT_API_BASE_URL + '/api/signUp', signData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -113,34 +113,31 @@ class SignUpComponent extends Component {
 
 
   handleIdCheck = (e) => {
+    // 중복 확인 로직 처리
+    // DB에서 아이디 중복 여부를 확인하는 API 호출 등을 수행
+    // 여기에서는 예시로 무조건 중복된 아이디로 설정
     e.preventDefault();
     const { id } = this.state;
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
-  
-    axios.get(ACCTMGMT_API_BASE_URL + '/emp/idcheck/' + id)
+    //api 호출
+    axios.get(ACCTMGMT_API_BASE_URL + '/api/emp/idcheck/' + id)
       .then((response) => {
-        if (response.status === 200) {
-          // 아이디 중복 없을 때 처리 로직
-          alert("사용 가능한 아이디입니다.");
-          console.log(response.data);
-          this.setState({ isIdDuplicated: true });
-        } 
+        // 아이디 중복일 때 처리 로직
+        alert("아이디 중복이요", response);
+        console.log(response.data);
+        this.setState({
+          isIdDuplicated: false,
+          errorMessage: '중복된 아이디 입니다.',
+        });
       })
-      .catch(error => { 
-        console.log(error.response);
-        // if (error.response.status === 400) {
-        //     // BAD_REQUEST 에러일 때 처리 로직
-        //     alert("중복된 아이디입니다.");
-        //     console.error(error.response.data);
-        //     this.setState({
-        //       isIdDuplicated: false,
-        //       errorMessage: '중복된 아이디 입니다.',
-        //     });
-        //   } 
-        }
-      )};
-  
-  
+      .catch((error) => {
+        // 아이디 중복 없을 때 처리 로직
+        alert("사용가능한 아이디 입니다.", error);
+        console.error(error);
+        this.setState({ isIdDuplicated: true, });
+      })
+
+  };
 
   validatePassword = (password) => {
     // Add your password validation logic here
