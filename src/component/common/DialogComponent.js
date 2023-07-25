@@ -35,7 +35,7 @@ class DialogComponent extends Component {
     }
 
     render() {
-        const { open , data } = this.state;
+        const { open ,data } = this.state;
 
         return ( //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
             <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
@@ -58,7 +58,7 @@ class DialogComponent extends Component {
                     <Box mb={2}></Box>
 
                     <Divider sx={{ border: '1px solid #EAEAEA' }} />
-                    <Box sx={{ mt: 1, width: '100%' }}>
+                    {/* <Box sx={{ mt: 1, width: '100%' }}>
 
                         <Box style={{ height: 350, width: '100%' }} >
                             <DataGrid rows={data.rows} columns={data.columns} 
@@ -70,7 +70,7 @@ class DialogComponent extends Component {
                                     Footer: () => null
                                 }} />
                         </Box>
-                    </Box>
+                    </Box> */}
 
                 </DialogContent>
                 <Divider />
