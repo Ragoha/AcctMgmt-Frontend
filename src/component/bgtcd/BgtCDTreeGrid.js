@@ -5,12 +5,19 @@ class BgtCDTreeGrid extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            columns: [{ field: 'jobTitle', width: 250 }],
+            columns: [
+                    { field: 'jobTitle', width: 250 },
+                    { field: 'path', width: 250 },            
+            ],
             rows: [
-                { path: 'Sarah', jobTitle: 'CEO', id: 0 },
-                { path: 'Sarah,Thomas', jobTitle: 'Head of Sales', id: 1 },
-                { path: 'Sarah,Thomas,Robert', jobTitle: 'Sales Person', id: 2 },
-                { path: 'Sarah,Thomas,Karen', jobTitle: 'Sales Person', id: 3 },
+                { path: '수입', jobTitle: 'CEO', id: 0 },
+                { path: '수입,Thomas', jobTitle: 'Head of Sales', id: 1 },
+                { path: '수입,Thomas,Robert', jobTitle: 'Sales Person', id: 2 },
+                { path: '수입,Thomas,Robert ', jobTitle: 'Sales Person', id: 2 },
+                { path: '지출,Thomas,jenny', jobTitle: 'Sales Person', id: 3 },
+                { path: '지출,Thomas,ashtal', jobTitle: 'Sales Person', id: 4 },
+                { path: '지출,Thomas,Karen', jobTitle: 'Sales Person', id: 5 },
+                { path: '지출,Thomas,bit', jobTitle: 'Sales Person', id: 6 },
             ],
            
         };
@@ -19,7 +26,7 @@ class BgtCDTreeGrid extends Component {
     render() {
         const { rows, columns } = this.state;
         return (
-            <DataGridPro
+            <DataGridPro     
                 treeData
                 getTreeDataPath={(row) => row.path.split(',')}
                 rows={rows}
