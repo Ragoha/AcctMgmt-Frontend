@@ -13,6 +13,7 @@ import { DataGrid} from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
 import SearchIcon from "@mui/icons-material/Search";
+import ListIcon from "@mui/icons-material/List";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DivDialogComponent from "./modal/DivDialogComponent";
@@ -25,13 +26,14 @@ const BGTCD_COLUMN = [
   {field: "amount", headerName: "금액", flex: 1, /* editable: true, */ },
 ]
 
-class BudgetInitCarryForwordComponent extends Component {
+class BgtICFComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       divCd: "",
       divNm: "",
       divTextField: "",
+      bgtGrTextField: "",
       frDt: "",
       groupCd: "",
       grFg: "",
@@ -69,7 +71,6 @@ class BudgetInitCarryForwordComponent extends Component {
     console.log(this.state);
   };
 
-
   handleAddRow = () => {
     const { bgtDTO } = this.state;
     const newRow = {
@@ -103,10 +104,16 @@ class BudgetInitCarryForwordComponent extends Component {
     this.setState({ selectedRowId: selectedId });
   };
 
-  setDivTextField = async (data) => {
+  handleSetDivTextField = async (data) => {
     console.log(data);
-    await this.setState({ divTextField: data.divCd+" / "+data.divNm });
+    await this.setState({ divTextField: data.divCd + " / " + data.divNm });
     console.log(this.state);
+  };
+
+  handleSetBgtGrTextField = async (data) => {
+    await this.setState({
+      bgtGrTextField: data.bgtGrCd + " / " + data.bgtGrNm,
+    });
   };
 
   handleClickDivSearchIcon = () => {
@@ -119,7 +126,7 @@ class BudgetInitCarryForwordComponent extends Component {
       this.divRef.current.setDivRows(divRows);
     });
     this.divRef.current.handleUp();
-  }
+  };
 
   render() {
     const labelStyle = {
@@ -130,11 +137,19 @@ class BudgetInitCarryForwordComponent extends Component {
       float: "right",
     };
 
-    const { bgtDTO, startDate, mainHeader, divTextField } =
-      this.state;
+    const { bgtDTO, startDate, mainHeader, divTextField } = this.state;
 
     return (
       <>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <ListIcon fontSize="large" />
+          </Grid>
+          <Grid item>
+            <span>예산초기이월등록</span>
+          </Grid>
+        </Grid>
+        <Divider sx={{ my: 2 }} />
         <Box>
           {/* <InputLabel style={labelStyle}>예산초기이월등록</InputLabel> */}
           <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
@@ -216,18 +231,19 @@ class BudgetInitCarryForwordComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <InputLabel sx={{ marginRight: "10px" }}>예산그룹</InputLabel>
               <TextField
-                name="bgtGr"
+                name="bgtGrTextField"
+                value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
-                onClick={() => {
-                  this.bgtGrRef.current.handleUp();
-                }}
                 size="small"
                 sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <SearchIcon
-                        onClick={this.bgtGrRef.current.handleInitBgtGrRows}
+                        onClick={() => {
+                          this.bgtGrRef.current.handleInitBgtGrRows();
+                          this.bgtGrRef.current.handleUp();
+                        }}
                       />
                     </InputAdornment>
                   ),
@@ -317,13 +333,16 @@ class BudgetInitCarryForwordComponent extends Component {
         </Grid>
         <DivDialogComponent
           ref={this.divRef}
-          setDivTextField={this.setDivTextField}
+          handleSetDivTextField={this.handleSetDivTextField}
         />
 
-        {/* <BgtGrDialogComponent ref={this.bgtGrRef} /> */}
+        <BgtGrDialogComponent
+          ref={this.bgtGrRef}
+          handleSetBgtGrTextField={this.handleSetBgtGrTextField}
+        />
       </>
     );
   }
 }
 
-export default BudgetInitCarryForwordComponent;
+export default BgtICFComponent;

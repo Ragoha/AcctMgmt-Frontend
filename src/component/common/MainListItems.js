@@ -84,7 +84,10 @@ class MainListItems extends Component {
         </ListItemButton>
         <Collapse in={openOrganization} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link to={"ozt/co"}>
+            <Link
+              to={"ozt/co"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -102,7 +105,10 @@ class MainListItems extends Component {
                 <ListItemText primary="회사등록" />
               </ListItemButton>
             </Link>
-            <Link to={"ozt/div"}>
+            <Link
+              to={"ozt/div"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -120,7 +126,10 @@ class MainListItems extends Component {
                 <ListItemText primary="사업장등록" />
               </ListItemButton>
             </Link>
-            <Link to={"ozt/dept"}>
+            <Link
+              to={"ozt/dept"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -138,6 +147,7 @@ class MainListItems extends Component {
                 <ListItemText primary="부서등록" />
               </ListItemButton>
             </Link>
+            <Link to={"pjt"}>
             <ListItemButton
               sx={{
                 pl: this.props.drawerOpen ? 6.7 : 2,
@@ -154,6 +164,7 @@ class MainListItems extends Component {
               </ListItemIcon>
               <ListItemText primary="프로젝트등록" />
             </ListItemButton>
+            </Link>
           </List>
         </Collapse>
         <Divider />
@@ -171,7 +182,10 @@ class MainListItems extends Component {
         </ListItemButton>
         <Collapse in={openBudget} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link to={"bgt/bgtcd"}>
+            <Link
+              to={"bgt/bgtcd"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -189,7 +203,10 @@ class MainListItems extends Component {
                 <ListItemText primary="예산과목등록" />
               </ListItemButton>
             </Link>
-            <Link to={"bgt/bgticf"}>
+            <Link
+              to={"bgt/bgticf"}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 6.7 : 2,
@@ -210,7 +227,7 @@ class MainListItems extends Component {
           </List>
         </Collapse>
         <Divider />
-        <Link to={"syscfg"}>
+        <Link to={"syscfg"} style={{ textDecoration: "none", color: "black" }}>
           <ListItemButton>
             <ListItemIcon>
               <Tooltip
