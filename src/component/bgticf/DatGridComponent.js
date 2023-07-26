@@ -11,35 +11,6 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
 
-const newRow = {
-  coCd: 'ABC', 
-  gisu: 123,
-  sq: 1,
-  divCd: 'XYZ',
-  deptCd: 'DEF',
-  bgtCd: "BGT001",
-  bgtCnt: "1",
-  bgtFg: "FG001",
-  bgtTy: "A",
-  bottomNm: "BT001",
-  carrAm: 1000,
-  carrAm1: 2000,
-  carrAm2: 1500,
-  carrAm3: 1800,
-  empCd: "EMP001",
-  gisu: 123,
-  id: 1,
-  insertDt: 1689834394000,
-  insertId: "127.0.0.1",
-  insertIp: null,
-  mgtCd: "MGT001",
-  modifyDt: 1689834394000,
-  modifyId: "ID001",
-  modifyIp: "127.0.0.1",
-  remDc:  "Dummy description 1",
-  sq: 1
-}
-
 class DataGridComponent extends Component {
   constructor(props) {
     super(props);

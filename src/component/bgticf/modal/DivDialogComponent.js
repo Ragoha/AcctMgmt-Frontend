@@ -16,37 +16,36 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import BgtICFService from "../../../service/BgtICFService";
 
-const columns = [
-  {
-    field: "bgtGrCd",
-    headerName: "예산그룹코드",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtGrNm",
-    headerName: "예산그룹명",
-    width: 270,
-    headerAlign: "center",
-  },
-];
-      
-const rows = [
-  { id: 1, bgtGrCd: "1", bgtGrNm: "John" },
-  { id: 2, bgtGrCd: "2", bgtGrNm: "John" },
-  { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
-];
-
-class BgtGrDialogComponent extends Component {
+class DivDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { bgtGrCd: "", bgtGrNm: "" },
+      selectedRow: { divCd: "", divNm: "" },
       divRows: [],
-      keyword: "",
-      rows: rows,
-      columns: columns,
+      keyword:"",
+      data: {
+        columns: [
+          {
+            field: "divCd",
+            headerName: "사업장코드",
+            width: 180,
+            headerAlign: "center",
+          },
+          {
+            field: "divNm",
+            headerName: "사업장명",
+            width: 270,
+            headerAlign: "center",
+          },
+        ],
+        rows: [
+          {id:1, divCd: 1, divNm: "John" },
+          {id:2, divCd: 2, divNm: "Jane" },
+          {id:3, divCd: 3, divNm: "Bob" },
+          // Add more rows here...
+        ],
+      },
     };
   }
 
@@ -64,17 +63,17 @@ class BgtGrDialogComponent extends Component {
       console.log(this.state.selectedRow);
     });
     // console.log(this.state);
-  };
+  }
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
-  };
+  }
 
   handleClickConfirm = async () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    // await this.props.setDivTextField(this.state.selectedRow);
-  };
+    await this.props.handleSetDivTextField(this.state.selectedRow);
+  }
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -82,15 +81,25 @@ class BgtGrDialogComponent extends Component {
     console.log(this.state);
   };
 
-  handleInitBgtGrRows = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1);
+  handleClickSearchIcon = () => {
+    BgtICFService.findDivCdAndDivNmByKeyword(
+      this.state.keyword
+    ).then(async (response) => {
+      const divRows = response.map((row) => ({
+        id: row.divCd,
+        divCd: row.divCd,
+        divNm: row.divNm,
+      }));
+      await this.setState({ divRows: divRows });
+      console.log(this.state);
+    });
   }
 
-
   render() {
-    const { open, columns, rows } = this.state;
+    const { open, data } = this.state;
 
     return (
+      //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
         <DialogTitle
           sx={{
@@ -103,7 +112,7 @@ class BgtGrDialogComponent extends Component {
             height: 60,
           }}
         >
-          예산그룹검색
+          사업장검색
           <IconButton
             size="small"
             onClick={() =>
@@ -161,19 +170,7 @@ class BgtGrDialogComponent extends Component {
               >
                 <SearchIcon
                   fontSize="medium"
-                  onClick={() => {
-                    BgtICFService.findDivCdAndDivNmByKeyword(
-                      this.state.keyword
-                    ).then(async (response) => {
-                      const divRows = response.map((row) => ({
-                        id: row.divCd,
-                        divCd: row.divCd,
-                        divNm: row.divNm,
-                      }));
-                      await this.setState({ divRows: divRows });
-                      console.log(this.state);
-                    });
-                  }}
+                  onClick={this.handleClickSearchIcon}
                 />
               </Button>
             </Box>
@@ -184,8 +181,12 @@ class BgtGrDialogComponent extends Component {
           <Box sx={{ mt: 1, width: "100%" }}>
             <Box style={{ height: 350, width: "100%" }}>
               <DataGrid
-                rows={rows}
-                columns={columns}
+                rows={this.state.divRows}
+                columns={data.columns}
+                showColumnVerticalBorder={true}
+                showCellVerticalBorder={true} // 각 셀마다 영역주기
+                onRowClick={this.handleClickRow}
+                hideFooter
               />
             </Box>
           </Box>
@@ -217,4 +218,4 @@ class BgtGrDialogComponent extends Component {
     );
   }
 }
-export default BgtGrDialogComponent;
+export default DivDialogComponent;

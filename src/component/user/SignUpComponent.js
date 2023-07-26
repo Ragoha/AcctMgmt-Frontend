@@ -73,7 +73,7 @@ class SignUpComponent extends Component {
     { 
        coCd : company,
        empId : id,
-       empPs: password,
+       empPw: password,
        empEmail: email,
        empTel: phone,
        empName: name,
@@ -91,7 +91,7 @@ class SignUpComponent extends Component {
 
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     // 회원가입 API 호출
-    axios.post(ACCTMGMT_API_BASE_URL + '/api/signUp', signData, {
+    axios.post(ACCTMGMT_API_BASE_URL + '/join', signData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -120,7 +120,7 @@ class SignUpComponent extends Component {
     const { id } = this.state;
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     //api 호출
-    axios.get(ACCTMGMT_API_BASE_URL + '/api/emp/idcheck/' + id)
+    axios.get(ACCTMGMT_API_BASE_URL + '/emp/idcheck/' + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
         alert("아이디 중복이요", response);
