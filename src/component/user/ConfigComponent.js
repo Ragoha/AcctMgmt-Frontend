@@ -130,8 +130,10 @@ class ConfigComponent extends React.Component {
     componentDidMount() {
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
+        const userInfo = this.props.userInfo;
+        const { coCd, empId, empEmail } = userInfo;
         console.log("엑세스 토큰 : "+ accessToken );
-
+        console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
         axios.get(ACCTMGMT_API_BASE_URL + '/info', {}, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -140,7 +142,7 @@ class ConfigComponent extends React.Component {
         })
             .then((response) => {
                 // 요청 성공 시 처리할 작업
-                console.log('hihi : '+response.data);
+                // console.log('hihi : '+response.data);
             })
             .catch((error) => {
                 // 요청 실패 시 처리할 작업
@@ -240,7 +242,8 @@ class ConfigComponent extends React.Component {
 // export default connect(mapStateToProps, { SET_TOKEN })(ConfigComponent);
 const mapStateToProps = (state) => ({
     accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
-  });
+    userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+});
   
   export default connect(mapStateToProps)(ConfigComponent);
   
