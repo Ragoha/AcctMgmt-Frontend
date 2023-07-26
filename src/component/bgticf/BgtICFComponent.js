@@ -22,6 +22,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import ListDisplay from "./test";
+import AutocompleteWithRemove from "./test";
 
 const BGTCD_COLUMN = [
   {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
@@ -218,10 +220,13 @@ class BgtICFComponent extends Component {
                     format="YYYY-MM-DD"
                     slotProps={{
                       textField: {
-                        size: "small", width: "100px", sx: { width: "100px" }, inputProps: {
-                          sx: { height: "80px"}
-                        }
-                      }
+                        size: "small",
+                        width: "100px",
+                        sx: { width: "100px" },
+                        inputProps: {
+                          sx: { height: "80px" },
+                        },
+                      },
                     }}
                   />
                 </DemoContainer>
@@ -301,6 +306,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={6}>
             <Button onClick={this.handleGetBgtICFList}>조회</Button>
+            <AutocompleteWithRemove />
           </Grid>
         </Grid>
         <Divider variant="middle" />
