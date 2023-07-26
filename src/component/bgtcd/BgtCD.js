@@ -17,6 +17,7 @@ class BgtCD extends Component {
         this.BgtCDAddSubDialog = React.createRef();
         this.BgtDataGrid =React.createRef();
         this.state = {
+            open: false,
             rows: [],
             groupcd: 'GROUP3',
             detailInfo: null,
