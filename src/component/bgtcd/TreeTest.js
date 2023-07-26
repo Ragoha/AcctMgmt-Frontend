@@ -1,14 +1,15 @@
 
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { DataGridPro } from '@mui/x-data-grid-pro';
 import { Component } from 'react';
 
-class BgtCDDatagrid extends Component {
+class TreeTest extends Component {
     constructor(props) {
         super(props);
         this.state = {
             columns: [
-                { field: 'defNm', headerName: '분류명', width: 250 },
+                { field: 'defNm', headerName: '분류명', width: 100 },
                 { field: 'bgtCd', headerName: '예산코드', width: 100 },
                 { field: 'bgtNm', headerName: '예산과목명', width: 250 },
             ],
@@ -19,11 +20,10 @@ class BgtCDDatagrid extends Component {
     handleRowAdd = () => {
         const newRows = [
             ...this.state.rows,
-            { defNm: "", bgtCd: "", bgtNm: "", isNew: true},
+            { defNm: "", bgtCd: "", bgtNm: "", isNew: true },
         ];
         this.setState({ rows: newRows });
     };
-    
 
     render() {
         const { columns } = this.state;
@@ -36,8 +36,10 @@ class BgtCDDatagrid extends Component {
         return (
             <Box>
                 <Box style={{ height: 480, width: '95%' }} >
-                    <DataGrid
+
+                    <DataGridPro
                         treeData
+                        getTreeDataPath={(row) => row.dataPath.split(',')}
                         rows={rows}
                         columns={editableColumns}
                         getRowId={(row) => row.bgtCd}
@@ -52,4 +54,4 @@ class BgtCDDatagrid extends Component {
         )
     }
 };
-export default BgtCDDatagrid;
+export default TreeTest;

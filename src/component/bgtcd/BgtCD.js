@@ -8,14 +8,15 @@ import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDTreeGrid from "./BgtCDTreeGrid";
 import BgtCDDetailInfo from "./BgtCDDetailInfo";
 import BgtCDDatagrid from "./BgtCDDatagrid";
+import TreeTest from "./TreeTest";
 
 class BgtCD extends Component {
     constructor(props) {
         super(props);
         this.BgtCDDevFgCustom = React.createRef();
         this.BgtCDAddSubDialog = React.createRef();
+        this.BgtDataGrid =React.createRef();
         this.state = {
-            open:false,
             rows: [],
             groupcd: 'GROUP3',
             detailInfo: null,
@@ -78,6 +79,10 @@ class BgtCD extends Component {
         }
         ); //,()=>{ console.log('state에 들어갔니 ? ' + this.state.ctlFg +' --  '+ this.state.bgajustFg+' --'+this.state.bottomFg +' --'+ this.state.bizFg)} [230720]=>setState 결과 확인용 , 콜백으로 넣어야함.
     }
+    //데이터 그리드에 추가하는 기능
+    handleRowAdd = () => {
+        this.BgtDataGrid.current.handleRowAdd();
+    };
 
     /*  데이터 그리드 부분 end */
 
@@ -86,7 +91,7 @@ class BgtCD extends Component {
     BgtCDDevFgCustomOpen = () => {
         this.BgtCDDevFgCustom.current.handleUp();
     }
-    BgtCDAddSubDialogOpen=()=>{
+    BgtCDAddSubDialogOpen = () => {
         this.BgtCDAddSubDialog.current.handleUp();
     }
     render() {
@@ -100,10 +105,15 @@ class BgtCD extends Component {
                             padding={1}>
                             <Button variant="contained"
                                 size="medium"
-                                onClick={() => this.getDataGridRows(groupcd)}
+                                onClick={this.handleRowAdd}
                                 style={{ marginLeft: 'auto', marginRight: '10px', border: '1px solid' }}
+                            >추가</Button>
+                            <Button variant="contained"
+                                size="medium"
+                                onClick={() => this.getDataGridRows(groupcd)}
+                                style={{ marginRight: '10px', border: '1px solid' }}
                             >Grid채우기</Button>
-                            <Button variant="contained" size="medium" style={{ marginRight: '10px', border: '1px solid' }}onClick={this.BgtCDAddSubDialogOpen}>
+                            <Button variant="contained" size="medium" style={{ marginRight: '10px', border: '1px solid' }} onClick={this.BgtCDAddSubDialogOpen}>
                                 예산과목추가
                             </Button>
                             <Button variant="contained" size="medium" style={{ marginRight: '10px', border: '1px solid' }} onClick={this.BgtCDDevFgCustomOpen}>
@@ -124,8 +134,9 @@ class BgtCD extends Component {
                         </Box>
                     </Grid>
                     <Grid item xs={7}>
-                        <BgtCDDatagrid rows={rows} clickedRow={this.clickedRow} />
-                        {/* <BgtCDTreeGrid/> */}
+                        {/* <BgtCDDatagrid ref={this.BgtDataGrid} rows={rows} clickedRow={this.clickedRow} /> */}
+                        {/* <BgtCDTreeGrid ref={this.BgtDataGrid}/> */}
+                        {/* <TreeTest ref={this.BgtDataGrid} rows={rows} clickedRow={this.clickedRow} /> */}
                     </Grid>
                     <Grid item xs={5} border={3} sx={{ marginTop: '5px' }}>
                         <BgtCDDetailInfo prevBgtCd={prevBgtCd} ctlFg={ctlFg} bgajustFg={bgajustFg} bottomFg={bottomFg} bizFg={bizFg} />{/*자식컴포넌트에 state를 props로 전달 */}
