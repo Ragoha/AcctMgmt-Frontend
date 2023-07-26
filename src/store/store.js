@@ -4,11 +4,14 @@ import { persistStore, persistReducer } from 'redux-persist'; // Redux Persist �
 import storage from 'redux-persist/lib/storage'; // 로컬 스토리지를 사용할 경우
 
 import AuthReducer from './Auth';
+import UserReducer from './User';
 
 // root 리듀서 생성
 const rootReducer = combineReducers({
     auth: AuthReducer,
     // 다른 리듀서들도 필요한 경우 추가합니다.
+    user: UserReducer,
+
 });
 
 // Redux Persist 구성
