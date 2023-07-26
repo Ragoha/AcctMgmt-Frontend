@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Unstable_Grid2';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -22,22 +23,22 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DataGrid } from '@mui/x-data-grid';
 
 import CompanyService from '../../service/CompanyService';
-import DialogComponent from '../common/DialogComponent';
 import { createRef } from 'react';
 import AddressComponent from './dialog/AddressComponent';
+import CoDialogComponent from './dialog/CoDialogComponent';
 
 class CoMgmtComponent extends Component {
   constructor(props) {
     super(props);
-    this.dialogRef = React.createRef();
+    this.coDialogRef = React.createRef();
     this.addrRef = React.createRef();
     this.state = {
       open: false,
-
+      focused: null,
       cards: [],
       cardCount: 0,
-      searchWord: '',
-      searchResult: '',
+      // searchWord: '',
+      // searchResult: '',
       coCd: 0,
       coNm: '',
       //gisu: '',   
@@ -62,8 +63,8 @@ class CoMgmtComponent extends Component {
       data: {
         columns: [
           { field: 'id', headerName: '기수', width: 90, headerAlign: 'center' },
-          { field: 'firstName', headerName: '시작일', width: 180, headerAlign: 'center' },
-          { field: 'firstName', headerName: '종료일', width: 180, headerAlign: 'center' }
+          { field: 'firstName', headerName: '시작일', width: 180.3, headerAlign: 'center' },
+          { field: 'lastName', headerName: '종료일', width: 180.4, headerAlign: 'center' }
         ],
         rows: [
           { id: 1, firstName: 'John' },
@@ -81,10 +82,31 @@ class CoMgmtComponent extends Component {
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+        
+        const coCd = response.data[0].coCd;
+        const coNm = response.data[0].coNm;
+        const jongmok = response.data[0].jongmok;
+        const businessType = response.data[0].businessType;
+        const coNb = response.data[0].coNb;
+        const ceoNm = response.data[0].ceoNm;
+        const coZip = response.data[0].coZip;
+        const coAddr = response.data[0].coAddr;
+        const coAddr1 = response.data[0].coAddr1;
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
-          coNmList: coNmList
+          coNmList: coNmList,
+         
+          focused:coCd,
+          coCd: coCd,
+          coNm: coNm,
+          jongmok: jongmok,
+          businessType: businessType,
+          coNb: coNb,
+          ceoNm: ceoNm,
+          coZip: coZip,
+          coAddr: coAddr,
+          coAddr1: coAddr1
         })
       })
       .catch((error) => {
@@ -127,7 +149,7 @@ class CoMgmtComponent extends Component {
   } //여기에 모든 state값 초기화 하면 됨 !!!!!
 
   insertCo = () => {
-    const {coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    const { coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
     CompanyService.insertCo(coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
 
       .then((response) => {
@@ -181,36 +203,39 @@ class CoMgmtComponent extends Component {
     console.log(coCd);
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
-    {coCd!='0000'?
-    CompanyService.getCo(coCd)
-    
-      .then((response) => {
-        const coCd = response.data[0].coCd;
-        const coNm = response.data[0].coNm;
-        const jongmok = response.data[0].jongmok;
-        const businessType = response.data[0].businessType;
-        const coNb = response.data[0].coNb;
-        const ceoNm = response.data[0].ceoNm;
-        const coZip = response.data[0].coZip;
-        const coAddr = response.data[0].coAddr;
-        const coAddr1 = response.data[0].coAddr1;
-  
-        this.setState({
-          coCd: coCd,
-          coNm: coNm,
-          jongmok: jongmok,
-          businessType: businessType,
-          coNb: coNb,
-          ceoNm: ceoNm,
-          coZip: coZip,
-          coAddr: coAddr,
-          coAddr1: coAddr1})
-        })
+    this.setState({focused:coCd})
+    {
+      coCd != '0000' ?
+        CompanyService.getCo(coCd)
+
+          .then((response) => {
+            const coCd = response.data[0].coCd;
+            const coNm = response.data[0].coNm;
+            const jongmok = response.data[0].jongmok;
+            const businessType = response.data[0].businessType;
+            const coNb = response.data[0].coNb;
+            const ceoNm = response.data[0].ceoNm;
+            const coZip = response.data[0].coZip;
+            const coAddr = response.data[0].coAddr;
+            const coAddr1 = response.data[0].coAddr1;
+
+            this.setState({
+              coCd: coCd,
+              coNm: coNm,
+              jongmok: jongmok,
+              businessType: businessType,
+              coNb: coNb,
+              ceoNm: ceoNm,
+              coZip: coZip,
+              coAddr: coAddr,
+              coAddr1: coAddr1
+            })
+          })
           .catch((error) => {
             // 오류 발생 시의 처리
             console.error(error);
             // alert("중복된 회사 또는 모두 입력해주세요");
-        })
+          })
         :
         this.setState({
           coCd: '',
@@ -222,10 +247,12 @@ class CoMgmtComponent extends Component {
           coZip: '',
           coAddr: '',
           coAddr1: ''
-  })}}
+        })
+    }
+  }
 
   helpClick = () => {
-    this.dialogRef.current.handleUp();
+    this.coDialogRef.current.handleUp();
   };
 
 
@@ -242,49 +269,50 @@ class CoMgmtComponent extends Component {
     this.setState({ open: true });
   }
 
-  // updateCo =() => {
-  //   const {coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
-  //   //console.log(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 )
-  //   const co = {
-  //     coCd: coCd,
-  //     coNm: coNm,
-  //     jongmok: jongmok,
-  //     businessType: businessType,
-  //     coNb: coNb,
-  //     ceoNm: ceoNm,
-  //     coZip: coZip,
-  //     coAddr: coAddr,
-  //     coAddr1: coAddr1
-  //   };
+  updateCo = () => {
+    const { coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    //console.log(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 )
+    // const {
+    //   coCd: coCd,
+    //   coNm: coNm,
+    //   jongmok: jongmok,
+    //   businessType: businessType,
+    //   coNb: coNb,
+    //   ceoNm: ceoNm,
+    //   coZip: coZip,
+    //   coAddr: coAddr,
+    //   coAddr1: coAddr1
+    // };
+    console.log(coNm)
+    CompanyService.updateCo(coCd, coNm, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
+      .then((response) => {
+        console.log(response.data);
+        window.confirm('업데이트 완료!');
+        const coCdList = response.data.map((item) => item.coCd);
+        const coNmList = response.data.map((item) => item.coNm);
+        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+        this.setState({
+          cardCount: cardCount, // state에 값을 저장
+          coCdList: coCdList,
+          coNmList: coNmList,
+          coCd: '',
+          coNm: '',
+          jongmok: '',
+          businessType: '',
+          coNb: '',
+          ceoNm: '',
+          coZip: '',
+          coAddr: '',
+          coAddr1: ''
+        })
+      })
 
-  //   CompanyService.updateCo(co)
-  //   .then((response) => {
-  //     console.log(response.data);
-  //     window.confirm('업데이트 완료!');
-  //     const coCdList = response.data.map((item) => item.coCd);
-  //     const coNmList = response.data.map((item) => item.coNm);
-  //     const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-  //     this.setState({
-  //       cardCount: cardCount, // state에 값을 저장
-  //       coCdList: coCdList,
-  //       coNmList: coNmList,
-  //       coCd: '',
-  //       coNm: '',
-  //       jongmok: '',
-  //       businessType: '',
-  //       coNb: '',
-  //       ceoNm: '',
-  //       coZip: '',
-  //       coAddr: '',
-  //       coAddr1: ''
-  //     })})
- 
-  //   .catch((error) => {
-  //     // 오류 발생 시의 처리
-  //     console.error(error);
-  //     alert("업데이트 실패..");
-  //   });
-  // }
+      .catch((error) => {
+        // 오류 발생 시의 처리
+        console.error(error);
+        alert("업데이트 실패..");
+      });
+  }
 
   deleteCo = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd } = this.state;
@@ -312,8 +340,8 @@ class CoMgmtComponent extends Component {
           coAddr: '',
           coAddr1: ''
         })
-        })
-        // window.location.href="/acctmgmt/ozt/co";
+      })
+      // window.location.href="/acctmgmt/ozt/co";
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
@@ -338,14 +366,15 @@ class CoMgmtComponent extends Component {
     const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr } = this.state;
     const { searchWord, searchResult } = this.state;
     const { nbRows, data } = this.state;
-    const { cardCount, coCdList, coNmList } = this.state;
+    const { cardCount, coCdList, coNmList, focused } = this.state;
 
     const currentDate = new Date();
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate()}`;
-
-    const cards = coCdList.map((coCd, index) => ( //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
-      <Card key={coCd} sx={{ mt: 1, mb: 1, border: '1px solid #000', position: 'relative' }}>
+    //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
+   
+    const cards = coCdList.map((coCd, index) => ( 
+      <Card key={coCd} focused={this.state.focused===coCd} sx={{ mb: 1,  position: 'relative', border: this.state.focused===coCd ? '5px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused===coCd ? '#C5DFF8' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 15 }} gutterBottom style={{ position: 'absolute', top: '7px' }}>
@@ -377,39 +406,45 @@ class CoMgmtComponent extends Component {
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />
+       
+        <Grid container direction="row"
+          justifyContent="left"
+          alignItems="center" sx={{ minHeight: 50, border: '1px solid #EAEAEA', mb: '10px' }}>
 
-        <Grid sx={{ width: '100%', minHeight: 700, backgroundColor: 'white' }}>
+          <InputLabel sx={{ fontWeight: 'bold', ml: 3 }}>회사</InputLabel>
+          <Paper sx={{ width: '21%', mt: 1, ml: 1, mb: 1, border: '1px solid #000' }}>
+            <InputBase sx={{ width: '80%',ml: 1 }} placeholder="회사코드/회사명 검색하세요" />
+            <IconButton type="button" onClick={this.helpClick} >
+              <SearchIcon />
+            </IconButton>
+            <Button variant="outlined" style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '172px', right: "35px" }}>
+              <SearchIcon fontSize="medium" />
+            </Button>
+          </Paper>
+        </Grid>
+      
+        <Grid sx={{ width: '100%' }}>
+    
           <Box sx={{ display: 'flex' }}>
+            <Grid container sx={{ width: '25%', border: '1px solid #EAEAEA' }}>
 
-            <Grid container sx={{ justifyContent: "flex-start", width: '25%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
-              <Grid container sx={{ width: '100%', height: 'calc(100% - 7%)' }}>
+              <Divider sx={{ width: '20.2%', border: '1px solid #000', position: 'absolute', top: '264px' }} />
+             
+              <Grid container sx={{ display: 'flex', justifyContent: 'left',alignItems:"center", width: '100%', height: 40, backgroundColor: '#EAEAEA' }}>
+                <InputLabel >총 회사:</InputLabel><InputLabel sx={{ml:0.5, color:'#4A55A2'}}>{cardCount}</InputLabel>
+              </Grid>
+              
+              <Grid container sx={{ justifyContent: "flex-start", width: '100%', height: 'calc(100% - 14%)' }}>
+              
                 <Grid item xs={12} >
-
-                  <Paper
-                    component="form" //이거 필요한가.. 음.. 
-                    sx={{ width: '100%', mt: 1, border: '1px solid #000' }}
-                    onClick={this.helpClick}
-                  >
-                    <InputBase
-                      sx={{ width: '83%', ml: 1 }}
-                      placeholder="회사코드/회사명을 입력하세요"
-                    // inputProps={{ 'aria-label': 'search' }}
-
-                    />
-                    <IconButton type="button">
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                  {/* aria-label="search" */}
                   <Card>
                     {cards}
                   </Card>
-
                 </Grid>
               </Grid>
-
-              <Grid container sx={{ ml: 2, display: 'flex', justifyContent: 'fixed-end', width: '100%' }} >
-                <Fab variant="extended" onClick={this.addCardButton} //aria-label 필요한가..? 
+              
+              <Grid container sx={{ ml: 1, display: 'flex', justifyContent: 'fixed-end', width: '100%' }} >
+                <Fab variant="extended" onClick={this.addCardButton}
                   sx={{
                     backgroundColor: '#4A55A2', color: 'white', display: 'flex', justifyContent: 'center', width: '95%',
                     "&:hover": {
@@ -421,39 +456,34 @@ class CoMgmtComponent extends Component {
                 </Fab>
               </Grid>
             </Grid>
-
+       
             {/* <Box sx={{ width: '25%', minHeight:700 , backgroundColor: '#EAEAEA'}}>
             </Box> */}
             {/* <Box sx={{ width: '75%', minHeight: 700 , ml: 2, backgroundColor: '#EAEAEA'}}> */}
 
-
-            <Grid container sx={{ ml: 1, width: '75%', minHeight: 700, backgroundColor: '#EAEAEA' }}>
-              <Grid item sx={{ width: '100%', height: '30px', backgroundColor: '#EAEAEA' }}>
-              </Grid>
-              <Grid container sx={{ width: '100%', backgroundColor: 'white' }}>
-                <Grid container sx={{ width: '100%', height: '50%', backgroundColor: '#EAEAEA' }}>
-                </Grid>
+            <Grid container sx={{ ml: 1, width: '75%', minHeight: 700, border: '1px solid #EAEAEA' }}>
+              <Grid container sx={{ width: '100%', maxHeight: 40, borderLeft: '1px solid #000', borderBottom: '1px solid #000' }}>
                 <Grid item xs={2}>
                   <InputLabel sx={{ mr: 2, mt: 1, textAlign: 'center', color: 'black' }}>기본정보</InputLabel>
                 </Grid>
 
                 <Grid item xs={8}></Grid>
 
-                <Grid item xs={1} > 
-                  {coCd?
-                  <Button  variant="outlined" onClick={this.updateCo}>수정</Button>
+                <Grid item xs={1} >
+                  {coCd ?
+                    <Button variant="outlined" onClick={this.updateCo}>수정</Button>
                     :
-                  <Button  variant="outlined" onClick={this.insertCo}>저장</Button>
+                    <Button variant="outlined" onClick={this.insertCo}>저장</Button>
                   }
                 </Grid>
 
                 <Grid item xs={1} >
                   <Button variant="outlined" onClick={this.deleteCo}>삭제</Button>
                 </Grid>
-
+                {/* <Divider sx={{width: '60.8%', border: '1px solid #000', position:'absolute', top:'264px'}}/> */}
               </Grid>
 
-              <Grid container sx={{ width: '100%', height: 'calc(100% - 200px)' }}>
+              <Grid container sx={{ width: '100%', height: 'calc(100% - 65px)' }}>
                 <Grid container spacing={2}
                   direction="colummn"
                   justifyContent="space-evenly"
@@ -476,7 +506,7 @@ class CoMgmtComponent extends Component {
                   </Grid> */}
 
 
-                  <Grid item xs={2}>
+                  <Grid item xs={2} >
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}>회사명</InputLabel>
                   </Grid>
                   <Grid item xs={4}>
@@ -545,15 +575,11 @@ class CoMgmtComponent extends Component {
                   <Grid item xs={1}>
                     <InputLabel sx={{ textAlign: 'right' }}>기</InputLabel>
                   </Grid>
-                  <Grid item xs={4}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={['DatePicker']} >
-                        <DatePicker />
-                        <Button size="small" sx={{ direction: "row", justifyContent: "center", alignItems: "center" }} variant="outlined" onClick={this.handleGisu}>
-                          기수등록
-                        </Button>
-                      </DemoContainer>
-                    </LocalizationProvider>
+                  <Grid item xs={5}>
+                    <TextField size='small' InputProps={{ readOnly: true }}></TextField>
+                    <Button size="small" sx={{ direction: "row", justifyContent: "center", alignItems: "center", ml: 0.5, mt: 0.5 }} variant="outlined" onClick={this.handleGisu}>
+                      기수등록
+                    </Button>
                   </Grid>
 
                   <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
@@ -573,7 +599,7 @@ class CoMgmtComponent extends Component {
                             showColumnVerticalBorder={true}
                             showCellVerticalBorder={true} // 각 셀마다 영역주기
                             hideFooter
-                            />
+                          />
                         </Box>
                       </Box>
 
@@ -592,7 +618,7 @@ class CoMgmtComponent extends Component {
                     </DialogActions>
                   </Dialog>
 
-                  <Grid item xs={5}>
+                  <Grid item xs={4}>
                   </Grid>
                   {/* <Grid item xs={1}>
                     <InputLabel sx={{ display: 'flex', justifyContent: 'center', fontSize: 20, mr: 2, mt: 1 }}>~</InputLabel>
@@ -610,12 +636,15 @@ class CoMgmtComponent extends Component {
             </Grid>
             {/* </Box> */}
           </Box >
+       
         </Grid >
+ 
         <AddressComponent setCoZipAddr={this.setCoZipAddr} ref={this.addrRef} />
-        <DialogComponent ref={this.dialogRef} />
+        <CoDialogComponent ref={this.coDialogRef} />
       </container>
     );
-  }}
+  }
+}
 
 
 export default CoMgmtComponent;
