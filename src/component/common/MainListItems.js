@@ -138,6 +138,7 @@ class MainListItems extends Component {
                 <ListItemText primary="부서등록" />
               </ListItemButton>
             </Link>
+            <Link to={"pjt"}>
             <ListItemButton
               sx={{
                 pl: this.props.drawerOpen ? 6.7 : 2,
@@ -154,6 +155,7 @@ class MainListItems extends Component {
               </ListItemIcon>
               <ListItemText primary="프로젝트등록" />
             </ListItemButton>
+            </Link>
           </List>
         </Collapse>
         <Divider />
