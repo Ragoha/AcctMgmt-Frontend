@@ -45,11 +45,23 @@ class BtgICFService {
   }
 
   findBgtGrCdAndBgtGrNmByCoCd(coCd) {
-    return axios.get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr", {
-      params: {
-        coCd: coCd,
-      },
-    })
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr", {
+        params: {
+          coCd: coCd,
+        },
+      })
+      .then((response) => response.data);
+  }
+
+  findBgtGrCdAndBgtGrNmByKeyword(keyword) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr/search", {
+        params: {
+          coCd: "1",
+          keyword: keyword
+        },
+      })
       .then((response) => response.data);
   }
 }
