@@ -16,36 +16,37 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import BgtICFService from "../../../service/BgtICFService";
 
-class DivDialogComponent extends Component {
+const columns = [
+  {
+    field: "bgtGrCd",
+    headerName: "예산그룹코드",
+    width: 180,
+    headerAlign: "center",
+  },
+  {
+    field: "bgtGrNm",
+    headerName: "예산그룹명",
+    width: 270,
+    headerAlign: "center",
+  },
+];
+      
+const rows = [
+  { id: 1, bgtGrCd: "1", bgtGrNm: "John" },
+  { id: 2, bgtGrCd: "2", bgtGrNm: "John" },
+  { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
+];
+
+class BgtGrDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { divCd: "", divNm: "" },
-      divRows: [],
-      keyword:"",
-      data: {
-        columns: [
-          {
-            field: "divCd",
-            headerName: "사업장코드",
-            width: 180,
-            headerAlign: "center",
-          },
-          {
-            field: "divNm",
-            headerName: "사업장명",
-            width: 270,
-            headerAlign: "center",
-          },
-        ],
-        rows: [
-          {id:1, divCd: 1, divNm: "John" },
-          {id:2, divCd: 2, divNm: "Jane" },
-          {id:3, divCd: 3, divNm: "Bob" },
-          // Add more rows here...
-        ],
-      },
+      selectedRow: { bgtGrCd: "", bgtGrNm: "" },
+      bgtGrRows: [],
+      keyword: "",
+      rows: rows,
+      columns: columns,
     };
   }
 
@@ -58,22 +59,15 @@ class DivDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    console.log(params);
     this.setState({ selectedRow: params.row }, () => {
       console.log(this.state.selectedRow);
     });
     // console.log(this.state);
-  }
+  };
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
-  }
-
-  handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
-    this.handleDown();
-    await this.props.setDivTextField(this.state.selectedRow);
-  }
+  };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -81,11 +75,51 @@ class DivDialogComponent extends Component {
     console.log(this.state);
   };
 
+  handlePressEnter = (e) => {
+    if (e.key === "Enter") {
+      this.handleSearchBgtGr();
+    }
+  };
+
+  handleInitBgtGrRows = () => {
+    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1);
+  };
+
+  handleSearchBgtGr = () => {
+    BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
+      async (response) => {
+        const bgtGrRows = response.map((row) => ({
+          id: row.bgtGrCd,
+          bgtGrCd: row.bgtGrCd,
+          bgtGrNm: row.bgtGrNm,
+        }));
+        await this.setState({ bgtGrRows: bgtGrRows });
+        console.log(this.state);
+      }
+    );
+  };
+
+  handleClickConfirm = async () => {
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    await this.props.handleSetBgtGrTextField(this.state.selectedRow);
+  };
+
+  componentDidMount() {
+    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then(async (response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      await this.setState({ bgtGrRows: bgtGrRows });
+    });
+  }
+
   render() {
-    const { open, data } = this.state;
+    const { open, columns, rows } = this.state;
 
     return (
-      //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
         <DialogTitle
           sx={{
@@ -98,7 +132,7 @@ class DivDialogComponent extends Component {
             height: 60,
           }}
         >
-          사업장검색
+          예산그룹검색
           <IconButton
             size="small"
             onClick={() =>
@@ -136,11 +170,7 @@ class DivDialogComponent extends Component {
                 onChange={this.handleInputChange}
                 variant="outlined"
                 size="small"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    console.log(`Pressed keyCode ${e.key}`);
-                  }
-                }}
+                onKeyDown={this.handlePressEnter}
               ></TextField>
               <Button
                 variant="outlined"
@@ -156,19 +186,7 @@ class DivDialogComponent extends Component {
               >
                 <SearchIcon
                   fontSize="medium"
-                  onClick={() => {
-                    BgtICFService.findDivCdAndDivNmByKeyword(
-                      this.state.keyword
-                    ).then(async (response) => {
-                      const divRows = response.map((row) => ({
-                                id: row.divCd,
-                                divCd: row.divCd,
-                                divNm: row.divNm,
-                      }));
-                      await this.setState({ divRows: divRows });
-                      console.log(this.state);
-                    });
-                  }}
+                  onClick={this.handleSearchBgtGr}
                 />
               </Button>
             </Box>
@@ -179,16 +197,12 @@ class DivDialogComponent extends Component {
           <Box sx={{ mt: 1, width: "100%" }}>
             <Box style={{ height: 350, width: "100%" }}>
               <DataGrid
-                rows={this.state.divRows}
-                columns={data.columns}
+                columns={columns}
+                rows={this.state.bgtGrRows}
                 showColumnVerticalBorder={true}
                 showCellVerticalBorder={true} // 각 셀마다 영역주기
                 onRowClick={this.handleClickRow}
-                components={{
-                  // 페이징과 "rows per page" 텍스트를 숨기는 컴포넌트 오버라이딩
-                  Pagination: () => null,
-                  Footer: () => null,
-                }}
+                hideFooter
               />
             </Box>
           </Box>
@@ -220,4 +234,4 @@ class DivDialogComponent extends Component {
     );
   }
 }
-export default DivDialogComponent;
+export default BgtGrDialogComponent;
