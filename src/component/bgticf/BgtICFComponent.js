@@ -18,6 +18,12 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DivDialogComponent from "./modal/DivDialogComponent";
 import BgtGrDialogComponent from "./modal/BgtGrDialogComponent";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import ListDisplay from "./test";
+import AutocompleteWithRemove from "./test";
 
 const BGTCD_COLUMN = [
   {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
@@ -106,13 +112,13 @@ class BgtICFComponent extends Component {
 
   handleSetDivTextField = async (data) => {
     console.log(data);
-    await this.setState({ divTextField: data.divCd + " / " + data.divNm });
+    await this.setState({ divTextField: data.divCd + ". " + data.divNm });
     console.log(this.state);
   };
 
   handleSetBgtGrTextField = async (data) => {
     await this.setState({
-      bgtGrTextField: data.bgtGrCd + " / " + data.bgtGrNm,
+      bgtGrTextField: data.bgtGrCd + ". " + data.bgtGrNm,
     });
   };
 
@@ -208,13 +214,30 @@ class BgtICFComponent extends Component {
                 sx={{ width: "65px", marginRight: "10px" }}
                 renderInput={(params) => <TextField {...params} />}
               />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        width: "100px",
+                        sx: { width: "100px" },
+                        inputProps: {
+                          sx: { height: "80px" },
+                        },
+                      },
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
               {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
               {/* <DatePicker
                   slotProps={{
                     textField: { size: "small" },
                   }}
                 /> */}
-              <ReactDatePicker
+              {/* <ReactDatePicker
                 showWeekNumbers
                 showTimeInput
                 showTimeSelect
@@ -223,7 +246,7 @@ class BgtICFComponent extends Component {
                 showIcon
                 selected={startDate}
                 onChange={this.dateChange}
-              />
+              /> */}
               {/* </LocalizationProvider> */}
             </Grid>
           </Grid>
@@ -283,6 +306,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={6}>
             <Button onClick={this.handleGetBgtICFList}>조회</Button>
+            <AutocompleteWithRemove />
           </Grid>
         </Grid>
         <Divider variant="middle" />

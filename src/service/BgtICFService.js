@@ -15,17 +15,17 @@ class BtgICFService {
 
   getBgtICFList() {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf")
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf")
       .then((response) => response.data);
   }
 
   deleteBgtICF(sq) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/" + sq);
+    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
   }
 
   findDivCdAndDivNmByCoCd(coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/div", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {
         params: {
           coCd: coCd,
         },
@@ -35,7 +35,7 @@ class BtgICFService {
 
   findDivCdAndDivNmByKeyword(keyword) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/div/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div/search", {
         params: {
           coCd: "1",
           keyword: keyword,
@@ -46,7 +46,7 @@ class BtgICFService {
 
   findBgtGrCdAndBgtGrNmByCoCd(coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr", {
         params: {
           coCd: coCd,
         },
@@ -56,7 +56,7 @@ class BtgICFService {
 
   findBgtGrCdAndBgtGrNmByKeyword(keyword) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgt/bgticf/bgtgr/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr/search", {
         params: {
           coCd: "1",
           keyword: keyword

@@ -147,23 +147,23 @@ class MainListItems extends Component {
                 <ListItemText primary="부서등록" />
               </ListItemButton>
             </Link>
-            <Link to={"pjt"}>
-            <ListItemButton
-              sx={{
-                pl: this.props.drawerOpen ? 6.7 : 2,
-                transition: "padding-left 300ms",
-              }}
-            >
-              <ListItemIcon>
-                <Tooltip
-                  title={this.props.drawerOpen ? "" : "프로젝트등록"}
-                  placement="right"
-                >
-                  <AssignmentIcon />
-                </Tooltip>
-              </ListItemIcon>
-              <ListItemText primary="프로젝트등록" />
-            </ListItemButton>
+            <Link to={"pjt"} style={{ textDecoration: "none", color: "black" }}>
+              <ListItemButton
+                sx={{
+                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  transition: "padding-left 300ms",
+                }}
+              >
+                <ListItemIcon>
+                  <Tooltip
+                    title={this.props.drawerOpen ? "" : "프로젝트등록"}
+                    placement="right"
+                  >
+                    <AssignmentIcon />
+                  </Tooltip>
+                </ListItemIcon>
+                <ListItemText primary="프로젝트등록" />
+              </ListItemButton>
             </Link>
           </List>
         </Collapse>

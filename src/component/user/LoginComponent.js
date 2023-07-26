@@ -18,6 +18,7 @@ import Image4 from './back4.jpg';
 import { CSSTransition } from 'react-transition-group';
 import Cookie from '../../storage/Cookie';
 import { SET_TOKEN }  from '../../store/Auth';
+import { SET_USER } from '../../store/User';
 import { connect } from 'react-redux';
 
 
@@ -68,12 +69,17 @@ class LoginComponent extends Component {
                 alert("로그인 성공", response);
                 const jwtToken = response.data.refreshToken; // 응답에서 토큰 추출
                 Cookie.setRefreshToken(jwtToken); // 토큰을 쿠키에 저장
-                const accToken = response.data.accessToken;
-                const acwte = this.props.setAccessToken(accToken);
+
+                const accToken = response.data.accessToken;//응답에서 엑세스토큰 추출
+                const acwte = this.props.setAccessToken(accToken);//토큰을 리덕스에 저장
+
+                const user = response.data;// user라는 변수에 응답 데이터 전부 저장
+                const USER = this.props.setUserInfo(user);//로긴한 유저 정보를 리덕스에 저장
                 console.log(response.data);
                 console.log(jwtToken);
                 console.log(accToken);
                 console.log("가자 : "+acwte);
+                console.log("리덕스에 있는 유저 정보 : " + USER);
                 window.location.href = "/acctmgmt/bgt";
             })
             .catch((error) => {
@@ -262,6 +268,7 @@ class LoginComponent extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     setAccessToken: (accessToken) => dispatch(SET_TOKEN(accessToken)),
+    setUserInfo: (userInfo) => dispatch(SET_USER(userInfo)),
   };
 };
 
