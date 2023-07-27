@@ -8,12 +8,16 @@ class User {
                 coCd:'',
                 empId: '',
                 empEmail: '',
+                divCd: '',
+                deptOd: '',
             },
             reducers: {
                 SET_USER: (state, action) => {
                     state.coCd = action.payload.coCd;
                     state.empId = action.payload.empId;
                     state.empEmail = action.payload.empEmail;
+                    state.divCd = action.payload.divCd;
+                    state.deptOd = action.payload.deptOd;
                 },
             }
         });
