@@ -17,6 +17,9 @@ import MainListItems from "./MainListItems";
 import { AccountCircle } from "@mui/icons-material";
 import { Outlet, Route, Routes } from "react-router";
 import Scrollbars from "react-custom-scrollbars";
+import { DELETE_TOKEN , SET_TOKEN } from '../../store/Auth';
+import { connect } from 'react-redux';
+import axios from "axios";
 
 const drawerWidth = 240;
 
@@ -80,6 +83,17 @@ class MainComponent extends Component {
     };
   }
 
+
+  logout = () => {
+    const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+    const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
+    console.log("불러온 엑세스 토큰 : " + accessToken);
+    this.props.delAccessToken(accessToken);
+    console.log("삭제 후 엑세스 토큰 : " + accessToken);
+    // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
+    // });  
+  };
+
   toggleDrawer = () => {
     this.setState((prevState) => ({
       open: !prevState.open,
@@ -132,7 +146,7 @@ class MainComponent extends Component {
                   <AccountCircle />
                 </Badge>
                 <div style={{ marginLeft: '15px' }}>
-                <a href="/">LogOut</a>
+                  <a onClick={this.logout}>LogOut</a>
                 </div>
               </IconButton>
             </Toolbar>
@@ -167,16 +181,28 @@ class MainComponent extends Component {
             </Scrollbars>
           </Drawer>
 
-            {/* Main */}
-            <Scrollbars style={{ height: "100vh" }}>
-              <Box sx={{ pt: 10, pb: 2, pl: open ? 32 : 9, pr: 2, transition: "padding 0.4s" }}>
-                <Outlet />
-              </Box>
-            </Scrollbars>
-          </Box>
+          {/* Main */}
+          <Scrollbars style={{ height: "100vh" }}>
+            <Box sx={{ pt: 10, pb: 2, pl: open ? 32 : 9, pr: 2, transition: "padding 0.4s" }}>
+              <Outlet />
+            </Box>
+          </Scrollbars>
+        </Box>
       </ThemeProvider>
     );
   }
 }
 
-export default MainComponent;
+// ... (중략)
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainComponent);
