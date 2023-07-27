@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  Box,
+  Grid,
   Button,
   Dialog,
   DialogActions,
@@ -143,7 +143,7 @@ class BgtGrDialogComponent extends Component {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box
+          <Grid
             sx={{
               border: "3px solid #EAEAEA",
               display: "flex",
@@ -152,8 +152,8 @@ class BgtGrDialogComponent extends Component {
               mb: 1,
             }}
           >
-            <Box mb={2}></Box>
-            <Box
+            <Grid mb={2}></Grid>
+            <Grid
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -189,13 +189,13 @@ class BgtGrDialogComponent extends Component {
                   onClick={this.handleSearchBgtGr}
                 />
               </Button>
-            </Box>
-            <Box mb={1}></Box>
-          </Box>
-          <Box mb={2}></Box>
+            </Grid>
+            <Grid mb={1}></Grid>
+          </Grid>
+          <Grid mb={2}></Grid>
           <Divider sx={{ border: "1px solid #EAEAEA" }} />
-          <Box sx={{ mt: 1, width: "100%" }}>
-            <Box style={{ height: 350, width: "100%" }}>
+          <Grid sx={{ mt: 1, width: "100%" }}>
+            <Grid style={{ height: 350, width: "100%" }}>
               <DataGrid
                 columns={columns}
                 rows={this.state.bgtGrRows}
@@ -204,8 +204,8 @@ class BgtGrDialogComponent extends Component {
                 onRowClick={this.handleClickRow}
                 hideFooter
               />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </DialogContent>
         <Divider />
         <DialogActions>
