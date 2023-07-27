@@ -9,7 +9,7 @@ import {
   InputLabel,
   TextField,
 } from "@mui/material";
-import { DataGrid} from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,13 +24,19 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ListDisplay from "./test";
 import AutocompleteWithRemove from "./test";
+import BgtCDDialogComponent from "./modal/BgtCDDialogComponent";
 
 const BGTCD_COLUMN = [
-  {field: "bgtCd", headerName: "예산코드", flex: 1, /* editable: true, */ },
-  {field: "bgtFg", headerName: "예산구분", flex: 1, /* editable: true, */ },
-  {field: "bgtNm", headerName: "예산과목명", minWidth: 90, flex: 1, /* editable: true, */},
-  {field: "amount", headerName: "금액", flex: 1, /* editable: true, */ },
-]
+  { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
+  { field: "bgtFg", headerName: "예산구분", flex: 1 /* editable: true, */ },
+  {
+    field: "bgtNm",
+    headerName: "예산과목명",
+    minWidth: 90,
+    flex: 1 /* editable: true, */,
+  },
+  { field: "amount", headerName: "금액", flex: 1 /* editable: true, */ },
+];
 
 class BgtICFComponent extends Component {
   constructor(props) {
@@ -53,6 +59,7 @@ class BgtICFComponent extends Component {
     this.childRef = createRef();
     this.divRef = createRef();
     this.bgtGrRef = createRef();
+    this.bgtCDRef = createRef();
   }
 
   handleSet = (e) => {
@@ -107,6 +114,7 @@ class BgtICFComponent extends Component {
   };
 
   setSelectedRowId = (selectedId) => {
+    console.log(this.state);
     this.setState({ selectedRowId: selectedId });
   };
 
@@ -301,6 +309,18 @@ class BgtICFComponent extends Component {
                 onChange={this.handleInputChange}
                 size="small"
                 sx={{ width: "220px" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon
+                        onClick={() => {
+                          this.bgtCDRef.current.handleInitBgtGrRows();
+                          this.bgtCDRef.current.handleUp();
+                        }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
               ></TextField>
             </Grid>
           </Grid>
@@ -364,6 +384,8 @@ class BgtICFComponent extends Component {
           ref={this.bgtGrRef}
           handleSetBgtGrTextField={this.handleSetBgtGrTextField}
         />
+
+        <BgtCDDialogComponent ref={this.bgtCDRef} />
       </>
     );
   }

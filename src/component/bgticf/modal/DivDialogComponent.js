@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  Box,
+  Grid,
   Button,
   Dialog,
   DialogActions,
@@ -14,6 +14,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
+import PageviewIcon from "@mui/icons-material/Pageview";
 import BgtICFService from "../../../service/BgtICFService";
 
 class DivDialogComponent extends Component {
@@ -123,7 +124,7 @@ class DivDialogComponent extends Component {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Box
+          <Grid
             sx={{
               border: "3px solid #EAEAEA",
               display: "flex",
@@ -132,8 +133,8 @@ class DivDialogComponent extends Component {
               mb: 1,
             }}
           >
-            <Box mb={2}></Box>
-            <Box
+            <Grid mb={2}></Grid>
+            <Grid
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -173,13 +174,13 @@ class DivDialogComponent extends Component {
                   onClick={this.handleClickSearchIcon}
                 />
               </Button>
-            </Box>
-            <Box mb={1}></Box>
-          </Box>
-          <Box mb={2}></Box>
+            </Grid>
+            <Grid mb={1}></Grid>
+          </Grid>
+          <Grid mb={2}></Grid>
           <Divider sx={{ border: "1px solid #EAEAEA" }} />
-          <Box sx={{ mt: 1, width: "100%" }}>
-            <Box style={{ height: 350, width: "100%" }}>
+          <Grid sx={{ mt: 1, width: "100%" }}>
+            <Grid style={{ height: 350, width: "100%" }}>
               <DataGrid
                 rows={this.state.divRows}
                 columns={data.columns}
@@ -188,8 +189,8 @@ class DivDialogComponent extends Component {
                 onRowClick={this.handleClickRow}
                 hideFooter
               />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </DialogContent>
         <Divider />
         <DialogActions>
