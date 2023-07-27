@@ -17,9 +17,6 @@ class BgtCDDetailInfoFormControl extends Component {
       bizFg: this.props.bizFg,
     }
   }
-  componentDidMount() {
-    console.dir(this.props)
-  }
   componentDidUpdate(prevProps) {
     //이전의 props 에서의 값과 비교했을때 값이 달라진다면 ?  
     if (this.props.ctlFg !== prevProps.ctlFg) {
@@ -44,7 +41,6 @@ class BgtCDDetailInfoFormControl extends Component {
       });
     }
   }
-
   /*menuItemBalues 관련*/
   //['1.통제안함', '2.월별조회', '3.분기별조회', '4.년누적조회', '5.월별통제', '6.분기별통제', '7.년누적통계', '8.월누적통제', '9.프로젝트기간통제']
   checkIndex = (data) => {
@@ -62,8 +58,6 @@ class BgtCDDetailInfoFormControl extends Component {
     this.setState({ defaultValue: event.target.value, dataindex: index } //,()=>{this.props.onChange(event.target.value , this.props.id)} [230720]=> 있었는데 왜 있었는지 모르겠음 걍 지움 다른 코드랑 꼬이면 다시 생각해보자..
     );
   }
-
-
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
