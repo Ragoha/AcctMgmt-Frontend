@@ -7,7 +7,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Unstable_Grid2';
-import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -59,6 +58,7 @@ class CoMgmtComponent extends Component {
       coAddr1: '', //상세주소
       coCdList: [],
       coNmList: [],
+      CodialTextField:'',
 
       data: {
         columns: [
@@ -92,6 +92,7 @@ class CoMgmtComponent extends Component {
         const coZip = response.data[0].coZip;
         const coAddr = response.data[0].coAddr;
         const coAddr1 = response.data[0].coAddr1;
+
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
@@ -128,13 +129,18 @@ class CoMgmtComponent extends Component {
   addCardButton = () => {
     const newCardCount = this.state.cardCount + 1;
     const newCoCdList = [...this.state.coCdList, '0000'];
+    
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
-
+    // {
+    //   newCardCount -(this.state.cardCount)> 2?
+    // alert("저장되지 않은 회사가 있습니다.")
+    // :
     // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
     this.setState({
       cardCount: newCardCount,
       coCdList: newCoCdList,
       // coNmList: newCoNmList,
+      focused: '0000',
       coCd: '',
       coNm: '',
       jongmok: '',
@@ -143,9 +149,8 @@ class CoMgmtComponent extends Component {
       ceoNm: '',
       coZip: '',
       coAddr: '',
-      coAddr1: '',
-
-    });
+      coAddr1: ''
+    })
   } //여기에 모든 state값 초기화 하면 됨 !!!!!
 
   insertCo = () => {
@@ -201,42 +206,12 @@ class CoMgmtComponent extends Component {
 
   cardClick = (coCd) => {
     console.log(coCd);
+   
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
-    this.setState({focused:coCd})
+    this.setState({focused: coCd})
     {
-      coCd != '0000' ?
-        CompanyService.getCo(coCd)
-
-          .then((response) => {
-            const coCd = response.data[0].coCd;
-            const coNm = response.data[0].coNm;
-            const jongmok = response.data[0].jongmok;
-            const businessType = response.data[0].businessType;
-            const coNb = response.data[0].coNb;
-            const ceoNm = response.data[0].ceoNm;
-            const coZip = response.data[0].coZip;
-            const coAddr = response.data[0].coAddr;
-            const coAddr1 = response.data[0].coAddr1;
-
-            this.setState({
-              coCd: coCd,
-              coNm: coNm,
-              jongmok: jongmok,
-              businessType: businessType,
-              coNb: coNb,
-              ceoNm: ceoNm,
-              coZip: coZip,
-              coAddr: coAddr,
-              coAddr1: coAddr1
-            })
-          })
-          .catch((error) => {
-            // 오류 발생 시의 처리
-            console.error(error);
-            // alert("중복된 회사 또는 모두 입력해주세요");
-          })
-        :
+      coCd == '0000'?
         this.setState({
           coCd: '',
           coNm: '',
@@ -247,6 +222,36 @@ class CoMgmtComponent extends Component {
           coZip: '',
           coAddr: '',
           coAddr1: ''
+        }):
+        CompanyService.getCo(coCd)
+
+        .then((response) => {
+          const coCd = response.data[0].coCd;
+          const coNm = response.data[0].coNm;
+          const jongmok = response.data[0].jongmok;
+          const businessType = response.data[0].businessType;
+          const coNb = response.data[0].coNb;
+          const ceoNm = response.data[0].ceoNm;
+          const coZip = response.data[0].coZip;
+          const coAddr = response.data[0].coAddr;
+          const coAddr1 = response.data[0].coAddr1;
+
+          this.setState({
+            coCd: coCd,
+            coNm: coNm,
+            jongmok: jongmok,
+            businessType: businessType,
+            coNb: coNb,
+            ceoNm: ceoNm,
+            coZip: coZip,
+            coAddr: coAddr,
+            coAddr1: coAddr1
+          })
+        })
+        .catch((error) => {
+          // 오류 발생 시의 처리
+          console.error(error);
+          // alert("중복된 회사 또는 모두 입력해주세요");
         })
     }
   }
@@ -259,6 +264,59 @@ class CoMgmtComponent extends Component {
   closeDialog = () => {
     this.dialogRef.current.handleDown();
   }
+
+  handleSetCodialTextField = async (data) => {
+    await this.setState({
+      CodialTextField: data.coCd + ". " + data.coNm,
+      coCd : data.coCd  //밑에 coCd 넘겨주기
+    });
+  };
+
+  searchClick =(coCd) =>{
+    CompanyService.getCo(coCd)
+    .then((response) => {
+      const coCdList = response.data.map((item) => item.coCd);
+      const coNmList = response.data.map((item) => item.coNm); //? 이게되네
+      const cardCount = response.data.length;
+
+      const coCd = response.data[0].coCd;
+      const coNm = response.data[0].coNm;
+      const jongmok = response.data[0].jongmok;
+      const businessType = response.data[0].businessType;
+      const coNb = response.data[0].coNb;
+      const ceoNm = response.data[0].ceoNm;
+      const coZip = response.data[0].coZip;
+      const coAddr = response.data[0].coAddr;
+      const coAddr1 = response.data[0].coAddr1;
+
+      this.setState({
+        cardCount: cardCount,//??????
+        coCdList : coCdList,
+        coNmList : coNmList,
+
+        focused: coCd,
+        coCd: coCd,
+        coNm: coNm,
+        jongmok: jongmok,
+        businessType: businessType,
+        coNb: coNb,
+        ceoNm: ceoNm,
+        coZip: coZip,
+        coAddr: coAddr,
+        coAddr1: coAddr1,
+        CodialTextField:''
+      })
+    })
+    .catch((error) => {
+      // 오류 발생 시의 처리
+      console.error(error);
+      // alert("중복된 회사 또는 모두 입력해주세요");
+    })
+  }
+
+  // searchName =(e)=>{
+  //   this.setState({CodialTextField : e.target.value});
+  // }
 
   setCoZipAddr = (data) => {
     this.setState({ coZip: data.coZip });
@@ -349,6 +407,8 @@ class CoMgmtComponent extends Component {
       });
   }
 
+  
+
   // handleSearch = (e) => {
   //   this.setState({ searchWord: e.target.value });
   // }
@@ -363,10 +423,10 @@ class CoMgmtComponent extends Component {
   // };
 
   render() {
-    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr } = this.state;
+    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr} = this.state;
     const { searchWord, searchResult } = this.state;
     const { nbRows, data } = this.state;
-    const { cardCount, coCdList, coNmList, focused } = this.state;
+    const { cardCount, coCdList, coNmList, focused, index } = this.state;
 
     const currentDate = new Date();
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
@@ -374,7 +434,7 @@ class CoMgmtComponent extends Component {
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
    
     const cards = coCdList.map((coCd, index) => ( 
-      <Card key={coCd} focused={this.state.focused===coCd} sx={{ mb: 1,  position: 'relative', border: this.state.focused===coCd ? '5px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused===coCd ? '#C5DFF8' : 'white' }}>
+      <Card key={coCd} focused={this.state.focused===coCd} sx={{ mb: 1, width:'100%', height:100,  position: 'relative', border: this.state.focused===coCd ? '5px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused===coCd ? '#C5DFF8' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 15 }} gutterBottom style={{ position: 'absolute', top: '7px' }}>
@@ -405,7 +465,7 @@ class CoMgmtComponent extends Component {
             <span>회사관리</span>
           </Grid>
         </Grid>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 1 }} />
        
         <Grid container direction="row"
           justifyContent="left"
@@ -413,37 +473,38 @@ class CoMgmtComponent extends Component {
 
           <InputLabel sx={{ fontWeight: 'bold', ml: 3 }}>회사</InputLabel>
           <Paper sx={{ width: '21%', mt: 1, ml: 1, mb: 1, border: '1px solid #000' }}>
-            <InputBase sx={{ width: '80%',ml: 1 }} placeholder="회사코드/회사명 검색하세요" />
+            <InputBase name='CodialTextField' value={this.state.CodialTextField} onChange={this.searchName} sx={{ width: '80%',ml: 1 }} placeholder="회사코드/회사명 검색하세요" />
             <IconButton type="button" onClick={this.helpClick} >
               <SearchIcon />
             </IconButton>
-            <Button variant="outlined" style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '172px', right: "35px" }}>
+            <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '155px', right: "35px" }}>
               <SearchIcon fontSize="medium" />
             </Button>
           </Paper>
         </Grid>
       
-        <Grid sx={{ width: '100%' }}>
-    
+        {/* <Grid sx={{ width: '100%'}}> */}
           <Box sx={{ display: 'flex' }}>
-            <Grid container sx={{ width: '25%', border: '1px solid #EAEAEA' }}>
+          
+            <Grid container sx={{ width: '25%', height: 570, border: '1px solid #EAEAEA' }}>
 
-              <Divider sx={{ width: '20.2%', border: '1px solid #000', position: 'absolute', top: '264px' }} />
+              {/* <Divider sx={{ width: '20.2%', border: '1px solid #000', position: 'absolute', top: '264px'  }} /> */}
              
-              <Grid container sx={{ display: 'flex', justifyContent: 'left',alignItems:"center", width: '100%', height: 40, backgroundColor: '#EAEAEA' }}>
+              <Grid container sx={{ display: 'flex', justifyContent: 'left',alignItems:"center", width: '100%', height: 22, backgroundColor: '#EAEAEA' }}>
                 <InputLabel >총 회사:</InputLabel><InputLabel sx={{ml:0.5, color:'#4A55A2'}}>{cardCount}</InputLabel>
               </Grid>
               
-              <Grid container sx={{ justifyContent: "flex-start", width: '100%', height: 'calc(100% - 14%)' }}>
-              
+              <Grid container sx={{  width: '100%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
+            
                 <Grid item xs={12} >
                   <Card>
                     {cards}
                   </Card>
                 </Grid>
+              
               </Grid>
               
-              <Grid container sx={{ ml: 1, display: 'flex', justifyContent: 'fixed-end', width: '100%' }} >
+              <Grid container sx={{ ml: 0.6, position:'absolute', top:'785px', width: '20%' }} >
                 <Fab variant="extended" onClick={this.addCardButton}
                   sx={{
                     backgroundColor: '#4A55A2', color: 'white', display: 'flex', justifyContent: 'center', width: '95%',
@@ -456,12 +517,12 @@ class CoMgmtComponent extends Component {
                 </Fab>
               </Grid>
             </Grid>
-       
+            
             {/* <Box sx={{ width: '25%', minHeight:700 , backgroundColor: '#EAEAEA'}}>
             </Box> */}
             {/* <Box sx={{ width: '75%', minHeight: 700 , ml: 2, backgroundColor: '#EAEAEA'}}> */}
 
-            <Grid container sx={{ ml: 1, width: '75%', minHeight: 700, border: '1px solid #EAEAEA' }}>
+            <Grid container sx={{ ml: 1, width: '75%', height: 630, border: '1px solid #EAEAEA' }}>
               <Grid container sx={{ width: '100%', maxHeight: 40, borderLeft: '1px solid #000', borderBottom: '1px solid #000' }}>
                 <Grid item xs={2}>
                   <InputLabel sx={{ mr: 2, mt: 1, textAlign: 'center', color: 'black' }}>기본정보</InputLabel>
@@ -636,11 +697,10 @@ class CoMgmtComponent extends Component {
             </Grid>
             {/* </Box> */}
           </Box >
-       
-        </Grid >
+        {/* </Grid > */}
  
         <AddressComponent setCoZipAddr={this.setCoZipAddr} ref={this.addrRef} />
-        <CoDialogComponent ref={this.coDialogRef} />
+        <CoDialogComponent handleSetCodialTextField={this.handleSetCodialTextField} ref={this.coDialogRef} />
       </container>
     );
   }
