@@ -137,7 +137,7 @@ class BgtCD extends Component {
                     <Grid item xs={7}>
                         {/* <BgtCDDatagrid ref={this.BgtDataGrid} rows={rows} clickedRow={this.clickedRow} /> */}
                         {/* <BgtCDTreeGrid ref={this.BgtDataGrid}/> */}
-                        {/* <TreeTest ref={this.BgtDataGrid} rows={rows} clickedRow={this.clickedRow} /> */}
+                        <TreeTest ref={this.BgtDataGrid} rows={rows} clickedRow={this.clickedRow} />
                     </Grid>
                     <Grid item xs={5} border={3} sx={{ marginTop: '5px' }}>
                         <BgtCDDetailInfo prevBgtCd={prevBgtCd} ctlFg={ctlFg} bgajustFg={bgajustFg} bottomFg={bottomFg} bizFg={bizFg} />{/*자식컴포넌트에 state를 props로 전달 */}
