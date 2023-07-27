@@ -24,7 +24,7 @@ class BgtCDDevFgCustom extends Component {
     }
     componentDidMount() {
         const CO_CD = "1"
-        BgtCDService.getSbgtCDTerm(CO_CD)
+        BgtCDService.getBgtCDTerm(CO_CD)
             .then(rows => {
                 console.log('여긴 BgtCDDevFgCustom 컴포넌트 마운트')
                 const changes = rows.map(row => ({ ...row }));

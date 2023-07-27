@@ -1,29 +1,39 @@
 
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { DataGridPro } from '@mui/x-data-grid-pro';
 import { Component } from 'react';
+import BgtCDService from '../../service/BgtCDService';
 
 class BgtCDDatagrid extends Component {
     constructor(props) {
         super(props);
         this.state = {
             columns: [
-                { field: 'defNm', headerName: '분류명', width: 250 },
+                { field: 'defNm', headerName: '분류명', width: 100 },
                 { field: 'bgtCd', headerName: '예산코드', width: 100 },
                 { field: 'bgtNm', headerName: '예산과목명', width: 250 },
             ],
-            rows: []
+            rows: [],
         }
-
     }
     handleRowAdd = () => {
+        console.log('자식의 handleRowAdd')
         const newRows = [
-            ...this.state.rows,
-            { defNm: "", bgtCd: "", bgtNm: "", isNew: true},
+            ...this.props.rows,
+            { defNm: "", bgtCd: "", bgtNm: "", isNew: true },
         ];
         this.setState({ rows: newRows });
     };
-    
+    clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+        console.log('clickedROw !' + params.row.bgtCd)
+        const target = params.row.bgtCd;
+        if (target !== null && target !== undefined) {
+            console.log(target)
+            console.log('이게 target이야 : ' + target);
+            this.props.setDetailInfo(target);
+        }
+    }
 
     render() {
         const { columns } = this.state;
@@ -36,13 +46,15 @@ class BgtCDDatagrid extends Component {
         return (
             <Box>
                 <Box style={{ height: 480, width: '95%' }} >
-                    <DataGrid
+
+                    <DataGridPro
                         treeData
+                        getTreeDataPath={(row) => row.dataPath.split(',')}
                         rows={rows}
                         columns={editableColumns}
                         getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
-                        onRowClick={this.props.clickedRow}
+                        onRowClick={this.clickedRow}
                         components={{
                             Footer: () => null
                         }}

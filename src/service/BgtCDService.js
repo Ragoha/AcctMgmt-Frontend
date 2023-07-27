@@ -17,7 +17,7 @@ class BgtCDService {
     }
 
     getDetailInfo(bgtCd) {//columns을 클릭했을때 해당 항목의 DetailInfo를 가져오는 코드
-        console.log("BudgetReg 서비스의 getDetailInfo : " + bgtCd);
+        console.log("2.BudgetReg 서비스의 getDetailInfo : " + bgtCd);
         const returnData1 = axios
             .get(ACCTMGMT_API_BASE_URL + "/getDetailInfo", {
                 params: {
@@ -25,20 +25,26 @@ class BgtCDService {
                 }
             })
             .then((response) => response.data);
-        console.log("BudgetReg 서비스의 getDetailInfo 통신성공");
+        console.log("3.BudgetReg 서비스의 getDetailInfo 통신성공, 아래에 데이터 보여주기");
         console.dir(returnData1)
 
         return returnData1;
     }
-    getSbgtCDTerm(CO_CD){ //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!) BgtCD 그룹레벨설정 할때 초기값.
+    getBgtCDTerm(CO_CD){ //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!) BgtCD 그룹레벨설정 할때 초기값.
        
         console.log("찍어보자 : " + CO_CD)
-        const returnData=axios.get(ACCTMGMT_API_BASE_URL + "/getSbgtCDTerm" ,{
+        const returnData=axios.get(ACCTMGMT_API_BASE_URL + "/getBgtCDTerm" ,{
             params:{
                 CO_CD : CO_CD
             }
         })
         .then((response)=> response.data);
+        return returnData;
+    }
+    getPath(bgtCd){
+        const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/getPath",bgtCd)
+            .then((response)=>response.data)
+            console.log(returnData)
         return returnData;
     }
     updateBgtCDTerm(data){
