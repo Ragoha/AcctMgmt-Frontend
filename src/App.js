@@ -12,7 +12,6 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import Scrollbars from "react-custom-scrollbars";
 
 // import { Provider } from "react-redux";
-import store from "./store";
 // import reducers from "./reducer";
 
 // const store = createStore(reducers);

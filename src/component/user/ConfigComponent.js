@@ -134,21 +134,23 @@ class ConfigComponent extends React.Component {
         const { coCd, empId, empEmail } = userInfo;
         console.log("엑세스 토큰 : "+ accessToken );
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-        axios.get(ACCTMGMT_API_BASE_URL + '/info', {}, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
+    
+        axios.get(ACCTMGMT_API_BASE_URL + '/info', {
+          headers: {
+            // Authorization: `Bearer ${accessToken}`, 
+            Authorization: accessToken, 
+          },
+          withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
         })
-            .then((response) => {
-                // 요청 성공 시 처리할 작업
-                // console.log('hihi : '+response.data);
-            })
-            .catch((error) => {
-                // 요청 실패 시 처리할 작업
-                console.error(error);
-            });
-    }
+        .then((response) => {
+          // 요청 성공 시 처리할 작업
+          console.log('hihi : ', (response.data));
+        })
+        .catch((error) => {
+          // 요청 실패 시 처리할 작업
+          console.error(error);
+        });
+      }
     render() {
         const { selectedTab } = this.state;
         const settingsKey =
