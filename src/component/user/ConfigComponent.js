@@ -109,7 +109,10 @@ class ConfigComponent extends React.Component {
 
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const option = this.state.selectedRowId;
-        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue, { withCredentials: true })
+        const userInfo = this.props.userInfo;
+        const { coCd } = userInfo;
+
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + coCd, { withCredentials: true })
 
             .then((response) => {
                 // 성공적으로 응답을 받은 경우 처리할 작업
@@ -119,38 +122,48 @@ class ConfigComponent extends React.Component {
                 // 에러가 발생한 경우 처리할 작업
                 console.error(error);
             });
-
     };
 
     // 탭 변경 시 실행되는 함수
     handleTabChange = (newValue) => {
         this.setState({ selectedTab: newValue });
-    };
+    }; z
 
     componentDidMount() {
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
         const userInfo = this.props.userInfo;
         const { coCd, empId, empEmail } = userInfo;
-        console.log("엑세스 토큰 : "+ accessToken );
+        console.log("엑세스 토큰 : " + accessToken);
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-    
+
         axios.get(ACCTMGMT_API_BASE_URL + '/info', {
-          headers: {
-            // Authorization: `Bearer ${accessToken}`, 
-            Authorization: accessToken, 
-          },
-          withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
+            headers: {
+                // Authorization: `Bearer ${accessToken}`, 
+                // Authorization: accessToken, 
+                "access-token": accessToken,
+            },
+            withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
         })
-        .then((response) => {
-          // 요청 성공 시 처리할 작업
-          console.log('hihi : ', (response.data));
-        })
-        .catch((error) => {
-          // 요청 실패 시 처리할 작업
-          console.error(error);
-        });
-      }
+            .then((response) => {
+                // 요청 성공 시 처리할 작업
+                console.log('hihi : ', (response.data));
+                // axios.get(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, { withCredentials: true })
+                //     .then((response) => {
+                //         // 요청 성공 시 처리할 작업
+                //         console.log('hihi : ', (response.data));
+
+                //     })
+                //     .catch((error) => {
+                //         // 요청 실패 시 처리할 작업
+                //         console.error(error);
+                //     })
+            })
+            .catch((error) => {
+                // 요청 실패 시 처리할 작업
+                console.error(error);
+            });
+    }
     render() {
         const { selectedTab } = this.state;
         const settingsKey =
@@ -246,6 +259,5 @@ const mapStateToProps = (state) => ({
     accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
-  
-  export default connect(mapStateToProps)(ConfigComponent);
-  
+
+export default connect(mapStateToProps)(ConfigComponent);

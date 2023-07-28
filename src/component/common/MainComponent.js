@@ -15,8 +15,10 @@ import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
 import React, { Component } from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { connect } from 'react-redux';
-import { Outlet } from "react-router";
-import { DELETE_TOKEN } from '../../store/Auth';
+import { Outlet } from "react-router-dom";
+import Cookie from '../../storage/Cookie';
+import { DELETE_TOKEN } from "../../store/Auth";
+import { DEL_USER } from '../../store/User';
 import MainListItems from "./MainListItems";
 
 const drawerWidth = 240;
@@ -85,9 +87,14 @@ class MainComponent extends Component {
   logout = () => {
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
+    const userInfo = this.props.userInfo;
     console.log("불러온 엑세스 토큰 : " + accessToken);
     this.props.delAccessToken(accessToken);
     console.log("삭제 후 엑세스 토큰 : " + accessToken);
+    console.log("불러온 유저정보 : " + userInfo.coCd);
+    this.props.delUserInfo(userInfo);
+    console.log("삭제 후 유저정보 : " + userInfo.coCd);
+    Cookie.removeCookieToken();
     // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
     // });  
   };
@@ -195,11 +202,13 @@ class MainComponent extends Component {
 
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
+    delUserInfo: (userInfo) => dispatch(DEL_USER(userInfo)),
   };
 };
 

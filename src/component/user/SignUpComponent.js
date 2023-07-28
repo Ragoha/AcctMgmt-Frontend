@@ -66,18 +66,18 @@ class SignUpComponent extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { id, name, password, email, gender, phone, company, position } =
-      this.state;
-    const signData = {
-      coCd: company,
-      empId: id,
-      empPw: password,
-      empEmail: email,
-      empTel: phone,
-      empName: name,
-      empSx: gender,
-      empOd: position,
-      empAuth: "user",
+    const { id, name, password, email, gender, phone, company, position } = this.state;
+    const signData = 
+    { 
+        coCd : company,
+        empId : id,
+        empPw: password,
+        empEmail: email,
+        empTel: phone,
+        empName: name,
+        empSx: gender,
+        empOd: position, 
+        empAuth: 'ROLL_USER',
     };
 
     // 폼 필드의 값이 비어있는지 확인
@@ -123,7 +123,7 @@ class SignUpComponent extends Component {
         // 아이디 중복일 때 처리 로직
         alert("사용가능한 아이디 입니다.", response);
         console.error(response);
-        this.setState({ isIdDuplicated: true });
+        this.setState({ isIdDuplicated: true, });
       })
       .catch((error) => {
         // 아이디 중복 없을 때 처리 로직
@@ -131,9 +131,10 @@ class SignUpComponent extends Component {
         console.log(error.data);
         this.setState({
           isIdDuplicated: false,
-          errorMessage: "중복된 아이디 입니다.",
+          errorMessage: '중복된 아이디 입니다.',
         });
-      });
+      })
+
   };
 
   validatePassword = (password) => {
