@@ -12,7 +12,6 @@ class BgtCDTreeGrid extends Component {
             rows: [
                 { path: '수입', jobTitle: 'CEO', id: 0 },
                 { path: '수입,Thomas', jobTitle: 'Head of Sales', id: 1 },
-                { path: '수입,Thomas,Robert', jobTitle: 'Sales Person', id: 2 },
                 { path: '수입,Thomas,Robert ', jobTitle: 'Sales Person', id: 2 },
                 { path: '지출,Thomas,jenny', jobTitle: 'Sales Person', id: 3 },
                 { path: '지출,Thomas,ashtal', jobTitle: 'Sales Person', id: 4 },
@@ -22,6 +21,7 @@ class BgtCDTreeGrid extends Component {
            
         };
     }
+    
 
     render() {
         const { rows, columns } = this.state;
@@ -31,6 +31,7 @@ class BgtCDTreeGrid extends Component {
                 getTreeDataPath={(row) => row.path.split(',')}
                 rows={rows}
                 columns={columns}
+                onClick={this.clickedRow}
             />
         );
     }

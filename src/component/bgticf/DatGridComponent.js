@@ -59,7 +59,7 @@ class DataGridComponent extends Component {
     BgtICFService.getBgtICFList().then((response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.sq,
+        id: row.bgtCd,
       }));
       this.setState({ rows: rowsWithId });
     });
