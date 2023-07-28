@@ -96,7 +96,7 @@ class ChildBgtGrDialogComponent extends Component {
   };
 
   handleSearchBgtGrIcon = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByKeyword({
+    BgtICFService.findBgtGrNmByKeyword({
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
       user: this.props.user,
@@ -233,8 +233,8 @@ class ChildBgtGrDialogComponent extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
-  user: state.user || {}, //  userInfo 정보 매핑해주기..
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
 });
 
 export default connect(mapStateToProps, null, null, {forwardRef: true})(ChildBgtGrDialogComponent);

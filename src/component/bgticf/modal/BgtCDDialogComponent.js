@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import BgtICFService from "../../../service/BgtICFService";
 import ChildBgtGrDialogComponent from "./ChildBgtGrDialogComponent";
+import { connect } from "react-redux";
 
 const columns = [
   {
@@ -66,6 +67,7 @@ class BgtCDDialogComponent extends Component {
     super(props);
     this.state = {
       open: false,
+      bgtGr: {Cd:"", Nm:""},
       selectedRow: { bgtGrCd: "", bgtGrNm: "" },
       bgtGrCd: "",
       bgtGrRows: [],
@@ -94,26 +96,11 @@ class BgtCDDialogComponent extends Component {
     this.setState({ selectedRow: params.row }, () => {
       console.log(this.state.selectedRow);
     });
-    // console.log(this.state);
-  };
-
-  setDivRows = async (rows) => {
-    await this.setState({ divRows: rows });
   };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
-  };
-
-  handlePressEnter = (e) => {
-    if (e.key === "Enter") {
-      this.handleSearchBgtGr();
-    }
-  };
-
-  handleInitBgtGrRows = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1);
   };
 
   handleSearchBgtGr = () => {
@@ -147,6 +134,14 @@ class BgtCDDialogComponent extends Component {
     this.setState({ bgtGrTextField: response.bgtGrCd + ". " + response.bgtGrNm, bgtGrCd: response.bgtGrCd });
   }
 
+  handleClickSearchIcon = () => {
+    BgtICFService.findBgtCDByKeword({
+      keyword: this.keyword,
+      accessToken: this.props.accessToken,
+      user: this.props.user
+    });
+  }
+
   componentDidMount() {}
 
   render() {
@@ -155,7 +150,7 @@ class BgtCDDialogComponent extends Component {
     return (
       <>
         <Dialog
-          open={open}
+          open={true}
           PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840 } }}
         >
           <DialogTitle
@@ -219,23 +214,6 @@ class BgtCDDialogComponent extends Component {
                     size="small"
                     onKeyDown={this.handlePressEnter}
                   ></TextField>
-                  <Button
-                    variant="outlined"
-                    style={{
-                      padding: "0px",
-                      minWidth: "5px",
-                      position: "absolute",
-                      right: "25px",
-                    }}
-                    onClick={() => {
-                      console.log("검색");
-                    }}
-                  >
-                    <SearchIcon
-                      fontSize="medium"
-                      onClick={this.handleSearchBgtGr}
-                    />
-                  </Button>
                 </Grid>
               </Grid>
               <Grid item xs={4}>
@@ -284,7 +262,21 @@ class BgtCDDialogComponent extends Component {
                     variant="outlined"
                     size="small"
                     onKeyDown={this.handlePressEnter}
-                  ></TextField>
+                  />
+                  <Button
+                    variant="outlined"
+                    style={{
+                      padding: "0px",
+                      minWidth: "5px",
+                      position: "absolute",
+                      right: "25px",
+                    }}
+                  >
+                    <SearchIcon
+                      fontSize="medium"
+                      onClick={this.handleClickSearchIcon}
+                    />
+                  </Button>
                 </Grid>
               </Grid>
               <Grid item>
@@ -380,4 +372,11 @@ class BgtCDDialogComponent extends Component {
     );
   }
 }
-export default BgtCDDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, { forwardRef: true}) (BgtCDDialogComponent);
+

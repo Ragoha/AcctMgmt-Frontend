@@ -54,7 +54,7 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  findBgtGrCdAndBgtGrNmByKeyword(data) {
+  findBgtGrNmByKeyword(data) {
     console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr/search", {
@@ -68,6 +68,10 @@ class BtgICFService {
         withCredentials: true,
       })
       .then((response) => response.data);
+  }
+
+  findBgtCDByKeword(data) {
+    console.log(data);
   }
 }
 
