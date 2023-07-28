@@ -79,7 +79,7 @@ class SignUpComponent extends Component {
        empName: name,
        empSx: gender,
        empOd: position, 
-       empAuth: 'user',
+       empAuth: 'ROLL_USER',
        
     };
 
@@ -123,18 +123,18 @@ class SignUpComponent extends Component {
     axios.get(ACCTMGMT_API_BASE_URL + '/emp/idcheck/' + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
-        alert("아이디 중복이요", response);
-        console.log(response.data);
+        alert("사용가능한 아이디 입니다.", response);
+        console.error(response);
+        this.setState({ isIdDuplicated: true, });
+      })
+      .catch((error) => {
+        // 아이디 중복 없을 때 처리 로직
+        alert("아이디 중복이요", error);
+        console.log(error.data);
         this.setState({
           isIdDuplicated: false,
           errorMessage: '중복된 아이디 입니다.',
         });
-      })
-      .catch((error) => {
-        // 아이디 중복 없을 때 처리 로직
-        alert("사용가능한 아이디 입니다.", error);
-        console.error(error);
-        this.setState({ isIdDuplicated: true, });
       })
 
   };
