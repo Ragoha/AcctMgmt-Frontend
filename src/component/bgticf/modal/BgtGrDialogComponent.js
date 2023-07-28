@@ -1,19 +1,19 @@
-import React, { Component } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  Grid,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
+  Grid,
   IconButton,
   InputLabel,
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
+import React, { Component } from "react";
 import BgtICFService from "../../../service/BgtICFService";
 
 const columns = [
@@ -82,7 +82,14 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleInitBgtGrRows = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1);
+    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then(async (response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      await this.setState({ bgtGrRows: bgtGrRows });
+    });
   };
 
   handleSearchBgtGr = () => {
@@ -105,19 +112,8 @@ class BgtGrDialogComponent extends Component {
     await this.props.handleSetBgtGrTextField(this.state.selectedRow);
   };
 
-  componentDidMount() {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then(async (response) => {
-      const bgtGrRows = response.map((row) => ({
-        id: row.bgtGrCd,
-        bgtGrCd: row.bgtGrCd,
-        bgtGrNm: row.bgtGrNm,
-      }));
-      await this.setState({ bgtGrRows: bgtGrRows });
-    });
-  }
-
   render() {
-    const { open, columns, rows } = this.state;
+    const { open, columns, rows, keyword } = this.state;
 
     return (
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>

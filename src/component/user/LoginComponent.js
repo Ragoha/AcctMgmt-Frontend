@@ -1,3 +1,4 @@
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -9,17 +10,15 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { CSSTransition } from 'react-transition-group';
+import '../../css/font.css';
+import Cookie from '../../storage/Cookie';
+import { SET_TOKEN } from '../../store/Auth';
+import { SET_USER } from '../../store/User';
 import ForgotPasswordDialog from '../dialog/ForgotPasswordDialog';
 import SignUpDialog from '../dialog/SignUpDialog';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import '../../css/font.css';
-import { createTheme } from '@material-ui/core/styles';
 import Image4 from './back4.jpg';
-import { CSSTransition } from 'react-transition-group';
-import Cookie from '../../storage/Cookie';
-import { SET_TOKEN }  from '../../store/Auth';
-import { SET_USER } from '../../store/User';
-import { connect } from 'react-redux';
 
 
 class LoginComponent extends Component {
@@ -94,15 +93,6 @@ class LoginComponent extends Component {
         const { showForm } = this.state;
         const { id, password } = this.state;
         const { isIconOpen } = this.state
-        const theme = createTheme({
-            typography: {
-                fontFamily: '"VT323", monospace',
-                fontFamily: '"Lilita One", cursive',
-                fontfamily: '"Rubik Dirt", cursive',
-                fontfamily: '"Rowdies", cursive',
-                fontfamily: '"Montserrat", sans-serif',
-            },
-        });
 
         return (
             <Box

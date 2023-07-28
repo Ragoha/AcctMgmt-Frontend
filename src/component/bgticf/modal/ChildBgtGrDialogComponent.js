@@ -15,37 +15,39 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
 import BgtICFService from "../../../service/BgtICFService";
+import { connect } from "react-redux";
 
-class DivDialogComponent extends Component {
+const columns = [
+  {
+    field: "bgtGrCd",
+    headerName: "예산그룹코드",
+    width: 180,
+    headerAlign: "center",
+  },
+  {
+    field: "bgtGrNm",
+    headerName: "예산그룹명",
+    width: 270,
+    headerAlign: "center",
+  },
+];
+
+const rows = [
+  { id: 1, bgtGrCd: "1", bgtGrNm: "John" },
+  { id: 2, bgtGrCd: "2", bgtGrNm: "John" },
+  { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
+];
+
+class ChildBgtGrDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { divCd: "", divNm: "" },
-      divRows: [],
-      keyword:"",
-      data: {
-        columns: [
-          {
-            field: "divCd",
-            headerName: "사업장코드",
-            width: 180,
-            headerAlign: "center",
-          },
-          {
-            field: "divNm",
-            headerName: "사업장명",
-            width: 270,
-            headerAlign: "center",
-          },
-        ],
-        rows: [
-          {id:1, divCd: 1, divNm: "John" },
-          {id:2, divCd: 2, divNm: "Jane" },
-          {id:3, divCd: 3, divNm: "Bob" },
-          // Add more rows here...
-        ],
-      },
+      selectedRow: { bgtGrCd: "", bgtGrNm: "" },
+      bgtGrRows: [],
+      keyword: "",
+      rows: rows,
+      columns: columns,
     };
   }
 
@@ -58,22 +60,15 @@ class DivDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    console.log(params);
     this.setState({ selectedRow: params.row }, () => {
       console.log(this.state.selectedRow);
     });
     // console.log(this.state);
-  }
+  };
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
-  }
-
-  handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
-    this.handleDown();
-    await this.props.handleSetDivTextField(this.state.selectedRow);
-  }
+  };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -81,25 +76,51 @@ class DivDialogComponent extends Component {
     console.log(this.state);
   };
 
-  handleClickSearchIcon = () => {
-    BgtICFService.findDivCdAndDivNmByKeyword(
-      this.state.keyword
-    ).then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
+  handlePressEnter = (e) => {
+    if (e.key === "Enter") {
+      this.handleSearchBgtGrIcon();
+    }
+  };
+
+  handleInitBgtGrDialog = () => {
+    console.log("asdf");
+    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then((response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
       }));
-      await this.setState({ divRows: divRows });
-      console.log(this.state);
+      this.setState({ bgtGrRows: bgtGrRows, keyword: "" });
     });
-  }
+    this.handleUp();
+  };
+
+  handleSearchBgtGrIcon = () => {
+    BgtICFService.findBgtGrCdAndBgtGrNmByKeyword({
+      keyword: this.state.keyword,
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+    }).then((response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      this.setState({ bgtGrRows: bgtGrRows });
+    });
+    this.handleUp();
+  };
+
+  handleClickConfirm = async () => {
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    await this.props.handleSetBgtCDTextField(this.state.selectedRow);
+  };
 
   render() {
-    const { open, data } = this.state;
+    const { open, columns, rows } = this.state;
 
     return (
-      //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
         <DialogTitle
           sx={{
@@ -112,7 +133,7 @@ class DivDialogComponent extends Component {
             height: 60,
           }}
         >
-          사업장검색
+          예산그룹검색
           <IconButton
             size="small"
             onClick={() =>
@@ -150,11 +171,7 @@ class DivDialogComponent extends Component {
                 onChange={this.handleInputChange}
                 variant="outlined"
                 size="small"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    console.log(`Pressed keyCode ${e.key}`);
-                  }
-                }}
+                onKeyDown={this.handlePressEnter}
               ></TextField>
               <Button
                 variant="outlined"
@@ -165,13 +182,10 @@ class DivDialogComponent extends Component {
                   right: "33px",
                 }}
                 onClick={() => {
-                  console.log("검색");
+                  this.handleSearchBgtGrIcon();
                 }}
               >
-                <SearchIcon
-                  fontSize="medium"
-                  onClick={this.handleClickSearchIcon}
-                />
+                <SearchIcon fontSize="medium" />
               </Button>
             </Grid>
             <Grid mb={1}></Grid>
@@ -181,8 +195,8 @@ class DivDialogComponent extends Component {
           <Grid sx={{ mt: 1, width: "100%" }}>
             <Grid style={{ height: 350, width: "100%" }}>
               <DataGrid
-                rows={this.state.divRows}
-                columns={data.columns}
+                columns={columns}
+                rows={this.state.bgtGrRows}
                 showColumnVerticalBorder={true}
                 showCellVerticalBorder={true} // 각 셀마다 영역주기
                 onRowClick={this.handleClickRow}
@@ -218,4 +232,9 @@ class DivDialogComponent extends Component {
     );
   }
 }
-export default DivDialogComponent;
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  user: state.user || {}, //  userInfo 정보 매핑해주기..
+});
+
+export default connect(mapStateToProps, null, null, {forwardRef: true})(ChildBgtGrDialogComponent);

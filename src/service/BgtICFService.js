@@ -54,16 +54,22 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  findBgtGrCdAndBgtGrNmByKeyword(keyword) {
+  findBgtGrCdAndBgtGrNmByKeyword(data) {
+    console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr/search", {
         params: {
-          coCd: "1",
-          keyword: keyword
+          coCd: data.user.coCd,
+          keyword: data.keyword,
         },
+        headers: {
+          Authorization: data.accessToken,
+        },
+        withCredentials: true,
       })
       .then((response) => response.data);
   }
 }
+
 
 export default new BtgICFService();
