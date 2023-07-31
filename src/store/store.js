@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { persistStore, persistReducer } from 'redux-persist'; // Redux Persist 관련 import 추가
-import storage from 'redux-persist/lib/storage'; // 로컬 스토리지를 사용할 경우
+import storage from 'redux-persist/lib/storage/session'; // 로컬 스토리지를 사용할 경우
 
 import AuthReducer from './Auth';
 import UserReducer from './User';

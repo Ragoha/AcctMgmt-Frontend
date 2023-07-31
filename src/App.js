@@ -7,7 +7,6 @@ import storeInstance from './store/store'; // store를 가져옵니다.
 
 // Redux & Redux-Thunk test
 import { legacy_createStore as createStore } from "redux";
-import rootReducer from "./modules";
 import { composeWithDevTools } from "redux-devtools-extension";
 import Scrollbars from "react-custom-scrollbars";
 

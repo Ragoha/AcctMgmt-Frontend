@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
-import { Box, Button, TextField, Card, CardContent, Typography, CardActionArea, Container, IconButton, InputLabel, Divider, colors } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import Grid from '@mui/material/Unstable_Grid2';
-import TreeView from '@mui/lab/TreeView';
-import TreeItem from '@mui/lab/TreeItem';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Autocomplete from '@mui/material/Autocomplete';
-import UserService from '../../service/UserService';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ListIcon from '@mui/icons-material/List';
+import SearchIcon from '@mui/icons-material/Search';
+import TreeItem from '@mui/lab/TreeItem';
+import TreeView from '@mui/lab/TreeView';
+import { Box, Button, Divider, IconButton, InputLabel, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import InputBase from '@mui/material/InputBase';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Unstable_Grid2';
+import React, { Component } from 'react';
 
 
 class DeptMgmtComponent extends Component {

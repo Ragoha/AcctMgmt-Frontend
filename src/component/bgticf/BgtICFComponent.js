@@ -1,4 +1,5 @@
-import React, { Component, createRef } from "react";
+import ListIcon from "@mui/icons-material/List";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
@@ -10,21 +11,19 @@ import {
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
+import React, { Component, createRef } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
-import SearchIcon from "@mui/icons-material/Search";
-import ListIcon from "@mui/icons-material/List";
-import ReactDatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import DivDialogComponent from "./modal/DivDialogComponent";
-import BgtGrDialogComponent from "./modal/BgtGrDialogComponent";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import ListDisplay from "./test";
+import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+import DivDialogComponent from "./dialog/DivDialogComponent";
 import AutocompleteWithRemove from "./test";
-import BgtCDDialogComponent from "./modal/BgtCDDialogComponent";
 
 const BGTCD_COLUMN = [
   { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
@@ -142,6 +141,9 @@ class BgtICFComponent extends Component {
     this.divRef.current.handleUp();
   };
 
+  handleSetBgtCDTextField = () => {
+  }
+
   render() {
     const labelStyle = {
       display: "inline",
@@ -226,6 +228,7 @@ class BgtICFComponent extends Component {
                 <DemoContainer components={["DatePicker"]}>
                   <DatePicker
                     format="YYYY-MM-DD"
+                    defaultValue={dayjs(new Date())}
                     slotProps={{
                       textField: {
                         size: "small",
@@ -239,23 +242,6 @@ class BgtICFComponent extends Component {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-              {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
-              {/* <DatePicker
-                  slotProps={{
-                    textField: { size: "small" },
-                  }}
-                /> */}
-              {/* <ReactDatePicker
-                showWeekNumbers
-                showTimeInput
-                showTimeSelect
-                dateFormat="yyyy-mm-dd"
-                isClearable
-                showIcon
-                selected={startDate}
-                onChange={this.dateChange}
-              /> */}
-              {/* </LocalizationProvider> */}
             </Grid>
           </Grid>
           <Grid item xs={6}>
@@ -354,27 +340,9 @@ class BgtICFComponent extends Component {
               ref={this.childRef}
               setSelectedRowId={this.setSelectedRowId}
             />
-            {/* <DataGrid
-              columns={[
-                { field: "사업" },
-                { field: "하위사업" },
-                { field: "이월금액" },
-                { field: "사고이월금액" },
-                { field: "명시이월금액" },
-                { field: "예비이월금액" },
-                { field: "적요" },
-                { field: "입력구분" },
-                { field: "작성자" },
-              ]}
-              rows={[
-                { id: 1, name: "React" },
-                { id: 2, name: "MUI" },
-              ]}
-              hideFooterPagination
-              hideFooterSelectedRowCount
-            /> */}
           </Grid>
         </Grid>
+
         <DivDialogComponent
           ref={this.divRef}
           handleSetDivTextField={this.handleSetDivTextField}
@@ -385,7 +353,10 @@ class BgtICFComponent extends Component {
           handleSetBgtGrTextField={this.handleSetBgtGrTextField}
         />
 
-        <BgtCDDialogComponent ref={this.bgtCDRef} />
+        <BgtCDDialogComponent
+          ref={this.bgtCDRef}
+          handleSetBgtCDTextField={this.handleSetBgtCDTextField}
+        />
       </>
     );
   }

@@ -1,25 +1,25 @@
-import React, { Component } from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiDrawer from "@mui/material/Drawer";
-import Box from "@mui/material/Box";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import Link from "@mui/material/Link";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import MainListItems from "./MainListItems";
 import { AccountCircle } from "@mui/icons-material";
-import { Outlet, Route, Routes } from "react-router";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import MenuIcon from "@mui/icons-material/Menu";
+import MuiAppBar from "@mui/material/AppBar";
+import Badge from "@mui/material/Badge";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import MuiDrawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
+import React, { Component } from "react";
 import Scrollbars from "react-custom-scrollbars";
-import { DELETE_TOKEN , SET_TOKEN } from '../../store/Auth';
 import { connect } from 'react-redux';
-import axios from "axios";
+import { Outlet } from "react-router-dom";
+import Cookie from '../../storage/Cookie';
+import { DELETE_TOKEN } from "../../store/Auth";
+import { DEL_USER } from '../../store/User';
+import MainListItems from "./MainListItems";
 
 const drawerWidth = 240;
 
@@ -87,9 +87,14 @@ class MainComponent extends Component {
   logout = () => {
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
+    const userInfo = this.props.userInfo;
     console.log("불러온 엑세스 토큰 : " + accessToken);
     this.props.delAccessToken(accessToken);
     console.log("삭제 후 엑세스 토큰 : " + accessToken);
+    console.log("불러온 유저정보 : " + userInfo.coCd);
+    this.props.delUserInfo(userInfo);
+    console.log("삭제 후 유저정보 : " + userInfo.coCd);
+    Cookie.removeCookieToken();
     // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
     // });  
   };
@@ -197,11 +202,13 @@ class MainComponent extends Component {
 
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
+    delUserInfo: (userInfo) => dispatch(DEL_USER(userInfo)),
   };
 };
 

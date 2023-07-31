@@ -91,6 +91,7 @@ class CompanyService {
         },
       })
       .then((response) => response.data);
-  }}
+  }
+}
 
 export default new CompanyService();
