@@ -84,7 +84,11 @@ class BgtGrDialogComponent extends Component {
 
   handleInitBgtGrDialog = () => {
     console.log("asdf");
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then((response) => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      keyword: this.state.keyword,
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+    }).then((response) => {
       const bgtGrRows = response.map((row) => ({
         id: row.bgtGrCd,
         bgtGrCd: row.bgtGrCd,
@@ -96,10 +100,10 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleSearchBgtGrIcon = () => {
-    BgtICFService.findBgtGrNmByKeyword({
+    BgtICFService.findBgtGrByCoCdAndKeyword({
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
-      user: this.props.user,
+      coCd: this.props.user.coCd,
     }).then((response) => {
       const bgtGrRows = response.map((row) => ({
         id: row.bgtGrCd,

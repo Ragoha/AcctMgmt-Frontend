@@ -15,6 +15,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
 import BgtICFService from "../../../service/BgtICFService";
+import { connect } from "react-redux";
 
 class DivDialogComponent extends Component {
   constructor(props) {
@@ -47,6 +48,22 @@ class DivDialogComponent extends Component {
         ],
       },
     };
+  }
+
+  initDivDialog = () => {
+    this.setState({keyword : ""})
+    BgtICFService.findDivByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+    }).then(async (response) => {
+      const divRows = response.map((row) => ({
+        id: row.divCd,
+        divCd: row.divCd,
+        divNm: row.divNm,
+      }));
+      await this.setState({ divRows: divRows });
+      console.log(this.state);
+    });
   }
 
   handleUp = () => {
@@ -82,9 +99,11 @@ class DivDialogComponent extends Component {
   };
 
   handleClickSearchIcon = () => {
-    BgtICFService.findDivCdAndDivNmByKeyword(
-      this.state.keyword
-    ).then(async (response) => {
+    BgtICFService.findDivByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      keyword: this.state.keyword,
+      accessToken: this.props.accessToken,
+    }).then(async (response) => {
       const divRows = response.map((row) => ({
         id: row.divCd,
         divCd: row.divCd,
@@ -218,4 +237,10 @@ class DivDialogComponent extends Component {
     );
   }
 }
-export default DivDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, {forwardRef: true}) (DivDialogComponent);

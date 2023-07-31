@@ -34,33 +34,26 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  findDivCdAndDivNmByKeyword(keyword) {
+  findDivByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {
         params: {
-          coCd: "1",
-          keyword: keyword,
+          coCd: data.coCd,
+          keyword: data.keyword,
         },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
       })
       .then((response) => response.data);
   }
 
-  findBgtGrCdAndBgtGrNmByCoCd(coCd) {
+  findBgtGrByCoCdAndKeyword(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr", {
         params: {
-          coCd: coCd,
-        },
-      })
-      .then((response) => response.data);
-  }
-
-  findBgtGrNmByKeyword(data) {
-    console.log(data);
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr/search", {
-        params: {
-          coCd: data.user.coCd,
+          coCd: data.coCd,
           keyword: data.keyword,
         },
         headers: {
@@ -78,6 +71,7 @@ class BtgICFService {
         params: {
           coCd: data.user.coCd,
           bgtCDMark: data.bgtCDMark,
+          gisu: 1,
           groupCd: data.bgtGrCd,
           keyword: data.keyword,
           toDt: dayjs(data.range),

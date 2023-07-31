@@ -15,6 +15,8 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
 import BgtICFService from "../../../service/BgtICFService";
+import { connect } from "react-redux";
+import { forwardRef } from "react";
 
 const columns = [
   {
@@ -82,7 +84,10 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleInitBgtGrRows = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then(async (response) => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+    }).then(async (response) => {
       const bgtGrRows = response.map((row) => ({
         id: row.bgtGrCd,
         bgtGrCd: row.bgtGrCd,
@@ -92,18 +97,19 @@ class BgtGrDialogComponent extends Component {
     });
   };
 
-  handleSearchBgtGr = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
-      async (response) => {
-        const bgtGrRows = response.map((row) => ({
-          id: row.bgtGrCd,
-          bgtGrCd: row.bgtGrCd,
-          bgtGrNm: row.bgtGrNm,
-        }));
-        await this.setState({ bgtGrRows: bgtGrRows });
-        console.log(this.state);
-      }
-    );
+  handleCickSearchIcon = () => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      keyword: this.state.keyword,
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+    }).then((response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      this.setState({ bgtGrRows: bgtGrRows });
+    });
   };
 
   handleClickConfirm = async () => {
@@ -176,14 +182,9 @@ class BgtGrDialogComponent extends Component {
                   position: "absolute",
                   right: "33px",
                 }}
-                onClick={() => {
-                  console.log("검색");
-                }}
+                onClick={this.handleCickSearchIcon}
               >
-                <SearchIcon
-                  fontSize="medium"
-                  onClick={this.handleSearchBgtGr}
-                />
+                <SearchIcon fontSize="medium" />
               </Button>
             </Grid>
             <Grid mb={1}></Grid>
@@ -230,4 +231,10 @@ class BgtGrDialogComponent extends Component {
     );
   }
 }
-export default BgtGrDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, {forwardRef: true}) (BgtGrDialogComponent);
