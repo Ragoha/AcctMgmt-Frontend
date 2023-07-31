@@ -1,4 +1,5 @@
 import axios from "axios";
+import dayjs from "dayjs";
 
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
@@ -54,16 +55,41 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  findBgtGrCdAndBgtGrNmByKeyword(keyword) {
+  findBgtGrNmByKeyword(data) {
+    console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr/search", {
         params: {
-          coCd: "1",
-          keyword: keyword
+          coCd: data.user.coCd,
+          keyword: data.keyword,
         },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data);
+  }
+
+  findBgcCDByGroupCdAndToDtAndKeyword(data) {
+    console.log(data);
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
+        params: {
+          coCd: data.user.coCd,
+          bgtCDMark: data.bgtCDMark,
+          groupCd: data.bgtGrCd,
+          keyword: data.keyword,
+          toDt: dayjs(data.range),
+        },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
       })
       .then((response) => response.data);
   }
 }
+
 
 export default new BtgICFService();

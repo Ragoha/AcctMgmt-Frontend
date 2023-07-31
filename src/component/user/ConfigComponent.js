@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from "axios";
-import { SET_TOKEN } from '../../store/Auth';
 import { connect } from 'react-redux';
 
 import {
@@ -19,9 +18,7 @@ import {
     Grid,
     Tabs,
     Tab,
-    Box,
     TextField,
-    createTheme,
     InputLabel,
 } from '@mui/material';
 
@@ -29,6 +26,8 @@ class ConfigComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            coCd: '',
+            coNm: '',
             data: [
                 {
                     id: 1,
@@ -109,7 +108,10 @@ class ConfigComponent extends React.Component {
 
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const option = this.state.selectedRowId;
-        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue, { withCredentials: true })
+        const userInfo = this.props.userInfo;
+        const { coCd } = userInfo;
+
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + coCd, { withCredentials: true })
 
             .then((response) => {
                 // 성공적으로 응답을 받은 경우 처리할 작업
@@ -119,7 +121,6 @@ class ConfigComponent extends React.Component {
                 // 에러가 발생한 경우 처리할 작업
                 console.error(error);
             });
-
     };
 
     // 탭 변경 시 실행되는 함수
@@ -132,27 +133,40 @@ class ConfigComponent extends React.Component {
         const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
         const userInfo = this.props.userInfo;
         const { coCd, empId, empEmail } = userInfo;
-        console.log("엑세스 토큰 : "+ accessToken );
+        console.log("엑세스 토큰 : " + accessToken);
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-    
+        this.setState({ coCd: coCd });
         axios.get(ACCTMGMT_API_BASE_URL + '/info', {
-          headers: {
-            // Authorization: `Bearer ${accessToken}`, 
-            Authorization: accessToken, 
-          },
-          withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
+            headers: {
+                // Authorization: `Bearer ${accessToken}`, 
+                // Authorization: accessToken, 
+                "access-token": accessToken,
+            },
+            withCredentials: true, // 필요한 경우 withCredentials 옵션 사용
         })
-        .then((response) => {
-          // 요청 성공 시 처리할 작업
-          console.log('hihi : ', (response.data));
-        })
-        .catch((error) => {
-          // 요청 실패 시 처리할 작업
-          console.error(error);
-        });
-      }
+            .then((response) => {
+                // 요청 성공 시 처리할 작업
+                console.log('hihi : ', (response.data));
+                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, { withCredentials: true })
+                    .then((response) => {
+                        // 요청 성공 시 처리할 작업
+                        console.log('hihi : ', (response.data));
+                        this.setState({ coNm: response.data });
+                    })
+                    .catch((error) => {
+                        // 요청 실패 시 처리할 작업
+                        console.error(error);
+                    })
+            })
+            .catch((error) => {
+                // 요청 실패 시 처리할 작업
+                console.error(error);
+            });
+    }
     render() {
-        const { selectedTab } = this.state;
+        const { selectedTab, coCd, coNm } = this.state;
+
+        console.log('aeeee', coCd);
         const settingsKey =
             selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
 
@@ -162,7 +176,7 @@ class ConfigComponent extends React.Component {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <InputLabel>회사</InputLabel>{" "}
-                    <TextField aria-readonly></TextField>
+                    <TextField aria-readonly label={coNm} disabled></TextField>
                 </Grid>
                 <Grid item xs={12}>
                     <Tabs value={selectedTab} onChange={this.handleTabChange}>
@@ -246,6 +260,5 @@ const mapStateToProps = (state) => ({
     accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
-  
-  export default connect(mapStateToProps)(ConfigComponent);
-  
+
+export default connect(mapStateToProps)(ConfigComponent);
