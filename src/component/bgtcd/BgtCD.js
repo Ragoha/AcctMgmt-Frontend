@@ -6,8 +6,28 @@ import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
 import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDDetailInfo from "./BgtCDDetailInfo";
 import BgtCDDatagrid from "./BgtCDDatagrid";
-import BgtCDGroupModal from "./modal/BgtCDGroupModal";
+import BgtCDGroupModal from "./modal/BgtCDEzSearch";
+import BgtCDGroupReg from "./modal/BgtCDGroupReg";
+import BgtCDDropDownBox from "./BgtCDDropDownBox";
+{/* <Autocomplete
+variant=""
+size="small"
 
+openOnFocus
+// clearOnEscape
+options={[
+   { label: "간편검색", value: "" },
+   { label: "예산그룹등록", value: "deran" },
+   { label: "예산과목복사", value: "deran" },
+   { label: "과목분류명등록", value: "deran" },
+   { label: "회계계정과목복사", value: "deran" },
+   { label: "예산과목엑셀업로드", value: "deran" },
+   { label: "예산과목 일괄설정", value: "deran" },
+]}
+sx={{ width: '200px', marginRight: '50px',}}// backgroundColor: "#7895CB",
+
+renderInput={(params) => <TextField {...params} />}
+></Autocomplete> */}
 class BgtCD extends Component {
     constructor(props) {
         super(props);
@@ -16,12 +36,13 @@ class BgtCD extends Component {
         this.BgtDataGrid = React.createRef();
         this.BgtCDDetailInfo = React.createRef();
         this.BgtCDGroupModal = React.createRef();
+        this.BgtCDGroupReg = React.createRef();
         this.state = {
             open: false,
             rows: [],
             groupcd: 'GROUP3',
             focus: null,
-            testList: ['블레', '블래', '리퍼', '소서', '건슬', '기공', '알카'],
+            //testList: ['블레', '블래', '리퍼', '소서', '건슬', '기공', '알카'],
         }
     }
     /*상단 조건 검색바 start*/
@@ -75,30 +96,33 @@ class BgtCD extends Component {
     BgtCDAddSubDialogOpen = () => {
         this.BgtCDAddSubDialog.current.handleUp();
     }
-    BgtCDGroupModalOpen = ()=>{
-        this.BgtCDGroupModal.current.handleUp();
+    BgtCDGroupRegOpen = () => {
+        this.BgtCDGroupReg.current.handleUp();
     }
     render() {
         const { rows, groupcd, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
         return (
             <>
+                            
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Box 
-                            sx={{ 
+                        <Box
+                            sx={{
                                 backgroundColor: '#7895CB',
-                                height: '50px', 
-                                alignItems: 'center', 
-                                display: 'flex', 
-                                border: '1px solid' }}
+                                height: '50px',
+                                alignItems: 'center',
+                                display: 'flex',
+                                border: '1px solid'
+                            }}
                             padding={2}>
-                            <Button variant="contained"
+                            <Button 
+                                variant="contained"
                                 size="medium"
                                 onClick={this.handleRowAdd}
-                                style={{ 
-                                marginLeft: 'auto', 
-                                marginRight: '10px', 
-                                border: '1px solid' 
+                                style={{
+                                    marginLeft: 'auto',
+                                    marginRight: '10px',
+                                    border: '1px solid'
                                 }}
                             >추가</Button>
                             <Button variant="contained"
@@ -112,7 +136,8 @@ class BgtCD extends Component {
                             <Button variant="contained" size="medium" style={{ marginRight: '10px', border: '1px solid' }} onClick={this.BgtCDDevFgCustomOpen}>
                                 그룹레벨설정
                             </Button>
-                            <Button variant="contained" size="medium" style={{ border: '1px solid' }} >기능모음</Button>
+                            {/* 기능모음 드롭다운박스 */}
+                            <BgtCDDropDownBox/>
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -122,23 +147,6 @@ class BgtCD extends Component {
                             variant>
                             {/* <InputLabel sx={{ marginLeft: '20px' }}>예산그룹</InputLabel><TextField onChange={this.GroupCdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} /> */}
                             <InputLabel>테스트용 리스트</InputLabel>
-                            <Autocomplete
-                                //  autoComplete
-                               openOnFocus
-                               // clearOnEscape
-                                options={[
-                                    { label: "리퍼", value: "deran" },
-                                    { label: "블레", value: "deran" },
-                                    { label: "데모닉", value: "deran" },
-                                    { label: "소울", value: "deran" },
-                                    { label: "The GodFather", value: "deran" },
-                                ]}
-                                variant="standard"
-                                size="small"
-                                sx={{ width: '200px', marginRight: '50px', }}
-                                
-                                renderInput={(params) => <TextField {...params}/>}
-                            ></Autocomplete>
                             <InputLabel>예산과목코드</InputLabel><TextField onClick={this.BgtCDGroupModalOpen} onChange={this.Bgt_nmOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} />
                             <InputLabel>예산과목명</InputLabel><TextField onChange={this.Bgt_cdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px' }} />
                             <Button onClick={this.searchClick}><SearchIcon /></Button>
@@ -153,7 +161,7 @@ class BgtCD extends Component {
                 </Grid>
                 <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
                 <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
-                <BgtCDGroupModal ref={this.BgtCDGroupModal}/>
+                <BgtCDGroupReg ref={this.BgtCDGroupReg} />
             </>
         )
     }
