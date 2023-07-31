@@ -1,9 +1,8 @@
-import React, { Component } from "react";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Visibility } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import React, { Component } from "react";
 
 class ListDisplay extends Component {
   constructor(props) {

@@ -19,6 +19,13 @@ class User {
                     state.divCd = action.payload.divCd;
                     state.deptOd = action.payload.deptOd;
                 },
+                DEL_USER: (state) => {
+                    state.coCd = null;
+                    state.empId = null;
+                    state.empEmail = null;
+                    state.divCd = null;
+                    state.deptOd = null;
+                },
             }
         });
     }
@@ -31,5 +38,5 @@ class User {
     }
 }
 const userManager = new User();
-export const { SET_USER } = userManager.getActions();
+export const { SET_USER, DEL_USER } = userManager.getActions();
 export default userManager.getReducer();

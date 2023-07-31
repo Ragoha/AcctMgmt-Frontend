@@ -1,20 +1,22 @@
-import React, { Component } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  Grid,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
+  Grid,
   IconButton,
   InputLabel,
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
+import React, { Component } from "react";
 import BgtICFService from "../../../service/BgtICFService";
+import { connect } from "react-redux";
+import { forwardRef } from "react";
 
 const columns = [
   {
@@ -82,21 +84,32 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleInitBgtGrRows = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1);
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+    }).then(async (response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      await this.setState({ bgtGrRows: bgtGrRows });
+    });
   };
 
-  handleSearchBgtGr = () => {
-    BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
-      async (response) => {
-        const bgtGrRows = response.map((row) => ({
-          id: row.bgtGrCd,
-          bgtGrCd: row.bgtGrCd,
-          bgtGrNm: row.bgtGrNm,
-        }));
-        await this.setState({ bgtGrRows: bgtGrRows });
-        console.log(this.state);
-      }
-    );
+  handleCickSearchIcon = () => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      keyword: this.state.keyword,
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+    }).then((response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      this.setState({ bgtGrRows: bgtGrRows });
+    });
   };
 
   handleClickConfirm = async () => {
@@ -105,19 +118,8 @@ class BgtGrDialogComponent extends Component {
     await this.props.handleSetBgtGrTextField(this.state.selectedRow);
   };
 
-  componentDidMount() {
-    BgtICFService.findBgtGrCdAndBgtGrNmByCoCd(1).then(async (response) => {
-      const bgtGrRows = response.map((row) => ({
-        id: row.bgtGrCd,
-        bgtGrCd: row.bgtGrCd,
-        bgtGrNm: row.bgtGrNm,
-      }));
-      await this.setState({ bgtGrRows: bgtGrRows });
-    });
-  }
-
   render() {
-    const { open, columns, rows } = this.state;
+    const { open, columns, rows, keyword } = this.state;
 
     return (
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
@@ -180,14 +182,9 @@ class BgtGrDialogComponent extends Component {
                   position: "absolute",
                   right: "33px",
                 }}
-                onClick={() => {
-                  console.log("검색");
-                }}
+                onClick={this.handleCickSearchIcon}
               >
-                <SearchIcon
-                  fontSize="medium"
-                  onClick={this.handleSearchBgtGr}
-                />
+                <SearchIcon fontSize="medium" />
               </Button>
             </Grid>
             <Grid mb={1}></Grid>
@@ -234,4 +231,10 @@ class BgtGrDialogComponent extends Component {
     );
   }
 }
-export default BgtGrDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, {forwardRef: true}) (BgtGrDialogComponent);
