@@ -2,13 +2,14 @@ import { Component } from "react";
 import { Route, Routes } from "react-router-dom";
 
 
-import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
-import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
-import MainComponent from "../component/common/MainComponent";
-import ConfigComponent from "../component/user/ConfigComponent";
-import PjtComponent from "../component/user/PjtComponent";
 import BgtCD from "../component/bgtcd/BgtCD";
 import BgtICFComponent from "../component/bgticf/BgtICFComponent";
+import MainComponent from "../component/common/MainComponent";
+import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
+import DivMgmtComponent from "../component/mgmt/DivMgmtComponent";
+import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
+import ConfigComponent from "../component/user/ConfigComponent";
+import PjtComponent from "../component/user/PjtComponent";
 
 class MainRouter extends Component {
   render() {
@@ -16,6 +17,7 @@ class MainRouter extends Component {
       <Routes>
         <Route path="acctmgmt/*" element={<MainComponent />}>
           <Route path="ozt/co" element={<CoMgmtComponent />} />
+          <Route path="ozt/div" element={<DivMgmtComponent />} />
           <Route path="ozt/dept" element={<DeptMgmtComponent />} />
           <Route path="bgt/bgtcd" element={<BgtCD />} />
           <Route path="bgt/bgticf" element={<BgtICFComponent />} />
