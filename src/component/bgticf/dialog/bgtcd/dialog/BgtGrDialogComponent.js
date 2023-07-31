@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
-import BgtICFService from "../../../service/BgtICFService";
+import BgtICFService from "../../../../../service/BgtICFService";
 import { connect } from "react-redux";
 
 const columns = [
@@ -38,7 +38,7 @@ const rows = [
   { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
 ];
 
-class ChildBgtGrDialogComponent extends Component {
+class BgtGrDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -237,4 +237,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, {forwardRef: true})(ChildBgtGrDialogComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  BgtGrDialogComponent
+);

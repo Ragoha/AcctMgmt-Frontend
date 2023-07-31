@@ -19,9 +19,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
-import BgtICFService from "../../../service/BgtICFService";
-import ChildBgtGrDialogComponent from "./ChildBgtGrDialogComponent";
+import BgtICFService from "../../../../service/BgtICFService";
 import { connect } from "react-redux";
+import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
 const columns = [
   {
@@ -29,6 +29,7 @@ const columns = [
     headerName: "기수",
     width: 50,
     headerAlign: "center",
+    align: "center",
   },
   {
     field: "bgtGrNm1",
@@ -56,29 +57,22 @@ const columns = [
   },
 ];
 
-const rows = [
-  { id: 1, bgtGrCd: "1", bgtGrNm: "John" },
-  { id: 2, bgtGrCd: "2", bgtGrNm: "John" },
-  { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
-];
-
 class BgtCDDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      bgtGr: {Cd:"", Nm:""},
-      selectedRow: { bgtGrCd: "", bgtGrNm: "" },
+      bgtGr: { Cd: "", Nm: "" },
+      selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
       bgtGrRows: [],
       keyword: "",
-      rows: rows,
       columns: columns,
       rangeState: true,
+      rangeTextField: dayjs(new Date()).format("YYYY-MM-DD"),
       bgtCDMarkTextField: "",
       bgtGrTextField: "",
-      searchTextField: "",
-      rangeTextField: "",
+      keywordTextField: "",
     };
 
     this.childBgtGrRef = createRef();
@@ -101,6 +95,7 @@ class BgtCDDialogComponent extends Component {
   handleInputChange = async (e) => {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
+    console.log("test");
   };
 
   handleSearchBgtGr = () => {
@@ -127,25 +122,64 @@ class BgtCDDialogComponent extends Component {
     // console.dir(this.childBgtGrRef);
     this.childBgtGrRef.current.handleInitBgtGrDialog();
     // this.childBgtGrRef.current.handleUp();
-    console.log("Asdf")
+    console.log("Asdf");
   };
 
   handleSetBgtCDTextField = (response) => {
-    this.setState({ bgtGrTextField: response.bgtGrCd + ". " + response.bgtGrNm, bgtGrCd: response.bgtGrCd });
-  }
+    this.setState({
+      bgtGrTextField: response.bgtGrCd + ". " + response.bgtGrNm,
+      bgtGrCd: response.bgtGrCd,
+    });
+  };
 
   handleClickSearchIcon = () => {
-    BgtICFService.findBgtCDByKeword({
-      keyword: this.keyword,
-      accessToken: this.props.accessToken,
-      user: this.props.user
-    });
-  }
 
-  componentDidMount() {}
+    let tmpRange = "";
+
+    if (this.state.rangeState) {
+      tmpRange = this.state.rangeTextField;
+    } else {
+      tmpRange = dayjs("1900-01-01").format("YYYY-MM-DD");
+    }
+    //   range = this.state.rangeTextField;
+    // } else {
+    //   range = ""; // Set range to an empty string if rangeState is false
+    // }
+    
+    BgtICFService.findBgcCDByGroupCdAndToDtAndKeyword({
+      bgtCDMark: this.state.bgtCDMarkTextField,
+      bgtGrCd: this.state.bgtGrCd,
+      keyword: this.state.keywordTextField,
+      range: tmpRange,
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+    });
+  };
+
+  toggleRangeState = () => {
+    this.setState((prevState) => ({
+      rangeState: !prevState.rangeState
+    }));
+  };
+
+  handleChangeDatePicker = async(newValue) => {
+    await this.setState({
+      rangeTextField: dayjs(newValue).format("YYYY-MM-DD"),
+    });
+    console.log(this.state);
+  };
 
   render() {
-    const { open, bgtGrCd, columns, rows, rangeState, bgtCDMarkTextField, bgtGrTextField, searchTextField, rangeTextField } = this.state;
+    const {
+      open,
+      bgtGrCd,
+      columns,
+      rangeState,
+      bgtCDMarkTextField,
+      bgtGrTextField,
+      keywordTextField,
+      rangeTextField,
+    } = this.state;
 
     return (
       <>
@@ -208,7 +242,7 @@ class BgtCDDialogComponent extends Component {
                   </InputLabel>
                   <TextField
                     name="bgtCDMarkTextField"
-                    value={this.state.keyword}
+                    value={this.state.bgtCDMarkTextField}
                     onChange={this.handleInputChange}
                     variant="outlined"
                     size="small"
@@ -256,8 +290,8 @@ class BgtCDDialogComponent extends Component {
                     검색어
                   </InputLabel>
                   <TextField
-                    name="searchTextField"
-                    value={this.state.keyword}
+                    name="keywordTextField"
+                    value={this.state.keywordTextField}
                     onChange={this.handleInputChange}
                     variant="outlined"
                     size="small"
@@ -291,16 +325,23 @@ class BgtCDDialogComponent extends Component {
                     범위
                   </InputLabel>
                   <FormControlLabel
-                    control={<Checkbox sx={{ mr: "-10px" }} />}
+                    control={
+                      <Checkbox
+                        checked={rangeState}
+                        sx={{ mr: "-10px" }}
+                        onClick={this.toggleRangeState}
+                      />
+                    }
                     label="기준일"
                     sx={{ mr: "8px" }}
                   />
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       name="rangeTextField"
-                      disabled={rangeState}
+                      disabled={!rangeState}
                       format="YYYY-MM-DD"
-                      defaultValue={dayjs(new Date())}
+                      value={dayjs(rangeTextField)}
+                      onChange={this.handleChangeDatePicker}
                       slotProps={{
                         textField: {
                           size: "small",
@@ -313,7 +354,13 @@ class BgtCDDialogComponent extends Component {
                     />
                   </LocalizationProvider>
                   <FormControlLabel
-                    control={<Checkbox defaultChecked sx={{ mr: "-10px" }} />}
+                    control={
+                      <Checkbox
+                        checked={!rangeState}
+                        sx={{ mr: "-10px" }}
+                        onClick={this.toggleRangeState}
+                      />
+                    }
                     label="전체"
                   />
                 </Grid>
@@ -364,7 +411,7 @@ class BgtCDDialogComponent extends Component {
             </Grid>
           </DialogActions>
         </Dialog>
-        <ChildBgtGrDialogComponent
+        <BgtGrDialogComponent
           ref={this.childBgtGrRef}
           handleSetBgtCDTextField={this.handleSetBgtCDTextField}
         />

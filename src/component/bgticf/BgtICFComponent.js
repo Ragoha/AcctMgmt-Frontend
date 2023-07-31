@@ -20,9 +20,9 @@ import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
-import BgtCDDialogComponent from "./modal/BgtCDDialogComponent";
-import BgtGrDialogComponent from "./modal/BgtGrDialogComponent";
-import DivDialogComponent from "./modal/DivDialogComponent";
+import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+import DivDialogComponent from "./dialog/DivDialogComponent";
 import AutocompleteWithRemove from "./test";
 
 const BGTCD_COLUMN = [
