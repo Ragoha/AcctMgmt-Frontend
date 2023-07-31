@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import BgtCDService from "../../../service/BgtCDService";
 import { updateRowTree } from "@mui/x-data-grid-pro/internals";
 import { DataGridPro } from "@mui/x-data-grid-pro";
+import BgtCD from "../BgtCD";
 
 class BgtCDDevFgCustom extends Component {
 
@@ -16,10 +17,9 @@ class BgtCDDevFgCustom extends Component {
             rows: [],
             changes: [],
             columns: [
-                { field: 'divFg', headerName: '구분a', flex: 1 },
+                { field: 'divFg', headerName: '구분', flex: 1 },
                 { field: 'defNm', headerName: '과목분류', editable: true, flex: 1 },
             ],
-            rowModesModel: {},
         }
     }
     componentDidMount() {
@@ -73,12 +73,13 @@ class BgtCDDevFgCustom extends Component {
         BgtCDService.updateBgtCDTerm(data)
         .then(data=>{
             this.setState({rows: data})
-        });
-        this.setState({ open: false });
+        }, ()=>{
+            BgtCDService.getGridData();//[230728 ]:이 부분에 넣을 GroupCd를 가지고오기 위해선 반드시 최상단에 groupCd TextField를 가져와야함.
+        }); this.setState({ open: false });
     };
     /*---------*/ // onEditCellChangeCommitted={this.handleEditCellChangeCommitted}
     render() {
-        const { columns, rows, open ,rowModesModel} = this.state;
+        const { columns, rows, open } = this.state;
         return (
             //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
             <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
