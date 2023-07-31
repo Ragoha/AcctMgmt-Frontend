@@ -73,4 +73,5 @@ class BgtCDService {
     }
     /*---delete end ---*/
 }
+
 export default new BgtCDService();
