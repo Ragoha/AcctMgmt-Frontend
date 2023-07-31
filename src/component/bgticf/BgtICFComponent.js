@@ -132,12 +132,14 @@ class BgtICFComponent extends Component {
 
   handleClickDivSearchIcon = () => {
     this.divRef.current.initDivDialog();
-    this.divRef.current.handleUp();
   };
 
   handleClickBgtGrSerachIcon = () => {
-    this.bgtGrRef.current.handleInitBgtGrRows();
-    this.bgtGrRef.current.handleUp();
+    this.bgtGrRef.current.initBgtGrDialog();
+  }
+
+  handleClickBgtCDSearchIcon = () =>{
+    this.bgtCDRef.current.initBgtCDDialog();
   }
 
   handleSetBgtCDTextField = (data) => {
@@ -259,9 +261,7 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={this.handleClickBgtGrSerachIcon}
-                      />
+                      <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
                     </InputAdornment>
                   ),
                 }}
@@ -299,12 +299,7 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={() => {
-                          // this.bgtCDRef.current.handleInitBgtGrRows();
-                          this.bgtCDRef.current.handleUp();
-                        }}
-                      />
+                      <SearchIcon onClick={this.handleClickBgtCDSearchIcon} />
                     </InputAdornment>
                   ),
                 }}
