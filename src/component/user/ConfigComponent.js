@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from "axios";
-import { SET_TOKEN } from '../../store/Auth';
 import { connect } from 'react-redux';
 
 import {
@@ -19,9 +18,7 @@ import {
     Grid,
     Tabs,
     Tab,
-    Box,
     TextField,
-    createTheme,
     InputLabel,
 } from '@mui/material';
 
@@ -29,6 +26,8 @@ class ConfigComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            coCd: '',
+            coNm: '',
             data: [
                 {
                     id: 1,
@@ -127,7 +126,7 @@ class ConfigComponent extends React.Component {
     // 탭 변경 시 실행되는 함수
     handleTabChange = (newValue) => {
         this.setState({ selectedTab: newValue });
-    }; z
+    };
 
     componentDidMount() {
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
@@ -136,7 +135,7 @@ class ConfigComponent extends React.Component {
         const { coCd, empId, empEmail } = userInfo;
         console.log("엑세스 토큰 : " + accessToken);
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
+        this.setState({ coCd: coCd });
         axios.get(ACCTMGMT_API_BASE_URL + '/info', {
             headers: {
                 // Authorization: `Bearer ${accessToken}`, 
@@ -148,16 +147,16 @@ class ConfigComponent extends React.Component {
             .then((response) => {
                 // 요청 성공 시 처리할 작업
                 console.log('hihi : ', (response.data));
-                // axios.get(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, { withCredentials: true })
-                //     .then((response) => {
-                //         // 요청 성공 시 처리할 작업
-                //         console.log('hihi : ', (response.data));
-
-                //     })
-                //     .catch((error) => {
-                //         // 요청 실패 시 처리할 작업
-                //         console.error(error);
-                //     })
+                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, { withCredentials: true })
+                    .then((response) => {
+                        // 요청 성공 시 처리할 작업
+                        console.log('hihi : ', (response.data));
+                        this.setState({ coNm: response.data });
+                    })
+                    .catch((error) => {
+                        // 요청 실패 시 처리할 작업
+                        console.error(error);
+                    })
             })
             .catch((error) => {
                 // 요청 실패 시 처리할 작업
@@ -165,7 +164,9 @@ class ConfigComponent extends React.Component {
             });
     }
     render() {
-        const { selectedTab } = this.state;
+        const { selectedTab, coCd, coNm } = this.state;
+
+        console.log('aeeee', coCd);
         const settingsKey =
             selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
 
@@ -175,7 +176,7 @@ class ConfigComponent extends React.Component {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <InputLabel>회사</InputLabel>{" "}
-                    <TextField aria-readonly></TextField>
+                    <TextField aria-readonly label={coNm} disabled></TextField>
                 </Grid>
                 <Grid item xs={12}>
                     <Tabs value={selectedTab} onChange={this.handleTabChange}>
