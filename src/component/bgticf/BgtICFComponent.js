@@ -45,6 +45,7 @@ class BgtICFComponent extends Component {
       divNm: "",
       divTextField: "",
       bgtGrTextField: "",
+      bgtCDTextField: "",
       frDt: "",
       groupCd: "",
       grFg: "",
@@ -130,18 +131,19 @@ class BgtICFComponent extends Component {
   };
 
   handleClickDivSearchIcon = () => {
-    BgtICFService.findDivCdAndDivNmByCoCd("1").then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
-      }));
-      this.divRef.current.setDivRows(divRows);
-    });
+    this.divRef.current.initDivDialog();
     this.divRef.current.handleUp();
   };
 
-  handleSetBgtCDTextField = () => {
+  handleClickBgtGrSerachIcon = () => {
+    this.bgtGrRef.current.handleInitBgtGrRows();
+    this.bgtGrRef.current.handleUp();
+  }
+
+  handleSetBgtCDTextField = (data) => {
+    console.log(data)
+
+    this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm });
   }
 
   render() {
@@ -153,7 +155,8 @@ class BgtICFComponent extends Component {
       float: "right",
     };
 
-    const { bgtDTO, startDate, mainHeader, divTextField } = this.state;
+    const { bgtDTO, startDate, mainHeader, divTextField, bgtCDTextField } =
+      this.state;
 
     return (
       <>
@@ -257,10 +260,7 @@ class BgtICFComponent extends Component {
                   endAdornment: (
                     <InputAdornment position="end">
                       <SearchIcon
-                        onClick={() => {
-                          this.bgtGrRef.current.handleInitBgtGrRows();
-                          this.bgtGrRef.current.handleUp();
-                        }}
+                        onClick={this.handleClickBgtGrSerachIcon}
                       />
                     </InputAdornment>
                   ),
@@ -292,6 +292,7 @@ class BgtICFComponent extends Component {
               <InputLabel sx={{ marginRight: "10px" }}>예산과목</InputLabel>
               <TextField
                 name="bgtCd"
+                value={bgtCDTextField}
                 onChange={this.handleInputChange}
                 size="small"
                 sx={{ width: "220px" }}
@@ -300,7 +301,7 @@ class BgtICFComponent extends Component {
                     <InputAdornment position="end">
                       <SearchIcon
                         onClick={() => {
-                          this.bgtCDRef.current.handleInitBgtGrRows();
+                          // this.bgtCDRef.current.handleInitBgtGrRows();
                           this.bgtCDRef.current.handleUp();
                         }}
                       />

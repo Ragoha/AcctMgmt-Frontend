@@ -14,6 +14,7 @@ import {
   InputLabel,
   TextField
 } from "@mui/material";
+import { randomId } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -25,32 +26,32 @@ import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
 const columns = [
   {
-    field: "bgtGrCd",
+    field: "gisu",
     headerName: "기수",
     width: 50,
     headerAlign: "center",
     align: "center",
   },
   {
-    field: "bgtGrNm1",
+    field: "bgtGrNm",
     headerName: "예산그룹",
     width: 180,
     headerAlign: "center",
   },
   {
-    field: "bgtGrNm2",
+    field: "bgtCd",
     headerName: "예산과목코드",
     width: 180,
     headerAlign: "center",
   },
   {
-    field: "bgtGrNm3",
+    field: "bgtNm",
     headerName: "예산과목명",
     width: 180,
     headerAlign: "center",
   },
   {
-    field: "bgtGrNm4",
+    field: "bgtData",
     headerName: "상위예산과목",
     width: 300,
     headerAlign: "center",
@@ -65,7 +66,7 @@ class BgtCDDialogComponent extends Component {
       bgtGr: { Cd: "", Nm: "" },
       selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
-      bgtGrRows: [],
+      bgtCDRows: [],
       keyword: "",
       columns: columns,
       rangeState: true,
@@ -87,9 +88,7 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row }, () => {
-      console.log(this.state.selectedRow);
-    });
+    this.setState({ bgtCd: params.row.bgtCd, bgtNm: params.row.bgtNm });
   };
 
   handleInputChange = async (e) => {
@@ -101,19 +100,27 @@ class BgtCDDialogComponent extends Component {
   handleSearchBgtGr = () => {
     BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
       async (response) => {
-        const bgtGrRows = response.map((row) => ({
+        const bgtCDRows = response.map((row) => ({
           id: row.bgtGrCd,
           bgtGrCd: row.bgtGrCd,
           bgtGrNm: row.bgtGrNm,
         }));
-        await this.setState({ bgtGrRows: bgtGrRows });
+        await this.setState({ bgtCDRows: bgtCDRows });
         console.log(this.state);
       }
     );
   };
 
-  handleClickConfirm = async () => {
-    console.log(this.state.bgtGrCd);
+  handleClickConfirm = () => {
+    console.log(this.state.bgtCd);
+    console.log(this.state.bgtNm);
+
+    this.props.handleSetBgtCDTextField({
+      bgtCd: this.state.bgtCd,
+      bgtNm: this.state.bgtNm
+    });
+
+    this.handleDown();
     // this.handleDown();
     // await this.props.handleSetBgtGrTextField(this.state.selectedRow);
   };
@@ -153,8 +160,19 @@ class BgtCDDialogComponent extends Component {
       range: tmpRange,
       accessToken: this.props.accessToken,
       user: this.props.user,
+    }).then((response) => {
+      const bgtCDRows = response.map((row) => ({
+        id: randomId(),
+        // gisu: row.gisu,
+        bgtCd: row.bgtCd,
+        bgtNm: row.bgtNm,
+      }));
+      this.setState({ bgtCDRows: bgtCDRows });
+
+      console.log(this.state);
     });
   };
+
 
   toggleRangeState = () => {
     this.setState((prevState) => ({
@@ -184,7 +202,7 @@ class BgtCDDialogComponent extends Component {
     return (
       <>
         <Dialog
-          open={true}
+          open={open}
           PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840 } }}
         >
           <DialogTitle
@@ -373,7 +391,7 @@ class BgtCDDialogComponent extends Component {
               <DataGrid
                 checkboxSelection
                 columns={columns}
-                rows={this.state.bgtGrRows}
+                rows={this.state.bgtCDRows}
                 showColumnVerticalBorder={true}
                 showCellVerticalBorder={true}
                 onRowClick={this.handleClickRow}
