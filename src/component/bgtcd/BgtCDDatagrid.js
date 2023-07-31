@@ -1,27 +1,26 @@
 
 import { Box } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import { Component } from 'react';
-import BgtCDService from '../../service/BgtCDService';
 
 class BgtCDDatagrid extends Component {
     constructor(props) {
         super(props);
         this.state = {
             columns: [
-                { field: 'defNm', headerName: '분류명', width: 100 },
+                //{ field: 'defNm', headerName: '분류명', width: 100 },
                 { field: 'bgtCd', headerName: '예산코드', width: 100 },
                 { field: 'bgtNm', headerName: '예산과목명', width: 250 },
             ],
             rows: [],
+
         }
     }
     handleRowAdd = () => {
         console.log('자식의 handleRowAdd')
         const newRows = [
             ...this.props.rows,
-            { defNm: "", bgtCd: "", bgtNm: "", isNew: true },
+            { bgtCd: "", bgtNm: "", isNew: true },//defNm: "",
         ];
         this.setState({ rows: newRows });
     };
@@ -35,6 +34,7 @@ class BgtCDDatagrid extends Component {
         }
     }
 
+
     render() {
         const { columns } = this.state;
         const { rows } = this.props;
@@ -46,7 +46,6 @@ class BgtCDDatagrid extends Component {
         return (
             <Box>
                 <Box style={{ height: 480, width: '95%' }} >
-
                     <DataGridPro
                         treeData
                         getTreeDataPath={(row) => row.dataPath.split(',')}
@@ -55,6 +54,9 @@ class BgtCDDatagrid extends Component {
                         getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                         onRowClick={this.clickedRow}
+                        groupingColDef={{
+                            headerName: '분류명',
+                        }}
                         components={{
                             Footer: () => null
                         }}

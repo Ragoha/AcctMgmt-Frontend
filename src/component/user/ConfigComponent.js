@@ -20,6 +20,7 @@ import {
     Tab,
     TextField,
     InputLabel,
+    colors,
 } from '@mui/material';
 
 class ConfigComponent extends React.Component {
@@ -30,23 +31,14 @@ class ConfigComponent extends React.Component {
             coNm: '',
             data: [
                 {
-                    id: 1,
-                    option: "예산관리구분",
-                    commonSettingValue: "1.부서예산",
                     options: ["1.부서예산", "2.프로젝트예산"],
                     value: ['1', '2'],
                 },
                 {
-                    id: 2,
-                    option: "품의서 사용여부",
-                    commonSettingValue: "0.미사용",
                     options: ["0.미사용", "1.사용"],
                     value: ['0', '1'],
                 },
                 {
-                    id: 3,
-                    option: "승인번호부여",
-                    commonSettingValue: "1.일별",
                     options: [
                         "1.일별",
                         "2.월별",
@@ -56,9 +48,6 @@ class ConfigComponent extends React.Component {
                     value: ['1', '2', '3', '4'],
                 },
                 {
-                    id: 4,
-                    option: "이월대상구분",
-                    commonSettingValue: "1.이월안함",
                     options: [
                         "1.이월안함",
                         "2.사고+명시+계속비",
@@ -68,12 +57,10 @@ class ConfigComponent extends React.Component {
                     value: ['1', '2', '3', '4'],
                 },
                 {
-                    id: 5,
-                    option: "프로젝트/부서별 하위사업 관리여부",
-                    commonSettingValue: "1.사용",
                     options: ["0.미사용", "1.사용"],
                     value: ['0', '1'],
                 },
+                // ... 나머지 데이터 설정 ...
             ],
             selectedValue: "", // 선택한 라디오 버튼의 값 저장
             selectedRowId: null, // 선택한 행의 ID 저장
@@ -85,21 +72,20 @@ class ConfigComponent extends React.Component {
     handleRowClick = (rowData) => {
         this.setState({
             selectedValue: rowData.commonSettingValue,
+            // selectedValue: rowData.value,
             selectedRowId: rowData.id,
         });
         const option = rowData.id;
         console.log(option);
     };
 
-
     // 라디오 버튼 선택 시 실행되는 함수
     handleRadioChange = (e) => {
         const selectedValue = e.target.value;
-        const selectedLabel = e.target.labels[0].textContent;
         this.setState((prevState) => ({
             data: prevState.data.map((row) =>
                 row.id === prevState.selectedRowId
-                    ? { ...row, commonSettingValue: selectedLabel }
+                    ? { ...row, commonSettingValue: selectedValue }
                     : row
             ),
             selectedValue,
@@ -111,8 +97,12 @@ class ConfigComponent extends React.Component {
         const userInfo = this.props.userInfo;
         const { coCd } = userInfo;
 
-        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + coCd, { withCredentials: true })
-
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + coCd, {}, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
             .then((response) => {
                 // 성공적으로 응답을 받은 경우 처리할 작업
                 // console.log(response.data);
@@ -147,7 +137,12 @@ class ConfigComponent extends React.Component {
             .then((response) => {
                 // 요청 성공 시 처리할 작업
                 console.log('hihi : ', (response.data));
-                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, { withCredentials: true })
+                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
                     .then((response) => {
                         // 요청 성공 시 처리할 작업
                         console.log('hihi : ', (response.data));
@@ -157,6 +152,30 @@ class ConfigComponent extends React.Component {
                         // 요청 실패 시 처리할 작업
                         console.error(error);
                     })
+                axios.get(ACCTMGMT_API_BASE_URL + '/api/configdate/' + coCd)
+                    .then((response) => {
+                        console.log('Config Data: ', response.data);
+                        // 받아온 데이터를 가공하여 userData 객체에 설정
+                        const { data } = response;
+                        const userData = {
+                            id: data.map((sys) => sys.sysCd),
+                            option: data.map((sys) => sys.sysNm), // sysNm을 option으로 설정
+                            budgetManagement: data.map((sys) => sys.sysYn), // sysYn을 budgetManagement로 설정
+                        };
+                        // data 배열을 userData 객체의 값으로 설정하여 업데이트
+                        this.setState((prevState) => ({
+                            data: prevState.data.map((row, index) => ({
+                                ...row,
+                                id: userData.id[index], // id 값 설정
+                                option: userData.option[index], // option 값 설정
+                                commonSettingValue: userData.budgetManagement[index], // commonSettingValue 값 설정
+                            })),
+                            ...userData, // userData의 다른 값들도 setState로 업데이트
+                        }));
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    })
             })
             .catch((error) => {
                 // 요청 실패 시 처리할 작업
@@ -164,23 +183,33 @@ class ConfigComponent extends React.Component {
             });
     }
     render() {
-        const { selectedTab, coCd, coNm } = this.state;
+        const { selectedTab, coCd, coNm, data, selectedRowId } = this.state;
 
-        console.log('aeeee', coCd);
+        // console.log('aeeee', coCd);
         const settingsKey =
             selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
 
-        const selectedRowData = this.state.data.find((row) => row.id === this.state.selectedRowId);
+        const selectedRowData = data.find((row) => row.id === selectedRowId);
 
         return (
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <InputLabel>회사</InputLabel>{" "}
-                    <TextField aria-readonly label={coNm} disabled></TextField>
+                    {/* <TextField aria-readonly placeholder={coNm} disabled ></TextField> */}
+                    <TextField
+                        value={coNm}
+                        disabled
+                        variant="standard"
+                        InputProps={{
+                            style: {
+                                color: "",      // 원하는 색상으로 변경
+                                fontSize: '95px',  // 원하는 글꼴 크기로 변경
+                            },
+                        }}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Tabs value={selectedTab} onChange={this.handleTabChange}>
-                        <Tab label="Common Settings" value="common" />
+                        <Tab label="공통설정" value="common" />
                     </Tabs>
                 </Grid>
                 <Grid item xs={8}>
@@ -188,26 +217,24 @@ class ConfigComponent extends React.Component {
                         <Table style={{ border: "1px solid #ccc" }}>
                             <TableHead sx={{ bgcolor: 'beige' }}>
                                 <TableRow>
-                                    <TableCell style={{ border: "1px solid #ccc" }}>
+                                    <TableCell style={{ border: "1px solid #ccc", width: "19vh" }}>
                                         옵션명(option)
                                     </TableCell>
                                     <TableCell
-                                        style={{ border: "1px solid #ccc", width: "20vh" }}
+                                        style={{ border: "1px solid #ccc", width: "10vh" }}
                                     >
                                         설정값(SettingValue)
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.state.data.map((row) => (
+                                {data.map((row) => (
                                     <TableRow
                                         key={row.id}
                                         onClick={() => this.handleRowClick(row)}
                                         style={{
                                             backgroundColor:
-                                                row.id === this.state.selectedRowId
-                                                    ? "#e8f0fe"
-                                                    : "white",
+                                                row.id === selectedRowId ? "#e8f0fe" : "white",
                                             border: "1px solid #ccc",
                                         }}
                                     >
@@ -223,39 +250,38 @@ class ConfigComponent extends React.Component {
                         </Table>
                     </TableContainer>
                 </Grid>
-                <Grid item xs={4}>
-                    <Paper style={{ padding: 10 }}>
-                        <FormControl component="fieldset" sx={{ width: '30vh' }}>
-                            <FormLabel component="legend" >
-                                설정
-                            </FormLabel>
-                            <RadioGroup
-                                name="settingValue"
-                                value={this.state.selectedValue}
-                                onChange={this.handleRadioChange}
-                            >
-                                {selectedRowData?.options.map((option, idx) => (
-                                    <FormControlLabel
-                                        key={option}
-                                        value={selectedRowData.value[idx]}
-                                        control={<Radio />}
-                                        label={option}
-                                    />
-                                ))}
-                            </RadioGroup>
-                        </FormControl>
-                    </Paper>
-                </Grid>
+                {selectedRowData && (
+                    <Grid item xs={4}>
+                        <Paper style={{ padding: 10 }}>
+                            <FormControl component="fieldset" sx={{ width: '30vh' }}>
+                                <FormLabel component="label" >
+                                    설정
+                                </FormLabel>
+                                <RadioGroup
+                                    name={`radio-group-${selectedRowData.id}`}
+                                    value={selectedRowData[settingsKey]}
+                                    onChange={this.handleRadioChange}
+                                >
+                                    {selectedRowData.options.map((optionValue, idx) => (
+                                        <FormControlLabel
+                                            key={optionValue}
+                                            // value={optionValue}
+                                            value={selectedRowData.value[idx]}
+                                            control={<Radio />}
+                                            // label={`${idx + 1}.${optionValue}`} // 라벨을 순서와 함께 표시
+                                            label={optionValue}
+                                        />
+                                    ))}
+                                </RadioGroup>
+                            </FormControl>
+                        </Paper>
+                    </Grid>
+                )}
             </Grid>
         );
     }
 }
 
-// const mapStateToProps = (state) => ({
-//     accessToken: state.authToken.accessToken,
-//   });  
-
-// export default connect(mapStateToProps, { SET_TOKEN })(ConfigComponent);
 const mapStateToProps = (state) => ({
     accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
