@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage/session'; // 로컬 스토리지�
 
 import AuthReducer from './Auth';
 import UserReducer from './User';
+import ConfigReducer from './Config';
 import boxData from './BgtCDBox';
 
 // root 리듀서 생성
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     auth: AuthReducer,
     // 다른 리듀서들도 필요한 경우 추가합니다.
     user: UserReducer,
+    config:ConfigReducer,
     boxData:boxData,
 
 });

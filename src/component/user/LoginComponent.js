@@ -13,8 +13,9 @@ import Avatar from '@mui/material/Avatar';
 import { CSSTransition } from 'react-transition-group';
 import Image4 from './back4.jpg';
 import { connect } from 'react-redux';
-import { SET_TOKEN }  from '../../store/Auth';
+import { SET_TOKEN } from '../../store/Auth';
 import { SET_USER } from '../../store/User';
+import { SET_CONFIG } from '../../store/Config';
 import Typography from '@mui/material/Typography';
 import Cookie from '../../storage/Cookie';
 import axios from "axios";
@@ -54,33 +55,42 @@ class LoginComponent extends Component {
     const { id, password } = this.state;
     const loginData = { empId: id, empPw: password };
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
-    
+
     axios.post(ACCTMGMT_API_BASE_URL + '/login', loginData, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    .then((response) => {
-      alert("로그인 성공", response);
-      const jwtToken = response.data.refreshToken;
-      Cookie.setRefreshToken(jwtToken);
+      .then((response) => {
+        alert("로그인 성공", response);
+        const jwtToken = response.data.refreshToken;
+        Cookie.setRefreshToken(jwtToken);
 
-      const accToken = response.data.accessToken;
-      const acwte = this.props.setAccessToken(accToken);
+        const accToken = response.data.accessToken;
+        const acwte = this.props.setAccessToken(accToken);
 
-      const user = response.data;
-      const USER = this.props.setUserInfo(user);
-
-      console.log(response.data);
-      console.log(jwtToken);
-      console.log(accToken);
-      console.log("가자 : " + acwte);
-      console.log("리덕스에 있는 유저 정보 : " + USER);
-      window.location.href = "/acctmgmt/bgt";
-    })
-    .catch((error) => {
-      alert("아이디 또는 비밀번호가 다릅니다.", error);
-    });
+        const user = response.data;
+        const USER = this.props.setUserInfo(user);
+        this.props.setConfig(response.data.config); //환경설정 초기데이터 리덕스 저장
+        console.log(response.data);
+        console.log(jwtToken);
+        console.log(accToken);
+        console.log("가자 : " + acwte);
+        console.log("리덕스에 있는 유저 정보 : " + USER);
+        axios.get(ACCTMGMT_API_BASE_URL + '/api/configdate/' + response.data.coCd)
+          .then((response) => {
+            console.log('로그인 : Config Data: ', response.data);
+            // 받아온 데이터를 가공하여 userData 객체에 설정
+            this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        window.location.href = "/acctmgmt/bgt";
+      })
+      .catch((error) => {
+        alert("아이디 또는 비밀번호가 다릅니다.", error);
+      });
   };
 
   render() {
@@ -243,7 +253,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setAccessToken: (accessToken) => dispatch(SET_TOKEN(accessToken)),
     setUserInfo: (userInfo) => dispatch(SET_USER(userInfo)),
+    setConfig: (config) => dispatch(SET_CONFIG(config))
   };
+
 };
 
 export default connect(null, mapDispatchToProps)(LoginComponent);

@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import { connect } from 'react-redux';
+import { SET_CONFIG } from '../../store/Config';
 
 import {
     Table,
@@ -19,8 +20,6 @@ import {
     Tabs,
     Tab,
     TextField,
-    InputLabel,
-    colors,
 } from '@mui/material';
 
 class ConfigComponent extends React.Component {
@@ -69,10 +68,18 @@ class ConfigComponent extends React.Component {
     }
 
     // 테이블의 행 클릭 시 실행되는 함수
-    handleRowClick = (rowData) => {
+    // handleRowClick = (rowData) => {
+    //     this.setState({
+    //         // selectedValue: rowData.commonSettingValue,
+    //         selectedValue: rowData.value,
+    //         selectedRowId: rowData.id,
+    //     });
+    //     const option = rowData.id;
+    //     console.log(option);
+    // };
+    handleRowClick = (rowData, settingsKey) => {
         this.setState({
-            selectedValue: rowData.commonSettingValue,
-            // selectedValue: rowData.value,
+            selectedValue: rowData[settingsKey],
             selectedRowId: rowData.id,
         });
         const option = rowData.id;
@@ -80,24 +87,73 @@ class ConfigComponent extends React.Component {
     };
 
     // 라디오 버튼 선택 시 실행되는 함수
-    handleRadioChange = (e) => {
-        const selectedValue = e.target.value;
-        this.setState((prevState) => ({
-            data: prevState.data.map((row) =>
-                row.id === prevState.selectedRowId
-                    ? { ...row, commonSettingValue: selectedValue }
-                    : row
-            ),
-            selectedValue,
-        }));
-        console.log(selectedValue);
+    // handleRadioChange = (e) => {
+    //     const selectedValue = e.target.value;
 
+    //     this.setState((prevState) => ({
+    //         data: prevState.data.map((row) =>
+    //             row.id === prevState.selectedRowId
+    //                 ? { ...row, commonSettingValue: selectedValue }
+    //                 : row
+    //         ),
+    //         selectedValue,
+    //     }));
+    // handleRadioChange = (e) => {
+    //     const selectedValue = e.target.value;
+    //     const selectedIndex = parseInt(selectedValue, 10);
+
+    //     this.setState((prevState) => {
+    //         const selectedData = prevState.data.find(
+    //             (row) => row.id === prevState.selectedRowId
+    //         );
+
+    //         if (selectedData) {
+    //             const optionsIndex = selectedData.value.indexOf(selectedValue);
+    //             const commonSettingValue = selectedData.options[optionsIndex];
+
+    //             return {
+    //                 data: prevState.data.map((row) =>
+    //                     row.id === prevState.selectedRowId ? { ...row, commonSettingValue } : row
+    //                 ),
+    //                 selectedValue,
+    //             };
+    //         }
+    //     });
+    handleRadioChange = (e, settingsKey) => {
+        const selectedValue = e.target.value;
+        this.setState((prevState) => {
+            const selectedData = prevState.data.find(
+                (row) => row.id === prevState.selectedRowId
+            );
+
+            if (selectedData) {
+                const optionsIndex = selectedData.value.indexOf(selectedValue);
+                const commonSettingValue = selectedData.options[optionsIndex];
+
+                const newData = {
+                    id: selectedData.id,
+                    option: selectedData.option,
+                    commonSettingValue: commonSettingValue,
+                };
+                this.props.setConfig(newData); //환경설정 초기데이터 리덕스 저장
+                return {
+                    data: prevState.data.map((row) =>
+                        row.id === prevState.selectedRowId ? { ...row, commonSettingValue } : row
+                    ),
+                };
+            }
+            
+        });
+        console.log(selectedValue);
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
         const option = this.state.selectedRowId;
+        // const configData  = this.props;
         const userInfo = this.props.userInfo;
         const { coCd } = userInfo;
-
-        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + coCd, {}, {
+        const settingvalue = this.props.configData.commonSettingValue;
+        
+        console.log("잘 찍히는게 맞는걸까??",settingvalue);
+        axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + option + '/' + selectedValue + '/' + settingvalue + '/' +coCd, {}, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
@@ -106,6 +162,9 @@ class ConfigComponent extends React.Component {
             .then((response) => {
                 // 성공적으로 응답을 받은 경우 처리할 작업
                 // console.log(response.data);
+                // this.props.setConfig(response.data);
+                const { configData } = this.props;
+                console.log("변경된 데이타:::" , configData);
             })
             .catch((error) => {
                 // 에러가 발생한 경우 처리할 작업
@@ -123,10 +182,14 @@ class ConfigComponent extends React.Component {
         const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
         const userInfo = this.props.userInfo;
         const { coCd, empId, empEmail } = userInfo;
+        const { configData } = this.props;
+        console.log('Config 리덕스의 데이터:', configData);
+
         console.log("엑세스 토큰 : " + accessToken);
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
         this.setState({ coCd: coCd });
-        axios.get(ACCTMGMT_API_BASE_URL + '/info', {
+        axios.get(ACCTMGMT_API_BASE_URL + '/info', { //로그인한 유저 확인하는 경로
             headers: {
                 // Authorization: `Bearer ${accessToken}`, 
                 // Authorization: accessToken, 
@@ -136,8 +199,8 @@ class ConfigComponent extends React.Component {
         })
             .then((response) => {
                 // 요청 성공 시 처리할 작업
-                console.log('hihi : ', (response.data));
-                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
+                console.log('인증된 사용자 : ', (response.data));
+                axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, { //회사코드로 회사이름 찾는 경로
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
@@ -145,7 +208,7 @@ class ConfigComponent extends React.Component {
                 })
                     .then((response) => {
                         // 요청 성공 시 처리할 작업
-                        console.log('hihi : ', (response.data));
+                        console.log('회사이름 : ', (response.data));
                         this.setState({ coNm: response.data });
                     })
                     .catch((error) => {
@@ -160,7 +223,7 @@ class ConfigComponent extends React.Component {
                         const userData = {
                             id: data.map((sys) => sys.sysCd),
                             option: data.map((sys) => sys.sysNm), // sysNm을 option으로 설정
-                            budgetManagement: data.map((sys) => sys.sysYn), // sysYn을 budgetManagement로 설정
+                            budgetManagement: data.map((sys) => sys.cfgvalue), // sysYn을 budgetManagement로 설정
                         };
                         // data 배열을 userData 객체의 값으로 설정하여 업데이트
                         this.setState((prevState) => ({
@@ -183,7 +246,7 @@ class ConfigComponent extends React.Component {
             });
     }
     render() {
-        const { selectedTab, coCd, coNm, data, selectedRowId } = this.state;
+        const { selectedTab, coNm, data, selectedRowId } = this.state;
 
         // console.log('aeeee', coCd);
         const settingsKey =
@@ -260,14 +323,18 @@ class ConfigComponent extends React.Component {
                                 <RadioGroup
                                     name={`radio-group-${selectedRowData.id}`}
                                     value={selectedRowData[settingsKey]}
-                                    onChange={this.handleRadioChange}
+                                    // onChange={this.handleRadioChange}
+                                    onChange={(e) => this.handleRadioChange(e)}
                                 >
-                                    {selectedRowData.options.map((optionValue, idx) => (
+                                    {selectedRowData.options.map((optionValue, idx, options) => (
                                         <FormControlLabel
                                             key={optionValue}
                                             // value={optionValue}
                                             value={selectedRowData.value[idx]}
-                                            control={<Radio />}
+                                            // value = {options[idx]}
+                                            // control={<Radio />}
+                                            control={
+                                                <Radio />}
                                             // label={`${idx + 1}.${optionValue}`} // 라벨을 순서와 함께 표시
                                             label={optionValue}
                                         />
@@ -285,6 +352,11 @@ class ConfigComponent extends React.Component {
 const mapStateToProps = (state) => ({
     accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+    configData: state.config.configData,
 });
-
-export default connect(mapStateToProps)(ConfigComponent);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setConfig: (config) => dispatch(SET_CONFIG(config)),
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigComponent);
