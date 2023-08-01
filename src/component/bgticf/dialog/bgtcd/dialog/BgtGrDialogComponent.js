@@ -32,12 +32,6 @@ const columns = [
   },
 ];
 
-const rows = [
-  { id: 1, bgtGrCd: "1", bgtGrNm: "John" },
-  { id: 2, bgtGrCd: "2", bgtGrNm: "John" },
-  { id: 3, bgtGrCd: "3", bgtGrNm: "John" },
-];
-
 class BgtGrDialogComponent extends Component {
   constructor(props) {
     super(props);
@@ -46,7 +40,7 @@ class BgtGrDialogComponent extends Component {
       selectedRow: { bgtGrCd: "", bgtGrNm: "" },
       bgtGrRows: [],
       keyword: "",
-      rows: rows,
+      rows: [],
       columns: columns,
     };
   }
@@ -167,7 +161,9 @@ class BgtGrDialogComponent extends Component {
                 alignItems="center"
                 justifyContent="center"
               >
-                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>검색어</InputLabel>
+                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
+                  검색어
+                </InputLabel>
                 <TextField
                   id="keyword"
                   name="keyword"
@@ -182,8 +178,8 @@ class BgtGrDialogComponent extends Component {
                   style={{
                     padding: "0px",
                     minWidth: "5px",
-                    position: "absolute",
-                    right: "8px",
+                    position: "relative",
+                    right: "-66px",
                   }}
                   onClick={() => {
                     this.handleSearchBgtGrIcon();
