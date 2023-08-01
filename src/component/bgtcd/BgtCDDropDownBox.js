@@ -67,7 +67,6 @@ class BgtCDDropDownBox extends React.Component {
                     id="composition-menu"
                     aria-labelledby="composition-button"
                     onClick={this.testConsole}
-                    sx={{opacity:1}}
                   >
                     <MenuItem onClick={this.handleClose}>간편 검색</MenuItem>
                     <MenuItem onClick={this.handleClose}>에산그룹 등록</MenuItem>

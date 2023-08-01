@@ -14,24 +14,20 @@ class BtgICFService {
     });
   }
 
-  getBgtICFList() {
+  getBgtICFList(data) {
+    console.log(data);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf")
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
       .then((response) => response.data);
   }
 
   deleteBgtICF(sq) {
     return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
-  }
-
-  findDivCdAndDivNmByCoCd(coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {
-        params: {
-          coCd: coCd,
-        },
-      })
-      .then((response) => response.data);
   }
 
   findDivByCoCdAndKeyword(data) {
@@ -64,14 +60,13 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  findBgcCDByGroupCdAndToDtAndKeyword(data) {
+  findBgcCDByGisuAndGroupCdAndToDtAndKeyword(data) {
     console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
         params: {
           coCd: data.user.coCd,
-          bgtCDMark: data.bgtCDMark,
-          gisu: 1,
+          gisu: data.gisu,
           groupCd: data.bgtGrCd,
           keyword: data.keyword,
           toDt: dayjs(data.range),
@@ -83,7 +78,23 @@ class BtgICFService {
       })
       .then((response) => response.data);
   }
+
+  findGisuByCoCd(data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/gisu", {
+        params: {
+          coCd: data.user.coCd,
+        },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data);
+  }
 }
+
+
 
 
 export default new BtgICFService();

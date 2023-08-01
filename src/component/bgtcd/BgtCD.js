@@ -9,6 +9,9 @@ import BgtCDDatagrid from "./BgtCDDatagrid";
 import BgtCDGroupModal from "./modal/BgtCDEzSearch";
 import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
+
+import { connect } from 'react-redux';
+
 {/* <Autocomplete
 variant=""
 size="small"
@@ -28,6 +31,7 @@ sx={{ width: '200px', marginRight: '50px',}}// backgroundColor: "#7895CB",
 
 renderInput={(params) => <TextField {...params} />}
 ></Autocomplete> */}
+
 class BgtCD extends Component {
     constructor(props) {
         super(props);
@@ -38,6 +42,7 @@ class BgtCD extends Component {
         this.BgtCDGroupModal = React.createRef();
         this.BgtCDGroupReg = React.createRef();
         this.state = {
+            kimChiBox: this.props.kimChiBox,
             open: false,
             rows: [],
             groupcd: 'GROUP3',
@@ -45,6 +50,13 @@ class BgtCD extends Component {
             //testList: ['블레', '블래', '리퍼', '소서', '건슬', '기공', '알카'],
         }
     }
+    componentDidMount() {
+        console.log('1--------------------------')
+        console.log(this.state.kimChiBox);
+        console.log('2--------------------------')
+    }
+
+
     /*상단 조건 검색바 start*/
 
     /*상단 조건 검색바 end  */
@@ -56,11 +68,14 @@ class BgtCD extends Component {
 
     /*데이터그리드 부분 start*/
     getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+        console.log('데이터체크')
+        console.log(this.state.kimChiBox);
+
         BgtCDService.getGridData(groupcd)
             .then(rows => {
                 console.log('통신성공')
                 console.dir(rows) //데이터 받았음 .
-                this.setState({ rows });
+                this.setState({ rows }, () => console.log(this.state));
             }).catch(error => {
                 console.error("Error fetching data:", error);
             });
@@ -103,7 +118,7 @@ class BgtCD extends Component {
         const { rows, groupcd, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
         return (
             <>
-                            
+
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Box
@@ -115,7 +130,7 @@ class BgtCD extends Component {
                                 border: '1px solid'
                             }}
                             padding={2}>
-                            <Button 
+                            <Button
                                 variant="contained"
                                 size="medium"
                                 onClick={this.handleRowAdd}
@@ -137,7 +152,7 @@ class BgtCD extends Component {
                                 그룹레벨설정
                             </Button>
                             {/* 기능모음 드롭다운박스 */}
-                            <BgtCDDropDownBox/>
+                            <BgtCDDropDownBox />
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -166,4 +181,10 @@ class BgtCD extends Component {
         )
     }
 }
-export default BgtCD;
+const mapStateToProps = (state) => ({
+    // accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+    // userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+    kimChiBox: state.boxData.kimChiBox,
+});
+
+export default connect(mapStateToProps)(BgtCD);

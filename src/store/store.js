@@ -6,6 +6,7 @@ import storage from 'redux-persist/lib/storage/session'; // 로컬 스토리지�
 import AuthReducer from './Auth';
 import UserReducer from './User';
 import ConfigReducer from './Config';
+import boxData from './BgtCDBox';
 
 // root 리듀서 생성
 const rootReducer = combineReducers({
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     // 다른 리듀서들도 필요한 경우 추가합니다.
     user: UserReducer,
     config:ConfigReducer,
+    boxData:boxData,
 
 });
 
@@ -33,7 +35,6 @@ class Store {
     constructor() {
         // Redux store 생성
         this.store = createStore(persistedReducer, applyMiddleware(thunk));
-
         // Redux Persist를 적용하여 지속시키는 store를 생성합니다.
         this.persistor = persistStore(this.store);
     }
