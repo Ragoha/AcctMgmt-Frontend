@@ -24,6 +24,7 @@ import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import AutocompleteWithRemove from "./test";
+import { connect } from "react-redux";
 
 const BGTCD_COLUMN = [
   { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
@@ -46,6 +47,8 @@ class BgtICFComponent extends Component {
       divTextField: "",
       bgtGrTextField: "",
       bgtCDTextField: "",
+      gisuRows: [],
+      gisuRangeRows: [],
       frDt: "",
       groupCd: "",
       grFg: "",
@@ -132,18 +135,44 @@ class BgtICFComponent extends Component {
 
   handleClickDivSearchIcon = () => {
     this.divRef.current.initDivDialog();
-    this.divRef.current.handleUp();
   };
 
   handleClickBgtGrSerachIcon = () => {
-    this.bgtGrRef.current.handleInitBgtGrRows();
-    this.bgtGrRef.current.handleUp();
-  }
+    this.bgtGrRef.current.initBgtGrDialog();
+  };
+
+  handleClickBgtCDSearchIcon = () => {
+    this.bgtCDRef.current.initBgtCDDialog();
+  };
 
   handleSetBgtCDTextField = (data) => {
-    console.log(data)
+    console.log(data);
 
     this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm });
+  };
+
+  componentWillMount() {
+    BgtICFService.findGisuByCoCd({
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+    }).then((response) => {
+
+      const gisuRows = response.map((row) => row.gisu);
+      // const gisuRows = response.map((row) => ({
+      //   label: row.gisu,
+      //   gisu: row.gisu
+      // }))
+      const gisuRangeRows = response.map(
+        (row) =>
+          dayjs(row.frDt).format("YYYY-MM-DD") +
+          " ~ " +
+          dayjs(row.toDt).format("YYYY-MM-DD")
+      );
+
+      this.setState({ gisuRows: gisuRows, gisuRangeRows: gisuRangeRows });
+      console.log(gisuRows);
+      console.log(gisuRangeRows);
+    });
   }
 
   render() {
@@ -216,35 +245,18 @@ class BgtICFComponent extends Component {
               <Autocomplete
                 disableClearable
                 disablePortal
-                id="combo-box-demo"
-                options={[
-                  { label: "1", gisu: 1 },
-                  { label: "2", gisu: 2 },
-                  { label: "3", gisu: 3 },
-                  { label: "13", gisu: 3 },
-                ]}
+                options={this.state.gisuRows}
+                getOptionLabel={(option) => option.toString()}
                 size="small"
                 sx={{ width: "65px", marginRight: "10px" }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker
-                    format="YYYY-MM-DD"
-                    defaultValue={dayjs(new Date())}
-                    slotProps={{
-                      textField: {
-                        size: "small",
-                        width: "100px",
-                        sx: { width: "100px" },
-                        inputProps: {
-                          sx: { height: "80px" },
-                        },
-                      },
-                    }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    value={this.state.gisuRows[this.state.gisuRows.length - 1]}
                   />
-                </DemoContainer>
-              </LocalizationProvider>
+                )}
+              />
+              <TextField value={this.state.gisuRangeRows[2]}/>
             </Grid>
           </Grid>
           <Grid item xs={6}>
@@ -259,9 +271,7 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={this.handleClickBgtGrSerachIcon}
-                      />
+                      <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
                     </InputAdornment>
                   ),
                 }}
@@ -299,12 +309,7 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={() => {
-                          // this.bgtCDRef.current.handleInitBgtGrRows();
-                          this.bgtCDRef.current.handleUp();
-                        }}
-                      />
+                      <SearchIcon onClick={this.handleClickBgtCDSearchIcon} />
                     </InputAdornment>
                   ),
                 }}
@@ -363,4 +368,10 @@ class BgtICFComponent extends Component {
   }
 }
 
-export default BgtICFComponent;
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+
+export default connect(mapStateToProps, null, null, {forwardRef: true}) (BgtICFComponent);

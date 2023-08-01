@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputLabel, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { DataGrid } from '@mui/x-data-grid';
+import React, { Component } from 'react';
 import CompanyService from '../../../service/CompanyService';
 
 const columns =[
-  { field: 'coCd', headerName: '회사코드', width: 180.3, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 270.4, headerAlign: 'center' }
+  { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
+  { field: 'coNm', headerName: '회사명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
@@ -94,99 +94,115 @@ class CoDialogComponent extends Component {
             justifyContent: "space-between",
             alignItems: "center",
             height: 60,
+            padding: 2,
           }}
-        >회사검색
-          {this.props.DialogTitle}
+        >
+          회사검색
           <IconButton
             size="small"
             onClick={() =>
-              this.setState({ open: false })
-            }>
+              this.setState({ open: false, userList: [], searchResult: [] })
+            }
+          >
             <CloseIcon fontSize="medium" sx={{ color: "white" }} />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ margin: 0, padding: 0 }}>
           <Grid
+            container
+            direction="row"
+            alignItems="center"
+            spacing={2}
             sx={{
+              maxWidth: "468px",
               border: "3px solid #EAEAEA",
               display: "flex",
-              justifyContent: "space-between",
+              ml: 2,
               mt: 1,
-              mb: 1,
-              position: 'relative'
+              mr: 2,
+              mb: 2,
+              pb: 2,
             }}
+            position="relative"
           >
-            <Grid mb={2} sx={{ position: 'relative' }}></Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mt: 1,
-                mb: 1,
-              }}
-            >
-              <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                검색
-              </InputLabel>
-              <TextField
-                id="keyword"
-                name="keyword"
-                value={this.state.keyword}
-                onChange={this.handleInputChange}
-                variant="outlined"
-                size="small"
-                onKeyDown={this.handlePressEnter}
-              ></TextField>
-              <Button
-                variant="outlined"
-                style={{ padding: "0px", minWidth: "5px", position: 'absolute', right: "5px" }}
+            <Grid item xs={12}>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
               >
-                <SearchIcon fontSize="medium" onClick={this.handleSearchCoDial}/>
-              </Button>
+                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
+                  검색어
+                </InputLabel>
+                <TextField
+                  id="keyword"
+                  name="keyword"
+                  value={this.state.keyword}
+                  onChange={this.handleInputChange}
+                  variant="outlined"
+                  size="small"
+                  onKeyDown={this.handlePressEnter}
+                ></TextField>
+                <Button
+                  variant="outlined"
+                  style={{
+                    padding: "0px",
+                    minWidth: "5px",
+                    position: "relative",
+                    right: "-66px",
+                  }}
+                >
+                  <SearchIcon
+                    fontSize="medium"
+                    onClick={this.handleSearchCoDial}
+                  />
+                </Button>
+              </Grid>
             </Grid>
-            <Grid mb={1}></Grid>
           </Grid>
-          <Grid mb={2}></Grid>
-
-          <Divider sx={{ border: "1px solid #EAEAEA" }} />
-          <Grid sx={{ mt: 1, width: "100%" }}>
-            <Grid style={{ height: 350, width: "100%" }}>
-
-              <DataGrid
-                columns={columns}
-                rows={this.state.codialRows}
-                showColumnVerticalBorder={true}
-                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                onRowClick={this.handleClickRow}
-                hideFooter
-              />
-        
-            </Grid>
+          <Grid
+            container
+            sx={{ height: "364px", maxWidth: "468px", ml: 2, mr: 2 }}
+          >
+            <DataGrid
+              columns={columns}
+              rows={this.state.codialRows}
+              showColumnVerticalBorder={true}
+              showCellVerticalBorder={true} // 각 셀마다 영역주기
+              onRowClick={this.handleClickRow}
+              hideFooter
+              sx={{ borderTop: "3px solid black" }}
+            />
           </Grid>
         </DialogContent>
-        <Divider />
-        <DialogActions>
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor: "#4A55A2",
-              color: "white",
-              "&:hover": {
+        <DialogActions sx={{ margin: 0, padding: 0 }}>
+          <Grid
+            container
+            justifyContent="flex-end"
+            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
+          >
+            <Button
+              variant="outlined"
+              sx={{
                 backgroundColor: "#4A55A2",
-              },
-            }}
-            onClick={this.handleClickConfirm}
-          >
-            확인
-          </Button>
-
-          <Button
-            variant="outlined"
-            onClick={() => this.setState({ open: false })}
-          >
-            취소
-          </Button>
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#4A55A2",
+                },
+                mr: 1,
+              }}
+              onClick={this.handleClickConfirm}
+            >
+              확인
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => this.setState({ open: false })}
+            >
+              취소
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     );

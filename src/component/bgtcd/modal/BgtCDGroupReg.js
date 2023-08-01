@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, InputLabel, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
@@ -79,61 +79,81 @@ updateBgtCDTerm = () => {
 render() {
     const { columns, rows, open } = this.state;
     return (
-        //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
-        <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-            <DialogTitle
-                sx={{
-                    backgroundColor: "#7895CB",
-                    color: "white",
-                    fontWeight: "bold",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    height: 60,
-                }}
-            >그룹레벨설정
-                <IconButton
-                    size="small"
-                    onClick={this.handleDown}>
-                    <CloseIcon fontSize="medium" sx={{ color: "white" }} />
-                </IconButton>
-            </DialogTitle>
-            <DialogContent>
-                <DataGrid
-                    rows={rows}
-                    editMode="row" //row단위로 편집창이뜸 
-                    columns={columns}
-                    getRowId={(row) => row.divFg}
-                    components={{
-                        Pagination: () => null,
-                        Footer: () => null
-                    }}
-                    showCellVerticalBorder={true}
-                    showColumnVerticalBorder={true}
-                    processRowUpdate={this.processRowUpdate}
-                    onProcessRowUpdateError={(error) => { }}
-                // rowModesModel={rowModesModel}
-                // onRowModesModelChange={this.handleRowModesModelChange}
-                />
-            </DialogContent>
-            <Divider />
-            <DialogActions>
-                <Button
-                    variant="outlined"
-                    sx={{
-                        backgroundColor: "#4A55A2",
-                        color: "white",
-                        "&:hover": {
-                            backgroundColor: "#4A55A2",
-                        },
-                    }}
-                    onClick={this.updateBgtCDTerm}>확인</Button>
-                <Button variant="outlined"
-                    //onClick={() => { this.handleDown(); }}
-                    onClick={this.handleDown}
-                >취소</Button>
-            </DialogActions>
-        </Dialog>
+      //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
+      <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+        <DialogTitle
+          sx={{
+            backgroundColor: "#7895CB",
+            color: "white",
+            fontWeight: "bold",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: 60,
+            padding: 2,
+          }}
+        >
+          그룹레벨설정
+          <IconButton
+            size="small"
+            onClick={() =>
+              this.setState({ open: false, userList: [], searchResult: [] })
+            }
+          >
+            <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ margin: 0, padding: 0 }}>
+          <Grid
+            container
+            sx={{ height: "456px", maxWidth: "468px", mt: 2, ml: 2, mr: 2 }}
+          >
+            <DataGrid
+              rows={rows}
+              editMode="row" //row단위로 편집창이뜸
+              columns={columns}
+              getRowId={(row) => row.divFg}
+              hideFooter
+              sx={{ borderTop: "3px solid black" }}
+              showCellVerticalBorder={true}
+              showColumnVerticalBorder={true}
+              processRowUpdate={this.processRowUpdate}
+              onProcessRowUpdateError={(error) => {}}
+              // rowModesModel={rowModesModel}
+              // onRowModesModelChange={this.handleRowModesModelChange}
+            />
+          </Grid>
+        </DialogContent>
+        <DialogActions sx={{ margin: 0, padding: 0 }}>
+          <Grid
+            container
+            justifyContent="flex-end"
+            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
+          >
+            <Button
+              variant="outlined"
+              sx={{
+                backgroundColor: "#4A55A2",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#4A55A2",
+                },
+                mr: 1,
+              }}
+              onClick={this.updateBgtCDTerm}
+            >
+              확인
+            </Button>
+            <Button
+              variant="outlined"
+              //onClick={() => { this.handleDown(); }}
+              onClick={this.handleDown}
+            >
+              취소
+            </Button>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     );
 }
 }
