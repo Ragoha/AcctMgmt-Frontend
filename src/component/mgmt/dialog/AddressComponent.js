@@ -1,6 +1,6 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import React, { Component } from 'react';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import DaumPostcode from 'react-daum-postcode';
 
 const postStyle = {
@@ -57,18 +57,19 @@ class AddressComponent extends Component {
 
         return (
             <Dialog open={openAddr} PaperProps={{ sx: { width: 430, height: 560 } }}>
-              <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>주소검색<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
-                  <CloseIcon sx={{ color: "white" }} fontSize='medium' />
-              </IconButton>
-              </DialogTitle>
-              <DialogContent sx={{ mt: 1 }} >
-                <DaumPostcode
-                    style={postStyle}
-                    onComplete={this.selectAddress}  // 값을 선택할 경우 실행되는 이벤트
-                    autoClose={true} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
-                //defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
-                />
-              </DialogContent>
+                <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>주소검색<IconButton size='small' onClick={() => this.setState({ openAddr: false })}>
+                    <CloseIcon sx={{ color: "white" }} fontSize='medium' />
+                </IconButton>
+                </DialogTitle>
+
+                <DialogContent sx={{ mt: 1 }} >
+                    <DaumPostcode
+                        style={postStyle}
+                        onComplete={this.selectAddress}  // 값을 선택할 경우 실행되는 이벤트
+                        autoClose={true} // 값을 선택할 경우 사용되는 DOM을 제거하여 자동 닫힘 설정
+                    //defaultQuery='판교역로 235' // 팝업을 열때 기본적으로 입력되는 검색어 
+                    />
+                </DialogContent>
             </Dialog>
         );
     }

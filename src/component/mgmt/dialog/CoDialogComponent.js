@@ -8,7 +8,7 @@ import CompanyService from '../../../service/CompanyService';
 
 const columns =[
   { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 286.4, headerAlign: 'center' }
+  { field: 'coNm', headerName: '회사명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
@@ -149,8 +149,8 @@ class CoDialogComponent extends Component {
                   style={{
                     padding: "0px",
                     minWidth: "5px",
-                    position: "absolute",
-                    right: "5px",
+                    position: "relative",
+                    right: "-66px",
                   }}
                 >
                   <SearchIcon

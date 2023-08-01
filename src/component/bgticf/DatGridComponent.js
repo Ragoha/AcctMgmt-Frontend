@@ -10,6 +10,8 @@ import {
 } from "@mui/x-data-grid-generator";
 import { DataGrid } from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
+import { forwardRef } from "react";
+import { connect } from "react-redux";
 
 class DataGridComponent extends Component {
   constructor(props) {
@@ -56,7 +58,7 @@ class DataGridComponent extends Component {
   };
 
   handleGetBgtICFList() {
-    BgtICFService.getBgtICFList().then((response) => {
+    BgtICFService.getBgtICFList({accessToken: this.props.accessToken}).then((response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
         id: row.bgtCd,
@@ -204,4 +206,12 @@ class DataGridComponent extends Component {
   }
 }
 
-export default DataGridComponent;
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+
+export default connect(mapStateToProps, null, null, {forwardRef: true}) (DataGridComponent);
+
+

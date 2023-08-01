@@ -188,8 +188,8 @@ class DivDialogComponent extends Component {
                   style={{
                     padding: "0px",
                     minWidth: "5px",
-                    position: "absolute",
-                    right: "8px",
+                    position: "relative",
+                    right: "-66px",
                   }}
                 >
                   <SearchIcon

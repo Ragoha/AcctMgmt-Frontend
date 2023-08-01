@@ -67,6 +67,7 @@ class BgtCDDialogComponent extends Component {
       selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
       bgtCDRows: [],
+      gisu: "",
       keyword: "",
       columns: columns,
       rangeState: true,
@@ -80,7 +81,7 @@ class BgtCDDialogComponent extends Component {
   }
 
   initBgtCDDialog = () => {
-    this.setState({keyword: ""})
+    this.setState({ keyword: "", rangeState: true });
 
     this.handleUp();
   }
@@ -118,9 +119,6 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleClickConfirm = () => {
-    console.log(this.state.bgtCd);
-    console.log(this.state.bgtNm);
-
     this.props.handleSetBgtCDTextField({
       bgtCd: this.state.bgtCd,
       bgtNm: this.state.bgtNm,
@@ -150,22 +148,19 @@ class BgtCDDialogComponent extends Component {
     } else {
       tmpRange = dayjs("1900-01-01").format("YYYY-MM-DD");
     }
-    //   range = this.state.rangeTextField;
-    // } else {
-    //   range = ""; // Set range to an empty string if rangeState is false
-    // }
 
-    BgtICFService.findBgcCDByGroupCdAndToDtAndKeyword({
-      bgtCDMark: this.state.bgtCDMarkTextField,
+    BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
+      gisu: this.state.gisu,
       bgtGrCd: this.state.bgtGrCd,
-      keyword: this.state.keywordTextField,
+      keyword: this.state.keyword,
       range: tmpRange,
       accessToken: this.props.accessToken,
       user: this.props.user,
     }).then((response) => {
       const bgtCDRows = response.map((row) => ({
         id: randomId(),
-        // gisu: row.gisu,
+        gisu: row.gisu,
+        bgtGrNm: row.bgtGrNm,
         bgtCd: row.bgtCd,
         bgtNm: row.bgtNm,
       }));
@@ -256,8 +251,8 @@ class BgtCDDialogComponent extends Component {
                     과목표시
                   </InputLabel>
                   <TextField
-                    name="bgtCDMarkTextField"
-                    value={this.state.bgtCDMarkTextField}
+                    name="gisu"
+                    value={this.state.gisu}
                     onChange={this.handleInputChange}
                     variant="outlined"
                     size="small"
@@ -317,8 +312,8 @@ class BgtCDDialogComponent extends Component {
                     style={{
                       padding: "0px",
                       minWidth: "5px",
-                      position: "absolute",
-                      right: "25px",
+                      position: "relative",
+                      right: "-28px",
                     }}
                   >
                     <SearchIcon
@@ -383,7 +378,7 @@ class BgtCDDialogComponent extends Component {
             </Grid>
             <Grid
               container
-              sx={{ height: "388px", maxWidth: "1168px", ml: 2, mr: 2 }}
+              sx={{ height: "552px", maxWidth: "1168px", ml: 2, mr: 2 }}
             >
               <DataGrid
                 checkboxSelection
