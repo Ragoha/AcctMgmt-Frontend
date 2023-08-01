@@ -5,11 +5,15 @@ class User {
         this.userSlice = createSlice({
             name: 'userInfo',
             initialState: {
-                coCd:'',
-                empId: '',
-                empEmail: '',
-                divCd: '',
-                deptOd: '',
+                coCd:'',    //회사코드
+                empId: '',  //아이디
+                empEmail: '',//이메일
+                empName: '',//이름
+                empSx: '',//성별
+                empAuth: '',//권한
+                empCd: '',//사원코드
+                divCd: '',//사업장코드
+                deptOd: '',//부서코드
             },
             reducers: {
                 SET_USER: (state, action) => {
@@ -18,6 +22,10 @@ class User {
                     state.empEmail = action.payload.empEmail;
                     state.divCd = action.payload.divCd;
                     state.deptOd = action.payload.deptOd;
+                    state.empName = action.payload.empName;
+                    state.empSx = action.payload.empSxt;
+                    state.empAuth = action.payload.empAuth;
+                    state.empCd = action.payload.empCd;
                 },
                 DEL_USER: (state) => {
                     state.coCd = null;
@@ -25,6 +33,10 @@ class User {
                     state.empEmail = null;
                     state.divCd = null;
                     state.deptOd = null;
+                    state.empName = null;
+                    state.empSx = null;
+                    state.empAuth = null;
+                    state.empCd = null;
                 },
             }
         });

@@ -1,4 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
+import SearchIcon from "@mui/icons-material/Search";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
@@ -116,7 +117,7 @@ class ListDisplay extends Component {
                         visibility: isDeleteIconVisible ? "visible" : "hidden",
                       }}
                     />
-                    <DeleteIcon
+                    <SearchIcon
                       onClick={() => {
                         alert("1111");
                       }}

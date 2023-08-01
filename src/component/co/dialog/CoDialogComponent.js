@@ -1,121 +1,86 @@
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  InputLabel,
-  TextField
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import BgtICFService from "../../../service/BgtICFService";
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputLabel, TextField } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { DataGrid } from '@mui/x-data-grid';
+import React, { Component } from 'react';
+import CompanyService from '../../../service/CompanyService';
 
-class DivDialogComponent extends Component {
+const columns =[
+  { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
+  { field: 'coNm', headerName: '회사명', width: 286, headerAlign: 'center' }
+]
+const rows = [
+  { id: 1, coCd: "1", coNm: "John" },
+  { id: 2, coCd: "2", coNm: "John" },
+  { id: 3, coCd: "3", coNm: "John" },
+]
+
+class CoDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { divCd: "", divNm: "" },
-      divRows: [],
-      keyword:"",
-      data: {
-        columns: [
-          {
-            field: "divCd",
-            headerName: "사업장코드",
-            width: 180,
-            headerAlign: "center",
-          },
-          {
-            field: "divNm",
-            headerName: "사업장명",
-            width: 286.4,
-            headerAlign: "center",
-          },
-        ],
-        rows: [
-          {id:1, divCd: 1, divNm: "John" },
-          {id:2, divCd: 2, divNm: "Jane" },
-          {id:3, divCd: 3, divNm: "Bob" },
-          // Add more rows here...
-        ],
-      },
-    };
-  }
 
-  initDivDialog = () => {
-    this.setState({keyword : "", divRows: []})
-    BgtICFService.findDivByCoCdAndKeyword({
-      coCd: this.props.user.coCd,
-      accessToken: this.props.accessToken,
-    }).then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
-      }));
-      await this.setState({ divRows: divRows });
-    });
-
-    this.handleUp();
+      selectedRow: { coCd: "", coNm: "" }, //클릭된 열의 cd와 이름 
+      codialRows: [],          //열 배열넣기
+      keyword: "",
+      rows: rows,
+      columns: columns
+    }
   }
 
   handleUp = () => {
     this.setState({ open: true });
-  };
+  }
 
   handleDown = () => {
     this.setState({ open: false });
-  };
-
-  handleClickRow = (params) => {
-    console.log(params);
-    this.setState({ selectedRow: params.row }, () => {
-      console.log(this.state.selectedRow);
-    });
-    // console.log(this.state);
   }
-
-  setDivRows = async (rows) => {
-    await this.setState({ divRows: rows });
-  }
-
-  handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
-    this.handleDown();
-    await this.props.handleSetDivTextField(this.state.selectedRow);
-  }
-
+  
+  //텍스트필드변화
   handleInputChange = async (e) => {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
     console.log(this.state);
+  }
+  //엔터키 입력처리
+  handlePressEnter= (e) => {
+    if (e.key === "Enter") {
+    this.handleSearchCoDial();
+    }
+  }
+  //검색
+  handleSearchCoDial= () => {
+    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
+    .then(
+      async (response) => {
+        const codialRows = response.map((row) => ({
+          id: row.coCd,
+          coCd: row.coCd,
+          coNm: row.coNm,
+        }));
+        await this.setState({ codialRows: codialRows });
+        console.log(this.state);
+      }
+    );
   };
 
-  handleClickSearchIcon = () => {
-    BgtICFService.findDivByCoCdAndKeyword({
-      coCd: this.props.user.coCd,
-      keyword: this.state.keyword,
-      accessToken: this.props.accessToken,
-    }).then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
-      }));
-      await this.setState({ divRows: divRows });
-      console.log(this.state);
+  handleClickConfirm = async () =>{
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    await this.props.handleSetCodialTextField(this.state.selectedRow);
+  }
+
+  //열 클릭처리
+  handleClickRow= (params) => {
+    this.setState({ selectedRow: params.row }, () => {
+      console.log(this.state.selectedRow);
     });
   }
 
   render() {
-    const { open, data } = this.state;
+    const { open, columns } = this.state;
 
     return (
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
@@ -132,7 +97,7 @@ class DivDialogComponent extends Component {
             padding: 2,
           }}
         >
-          사업장검색
+          회사검색
           <IconButton
             size="small"
             onClick={() =>
@@ -177,11 +142,7 @@ class DivDialogComponent extends Component {
                   onChange={this.handleInputChange}
                   variant="outlined"
                   size="small"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      console.log(`Pressed keyCode ${e.key}`);
-                    }
-                  }}
+                  onKeyDown={this.handlePressEnter}
                 ></TextField>
                 <Button
                   variant="outlined"
@@ -194,7 +155,7 @@ class DivDialogComponent extends Component {
                 >
                   <SearchIcon
                     fontSize="medium"
-                    onClick={this.handleClickSearchIcon}
+                    onClick={this.handleSearchCoDial}
                   />
                 </Button>
               </Grid>
@@ -202,11 +163,11 @@ class DivDialogComponent extends Component {
           </Grid>
           <Grid
             container
-            sx={{ height: "371px", maxWidth: "468px", ml: 2, mr: 2 }}
+            sx={{ height: "364px", maxWidth: "468px", ml: 2, mr: 2 }}
           >
             <DataGrid
-              rows={this.state.divRows}
-              columns={data.columns}
+              columns={columns}
+              rows={this.state.codialRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -247,10 +208,4 @@ class DivDialogComponent extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {},
-});
-
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (DivDialogComponent);
+export default CoDialogComponent;
