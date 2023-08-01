@@ -20,7 +20,7 @@ class CompanyService {
         coCd: coCd,
         coNm: coNm,
         gisu: gisu,
-        frDt: frDt, 
+        frDt: frDt,
         toDt: toDt,
         jongmok: jongmok,
         businessType: businessType,
@@ -37,7 +37,7 @@ class CompanyService {
       .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
         coNm: coNm,
         gisu: gisu,
-        frDt: frDt, 
+        frDt: frDt,
         toDt: toDt,
         jongmok: jongmok,
         businessType: businessType,
@@ -51,27 +51,38 @@ class CompanyService {
 
   getCo(coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/sco",{
+      .get(ACCTMGMT_API_BASE_URL + "/ozt/sco", {
         params: {
           coCd: coCd
         }
       }
-      )};
-
-  deleteCo(coCd){
-    return axios
-    .post(ACCTMGMT_API_BASE_URL + "/ozt/dco",{
-      coCd: coCd
-    })
+      )
   };
 
-  updateCo(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1){
+  getCompany(coCd) {
     return axios
-    .post(ACCTMGMT_API_BASE_URL + "/ozt/uco",{
-        coCd : coCd,
+      .get(ACCTMGMT_API_BASE_URL + "/ozt/scom", {
+        params: {
+          coCd: coCd
+        }
+      }
+      )
+  };
+
+  deleteCo(coCd) {
+    return axios
+      .post(ACCTMGMT_API_BASE_URL + "/ozt/dco", {
+        coCd: coCd
+      })
+  };
+
+  updateCo(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+    return axios
+      .post(ACCTMGMT_API_BASE_URL + "/ozt/uco", {
+        coCd: coCd,
         coNm: coNm,
         gisu: gisu,
-        frDt: frDt, 
+        frDt: frDt,
         toDt: toDt,
         jongmok: jongmok,
         businessType: businessType,
@@ -80,7 +91,7 @@ class CompanyService {
         coZip: coZip,
         coAddr: coAddr,
         coAddr1: coAddr1
-    })
+      })
   };
 
   getCoBycoCdAndcoNm(keyword) {

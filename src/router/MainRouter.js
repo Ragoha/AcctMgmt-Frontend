@@ -5,9 +5,9 @@ import { Route, Routes } from "react-router-dom";
 import BgtCD from "../component/bgtcd/BgtCD";
 import BgtICFComponent from "../component/bgticf/BgtICFComponent";
 import MainComponent from "../component/common/MainComponent";
-import CoMgmtComponent from "../component/mgmt/CoMgmtComponent";
-import DivMgmtComponent from "../component/mgmt/DivMgmtComponent";
-import DeptMgmtComponent from "../component/mgmt/DeptMgmtComponent";
+import CoMgmtComponent from "../component/co/CoMgmtComponent";
+import DivMgmtComponent from "../component/div/DivMgmtComponent";
+import DeptMgmtComponent from "../component/dept/DeptMgmtComponent";
 import ConfigComponent from "../component/user/ConfigComponent";
 import PjtComponent from "../component/user/PjtComponent";
 
