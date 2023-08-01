@@ -19,6 +19,7 @@ import { Outlet } from "react-router-dom";
 import Cookie from '../../storage/Cookie';
 import { DELETE_TOKEN } from "../../store/Auth";
 import { DEL_USER } from '../../store/User';
+import {DEL_CONFIG} from "../../store/Config";
 import MainListItems from "./MainListItems";
 
 const drawerWidth = 240;
@@ -85,9 +86,10 @@ class MainComponent extends Component {
 
 
   logout = () => {
-    const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+    // const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
     const userInfo = this.props.userInfo;
+    const config = this.props.configData;
     console.log("불러온 엑세스 토큰 : " + accessToken);
     this.props.delAccessToken(accessToken);
     console.log("삭제 후 엑세스 토큰 : " + accessToken);
@@ -95,6 +97,8 @@ class MainComponent extends Component {
     this.props.delUserInfo(userInfo);
     console.log("삭제 후 유저정보 : " + userInfo.coCd);
     Cookie.removeCookieToken();
+    console.log("삭제 후 설정정보 : " + config);
+    this.props.delConfig(config);
     // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
     // });  
   };
@@ -203,12 +207,14 @@ class MainComponent extends Component {
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+  configData: state.config.configData,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
     delUserInfo: (userInfo) => dispatch(DEL_USER(userInfo)),
+    delConfig: (config) => dispatch(DEL_CONFIG(config)),
   };
 };
 
