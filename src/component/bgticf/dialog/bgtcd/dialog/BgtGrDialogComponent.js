@@ -27,7 +27,7 @@ const columns = [
   {
     field: "bgtGrNm",
     headerName: "예산그룹명",
-    width: 270,
+    width: 286.4,
     headerAlign: "center",
   },
 ];
@@ -60,10 +60,7 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row }, () => {
-      console.log(this.state.selectedRow);
-    });
-    // console.log(this.state);
+    this.setState({ selectedRow: params.row });
   };
 
   setDivRows = async (rows) => {
@@ -73,7 +70,6 @@ class BgtGrDialogComponent extends Component {
   handleInputChange = async (e) => {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
-    console.log(this.state);
   };
 
   handlePressEnter = (e) => {
@@ -83,7 +79,6 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleInitBgtGrDialog = () => {
-    console.log("asdf");
     BgtICFService.findBgtGrByCoCdAndKeyword({
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
@@ -116,7 +111,6 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetBgtCDTextField(this.state.selectedRow);
   };
@@ -135,6 +129,7 @@ class BgtGrDialogComponent extends Component {
             justifyContent: "space-between",
             alignItems: "center",
             height: 60,
+            padding: 2,
           }}
         >
           예산그룹검색
@@ -147,90 +142,100 @@ class BgtGrDialogComponent extends Component {
             <CloseIcon fontSize="medium" sx={{ color: "white" }} />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ margin: 0, padding: 0 }}>
           <Grid
+            container
+            direction="row"
+            alignItems="center"
+            spacing={2}
             sx={{
+              maxWidth: "468px",
               border: "3px solid #EAEAEA",
               display: "flex",
-              justifyContent: "space-between",
+              ml: 2,
               mt: 1,
-              mb: 1,
+              mr: 2,
+              mb: 2,
+              pb: 2,
             }}
+            position="relative"
           >
-            <Grid mb={2}></Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mt: 1,
-                mb: 1,
-              }}
-            >
-              <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>검색</InputLabel>
-              <TextField
-                id="keyword"
-                name="keyword"
-                value={this.state.keyword}
-                onChange={this.handleInputChange}
-                variant="outlined"
-                size="small"
-                onKeyDown={this.handlePressEnter}
-              ></TextField>
-              <Button
-                variant="outlined"
-                style={{
-                  padding: "0px",
-                  minWidth: "5px",
-                  position: "absolute",
-                  right: "33px",
-                }}
-                onClick={() => {
-                  this.handleSearchBgtGrIcon();
-                }}
+            <Grid item xs={12}>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
               >
-                <SearchIcon fontSize="medium" />
-              </Button>
+                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>검색어</InputLabel>
+                <TextField
+                  id="keyword"
+                  name="keyword"
+                  value={this.state.keyword}
+                  onChange={this.handleInputChange}
+                  variant="outlined"
+                  size="small"
+                  onKeyDown={this.handlePressEnter}
+                ></TextField>
+                <Button
+                  variant="outlined"
+                  style={{
+                    padding: "0px",
+                    minWidth: "5px",
+                    position: "absolute",
+                    right: "8px",
+                  }}
+                  onClick={() => {
+                    this.handleSearchBgtGrIcon();
+                  }}
+                >
+                  <SearchIcon fontSize="medium" />
+                </Button>
+              </Grid>
             </Grid>
-            <Grid mb={1}></Grid>
           </Grid>
-          <Grid mb={2}></Grid>
-          <Divider sx={{ border: "1px solid #EAEAEA" }} />
-          <Grid sx={{ mt: 1, width: "100%" }}>
-            <Grid style={{ height: 350, width: "100%" }}>
-              <DataGrid
-                columns={columns}
-                rows={this.state.bgtGrRows}
-                showColumnVerticalBorder={true}
-                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                onRowClick={this.handleClickRow}
-                hideFooter
-              />
-            </Grid>
+          <Grid
+            container
+            sx={{ height: "364px", maxWidth: "468px", ml: 2, mr: 2 }}
+          >
+            <DataGrid
+              columns={columns}
+              rows={this.state.bgtGrRows}
+              showColumnVerticalBorder={true}
+              showCellVerticalBorder={true} // 각 셀마다 영역주기
+              onRowClick={this.handleClickRow}
+              hideFooter
+              sx={{ borderTop: "3px solid black" }}
+            />
           </Grid>
         </DialogContent>
-        <Divider />
-        <DialogActions>
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor: "#4A55A2",
-              color: "white",
-              "&:hover": {
+        <DialogActions sx={{ margin: 0, padding: 0 }}>
+          <Grid
+            container
+            justifyContent="flex-end"
+            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
+          >
+            <Button
+              variant="outlined"
+              sx={{
                 backgroundColor: "#4A55A2",
-              },
-            }}
-            onClick={this.handleClickConfirm}
-          >
-            확인
-          </Button>
-
-          <Button
-            variant="outlined"
-            onClick={() => this.setState({ open: false })}
-          >
-            취소
-          </Button>
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#4A55A2",
+                },
+                mr: 1,
+              }}
+              onClick={this.handleClickConfirm}
+            >
+              확인
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => this.setState({ open: false })}
+            >
+              취소
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     );

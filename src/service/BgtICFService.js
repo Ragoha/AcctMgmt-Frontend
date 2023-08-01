@@ -24,16 +24,6 @@ class BtgICFService {
     return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
   }
 
-  findDivCdAndDivNmByCoCd(coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {
-        params: {
-          coCd: coCd,
-        },
-      })
-      .then((response) => response.data);
-  }
-
   findDivByCoCdAndKeyword(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {

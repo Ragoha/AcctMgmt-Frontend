@@ -6,16 +6,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Grid,
   IconButton,
   InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
-import BgtICFService from "../../../service/BgtICFService";
 import { connect } from "react-redux";
+import BgtICFService from "../../../service/BgtICFService";
 
 class DivDialogComponent extends Component {
   constructor(props) {
@@ -36,7 +35,7 @@ class DivDialogComponent extends Component {
           {
             field: "divNm",
             headerName: "사업장명",
-            width: 270,
+            width: 286.4,
             headerAlign: "center",
           },
         ],
@@ -51,7 +50,7 @@ class DivDialogComponent extends Component {
   }
 
   initDivDialog = () => {
-    this.setState({keyword : ""})
+    this.setState({keyword : "", divRows: []})
     BgtICFService.findDivByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
@@ -62,8 +61,9 @@ class DivDialogComponent extends Component {
         divNm: row.divNm,
       }));
       await this.setState({ divRows: divRows });
-      console.log(this.state);
     });
+
+    this.handleUp();
   }
 
   handleUp = () => {
@@ -129,6 +129,7 @@ class DivDialogComponent extends Component {
             justifyContent: "space-between",
             alignItems: "center",
             height: 60,
+            padding: 2,
           }}
         >
           사업장검색
@@ -141,97 +142,106 @@ class DivDialogComponent extends Component {
             <CloseIcon fontSize="medium" sx={{ color: "white" }} />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ margin: 0, padding: 0 }}>
           <Grid
+            container
+            direction="row"
+            alignItems="center"
+            spacing={2}
             sx={{
+              maxWidth: "468px",
               border: "3px solid #EAEAEA",
               display: "flex",
-              justifyContent: "space-between",
+              ml: 2,
               mt: 1,
-              mb: 1,
+              mr: 2,
+              mb: 2,
+              pb: 2,
             }}
+            position="relative"
           >
-            <Grid mb={2}></Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mt: 1,
-                mb: 1,
-              }}
-            >
-              <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>검색</InputLabel>
-              <TextField
-                id="keyword"
-                name="keyword"
-                value={this.state.keyword}
-                onChange={this.handleInputChange}
-                variant="outlined"
-                size="small"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    console.log(`Pressed keyCode ${e.key}`);
-                  }
-                }}
-              ></TextField>
-              <Button
-                variant="outlined"
-                style={{
-                  padding: "0px",
-                  minWidth: "5px",
-                  position: "absolute",
-                  right: "33px",
-                }}
-                onClick={() => {
-                  console.log("검색");
-                }}
+            <Grid item xs={12}>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
               >
-                <SearchIcon
-                  fontSize="medium"
-                  onClick={this.handleClickSearchIcon}
-                />
-              </Button>
+                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
+                  검색어
+                </InputLabel>
+                <TextField
+                  id="keyword"
+                  name="keyword"
+                  value={this.state.keyword}
+                  onChange={this.handleInputChange}
+                  variant="outlined"
+                  size="small"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      console.log(`Pressed keyCode ${e.key}`);
+                    }
+                  }}
+                ></TextField>
+                <Button
+                  variant="outlined"
+                  style={{
+                    padding: "0px",
+                    minWidth: "5px",
+                    position: "absolute",
+                    right: "8px",
+                  }}
+                >
+                  <SearchIcon
+                    fontSize="medium"
+                    onClick={this.handleClickSearchIcon}
+                  />
+                </Button>
+              </Grid>
             </Grid>
-            <Grid mb={1}></Grid>
           </Grid>
-          <Grid mb={2}></Grid>
-          <Divider sx={{ border: "1px solid #EAEAEA" }} />
-          <Grid sx={{ mt: 1, width: "100%" }}>
-            <Grid style={{ height: 350, width: "100%" }}>
-              <DataGrid
-                rows={this.state.divRows}
-                columns={data.columns}
-                showColumnVerticalBorder={true}
-                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                onRowClick={this.handleClickRow}
-                hideFooter
-              />
-            </Grid>
+          <Grid
+            container
+            sx={{ height: "371px", maxWidth: "468px", ml: 2, mr: 2 }}
+          >
+            <DataGrid
+              rows={this.state.divRows}
+              columns={data.columns}
+              showColumnVerticalBorder={true}
+              showCellVerticalBorder={true} // 각 셀마다 영역주기
+              onRowClick={this.handleClickRow}
+              hideFooter
+              sx={{ borderTop: "3px solid black" }}
+            />
           </Grid>
         </DialogContent>
-        <Divider />
-        <DialogActions>
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor: "#4A55A2",
-              color: "white",
-              "&:hover": {
+        <DialogActions sx={{ margin: 0, padding: 0 }}>
+          <Grid
+            container
+            justifyContent="flex-end"
+            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
+          >
+            <Button
+              variant="outlined"
+              sx={{
                 backgroundColor: "#4A55A2",
-              },
-            }}
-            onClick={this.handleClickConfirm}
-          >
-            확인
-          </Button>
-
-          <Button
-            variant="outlined"
-            onClick={() => this.setState({ open: false })}
-          >
-            취소
-          </Button>
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#4A55A2",
+                },
+                mr: 1,
+              }}
+              onClick={this.handleClickConfirm}
+            >
+              확인
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => this.setState({ open: false })}
+            >
+              취소
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     );
