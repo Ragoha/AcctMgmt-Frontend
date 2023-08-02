@@ -1,20 +1,16 @@
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Autocomplete,
   Button,
   Checkbox,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
-  InputLabel,
   TextField
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,7 +18,9 @@ import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../service/BgtICFService";
+import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer, CustomSearchButton } from "../../../common/style/CommonDialogStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -67,7 +65,7 @@ class BgtCDDialogComponent extends Component {
       selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
       bgtCDRows: [],
-      gisu: "",
+      gisu: "모든예산과목",
       keyword: "",
       columns: columns,
       rangeState: true,
@@ -201,45 +199,14 @@ class BgtCDDialogComponent extends Component {
           open={open}
           PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840 } }}
         >
-          <DialogTitle
-            sx={{
-              backgroundColor: "#7895CB",
-              color: "white",
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              height: 60,
-              padding: 2,
-            }}
-          >
+          <CustomDialogTitle>
             예산과목검색
-            <IconButton
-              size="small"
-              onClick={() =>
-                this.setState({ open: false, userList: [], searchResult: [] })
-              }
-            >
-              <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+            <IconButton size="small" onClick={this.handleDown}>
+              <CloseIcon sx={{ color: "white" }} />
             </IconButton>
-          </DialogTitle>
-          <DialogContent sx={{ margin: 0, padding: 0 }}>
-            <Grid
-              container
-              direction="row"
-              spacing={2}
-              sx={{
-                maxWidth: "1168px",
-                border: "3px solid #EAEAEA",
-                display: "flex",
-                justifyContent: "space-between",
-                ml: 2,
-                mt: 1,
-                mr: 2,
-                mb: 2,
-                pb: 2,
-              }}
-            >
+          </CustomDialogTitle>
+          <CustomDialogContent>
+            <CustomLargeFormGridContainer container direction="row" spacing={2}>
               <Grid item xs={4}>
                 <Grid
                   container
@@ -247,17 +214,16 @@ class BgtCDDialogComponent extends Component {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                    과목표시
-                  </InputLabel>
-                  <TextField
+                  <CustomInputLabel>과목표시</CustomInputLabel>
+                  <Autocomplete
                     name="gisu"
-                    value={this.state.gisu}
-                    onChange={this.handleInputChange}
-                    variant="outlined"
                     size="small"
-                    onKeyDown={this.handlePressEnter}
-                  ></TextField>
+                    sx={{ width: 255 }}
+                    value={this.state.gisu}
+                    options={["모든예산과목", "당기승인예산"]}
+                    disabled={true}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
                 </Grid>
               </Grid>
               <Grid item xs={4}>
@@ -267,15 +233,12 @@ class BgtCDDialogComponent extends Component {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                    예산그룹
-                  </InputLabel>
-                  <TextField
+                  <CustomInputLabel>예산그룹</CustomInputLabel>
+                  <CustomTextField
                     name="bgtGrTextField"
                     value={bgtGrTextField}
                     onChange={this.handleInputChange}
                     variant="outlined"
-                    size="small"
                     onKeyDown={this.handlePressEnter}
                     InputProps={{
                       endAdornment: (
@@ -286,7 +249,7 @@ class BgtCDDialogComponent extends Component {
                         </InputAdornment>
                       ),
                     }}
-                  ></TextField>
+                  ></CustomTextField>
                 </Grid>
               </Grid>
               <Grid item xs={4}>
@@ -296,31 +259,20 @@ class BgtCDDialogComponent extends Component {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                    검색어
-                  </InputLabel>
-                  <TextField
+                  <CustomInputLabel>검색어</CustomInputLabel>
+                  <CustomTextField
                     name="keyword"
                     value={this.state.keyword}
                     onChange={this.handleInputChange}
                     variant="outlined"
-                    size="small"
                     onKeyDown={this.handlePressEnter}
                   />
-                  <Button
+                  <CustomSearchButton
                     variant="outlined"
-                    style={{
-                      padding: "0px",
-                      minWidth: "5px",
-                      position: "relative",
-                      right: "-28px",
-                    }}
+                    sx={{ right: "-11px" }}
                   >
-                    <SearchIcon
-                      fontSize="medium"
-                      onClick={this.handleClickSearchIcon}
-                    />
-                  </Button>
+                    <SearchIcon onClick={this.handleClickSearchIcon} />
+                  </CustomSearchButton>
                 </Grid>
               </Grid>
               <Grid item>
@@ -329,11 +281,9 @@ class BgtCDDialogComponent extends Component {
                   direction="row"
                   alignItems="center"
                   justifyContent="center"
-                  sx={{ pl: "50px" }}
+                  sx={{ pl: "66px" }}
                 >
-                  <InputLabel sx={{ fontWeight: "bold", mr: "8px" }}>
-                    범위
-                  </InputLabel>
+                  <CustomInputLabel>범위</CustomInputLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -375,12 +325,9 @@ class BgtCDDialogComponent extends Component {
                   />
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid
-              container
-              sx={{ height: "552px", maxWidth: "1168px", ml: 2, mr: 2 }}
-            >
-              <DataGrid
+            </CustomLargeFormGridContainer>
+            <CustomLargeDataGridContainer container>
+              <CustomDataGrid
                 checkboxSelection
                 columns={columns}
                 rows={this.state.bgtCDRows}
@@ -390,36 +337,25 @@ class BgtCDDialogComponent extends Component {
                 hideFooter
                 sx={{ borderTop: "3px solid black" }}
               />
-            </Grid>
-          </DialogContent>
-          <DialogActions sx={{ margin: 0, padding: 0 }}>
-            <Grid
+            </CustomLargeDataGridContainer>
+          </CustomDialogContent>
+          <CustomDialogActions>
+            <CustomLargeButtonGridContainer
               container
               justifyContent="flex-end"
               sx={{ maxWidth: "1168px", ml: 2, mr: 2, mb: 2 }}
             >
-              <Button
+              <CustomConfirmButton
                 variant="outlined"
-                sx={{
-                  backgroundColor: "#4A55A2",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#4A55A2",
-                  },
-                  mr: 1,
-                }}
                 onClick={this.handleClickConfirm}
               >
                 확인
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => this.setState({ open: false })}
-              >
+              </CustomConfirmButton>
+              <Button variant="outlined" onClick={this.handleDown}>
                 취소
               </Button>
-            </Grid>
-          </DialogActions>
+            </CustomLargeButtonGridContainer>
+          </CustomDialogActions>
         </Dialog>
         <BgtGrDialogComponent
           ref={this.childBgtGrRef}

@@ -6,6 +6,7 @@ import { FiCalendar } from "react-icons/fi";
 import BgtCDService from '../../service/BgtCDService';
 import BgtCDDetailInfoFormControl from './BgtCDDetailInfoFormControl';
 import { ThreeDRotationSharp } from '@mui/icons-material';
+import { CustomInputLabel } from '../common/style/CommonStyle';
 
 
 class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구현.
@@ -95,43 +96,95 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   render() {
     const { menuItemValues, startDate, ctlFg, bgajustFg, bottomFg, bizFg } = this.state;
     return (
-      <Container >
+      <Container>
         <Grid container spacing={5}>
           <Grid item xs={12}>
-            <Grid container spacing={2} alignItems="center" sx={{ marginTop: '11px' }}>
-              <BgtCDDetailInfoFormControl title={'예산통제구분'} ctlFg={ctlFg} menuItemValues={menuItemValues[0]} 
-              ref={(ref) => (this.ctlFgControl = ref)}
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              sx={{ marginTop: "11px" }}
+            >
+              <BgtCDDetailInfoFormControl
+                title={"예산통제구분"}
+                ctlFg={ctlFg}
+                menuItemValues={menuItemValues[0]}
+                ref={(ref) => (this.ctlFgControl = ref)}
               />
-              <BgtCDDetailInfoFormControl title={'예산전용구분'} bgajustFg={bgajustFg} menuItemValues={menuItemValues[1]} 
-              ref={(ref) => (this.bgajustFgControl = ref)}
+              <BgtCDDetailInfoFormControl
+                title={"예산전용구분"}
+                bgajustFg={bgajustFg}
+                menuItemValues={menuItemValues[1]}
+                ref={(ref) => (this.bgajustFgControl = ref)}
               />
-              <Grid container >
-                <Grid item md={5} sx={{ marginTop: '11px', marginLeft: '55px' }}>
-                  <InputLabel>사용기한</InputLabel>  </Grid>
-                <DatePicker dateFormat="yyyy-mm-dd" showIcon selected={startDate} onChange={this.dateChange} customInput={
-                  <div style={{ position: 'relative' }}>
-                    <input type='text' value={startDate} readOnly />
-                    <FiCalendar style={{ position: 'absolute', right: '10px', top: '5px' }} />
-                  </div>
-                } />
+              <Grid container>
+                <Grid
+                  item
+                  md={5}
+                  sx={{ marginTop: "11px", marginLeft: "55px" }}
+                >
+                  <CustomInputLabel>사용기한</CustomInputLabel>
+                </Grid>
+                <DatePicker
+                  dateFormat="yyyy-mm-dd"
+                  showIcon
+                  selected={startDate}
+                  onChange={this.dateChange}
+                  customInput={
+                    <div style={{ position: "relative" }}>
+                      <input type="text" value={startDate} readOnly />
+                      <FiCalendar
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "5px",
+                        }}
+                      />
+                    </div>
+                  }
+                />
                 {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
               </Grid>
-              <BgtCDDetailInfoFormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]} 
+              <BgtCDDetailInfoFormControl
+                title={"회계계정과목"}
+                menuItemValues={menuItemValues[1]}
               />
-              <BgtCDDetailInfoFormControl title={'최하위과목여부'} bottomFg={bottomFg} menuItemValues={menuItemValues[2]} 
-              ref={(ref) => (this.bottomFgControl = ref)}
+              <BgtCDDetailInfoFormControl
+                title={"최하위과목여부"}
+                bottomFg={bottomFg}
+                menuItemValues={menuItemValues[2]}
+                ref={(ref) => (this.bottomFgControl = ref)}
               />
-              <BgtCDDetailInfoFormControl title={'구매성격'} bizFg={bizFg} menuItemValues={menuItemValues[3]} 
-              ref={(ref) => (this.bizFgControl = ref)}
+              <BgtCDDetailInfoFormControl
+                title={"구매성격"}
+                bizFg={bizFg}
+                menuItemValues={menuItemValues[3]}
+                ref={(ref) => (this.bizFgControl = ref)}
               />
             </Grid>
           </Grid>
-          <Grid sx={{ position: 'sticky', bottom: '5px', width: '100%' }}>
-            <Button onClick={this.updateDetailInfo} variant="contained" size='large' sx={{ width: '200px', marginRight: '90px' }} style={{ border: '1px solid' }}>저 장</Button>
-            <Button onClick={this.deleteRow} variant="contained" size='large' sx={{ width: '200px' }} style={{ border: '1px solid' }}>삭 제</Button>
+          <Grid sx={{ position: "sticky", bottom: "5px", width: "100%" }}>
+            <Button
+              onClick={this.updateDetailInfo}
+              variant="contained"
+              size="large"
+              sx={{ width: "200px", marginRight: "90px" }}
+              style={{ border: "1px solid" }}
+            >
+              저 장
+            </Button>
+            <Button
+              onClick={this.deleteRow}
+              variant="contained"
+              size="large"
+              sx={{ width: "200px" }}
+              style={{ border: "1px solid" }}
+            >
+              삭 제
+            </Button>
           </Grid>
         </Grid>
-      </Container>//최상위 컨테이너 
+      </Container> //최상위 컨테이너
     );
   }
 }
