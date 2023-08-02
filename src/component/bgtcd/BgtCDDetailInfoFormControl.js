@@ -1,5 +1,6 @@
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { Component } from "react"
+import { CustomSelect } from "../common/style/CommonStyle";
 
 class BgtCDDetailInfoFormControl extends Component {
   constructor(props) {
@@ -66,13 +67,13 @@ class BgtCDDetailInfoFormControl extends Component {
           <InputLabel>{title}</InputLabel>
         </Grid>
         <Grid item md={5} >
-          <Select value={defaultValue} onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까 
-            sx={{ width: '229px' }} size="small" inputProps={{ style: { height: '11px' } }}>
+          <CustomSelect value={defaultValue} onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까 
+          >
             {menuItemValues.map((menuItemValue, index) => (
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
               </MenuItem> ))}
-          </Select>
+          </CustomSelect>
         </Grid>
       </Grid>
     );

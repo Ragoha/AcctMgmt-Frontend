@@ -15,12 +15,7 @@ export const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
   padding: 16,
 }));
 
-export const CustomIconButton = styled(IconButton)(({ theme }) => ({
-  size: "small"
-}));
-
 export const CustomCloseIcon = styled(CloseIcon)(({ theme }) => ({
-  size: "medium",
   color: "white" 
 }));
 
@@ -34,7 +29,7 @@ export const CustomDialogActions = styled(DialogActions)(({ theme }) => ({
   padding: 0,
 }));
 
-export const CustomSearchGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomShortFormGridContainer = styled(Grid)(({ theme }) => ({
   position:"relative",
   maxWidth: "468px",
   border: "3px solid #EAEAEA",
@@ -46,6 +41,18 @@ export const CustomSearchGridContainer = styled(Grid)(({ theme }) => ({
   paddingBottom: 16
 }));
 
+export const CustomLargeFormGridContainer = styled(Grid)(({ theme }) => ({
+  position: "relative",
+  maxWidth: "1168px",
+  border: "3px solid #EAEAEA",
+  display: "flex",
+  marginLeft: 16,
+  marginTop: 8,
+  marginRight: 16,
+  marginBottom: 16,
+  paddingBottom: 16,
+}));
+
 export const CustomDataGridContainer = styled(Grid)(({ theme }) => ({
   height: "370px",
   maxWidth: "468px",
@@ -53,28 +60,32 @@ export const CustomDataGridContainer = styled(Grid)(({ theme }) => ({
   marginRight: 16
 }));
 
+export const CustomLargeDataGridContainer = styled(Grid)(({ theme }) => ({
+  height: "552px",
+  maxWidth: "1168px",
+  marginLeft: 16,
+  marginRight: 16,
+}));
+
 export const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
   borderTop: "3px solid black",
-}));
-
-export const CustomInputLabel = styled(InputLabel)(({ theme }) => ({
-  fontWeight: "bold",
-  marginRight: 8,
-}));
-
-export const CustomTextField = styled(TextField)(({ theme }) => ({
-
 }));
 
 export const CustomSearchButton = styled(Button)(({ theme }) => ({
   padding: "0px",
   minWidth: "5px",
-  position: "relative",
-  right: "-66px",
+  position: "relative"
 }));
 
 export const CustomButtonGridContainer = styled(Grid)(({ theme }) => ({
   maxWidth: "468px",
+  marginLeft: 16,
+  marginRight: 16,
+  marginBottom: 16,
+}));
+
+export const CustomLargeButtonGridContainer = styled(Grid)(({ theme }) => ({
+  maxWidth: "1168px",
   marginLeft: 16,
   marginRight: 16,
   marginBottom: 16,

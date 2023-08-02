@@ -1,21 +1,16 @@
-import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
   Grid,
   IconButton,
-  InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
-import BgtICFService from "../../../../../service/BgtICFService";
 import { connect } from "react-redux";
+import BgtICFService from "../../../../../service/BgtICFService";
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomSearchButton, CustomShortFormGridContainer } from "../../../../common/style/CommonDialogStyle";
+import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -27,7 +22,7 @@ const columns = [
   {
     field: "bgtGrNm",
     headerName: "예산그룹명",
-    width: 286.4,
+    width: 286,
     headerAlign: "center",
   },
 ];
@@ -114,45 +109,18 @@ class BgtGrDialogComponent extends Component {
 
     return (
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-        <DialogTitle
-          sx={{
-            backgroundColor: "#7895CB",
-            color: "white",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: 60,
-            padding: 2,
-          }}
-        >
+        <CustomDialogTitle>
           예산그룹검색
-          <IconButton
-            size="small"
-            onClick={() =>
-              this.setState({ open: false, userList: [], searchResult: [] })
-            }
-          >
-            <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+          <IconButton size="small" onClick={this.handleDown}>
+            <CustomCloseIcon />
           </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ margin: 0, padding: 0 }}>
-          <Grid
+        </CustomDialogTitle>
+        <CustomDialogContent>
+          <CustomShortFormGridContainer
             container
             direction="row"
             alignItems="center"
             spacing={2}
-            sx={{
-              maxWidth: "468px",
-              border: "3px solid #EAEAEA",
-              display: "flex",
-              ml: 2,
-              mt: 1,
-              mr: 2,
-              mb: 2,
-              pb: 2,
-            }}
-            position="relative"
           >
             <Grid item xs={12}>
               <Grid
@@ -161,78 +129,45 @@ class BgtGrDialogComponent extends Component {
                 alignItems="center"
                 justifyContent="center"
               >
-                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                  검색어
-                </InputLabel>
-                <TextField
+                <CustomInputLabel>검색어</CustomInputLabel>
+                <CustomTextField
                   id="keyword"
                   name="keyword"
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  size="small"
                   onKeyDown={this.handlePressEnter}
-                ></TextField>
-                <Button
-                  variant="outlined"
-                  style={{
-                    padding: "0px",
-                    minWidth: "5px",
-                    position: "relative",
-                    right: "-66px",
-                  }}
-                  onClick={() => {
-                    this.handleSearchBgtGrIcon();
-                  }}
-                >
-                  <SearchIcon fontSize="medium" />
-                </Button>
+                ></CustomTextField>
+                <CustomSearchButton variant="outlined" sx={{ right: "-48px" }}>
+                  <SearchIcon onClick={this.handleSearchBgtGrIcon} />
+                </CustomSearchButton>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            container
-            sx={{ height: "364px", maxWidth: "468px", ml: 2, mr: 2 }}
-          >
-            <DataGrid
+          </CustomShortFormGridContainer>
+          <CustomDataGridContainer container>
+            <CustomDataGrid
               columns={columns}
               rows={this.state.bgtGrRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
-              sx={{ borderTop: "3px solid black" }}
             />
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ margin: 0, padding: 0 }}>
-          <Grid
-            container
-            justifyContent="flex-end"
-            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
-          >
-            <Button
+          </CustomDataGridContainer>
+        </CustomDialogContent>
+        <CustomDialogActions>
+          <CustomButtonGridContainer container justifyContent="flex-end">
+            <CustomConfirmButton
               variant="outlined"
-              sx={{
-                backgroundColor: "#4A55A2",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#4A55A2",
-                },
-                mr: 1,
-              }}
               onClick={this.handleClickConfirm}
             >
               확인
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => this.setState({ open: false })}
-            >
+            </CustomConfirmButton>
+            <Button variant="outlined" onClick={this.handleDown}>
               취소
             </Button>
-          </Grid>
-        </DialogActions>
+          </CustomButtonGridContainer>
+        </CustomDialogActions>
       </Dialog>
     );
   }
