@@ -92,6 +92,29 @@ class BtgICFService {
       })
       .then((response) => response.data);
   }
+
+  findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd(data) {
+    console.log(data);
+
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/gisu", {
+        params: {
+          coCd: "1",
+          divCd: "1001",
+          groupCd: "101",
+          grFg: "0"
+          // coCd: data.coCd,
+          // divCd: data.divCd,
+          // groupCd: data.groupCd,
+          // grFg: data.grFg
+        },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data);
+  }
 }
 
 

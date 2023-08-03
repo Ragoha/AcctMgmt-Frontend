@@ -149,6 +149,16 @@ class BgtICFComponent extends Component {
 
   handleClickSerachButton = () => {
     alert("asdf");
+
+    BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      divCd: this.state.divCd,
+      gisu: this.state.gisu,
+      bgtGr: this.state.bgtGr,
+      grFg: this.state.grFg,
+      bgtCd: this.state.bgtCd
+    });
   }
 
   componentWillMount() {
@@ -329,7 +339,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             {/* <Button onClick={this.handleGetBgtICFList}>조회</Button> */}
-            <Button>조회</Button>
+            <Button onClick={this.handleClickSerachButton}>조회</Button>
             {/* <AutocompleteWithRemove /> */}
           </Grid>
         </CustomGridContainer>
