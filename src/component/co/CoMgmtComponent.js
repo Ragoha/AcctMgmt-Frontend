@@ -21,6 +21,7 @@ import dayjs from 'dayjs';
 import CompanyService from '../../service/CompanyService';
 import AddressComponent from './dialog/AddressComponent';
 import CoDialogComponent from './dialog/CoDialogComponent';
+import { CustomGridContainer, CustomInputLabel } from '../common/style/CommonStyle';
 
 class CoMgmtComponent extends Component {
   constructor(props) {
@@ -517,11 +518,11 @@ class CoMgmtComponent extends Component {
         </Grid>
         <Divider sx={{ my: 1 }} />
 
-        <Grid container direction="row"
+        <CustomGridContainer container direction="row"
           justifyContent="left"
-          alignItems="center" sx={{ minHeight: 50, border: '1px solid #EAEAEA', mb: '10px' }}>
+          alignItems="center">
 
-          <InputLabel sx={{ fontWeight: 'bold', ml: 3 }}>회사</InputLabel>
+          <CustomInputLabel>회사</CustomInputLabel>
           <Paper sx={{ width: '21%', mt: 1, ml: 1, mb: 1, border: '1px solid #000' }}>
             <InputBase name='CodialTextField' value={this.state.CodialTextField} sx={{ width: '80%', ml: 1 }} placeholder="회사코드/회사명 검색하세요" />
             <IconButton type="button" onClick={this.helpClick} >
@@ -531,7 +532,7 @@ class CoMgmtComponent extends Component {
               <SearchIcon fontSize="medium" />
             </Button>
           </Paper>
-        </Grid>
+        </CustomGridContainer>
 
         <Grid sx={{ display: 'flex' }} >
           <Grid container sx={{ width: 380, height: 570, border: '1px solid #EAEAEA' }} >
