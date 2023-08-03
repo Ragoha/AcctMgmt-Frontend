@@ -1,24 +1,23 @@
 import React, { Component } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
+import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Card, CardActionArea, CardContent, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
 import Fab from '@mui/material/Fab';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import ListIcon from '@mui/icons-material/List';
 
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-import dayjs from 'dayjs';
 
 import CompanyService from '../../service/CompanyService';
+import DivsService from '../../service/DivsService';
 import AddressComponent from './dialog/AddressComponent';
 import CoDialogComponent from './dialog/CoDialogComponent';
-import DivsService from '../../service/DivsService';
 
 class DivMgmtComponent extends Component {
   constructor(props) {
@@ -53,6 +52,7 @@ class DivMgmtComponent extends Component {
       coNmList: [],
       divNmList: [],
       CodialTextField: '',
+      isChanged: false
     }
   }
 
@@ -107,6 +107,7 @@ class DivMgmtComponent extends Component {
   handleCompany = (e) => {
     // console.log(e.target.id);
     this.setState({
+      isChanged: true,
       [e.target.name]: e.target.value
     })
     // console.log(this.state);
@@ -164,7 +165,8 @@ class DivMgmtComponent extends Component {
           ceoNm: '',
           divZip: '',
           divAddr: '',
-          divAddr1: ''
+          divAddr1: '',
+          isChanged: false
         });
         // window.location.reload();
         // window.location.href="/acctmgmt/ozt/co";
@@ -343,7 +345,8 @@ class DivMgmtComponent extends Component {
           toNb: toNb,
           divZip: divZip,
           divAddr: divAddr,
-          divAddr1: divAddr1
+          divAddr1: divAddr1,
+          isChanged: false,
         })
       })
 
@@ -493,7 +496,7 @@ class DivMgmtComponent extends Component {
 
 
 
-              <Grid item sx={{ ml: 82, mr: 1 }}>
+              <Grid item sx={{ ml: 117.3, mr: 1 }}>
                 {coCd && divCd ?
                   <Button variant="outlined" onClick={this.updateDivs}>수정</Button>
                   :
@@ -525,25 +528,43 @@ class DivMgmtComponent extends Component {
                   onChange={this.handleCompany}
                 //value={coCd}?
                 >
-                  <MenuItem >{coCd}</MenuItem>
+                  {coCd != 0?
+                    <MenuItem >{coCd}</MenuItem>
+                    :
+                    CompanyService.getCoList()
+                    .then((response) => {
+                      const coCdList = response.data.map((item) => item.coCd);
+                      const coCd = response.data[0].coCd;
+              
+                      this.setState({
+                        coCdList: coCdList,
+                        coCd: coCd
+                  })
+                })
+                .catch((error) => {
+                  // 오류 발생 시의 처리
+                  console.error(error);
+                  // alert("중복된 회사 또는 모두 입력해주세요");
+                })
+                }
                 </Select>
               </FormControl>
             </Grid>
 
-            <Grid item xs={6} sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
+            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
               <InputLabel sx={{ color: 'black', marginRight: "10px" }}  >사업장코드</InputLabel>
               <TextField size='small' name='divCd' sx={{ mr: 3.7, backgroundColor: '#FFA7A7' }} onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></TextField>
             </Grid>
 
 
-            <Grid item xs={6}
+            <Grid item
               sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
               <InputLabel sx={{ color: 'black', marginRight: "10px" }}  >사업장명</InputLabel>
               <TextField size='small' name='divNm' onChange={this.handleCompany} value={divNm || ''}></TextField>
             </Grid>
 
 
-            <Grid item xs={6} sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
+            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
               <InputLabel sx={{ color: 'black', marginRight: "10px" }}  >대표자명</InputLabel>
               <TextField size='small' name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></TextField>
             </Grid>
@@ -574,8 +595,8 @@ class DivMgmtComponent extends Component {
             </Grid>
 
 
-            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
-              <InputLabel sx={{ color: 'black', mr: 2.2, ml: 3 }}  >사업장주소</InputLabel>
+            <Grid item sx={{ width: '50%', height: 15, display: 'flex', alignItems: 'center' }}>
+              <InputLabel sx={{ color: 'black', mr: 2.2 }}  >사업장주소</InputLabel>
               <TextField id="divZip" size='small' name="divZip" onChange={this.handleCompany} value={divZip || ''} InputProps={{ readOnly: true }}
                 sx={{
                   width: '150px', mr: 0.2 // 원하는 가로 크기를 지정 '기본크기는 약 222px'
@@ -583,20 +604,18 @@ class DivMgmtComponent extends Component {
             </Grid>
 
 
-            <Grid item sx={{ width: '50%' }}></Grid>
+            <Grid item sx={{ width: '50%', height: 10 }}></Grid>
 
             <Grid item
-              sx={{ width: '50%', height: 15 }}>
+              sx={{ width: '50%', ml: 12, height: 25, display: 'flex', alignItems: 'center' }}>
               <InputLabel ></InputLabel>
-              <TextField sx={{ width: '400px', mr: 21 }} id="divAddr" name="divAddr" size='small' onChange={this.handleCompany} value={divAddr || ''} InputProps={{ readOnly: true }}></TextField>
+              <TextField sx={{ width: '570px', mr: 21 }} id="divAddr" name="divAddr" size='small' onChange={this.handleCompany} value={divAddr || ''} InputProps={{ readOnly: true }}></TextField>
             </Grid>
 
-            <Grid item sx={{ width: '50%' }}></Grid>
-
             <Grid item
-              sx={{ width: '50%' }}>
+              sx={{ width: '50%', ml: 12, height: 5, display: 'flex', alignItems: 'center' }}>
               <InputLabel ></InputLabel>
-              <TextField sx={{ width: '400px', mr: 21 }} name="divAddr1" size='small' onChange={this.handleCompany} value={divAddr1 || ''} ></TextField>
+              <TextField sx={{ width: '570px', mr: 21 }} name="divAddr1" size='small' onChange={this.handleCompany} value={divAddr1 || ''} ></TextField>
             </Grid>
           </Grid>
         </Grid>
