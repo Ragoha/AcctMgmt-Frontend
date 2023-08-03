@@ -69,7 +69,7 @@ class BgtCDService {
     /*---delete start ---*/
     deleteRow(bgtCd){
         console.log('서비스임 ' +  bgtCd)
-        return axios.delete(ACCTMGMT_API_BASE_URL+"/deleteRow" , {params :{bgtCd:bgtCd}}).then(console.log('삭제완료 ? -- -- - - -- -  '))
+        return axios.delete(ACCTMGMT_API_BASE_URL+"/deleteRow" , {params :{bgtCd:bgtCd}}).then((response)=>response.data)
     }
     /*---delete end ---*/
 }

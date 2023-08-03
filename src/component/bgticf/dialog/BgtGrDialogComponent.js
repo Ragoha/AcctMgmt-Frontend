@@ -2,12 +2,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   Dialog,
-  Grid
+  Grid,
+  IconButton
 } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGrid, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomIconButton, CustomInputLabel, CustomSearchButton, CustomSearchGridContainer, CustomTextField } from "../../common/style/dialog/MediumDialogStyle";
+import {
+  CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomSearchButton, CustomShortFormGridContainer
+} from "../../common/style/CommonDialogStyle";
+import { CustomDataGrid, CustomInputLabel, CustomTextField, } from "../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -19,7 +23,7 @@ const columns = [
   {
     field: "bgtGrNm",
     headerName: "예산그룹명",
-    width: 286.4,
+    width: 286,
     headerAlign: "center",
   },
 ];
@@ -110,22 +114,18 @@ class BgtGrDialogComponent extends Component {
   };
 
   render() {
-    const { open, columns, rows, keyword } = this.state;
+    const { open, columns} = this.state;
 
     return (
       <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
         <CustomDialogTitle>
           예산그룹검색
-          <CustomIconButton
-            onClick={() =>
-              this.setState({ open: false, userList: [], searchResult: [] })
-            }
-          >
-            <CustomCloseIcon/>
-          </CustomIconButton>
+          <IconButton size="small" onClick={this.handleDown}>
+            <CustomCloseIcon />
+          </IconButton>
         </CustomDialogTitle>
         <CustomDialogContent>
-          <CustomSearchGridContainer
+          <CustomShortFormGridContainer
             container
             direction="row"
             alignItems="center"
@@ -138,30 +138,22 @@ class BgtGrDialogComponent extends Component {
                 alignItems="center"
                 justifyContent="center"
               >
-                <CustomInputLabel>
-                  검색어
-                </CustomInputLabel>
+                <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
                   id="keyword"
                   name="keyword"
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  size="small"
                   onKeyDown={this.handlePressEnter}
                 ></CustomTextField>
-                <CustomSearchButton
-                  variant="outlined"
-                  onClick={this.handleCickSearchIcon}
-                >
-                  <SearchIcon/>
+                <CustomSearchButton variant="outlined" sx={{ right: "-48px" }}>
+                  <SearchIcon onClick={this.handleCickSearchIcon} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
-          </CustomSearchGridContainer>
-          <CustomDataGridContainer
-            container
-          >
+          </CustomShortFormGridContainer>
+          <CustomDataGridContainer container>
             <CustomDataGrid
               columns={columns}
               rows={this.state.bgtGrRows}
@@ -173,20 +165,14 @@ class BgtGrDialogComponent extends Component {
           </CustomDataGridContainer>
         </CustomDialogContent>
         <CustomDialogActions>
-          <CustomButtonGridContainer
-            container
-            justifyContent="flex-end"
-          >
+          <CustomButtonGridContainer container justifyContent="flex-end">
             <CustomConfirmButton
               variant="outlined"
               onClick={this.handleClickConfirm}
             >
               확인
             </CustomConfirmButton>
-            <Button
-              variant="outlined"
-              onClick={() => this.setState({ open: false })}
-            >
+            <Button variant="outlined" onClick={this.handleDown}>
               취소
             </Button>
           </CustomButtonGridContainer>

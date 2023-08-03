@@ -199,6 +199,7 @@ class DataGridComponent extends Component {
           components={{
             NoRowsOverlay: () => "",
           }}
+          sx={{ borderTop: "3px solid black" }}
           hideFooter
         />
       </Box>
