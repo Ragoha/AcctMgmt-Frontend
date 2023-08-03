@@ -6,7 +6,7 @@ class BgtCDStore{
         this.BgtCDStore=createSlice({
             name:'BgtCDStore',
             initialState:{
-                groupcd : 'GROUP3',
+                groupcd : '1000',
                 detailInfo_ctlFg:null,
                 detailInfo_bgajustFg:null,
                 detailInfo_bottomFg:null,
@@ -15,7 +15,7 @@ class BgtCDStore{
             },
             reducers:{
                 SET_GROUPCD:(state, action)=>{
-                    state.groupcd='GROUP3';
+                    state.groupcd='1000';
                 },
                 // groupcd :'GROUP3' ,
                 SET_DETAILINFO: (state, action)=>{

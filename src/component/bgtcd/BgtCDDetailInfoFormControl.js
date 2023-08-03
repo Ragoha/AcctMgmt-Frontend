@@ -76,7 +76,7 @@ class BgtCDDetailInfoFormControl extends Component {
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
               </MenuItem> ))}
-          </Select>
+          </CustomSelect>
         </Grid>
       </Grid>
     );

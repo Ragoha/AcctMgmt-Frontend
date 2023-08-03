@@ -31,7 +31,6 @@ class BgtCDService {
         return returnData1;
     }
     getBgtCDTerm(CO_CD){ //(★임시로 데이터 테스트 용 CoCd, 반드시 수정해야함!!!) BgtCD 그룹레벨설정 할때 초기값.
-       
         console.log("찍어보자 : " + CO_CD)
         const returnData=axios.get(ACCTMGMT_API_BASE_URL + "/getBgtCDTerm" ,{
             params:{

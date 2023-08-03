@@ -1,73 +1,87 @@
-import React, { Component } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
 
-
-class BgtCDAddSubDialog extends Component {
+import { Autocomplete, Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, InputLabel, TextField } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import React, { Component } from "react";
+import {
+    CustomButtonGridContainer,
+    CustomCloseIcon,
+    CustomConfirmButton,
+    CustomDataGridContainer,
+    CustomDialogActions,
+    CustomDialogContent,
+    CustomDialogTitle,
+    CustomLargeFormGridContainer,
+    CustomSearchButton,
+    CustomShortFormGridContainer
+} from "../../common/style/CommonDialogStyle";
+import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../common/style/CommonStyle";
+import { DataGrid } from "@mui/x-data-grid";
+class BgtCDADDSubDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
-        }
+            open: true,
+            columns : [
+                {field:"groupcd" , headerName:"그룹코드",width:220, headerAlign:"center", editable:true},
+                {field:"groupName" , headerName:"그룹명",width:220, headerAlign:"center",editable:true},
+            ],
+            rows:[
+                { id: 1, groupcd: 'Snow', groupName: 'Jon' },
+                { id: 2, groupcd: 'Snow', groupName: 'Jon' },
+                { id: 3, groupcd: 'Snow', groupName: 'Jon' },
+            
+            ]
+        };
     }
-    /* 기본 기능 */
+
     handleUp = () => {
         this.setState({ open: true });
-    }
+    };
+
     handleDown = () => {
         this.setState({ open: false });
-    }
-    /* 기본 기능 end */
+    };
 
     render() {
-        const { open } = this.state;
+        const { open ,columns,rows} = this.state;
+
         return (
-            //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
-            <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-                <DialogTitle
-                    sx={{
-                        backgroundColor: "#7895CB",
-                        color: "white",
-                        fontWeight: "bold",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        height: 60,
-                    }}
-                >예산과목추가
-                    <IconButton
-                        size="small"
-                        onClick={() =>
-                            this.setState({ open: false })
-                        }>
-                        <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+            <Dialog
+                open={open}
+                PaperProps={{ sx: { width: 500, height: 600 } }}>
+                <CustomDialogTitle>
+                    예산과목등록
+                    <IconButton size="small" onClick={this.handleDown}>
+                        <CloseIcon sx={{ color: "white" }} />
                     </IconButton>
-                </DialogTitle>
-                <DialogContent>{this.props.DialogContentComponent}</DialogContent>
-                <Divider />
-                <DialogActions>
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            backgroundColor: "#4A55A2",
-                            color: "white",
-                            "&:hover": {
-                                backgroundColor: "#4A55A2",
-                            },
-                        }}
-                        onClick={() => {
-                            this.handleDown();
-                            this.props.clickDialogConfirmButton();
-                        }}
-                    >확인</Button>
-                    <Button variant="outlined"
-                        onClick={this.handleDown}
-                    >취소</Button>
-                </DialogActions>
+                </CustomDialogTitle>
+                <CustomDialogContent >
+                    <CustomShortFormGridContainer container direction="row" spacing={2}>
+                        <Grid item xs={12}>
+                            <Button>
+                                삭제
+                            </Button>
+
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CustomDataGrid
+                                sx={{borderTop: "3px solid black"}}
+                                columns={columns}
+                                rows={rows}
+                                showColumnVerticalBorder={true}
+                                showCellVerticalBorder={true} // 각 셀마다 영역주기
+                                editMode='row'
+                                hideFooter
+                            />
+
+                        </Grid>
+                    </CustomShortFormGridContainer>
+                </CustomDialogContent>
+
             </Dialog>
         );
     }
 }
-export default BgtCDAddSubDialog;
+
+export default BgtCDADDSubDialog;
+

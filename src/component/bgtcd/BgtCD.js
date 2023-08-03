@@ -12,6 +12,7 @@ import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO ,SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
+import BgtCDSubReg from "./modal/BgtCDSubReg";
 
 {/* <Autocomplete
 variant=""
@@ -186,8 +187,8 @@ class BgtCD extends Component {
                     </Grid>
                 </Grid>
                 <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-                <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
-                <BgtCDGroupReg ref={this.BgtCDGroupReg} />
+                <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
+                <BgtCDGroupReg ref={this.BgtCDGroupReg} />{/*그룹레벨설정 */}
             </>
         )
     }
