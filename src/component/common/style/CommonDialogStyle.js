@@ -67,9 +67,7 @@ export const CustomLargeDataGridContainer = styled(Grid)(({ theme }) => ({
   marginRight: 16,
 }));
 
-export const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
-  borderTop: "3px solid black",
-}));
+
 
 export const CustomSearchButton = styled(Button)(({ theme }) => ({
   padding: "0px",
