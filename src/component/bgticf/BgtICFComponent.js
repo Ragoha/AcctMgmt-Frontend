@@ -4,27 +4,23 @@ import {
   Autocomplete,
   Box,
   Button,
-  Divider,
   Grid,
   InputAdornment,
   InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import DataGridComponent from "./DatGridComponent";
-import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
+import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import AutocompleteWithRemove from "./test";
-import { connect } from "react-redux";
+import { CustomAutoComplete, CustomGridContainer, CustomInputLabel, CustomTextField } from "../common/style/CommonStyle";
 
 const BGTCD_COLUMN = [
   { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
@@ -197,7 +193,6 @@ class BgtICFComponent extends Component {
             <span>예산초기이월등록</span>
           </Grid>
         </Grid>
-        <Divider sx={{ my: 2 }} />
         <Box>
           {/* <InputLabel style={labelStyle}>예산초기이월등록</InputLabel> */}
           <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
@@ -206,29 +201,23 @@ class BgtICFComponent extends Component {
             <Button onClick={this.handleRowDelete}>삭제</Button>
           </Box>
         </Box>
-        <Divider variant="middle" />
-        <Grid
+        <CustomGridContainer
           container
           spacing={2}
           direction="row"
           justifyContent="space-evenly"
           alignItems="center"
-          sx={{
-            // marginLeft: "20px",
-            // marginRight: "20px",
-            marginTop: "10px",
-            marginBottom: "20px",
-          }}
         >
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <InputLabel sx={{ marginRight: "10px" }}>회계단위</InputLabel>
+              <CustomInputLabel>
+                회계단위
+              </CustomInputLabel>
               <TextField
                 name="divTextField"
                 value={divTextField}
                 onChange={this.handleInputChange}
                 size="small"
-                sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -239,16 +228,18 @@ class BgtICFComponent extends Component {
               ></TextField>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <InputLabel sx={{ marginRight: "10px" }}>회계기간</InputLabel>
+              <CustomInputLabel>
+                회계기간
+              </CustomInputLabel>
               <Autocomplete
                 disableClearable
                 disablePortal
                 options={this.state.gisuRows}
                 getOptionLabel={(option) => option.toString()}
                 size="small"
-                sx={{ width: "65px", marginRight: "10px" }}
+                sx={{ width: "65px", marginRight: "8px" }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -256,18 +247,24 @@ class BgtICFComponent extends Component {
                   />
                 )}
               />
-              <TextField value={this.state.gisuRangeRows[2]}/>
+              <TextField
+                value={this.state.gisuRangeRows[2]}
+                fontSize="13px"
+                sx={{
+                  width: 182,
+                  "& .MuiInputBase-root": { fontSize: "13px", height: "40px" },
+                }}
+              />
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <InputLabel sx={{ marginRight: "10px" }}>예산그룹</InputLabel>
+              <CustomInputLabel>예산그룹</CustomInputLabel>
               <TextField
                 name="bgtGrTextField"
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
                 size="small"
-                sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -278,10 +275,10 @@ class BgtICFComponent extends Component {
               ></TextField>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <InputLabel sx={{ marginRight: "10px" }}>출력구분</InputLabel>
-              <Autocomplete
+              <CustomInputLabel>출력구분</CustomInputLabel>
+              <CustomAutoComplete
                 disableClearable
                 disablePortal
                 id="combo-box-demo"
@@ -291,21 +288,17 @@ class BgtICFComponent extends Component {
                   { label: "수입", value: "수입" },
                   { label: "지출", value: "지출" },
                 ]}
-                size="small"
-                sx={{ width: "90px", marginRight: "10px" }}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <InputLabel sx={{ marginRight: "10px" }}>예산과목</InputLabel>
-              <TextField
+              <CustomInputLabel>예산과목</CustomInputLabel>
+              <CustomTextField
                 name="bgtCd"
                 value={bgtCDTextField}
                 onChange={this.handleInputChange}
-                size="small"
-                sx={{ width: "220px" }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -313,15 +306,14 @@ class BgtICFComponent extends Component {
                     </InputAdornment>
                   ),
                 }}
-              ></TextField>
+              ></CustomTextField>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Button onClick={this.handleGetBgtICFList}>조회</Button>
-            <AutocompleteWithRemove />
+            {/* <AutocompleteWithRemove /> */}
           </Grid>
-        </Grid>
-        <Divider variant="middle" />
+        </CustomGridContainer>
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <DataGrid
@@ -330,6 +322,7 @@ class BgtICFComponent extends Component {
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
+                borderTop:"3px solid black"
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"

@@ -1,5 +1,6 @@
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { Component } from "react"
+import { CustomSelect } from "../common/style/CommonStyle";
 
 class BgtCDDetailInfoFormControl extends Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class BgtCDDetailInfoFormControl extends Component {
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
               </MenuItem> ))}
-          </Select>
+          </CustomSelect>
         </Grid>
       </Grid>
     );

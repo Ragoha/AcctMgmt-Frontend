@@ -8,6 +8,7 @@ import BgtCDService from '../../service/BgtCDService';
 import BgtCDDetailInfoFormControl from './BgtCDDetailInfoFormControl';
 import { ThreeDRotationSharp } from '@mui/icons-material';
 import { Divider } from '@material-ui/core';
+import { CustomInputLabel } from '../common/style/CommonStyle';
 
 
 class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구현.
@@ -150,6 +151,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
                 ref={(ref) => (this.bottomFgControl = ref)}
               />
               <BgtCDDetailInfoFormControl title={'구매성격'} bizFg={bizFg} menuItemValues={menuItemValues[3]}
+
                 ref={(ref) => (this.bizFgControl = ref)}
               />
             </Grid>
@@ -159,9 +161,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               <Button onClick={this.updateDetailInfo} variant="contained" size='small' sx={{ width: '100px',marginRight:'50px' }} style={{ border: '1px solid' }}>저 장</Button>
               <Button onClick={this.deleteRow} variant="contained" size='small' sx={{ width: '100px' }} style={{ border: '1px solid' }}>삭 제</Button>
             </Grid>
+
           </Grid>
         </Grid>
-      </Container>//최상위 컨테이너 
+      </Container> //최상위 컨테이너
     );
   }
 }
