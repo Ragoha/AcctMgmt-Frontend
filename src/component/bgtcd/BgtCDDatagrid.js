@@ -45,7 +45,7 @@ class BgtCDDatagrid extends Component {
 
         return (
             <Box>
-                <Box style={{ height: 480, width: '95%' }} >
+                <Box style={{ height: 480, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '17px'}} >
                     <DataGridPro
                         treeData
                         getTreeDataPath={(row) => row.dataPath.split(',')}
@@ -54,6 +54,7 @@ class BgtCDDatagrid extends Component {
                         getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                         onRowClick={this.clickedRow}
+                        defaultGroupingExpansionDepth={7}
                         groupingColDef={{
                             headerName: '분류명',
                         }}

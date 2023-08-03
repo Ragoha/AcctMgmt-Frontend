@@ -111,7 +111,7 @@ class DeptMgmtComponent extends Component {
 
                                 <Grid item xs={7}></Grid>
 
-                                <Grid item xs={1} sx={{ml:73, mr:1}}>
+                                <Grid item xs={1} sx={{ml:108, mr:1}}>
                                     <Button variant="contained">추가</Button>
                                 </Grid>
 

@@ -63,7 +63,7 @@ class BtgICFService {
   findBgcCDByGisuAndGroupCdAndToDtAndKeyword(data) {
     console.log(data);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd", {
         params: {
           coCd: data.user.coCd,
           gisu: data.gisu,

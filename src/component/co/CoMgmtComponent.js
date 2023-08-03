@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, DialogActions, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, Container, DialogActions, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
 import Fab from '@mui/material/Fab';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
@@ -182,6 +182,7 @@ class CoMgmtComponent extends Component {
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
           coNmList: coNmList,
+          focused: coCdList[cardCount - 1],
           coCd: '',
           coNm: '',
           gisu: '',
@@ -194,7 +195,8 @@ class CoMgmtComponent extends Component {
           ceoNm: '',
           coZip: '',
           coAddr: '',
-          coAddr1: ''
+          coAddr1: '',
+          isChanged: false
         });
         // window.location.reload();
         // window.location.href="/acctmgmt/ozt/co";
@@ -202,7 +204,7 @@ class CoMgmtComponent extends Component {
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
-        alert("중복된 회사 또는 모두 입력해주세요");
+        alert("회사등록 실패ㅠ");
       });
   }
 
@@ -223,7 +225,7 @@ class CoMgmtComponent extends Component {
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
     if (this.state.isChanged) {
-      alert('변경된 내용이 저장되지 않았습니다.');
+      alert('수정중인 내용이 있습니다.');
     } else {
       this.setState({ focused: coCd })
       {
@@ -436,7 +438,7 @@ class CoMgmtComponent extends Component {
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
-        alert("삭제 실패..");
+        alert("회사삭제 실패..");
       });
   }
 
@@ -531,24 +533,22 @@ class CoMgmtComponent extends Component {
           </Paper>
         </Grid>
 
-        <Grid sx={{ display: 'flex' }}>
-          <Grid container sx={{ width: '25%', height: 570, border: '1px solid #EAEAEA' }}>
+        <Grid sx={{ display: 'flex' }} >
+          <Grid container sx={{ width: 380, height: 570, border: '1px solid #EAEAEA' }} >
 
-            {/* <Divider sx={{ width: '20.2%', border: '1px solid #000', position: 'absolute', top: '264px'  }} /> */}
-
-            <Grid container sx={{ display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#EAEAEA' }}>
+            <Grid item sx={{ display: 'flex', justifyContent: 'left', alignItems: "center", height: 22, width: '100%', backgroundColor: '#EAEAEA' }}>
               <InputLabel >총 회사:</InputLabel><InputLabel sx={{ ml: 0.5, color: '#4A55A2' }}>{cardCount}</InputLabel>
             </Grid>
 
-            <Grid sx={{ width: '100%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
-              <Grid item xs={12} >
-                <Card>
+            <Grid item sx={{ height: 'calc(100% - 5%)', overflowY: 'auto', width: '100%' }}>
+              <Grid item  >
+                <Card item>
                   {cards}
                 </Card>
               </Grid>
             </Grid>
 
-            <Grid container sx={{ ml: 0.6, position: 'absolute', top: '785px', width: '20%' }} >
+            <Grid item sx={{ ml: 0.6, position: 'absolute', top: '785px', width: '20%' }} >
               <Fab variant="extended" onClick={this.addCardButton}
                 sx={{
                   backgroundColor: '#4A55A2', color: 'white', display: 'flex', justifyContent: 'center', width: '95%',
@@ -557,20 +557,19 @@ class CoMgmtComponent extends Component {
                   }
                 }}>
                 <AddIcon />
-                INSERT
+                추가
               </Fab>
             </Grid>
           </Grid>
 
-          <Grid container sx={{ ml: 1, width: '75%', height: 630, border: '1px solid #EAEAEA' }}>
-            <Grid container sx={{ width: '100%', maxHeight: 40, borderLeft: '1px solid #000', borderBottom: '1px solid #000' }}>
-              <Grid item >
-                <InputLabel sx={{ ml: 2, mr: 2, mt: 1, textAlign: 'center', color: 'black' }}>기본정보</InputLabel>
+
+          <Container sx={{ height: 630, border: '1px solid #EAEAEA' }}>
+            <Grid container sx={{ height: 40, borderBottom: '2px solid #000' }}>
+              <Grid item xs={10}>
+                <InputLabel sx={{ mt:1,color: 'black' }}>기본정보</InputLabel>
               </Grid>
 
-              <Grid item ></Grid>
-
-              <Grid item sx={{ ml: 82, mr: 1 }}>
+              <Grid item xs={1}>
                 {coCd ?
                   <Button variant="outlined" onClick={this.updateCo}>수정</Button>
                   :
@@ -578,82 +577,99 @@ class CoMgmtComponent extends Component {
                 }
               </Grid>
 
-              <Grid item  >
+              <Grid item xs={1}>
                 <Button variant="outlined" onClick={this.deleteCo}>삭제</Button>
               </Grid>
-              {/* <Divider sx={{width: '60.8%', border: '1px solid #000', position:'absolute', top:'264px'}}/> */}
-            </Grid>
-
-            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }}  >회사코드</InputLabel>
-              <TextField size='small' sx={{ backgroundColor: '#FFA7A7' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }}></TextField>
             </Grid>
 
 
-            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }}  >회사명</InputLabel>
-              <TextField size='small' name='coNm' onChange={this.handleCompany} value={coNm || ''}></TextField>
-            </Grid>
+            <Grid container  >
+              <Grid item xs={2} sx={{ mt:1,height:50,display: 'flex',justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }} >
+                <InputLabel sx={{  mr:2,color: 'black'}}  >회사코드</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1,display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }} >
+                <TextField size='small' sx={{ ml:2,backgroundColor: '#FFA7A7' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }}></TextField>
+              </Grid>
+
+              <Grid item xs={2} sx={{ mt:1,display: 'flex',justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }} >
+                <InputLabel sx={{ mr:2,color: 'black'}}  >회사명</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1,display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }} >
+                <TextField sx={{ ml:2}} size='small' name='coNm' onChange={this.handleCompany} value={coNm || ''}></TextField>
+              </Grid>
 
 
-            <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "40px" }}  >종목</InputLabel>
-              <TextField size='small' name='jongmok' onChange={this.handleCompany} value={jongmok || ''}></TextField>
-            </Grid>
+              <Grid item xs={2} sx={{mt:1, height:50,display: 'flex',justifyContent: 'flex-end' ,alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr:2,color: 'black' }}  >종목</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{mt:1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                <TextField sx={{ml:2 }} size='small' name='jongmok' onChange={this.handleCompany} value={jongmok || ''}></TextField>
+              </Grid>
 
 
-            <Grid item sx={{width: '50%', height: 50, display: 'flex', alignItems: 'center'}}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "28px" }}  >업태</InputLabel>
-              <TextField size='small' name='businessType' onChange={this.handleCompany} value={businessType || ''}></TextField>
-            </Grid>
+              <Grid item xs={2} sx={{ mt:1,display: 'flex', justifyContent: 'flex-end' ,alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr:2, color: 'black' }}  >업태</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{mt:1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA'}}>
+                <TextField sx={{ ml:2 }} size='small' name='businessType' onChange={this.handleCompany} value={businessType || ''}></TextField>
+              </Grid>
 
 
-            <Grid item sx={{width: '50%', height: 50, display: 'flex', alignItems: 'center'}}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }}  >대표자명</InputLabel>
-              <TextField size='small' name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></TextField>
-            </Grid>
+              <Grid item xs={2} sx={{mt:1,height:50,display: 'flex',justifyContent: 'flex-end' , alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr:2, color: 'black' }}  >대표자명</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1,display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                <TextField sx={{ ml:2  }} size='small' name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></TextField>
+              </Grid>
 
 
-            <Grid item sx={{width: '50%', height: 50, display: 'flex', alignItems: 'center'}}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', marginRight: "10px" }}  >사업자번호</InputLabel>
-              <TextField size='small' name='coNb' sx={{ mr: 3.7 }} onChange={this.handleCompany} value={coNb || ''}></TextField>
-            </Grid>
+              <Grid item xs={2} sx={{ mt:1,display: 'flex',justifyContent: 'flex-end' , alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr:2, color: 'black'}}  >사업자번호</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1,display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
+                <TextField size='small' name='coNb' sx={{ ml:2 }} onChange={this.handleCompany} value={coNb || ''}></TextField>
+              </Grid>
 
 
-            <Grid item sx={{width: '50%',display: 'flex', alignItems: 'center', height: 15 }}>
-              <InputLabel sx={{ textAlign: 'center', color: 'black', mr: 2.2, ml: 3 }}  >회사주소</InputLabel>
-              <TextField id="coZip" size='small' name="coZip" onChange={this.handleCompany} value={coZip || ''} InputProps={{ readOnly: true }}
-                sx={{
-                  width: '150px', mr: 0.2 // 원하는 가로 크기를 지정 '기본크기는 약 222px'
-                }}></TextField> <Button sx={{ direction: "row", justifyContent: "center", alignItems: "center", mt: 0.2, ml: 0.2 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
-            </Grid>
+              <Grid item xs={2} sx={{ mt:1,height:50,display: 'flex',justifyContent: 'flex-end' , alignItems: 'center', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr:2, color: 'black' }}  >회사주소</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1,display: 'flex', alignItems: 'center' }}>
+                <TextField id="coZip" size='small' name="coZip" onChange={this.handleCompany} value={coZip || ''} InputProps={{ readOnly: true }}
+                  sx={{ ml:2, width: '150px' }}></TextField>
+                <Button sx={{  ml: 1 }} variant="outlined" onClick={this.addrButton}>우편번호</Button>
+              </Grid>
+
+              <Grid item xs={6}></Grid>
+
+              <Grid item xs={2} sx={{height:50}}></Grid>
+              <Grid item xs={6}>
+                <TextField sx={{ ml:2,width: '570px'}} id="coAddr" name="coAddr" size='small' onChange={this.handleCompany} value={coAddr || ''} InputProps={{ readOnly: true }}></TextField>
+              </Grid>
+              <Grid item xs={4}></Grid>
+              
+              <Grid item xs={2} sx={{ height:50,borderBottom: '1px solid #EAEAEA' }}></Grid>
+              <Grid item xs={6} sx={{ borderBottom: '1px solid #EAEAEA' }}>
+                <TextField sx={{ ml:2,width: '570px' }} name="coAddr1" size='small' onChange={this.handleCompany} value={coAddr1 || ''} ></TextField>
+              </Grid>
+              <Grid item xs={4} sx={{ borderBottom: '1px solid #EAEAEA' }}></Grid>
             
-            <Grid item sx={{width: '50%'}}></Grid>
 
-            <Grid item sx={{ height: 15 }}>
-              <InputLabel ></InputLabel>
-              <TextField sx={{ width: '400px', ml: 17.5 }} id="coAddr" name="coAddr" size='small' onChange={this.handleCompany} value={coAddr || ''} InputProps={{ readOnly: true }}></TextField>
+              <Grid item xs={2} sx={{ mt:1, height:50, display: 'flex',justifyContent: 'flex-end' , alignItems: 'center', backgroundColor: '#EAEAEA',borderBottom: '1px solid lightgray', }}>
+                <InputLabel sx={{  mr:2, color: 'black' }}  >회계기수</InputLabel>
+              </Grid>
+              <Grid item xs={4} sx={{ mt:1, display: 'flex', alignItems: 'center' }}>
+                <InputLabel sx={{ml:2}} name='gisu' onChange={this.handleCompany} value={gisu || ''}>{gisu}</InputLabel>
+                <InputLabel sx={{ textAlign: 'right', mr: 1 }}>기</InputLabel>
+                <TextField name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} size='small' InputProps={{ readOnly: true }}></TextField>
+                <Button size="medium" sx={{  ml: 1 }} variant="outlined" onClick={this.handleGisu}>
+                  기수등록
+                </Button>
+              </Grid>
+              <Grid item xs={6}></Grid>
+
             </Grid>
-
-            <Grid item sx={{width: '50%'}}></Grid>
-
-            <Grid item >
-              <InputLabel ></InputLabel>
-              <TextField sx={{ width: '400px', ml: 17.5 }} name="coAddr1" size='small' onChange={this.handleCompany} value={coAddr1 || ''} ></TextField>
-            </Grid>
-
-            <Grid item sx={{width: '50%'}}></Grid>
-
-            <Grid item sx={{ mr: 5,mb:3, display: 'flex', alignItems: 'center'}}>
-              <InputLabel sx={{ color: 'black', mr: 2 }}  >회계기수</InputLabel>
-              <InputLabel name='gisu' onChange={this.handleCompany} value={gisu || ''}>{gisu}</InputLabel>
-              <InputLabel sx={{ textAlign: 'right', mr: 1 }}>기</InputLabel>
-              <TextField name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} size='small' InputProps={{ readOnly: true }}></TextField>
-              <Button size="medium" sx={{ ml: 0.5, mt: 0.5 }} variant="outlined" onClick={this.handleGisu}>
-                기수등록
-              </Button>
-            </Grid>
-          </Grid>
+          </Container>
 
           <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
             <DialogTitle sx={{ backgroundColor: '#7895CB', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 60 }}>
