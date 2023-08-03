@@ -495,9 +495,7 @@ class CoMgmtComponent extends Component {
             <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "9px", bottom: '4px' }} >
               {formattedDate}
             </Typography>
-            {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
-              {index + 1}
-            </Typography> */}
+
             <Typography sx={{ fontSize: 25 }} variant='h3' style={{ position: 'absolute', bottom: '8px' }}>
               {coNmList[index]}
             </Typography>
