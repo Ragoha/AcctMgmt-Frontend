@@ -7,7 +7,7 @@ import { Button, Card, CardActionArea, CardContent, Divider, IconButton, InputLa
 import Fab from '@mui/material/Fab';
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
@@ -59,7 +59,7 @@ class DivMgmtComponent extends Component {
   componentDidMount() {
     DivsService.getDivsList()
       .then((response) => {
-        // const coCdList = response.data.map((item) => item.coCd);
+        const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
         const divNmList = response.data.map((item) => item.divNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
@@ -78,7 +78,7 @@ class DivMgmtComponent extends Component {
 
         this.setState({
           cardCount: cardCount, // state에 값을 저장
-          // coCdList: coCdList,
+          coCdList: coCdList,
           divCdList: divCdList,
           divNmList: divNmList,
 
@@ -95,7 +95,7 @@ class DivMgmtComponent extends Component {
           divAddr: divAddr,
           divAddr1: divAddr1
         })
-      })
+  })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
@@ -119,12 +119,21 @@ class DivMgmtComponent extends Component {
       alert("미등록 사업장이 존재합니다.");
     } else {
       const newCardCount = this.state.cardCount + 1;
-      const newDivCdList = [...this.state.divCdList, '0000'];
-      // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
-      this.setState({
+      CompanyService.getCoList()
+      
+      .then((response) => {
+        
+        const newDivCdList = response.data.map((item) => item.divCd);
+        const newDivNmList = response.data.map((item) => item.divNm);
+        const newCoCdList = response.data.map((item) => item.coCd);
+
+        const coCdList = response.data[0].coCd;
+        this.setState({
+          coCdList: coCdList,
         cardCount: newCardCount,
         divCdList: newDivCdList,
-        // coNmList: newCoNmList,
+        coCdList: newCoCdList,
+        divNmList: newDivNmList,
         focused: '0000',
         coCd: '',
         divCd: '',
@@ -138,9 +147,12 @@ class DivMgmtComponent extends Component {
         divAddr: '',
         divAddr1: ''
       })
-    }
-  }//여기에 모든 state값 초기화 하면 됨 !!!!!
-
+    }) .catch((error) => {
+      // 오류 발생 시의 처리
+      console.error(error);
+      // alert("중복된 회사 또는 모두 입력해주세요");
+  })}
+  }
   insertDivs = () => {
     const { coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
     DivsService.insertDivs(coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1)
@@ -148,14 +160,17 @@ class DivMgmtComponent extends Component {
       .then((response) => {
         console.log(response.data);
         window.confirm('사업장등록 완료!');
-        // const coCdList = response.data.map((item) => item.coCd);
-        // const coNmList = response.data.map((item) => item.coNm);
+        const coCdList = response.data.map((item) => item.coCd);
+        const divCdList = response.data.map((item) => item.divCd);
+        const divNmList = response.data.map((item) => item.divNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
         this.setState({
           cardCount: cardCount, // state에 값을 저장
-          // coCdList: coCdList,
-          // coNmList: coNmList,
+          coCdList: coCdList,
+          divCdList: divCdList,
+          divNmList: divNmList,
+          focused: coCdList[cardCount - 1],
           coCd: '',
           divNm: '',
           jongmok: '',
@@ -364,12 +379,12 @@ class DivMgmtComponent extends Component {
         console.log(response.data);
         window.confirm('사업장삭제 완료!');
         const divCdList = response.data.map((item) => item.divCd);
-        // const divNmList = response.data.map((item) => item.divNm);
+        const divNmList = response.data.map((item) => item.divNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           divCdList: divCdList,
-          // divNmList: divNmList,
+          divNmList: divNmList,
           focused: divCdList[0],
           coCd: '',
           divCd: '',
@@ -392,6 +407,12 @@ class DivMgmtComponent extends Component {
         console.error(error);
         alert("삭제 실패..");
       });
+  }
+
+  handleChange =(e)=>{
+    this.setState({
+      coCd: e.target.value
+    })
   }
 
   render() {
@@ -521,19 +542,19 @@ class DivMgmtComponent extends Component {
 
             <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
               <InputLabel>회사선택</InputLabel>
-              {divCd?
+              {divCd != 0?
                 <TextField value={coCd} InputProps={{ readOnly: true }}></TextField>
-                 :
+                :
                 <FormControl sx={{ width: 200 }}>
-                  <Select
-                    name='coCd'
-                    onChange={this.handleCompany}
-                  //value={coCd}?
-                  >
-                    <MenuItem >{coCd}</MenuItem>
+                  <Select name='coCd' value={coCd} onChange={this.handleCompany}>
+                    {coCdList.map((coCd) => (
+                      <MenuItem key={coCd} value={coCd}>
+                        {coCd}
+                      </MenuItem>
+                    ))}
                   </Select>
-                </FormControl> 
-                }
+                </FormControl>
+              }
             </Grid>
 
             <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
