@@ -516,12 +516,12 @@ class CoMgmtComponent extends Component {
             <span>회사관리</span>
           </Grid>
         </Grid>
-        <Divider sx={{ my: 1 }} />
-
-        <CustomGridContainer container direction="row"
+        <CustomGridContainer
+          container
+          direction="row"
           justifyContent="left"
+          spacing={2}
           alignItems="center">
-
           <CustomInputLabel>회사</CustomInputLabel>
           <Paper sx={{ width: '21%', mt: 1, ml: 1, mb: 1, border: '1px solid #000' }}>
             <InputBase name='CodialTextField' value={this.state.CodialTextField} sx={{ width: '80%', ml: 1 }} placeholder="회사코드/회사명 검색하세요" />
@@ -531,7 +531,7 @@ class CoMgmtComponent extends Component {
             <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '155px', right: "35px" }}>
               <SearchIcon fontSize="medium" />
             </Button>
-          </Paper>
+            </Paper>
         </CustomGridContainer>
 
         <Grid sx={{ display: 'flex' }} >
@@ -678,15 +678,12 @@ class CoMgmtComponent extends Component {
               <IconButton size='small' sx={{ ml: 36 }} onClick={() => this.setState({ open: false })}>
                 <CloseIcon fontSize='medium' sx={{ color: 'white' }} />
               </IconButton>
-              <Divider sx={{ border: '1px solid #EAEAEA' }} />
             </DialogTitle>
             <DialogContent >
 
               <Grid container direction="column" alignItems="flex-end">
                 <Button sx={{ mt: 1, mb: 1 }} variant="outlined" >삭제</Button>
               </Grid>
-
-              <Divider sx={{ border: '1px solid #EAEAEA', mb: 3 }} />
 
               <Grid style={{ height: 350, width: '100%' }} >
                 <DataGrid sx={{ borderTop: '2px solid #000' }}
@@ -700,7 +697,6 @@ class CoMgmtComponent extends Component {
               </Grid>
 
             </DialogContent>
-            <Divider />
             <DialogActions>
               <Grid container sx={{ mr: 22 }}>
                 <Button variant="outlined" onClick={() => this.insertDate(selectedRow)}

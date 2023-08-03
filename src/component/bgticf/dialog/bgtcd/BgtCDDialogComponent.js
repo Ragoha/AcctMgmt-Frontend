@@ -18,9 +18,9 @@ import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../service/BgtICFService";
-import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer, CustomSearchButton } from "../../../common/style/CommonDialogStyle";
+import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer } from "../../../common/style/CommonDialogStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
-import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../../common/style/CommonStyle";
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -66,6 +66,7 @@ class BgtCDDialogComponent extends Component {
       bgtGrCd: "",
       bgtCDRows: [],
       gisu: "모든예산과목",
+      gisuValue: "0",
       keyword: "",
       columns: columns,
       rangeState: true,
@@ -148,7 +149,7 @@ class BgtCDDialogComponent extends Component {
     }
 
     BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
-      gisu: this.state.gisu,
+      gisu: this.state.gisuValue,
       bgtGrCd: this.state.bgtGrCd,
       keyword: this.state.keyword,
       range: tmpRange,
@@ -269,7 +270,7 @@ class BgtCDDialogComponent extends Component {
                   />
                   <CustomSearchButton
                     variant="outlined"
-                    sx={{ right: "-11px" }}
+                    sx={{ right: "-13px" }}
                   >
                     <SearchIcon onClick={this.handleClickSearchIcon} />
                   </CustomSearchButton>
@@ -371,5 +372,4 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, { forwardRef: true}) (BgtCDDialogComponent);
-
+export default connect(mapStateToProps, null, null, { forwardRef: true })(BgtCDDialogComponent);
