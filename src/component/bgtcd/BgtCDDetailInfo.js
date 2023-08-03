@@ -10,6 +10,10 @@ import { ThreeDRotationSharp } from '@mui/icons-material';
 import { Divider } from '@material-ui/core';
 import { CustomInputLabel } from '../common/style/CommonStyle';
 
+/*리덕스 import */
+// import { connect } from 'react-redux';
+// import { set_detailInfo } from '../../store/BgtCDStore';
+
 
 class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구현.
   constructor(props) {
@@ -32,43 +36,33 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bgajustFg: null,
       bottomFg: null,
       bizFg: null,
-      bgtCd: null
+      bgtCd: null,
+      insa:'hi!!yo!!!',
       /*업데이트 하기위해 조회조건의 bgt_cd값이 필요함 */
       //prevBgtCd: props.prevBgtCd,
     }
   }
   getBgtCd = () => {
-    return { bgtCd: this.state.bgtCd }
+    return this.state.bgtCd ;
   }
-  // componentDidUpdate(prevProps) { //컴포넌트가 업데이트 될때마다 최상위 컴포넌트의 값을 바꿔서 DetailInfo에 들어가는 값을 바꿔주는 로직
-
-  //   console.log('update임  CTLFG:' + this.props.ctlFg)
-  //   console.log('update임  prevBgtCd:  ' + this.props.prevBgtCd)
-  //   if (
-  //     this.props.ctlFg !== prevProps.ctlFg ||
-  //     this.props.bgajustFg !== prevProps.bgajustFg ||
-  //     this.props.bottomFg !== prevProps.bottomFg ||
-  //     this.props.bizFg !== prevProps.bizFg
-  //   ) {
-
-  //     this.setState({
-  //       ctlFg: this.props.ctlFg,
-  //       bgajustFg: this.props.bgajustFg,
-  //       bottomFg: this.props.bottomFg,
-  //       bizFg: this.props.bizFg,
-  //     });
-  //   }
-  //   /*------------------------------------------------------------- */
-  // }
   setDetailInfo = (bgtCd) => {
-    console.log('---setDetailInfo---')
+    console.log('---DetailInfo.js에 있는 setDetailInfo---')
+    this.setState({bgtCd : bgtCd},()=>console.log('setDetail에서 bgtcd 인식하는가 '+this.state.bgtCd))
     BgtCDService.getDetailInfo(bgtCd)
       .then(response => {
         console.log('ctlFg 값은 ? ' + response[0].ctlFg);
         console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
         console.log('bottomFg 값은 ? ' + response[0].bottomFg);
-        this.setState(response[0])
-        this.setState({ bgtCd: bgtCd })
+        console.log('bizFG 값은 ? ' + response[0].bizFg);
+        console.log('bgtCd 값은 ? ' + response[0].bgtCd);
+        this.setState({
+          ctlFg: response[0].ctlFg,
+          bgajustFg: response[0].bgajustFg,
+          bottomFg: response[0].bottomFg,
+          bizFg: response[0].bizFg
+        });
+        //여기서 redux에 response[0]의 데이터를 집어넣는다.
+        //this.props.set_detailInfo(response[0]);
       })
   }
   updateDetailInfo = () => {
@@ -168,4 +162,15 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     );
   }
 }
-export default BgtCDDetailInfo;
+// const mapStateToProps = (state) => ({
+//   accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+//   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+//   configData: state.config.configData,
+// });
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     set_detailInfo: (response) => dispatch(set_detailInfo(response)),
+//   };
+
+// };
+export default BgtCDDetailInfo;//connect(mapStateToProps, mapDispatchToProps) (
