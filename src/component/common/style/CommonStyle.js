@@ -38,8 +38,8 @@ export const CustomGridContainer = styled(Grid)(({ theme }) => ({
   width: "100% !important",
   marginLeft: "0px !important",
   marginTop: "16px",
-  marginBottom: "16px",
-  paddingBottom: "16px",
+  marginBottom: "16px ",
+  paddingBottom: "16px ",
   border: "3px solid #EAEAEA",
 }));
 

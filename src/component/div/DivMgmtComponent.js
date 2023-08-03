@@ -196,7 +196,6 @@ class DivMgmtComponent extends Component {
 
   cardClick = (divCd) => {
     console.log(divCd);
-
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
     this.setState({ focused: divCd })
@@ -522,33 +521,19 @@ class DivMgmtComponent extends Component {
 
             <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
               <InputLabel>회사선택</InputLabel>
-              <FormControl sx={{ width: 200 }}>
-                <Select
-                  name='coCd'
-                  onChange={this.handleCompany}
-                //value={coCd}?
-                >
-                  {coCd != 0?
+              {divCd?
+                <TextField value={coCd} InputProps={{ readOnly: true }}></TextField>
+                 :
+                <FormControl sx={{ width: 200 }}>
+                  <Select
+                    name='coCd'
+                    onChange={this.handleCompany}
+                  //value={coCd}?
+                  >
                     <MenuItem >{coCd}</MenuItem>
-                    :
-                    CompanyService.getCoList()
-                    .then((response) => {
-                      const coCdList = response.data.map((item) => item.coCd);
-                      const coCd = response.data[0].coCd;
-              
-                      this.setState({
-                        coCdList: coCdList,
-                        coCd: coCd
-                  })
-                })
-                .catch((error) => {
-                  // 오류 발생 시의 처리
-                  console.error(error);
-                  // alert("중복된 회사 또는 모두 입력해주세요");
-                })
+                  </Select>
+                </FormControl> 
                 }
-                </Select>
-              </FormControl>
             </Grid>
 
             <Grid item sx={{ width: '50%', height: 50, display: 'flex', alignItems: 'center' }}>
