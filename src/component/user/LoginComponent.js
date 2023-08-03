@@ -34,7 +34,7 @@ class LoginComponent extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ showForm: true });
-    }, 2000);
+    }, 10);
   }
 
   handleMouseEnter = () => {
