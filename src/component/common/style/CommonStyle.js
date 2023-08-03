@@ -36,9 +36,9 @@ export const CustomAutoComplete = styled(Autocomplete)(({ theme }) => ({
 
 export const CustomGridContainer = styled(Grid)(({ theme }) => ({
   width: "100%",
-  marginLeft: "0px",
+  marginLeft: "0px ",
   marginTop: "16px",
-  marginBottom: "16px",
-  paddingBottom: "16px",
+  marginBottom: "16px ",
+  paddingBottom: "16px ",
   border: "3px solid #EAEAEA",
 }));
