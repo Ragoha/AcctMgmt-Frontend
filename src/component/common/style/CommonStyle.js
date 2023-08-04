@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, InputLabel, Select, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, InputLabel, Select, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { styled } from "styled-components";
 
@@ -35,10 +35,17 @@ export const CustomAutoComplete = styled(Autocomplete)(({ theme }) => ({
 }));
 
 export const CustomGridContainer = styled(Grid)(({ theme }) => ({
-  width: "100%",
-  marginLeft: "0px",
+  width: "100% !important",
+  marginLeft: "0px !important",
   marginTop: "16px",
-  marginBottom: "16px",
-  paddingBottom: "16px",
+  marginBottom: "16px ",
+  paddingBottom: "16px ",
   border: "3px solid #EAEAEA",
+}));
+
+export const CustomSearchButton = styled(Button)(({ theme }) => ({
+  padding: "0px",
+  marginRight: 8,
+  minWidth: "5px",
+  // position: "absolute",
 }));

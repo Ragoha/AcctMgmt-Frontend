@@ -15,12 +15,11 @@ import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
+import { CustomAutoComplete, CustomGridContainer, CustomInputLabel, CustomSearchButton, CustomTextField } from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import AutocompleteWithRemove from "./test";
-import { CustomAutoComplete, CustomGridContainer, CustomInputLabel, CustomTextField } from "../common/style/CommonStyle";
 
 const BGTCD_COLUMN = [
   { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
@@ -43,6 +42,7 @@ class BgtICFComponent extends Component {
       divTextField: "",
       bgtGrTextField: "",
       bgtCDTextField: "",
+      gisuText: 0,
       gisuRows: [],
       gisuRangeRows: [],
       frDt: "",
@@ -147,12 +147,25 @@ class BgtICFComponent extends Component {
     this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm });
   };
 
+  handleClickSerachButton = () => {
+    alert("asdf");
+
+    BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      divCd: this.state.divCd,
+      gisu: this.state.gisu,
+      bgtGr: this.state.bgtGr,
+      grFg: this.state.grFg,
+      bgtCd: this.state.bgtCd
+    });
+  }
+
   componentWillMount() {
     BgtICFService.findGisuByCoCd({
       accessToken: this.props.accessToken,
       user: this.props.user,
     }).then((response) => {
-
       const gisuRows = response.map((row) => row.gisu);
       // const gisuRows = response.map((row) => ({
       //   label: row.gisu,
@@ -166,8 +179,13 @@ class BgtICFComponent extends Component {
       );
 
       this.setState({ gisuRows: gisuRows, gisuRangeRows: gisuRangeRows });
+      this.setState({ gisuText: gisuRows[gisuRows.length - 1] });
+      const gisuLenght = gisuRows.length;
+      const test = gisuRows[gisuLenght - 1];
+
       console.log(gisuRows);
       console.log(gisuRangeRows);
+      console.log(gisuRows[gisuRows.lenght - 1]);
     });
   }
 
@@ -210,9 +228,7 @@ class BgtICFComponent extends Component {
         >
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>
-                회계단위
-              </CustomInputLabel>
+              <CustomInputLabel>회계단위</CustomInputLabel>
               <TextField
                 name="divTextField"
                 value={divTextField}
@@ -230,12 +246,11 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>
-                회계기간
-              </CustomInputLabel>
+              <CustomInputLabel>회계기간</CustomInputLabel>
               <Autocomplete
                 disableClearable
                 disablePortal
+                // defaultValue={}
                 options={this.state.gisuRows}
                 getOptionLabel={(option) => option.toString()}
                 size="small"
@@ -258,7 +273,12 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Grid container direction="row" alignItems="center">
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
               <CustomInputLabel>예산그룹</CustomInputLabel>
               <TextField
                 name="bgtGrTextField"
@@ -272,7 +292,15 @@ class BgtICFComponent extends Component {
                     </InputAdornment>
                   ),
                 }}
-              ></TextField>
+              />
+              <Box sx={{ marginLeft: "auto" }}>
+                <CustomSearchButton
+                  variant="outlined"
+                  onClick={this.handleClickSerachButton}
+                >
+                  <SearchIcon onClick={this.handleCickSearchIcon} />
+                </CustomSearchButton>
+              </Box>
             </Grid>
           </Grid>
           <Grid item xs={4}>
@@ -310,7 +338,8 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Button onClick={this.handleGetBgtICFList}>조회</Button>
+            {/* <Button onClick={this.handleGetBgtICFList}>조회</Button> */}
+            <Button onClick={this.handleClickSerachButton}>조회</Button>
             {/* <AutocompleteWithRemove /> */}
           </Grid>
         </CustomGridContainer>
@@ -322,7 +351,7 @@ class BgtICFComponent extends Component {
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
-                borderTop:"3px solid black"
+                borderTop: "3px solid black",
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"
