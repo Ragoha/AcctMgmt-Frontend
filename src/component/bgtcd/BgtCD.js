@@ -54,7 +54,9 @@ class BgtCD extends Component {
 
         }
     }
-    componentDidMount() {
+  componentDidMount() {
+    console.log("여기");
+    console.log(this.props.accessToken);
         console.log(this.state.kimChiBox);
     }
 
@@ -158,7 +160,7 @@ class BgtCD extends Component {
                   <Button
                     variant="primary"
                     size="medium"
-                    onClick={() => this.getDataGridRows(groupcd)}
+                    onClick={() => this.getDataGridRows()}
                     style={{ marginRight: "10px", border: "1px solid" }}
                   >
                     Grid채우기
@@ -241,16 +243,21 @@ class BgtCD extends Component {
                   />
                   {/*자식컴포넌트에 state를 props로 전달 */}
                 </Grid>
-                <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-                <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
-                <BgtCDGroupReg ref={this.BgtCDGroupReg} />{/*그룹레벨설정 */}
-            </>
-        )
+              </Grid>
+            </Grid>
+
+            <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
+            <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
+            {/*예산그룹등록 */}
+            <BgtCDGroupReg ref={this.BgtCDGroupReg} />
+            {/*그룹레벨설정 */}
+          </>
+        );
 
     }
 }
 const mapStateToProps = (state) => ({
-    // accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+    accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     // userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
     groupcd : state.BgtCDStore || {}
    
