@@ -21,16 +21,33 @@ class BgtCDDropDownBox extends React.Component {
       open: !prevOpen.open,
     }));
   };
-
   handleClose = () => {
     this.setState({
       open: false,
     });
   };
-  testConsole=()=>{
-    console.log('메뉴아이템을 눌렀을때 작동하는가 ?')
-  }
+
   // 기본제공 기능 end //
+  selectFun = (params) => {
+    this.handleClose();
+    // console.log(event)
+    console.log(params.target.name)
+    const name = params.target.outerText;
+    if (name == "과목분류명등록") {
+      this.props.selectBgtCDDropDownBox('BgtCDDevFgCustomOpen')
+    }else if(name=="간편검색"){
+
+    }else if(name=="예산과목복사"){
+      
+    }else if(name=="회계계정과목복사"){
+      
+    }else if(name=="예산과목엑셀업로드"){
+      
+    }else if(name=="예산과목일괄설정"){
+      
+    }
+         
+  }
   render() {
     return (
       <div>
@@ -50,7 +67,7 @@ class BgtCDDropDownBox extends React.Component {
           role={undefined}
           placement="bottom-start"
           transition
-          //disablePortal // <--- 이 기능을 키면 글씨뺴고 다 투명해져서 꼴 봬기싫어짐
+        //disablePortal // <--- 이 기능을 키면 글씨뺴고 다 투명해져서 꼴 봬기싫어짐
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -66,15 +83,22 @@ class BgtCDDropDownBox extends React.Component {
                     autoFocusItem={this.state.open}
                     id="composition-menu"
                     aria-labelledby="composition-button"
-                    onClick={this.testConsole}
+                    onClick={this.handleClose} //공통으로 들어가야할 기능 
                   >
-                    <MenuItem onClick={this.handleClose}>간편 검색</MenuItem>
-                    <MenuItem onClick={this.handleClose}>에산그룹 등록</MenuItem>
-                    <MenuItem onClick={this.handleClose}>예산과목 복사</MenuItem>
-                    <MenuItem onClick={this.handleClose}>과목분류명 등록</MenuItem>
-                    <MenuItem onClick={this.handleClose}>회계계정과목 복사</MenuItem>
-                    <MenuItem onClick={this.handleClose}>예산과목엑셀 업로드</MenuItem>
-                    <MenuItem onClick={this.handleClose}>예산과목 일괄설정</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >간편검색</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >예산그룹등록</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >예산과목복사</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >과목분류명등록</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >회계계정과목복사</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >예산과목엑셀업로드</MenuItem>
+                    <MenuItem onClick={this.selectFun}
+                    >예산과목일괄설정</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

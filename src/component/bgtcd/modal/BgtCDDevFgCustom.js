@@ -7,6 +7,7 @@ import BgtCDService from "../../../service/BgtCDService";
 import { updateRowTree } from "@mui/x-data-grid-pro/internals";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import BgtCD from "../BgtCD";
+import { connect } from "react-redux";
 
 class BgtCDDevFgCustom extends Component {
 
@@ -23,8 +24,9 @@ class BgtCDDevFgCustom extends Component {
         }
     }
     componentDidMount() {
-        const CO_CD = "1"
-        BgtCDService.getBgtCDTerm(CO_CD)
+        console.log('ㅇㅇ체크양ㅇㅇㅇ')
+        const {coCd} = this.props.user
+        BgtCDService.getBgtCDTerm(coCd)
             .then(rows => {
                 console.log('여긴 BgtCDDevFgCustom 컴포넌트 마운트')
                 const changes = rows.map(row => ({ ...row }));
@@ -140,4 +142,8 @@ class BgtCDDevFgCustom extends Component {
 
     }
 }
-export default BgtCDDevFgCustom;
+const mapStateToProps = (state) => ({
+    accessToken: state.auth && state.auth.accessToken,
+    user: state.user || {},
+  });
+export default connect(mapStateToProps, null, null, { forwardRef: true }) (BgtCDDevFgCustom);
