@@ -1,5 +1,7 @@
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { Component } from "react"
+// import { connect } from 'react-redux';
+// import { set_detailInfo } from '../../store/BgtCDStore';
 import { CustomSelect } from "../common/style/CommonStyle";
 
 class BgtCDDetailInfoFormControl extends Component {
@@ -7,19 +9,20 @@ class BgtCDDetailInfoFormControl extends Component {
     super(props);
     this.state = { //ctlFg, bgajustFg, bottomFg, bizFg 
       detailInfo: props.detailInfo,
-      menuItemValues: props.menuItemValues || [],
+      menuItemValues: props.menuItemValues || '',
       title: props.title || null,
       dbValue: props.dbValue || null,
       defaultValue: this.checkIndex(props.menuItemValues, props.id) || '',
       dataindex: null, //menuItem 즉 선택된 데이터의 index를 반환해서 업데이트 시 DB에 반환할 값을 정해줌.
-      ctlFg: this.props.ctlFg,
-      bgajustFg: this.props.bgajustFg,
-      bottomFg: this.props.bottomFg,
-      bizFg: this.props.bizFg,
+      ctlFg: this.props.ctlFg, //7
+      bgajustFg: this.props.bgajustFg, //8
+      bottomFg: this.props.bottomFg, //10
+      bizFg: this.props.bizFg, //11 
     }
   }
   componentDidUpdate(prevProps) {
     //이전의 props 에서의 값과 비교했을때 값이 달라진다면 ?  
+    console.log('DetailFormControl의 ComponentDidUpdate');
     if (this.props.ctlFg !== prevProps.ctlFg) {
       this.setState({ ctlFg: this.props.ctlFg }, () => {
         const newDefaultValue = this.state.ctlFg;
@@ -62,13 +65,21 @@ class BgtCDDetailInfoFormControl extends Component {
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
-      <Grid container alignItems="center" sx={{marginTop:'13px' ,borderBottom:'1px lightgray solid' }}>
+      <Grid
+        container
+        alignItems="center"
+        sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" }}
+      >
         <Grid item md={6}>
           <InputLabel>{title}</InputLabel>
         </Grid>
-        <Grid item md={6} sx={{marginBottom:'3px'}} >
-          <CustomSelect value={defaultValue} onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까 
-            sx={{ width: '229px' }} size="small" > {/*inputProps={{ style: { height: '11px' } }}*/}
+        <Grid item md={6} sx={{ marginBottom: "3px" }}>
+          <CustomSelect
+            value={defaultValue}
+            onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까
+          >
+            {" "}
+            {/*inputProps={{ style: { height: '11px' } }}*/}
             {menuItemValues.map((menuItemValue, index) => (
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
