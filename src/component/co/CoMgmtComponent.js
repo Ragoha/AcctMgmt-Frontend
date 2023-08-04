@@ -508,11 +508,10 @@ class CoMgmtComponent extends Component {
             <span>회사등록</span>
           </Grid>
         </Grid>
-
         <CustomGridContainer container direction="row" spacing={2}
           justifyContent="left"
+          spacing={2}
           alignItems="center">
-
           <Grid item xs={4}>
             <Grid container alignItems="center">
               <CustomInputLabel >회사</CustomInputLabel>
@@ -677,7 +676,6 @@ class CoMgmtComponent extends Component {
               </IconButton>
             </CustomDialogTitle>
             <CustomDialogContent >
-
               <Grid container direction="column" alignItems="flex-end">
                 <Button sx={{ mt: 1, mb: 1 }} variant="outlined" >삭제</Button>
               </Grid>
@@ -692,7 +690,6 @@ class CoMgmtComponent extends Component {
                   hideFooter
                 />
               </Grid>
-
             </CustomDialogContent>
             <Divider />
             <CustomDialogActions>
