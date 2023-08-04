@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, Container, Divider, IconButton, TextField, Typography } from '@mui/material';
-import Fab from '@mui/material/Fab';
+import { Button, Card, CardActionArea, CardContent, Divider, IconButton, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 import ListIcon from '@mui/icons-material/List';
@@ -357,7 +356,7 @@ class CoMgmtComponent extends Component {
   }
 
   handleGisu = () => {
-    this.setState({ open: true });
+    this.setState({ open: false });
   }
 
   updateCo = () => {
@@ -524,13 +523,13 @@ class CoMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '165px', right: "35px" }}>
+          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '135px', right: "35px" }}>
             <SearchIcon fontSize="medium" />
           </Button>
         </CustomGridContainer>
 
         <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }} >
-          <Grid container sx={{ width: '15%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
+          <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
             <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
               <CustomInputLabel >총 회사:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
             </Grid>
@@ -565,11 +564,14 @@ class CoMgmtComponent extends Component {
 
           <Grid container sx={{ ml: 1, height: 670, border: '2px solid #EAEAEA' }}>
             <Grid container sx={{ height: 40, borderBottom: '2px solid #000' }}>
-              <Grid item xs={10.6}>
-                <CustomInputLabel sx={{ mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
+              <Grid item xs={9.2}>
+                <CustomInputLabel sx={{ ml: 1, mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
               </Grid>
 
-              <Grid item xs={0.7}>
+              <Grid item xs={1.4}>
+              </Grid>
+
+              <Grid item xs={0.6} sx={{ ml: 0.3 }}>
                 {coCd ?
                   <Button variant="outlined" onClick={this.updateCo}>수정</Button>
                   :
@@ -577,7 +579,7 @@ class CoMgmtComponent extends Component {
                 }
               </Grid>
 
-              <Grid item xs={0.7}>
+              <Grid item xs={0.6} sx={{ ml: 0.5 }}>
                 <Button variant="outlined" onClick={this.deleteCo}>삭제</Button>
               </Grid>
 

@@ -32,6 +32,18 @@ class CoDialogComponent extends Component {
 
   handleUp = () => {
     this.setState({ open: true });
+    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
+    .then(
+      async (response) => {
+        const codialRows = response.map((row) => ({
+          id: row.coCd,
+          coCd: row.coCd,
+          coNm: row.coNm,
+        }));
+        await this.setState({ codialRows: codialRows });
+        console.log(this.state);
+      }
+    );
   }
 
   handleDown = () => {
@@ -50,7 +62,7 @@ class CoDialogComponent extends Component {
     this.handleSearchCoDial();
     }
   }
-  //검색
+  //검색 -> 이거 지워도 되나???????????????????????????????????????????????????????????????????
   handleSearchCoDial= () => {
     CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
     .then(
@@ -101,7 +113,7 @@ class CoDialogComponent extends Component {
           <IconButton
             size="small"
             onClick={() =>
-              this.setState({ open: false, userList: [], searchResult: [] })
+              this.setState({ open: false })
             }
           >
             <CloseIcon fontSize="medium" sx={{ color: "white" }} />

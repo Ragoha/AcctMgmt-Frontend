@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
-import Fab from '@mui/material/Fab';
-import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
+import { Button, Card, CardActionArea, CardContent, InputLabel, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 import FormControl from '@mui/material/FormControl';
@@ -14,8 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle } from '../common/style/CommonDialogStyle';
-import { CustomDataGrid, CustomGridContainer, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 
 
 import CompanyService from '../../service/CompanyService';
@@ -99,6 +95,14 @@ class DivMgmtComponent extends Component {
           divAddr: divAddr,
           divAddr1: divAddr1
         })
+        CompanyService.getCompany(coCd)
+          .then((response) => {
+            const coNm = response.data[0].coNm;
+
+            this.setState({
+              coNm: coNm
+            })
+          })
       })
       .catch((error) => {
         // 오류 발생 시의 처리
@@ -123,23 +127,26 @@ class DivMgmtComponent extends Component {
       alert("미등록 사업장이 존재합니다.");
     } else {
       const newCardCount = this.state.cardCount + 1;
+      const newDivCdList = [...this.state.divCdList, '0000'];
+
       CompanyService.getCoList()
-
         .then((response) => {
+          // const newDivNmList = response.data.map((item) => item.divNm);
+          const coCdList = response.data.map((item) => item.coCd);
+          const coNmList = response.data.map((item) => item.coNm);
+          const newCoNmList = [...new Set(coNmList)]
 
-          const newDivCdList = response.data.map((item) => item.divCd);
-          const newDivNmList = response.data.map((item) => item.divNm);
-          const newCoCdList = response.data.map((item) => item.coCd);
-
-          const coCdList = response.data[0].coCd;
+          const coCd = response.data[0].coCd;
+          const coNm = response.data[0].coNm;
           this.setState({
-            coCdList: coCdList,
             cardCount: newCardCount,
             divCdList: newDivCdList,
-            coCdList: newCoCdList,
-            divNmList: newDivNmList,
+            coCdList: coCdList,
+            coNmList: newCoNmList,
+            // divNmList: newDivNmList,
             focused: '0000',
-            coCd: '',
+            coCd: coCd,
+            coNm: coNm,
             divCd: '',
             divNm: '',
             ceoNm: '',
@@ -156,42 +163,53 @@ class DivMgmtComponent extends Component {
           console.error(error);
           // alert("중복된 회사 또는 모두 입력해주세요");
           console.log(this.state.coCdList);
+          console.log(this.state.divCdList);
+          console.log(this.state.coNmList);
         })
     }
   }
 
   insertDivs = () => {
-    const { coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
-    DivsService.insertDivs(coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1)
-
+    const { coNm } = this.state;
+    CompanyService.getCoNm(coNm)
       .then((response) => {
-        console.log(response.data);
-        window.confirm('사업장등록 완료!');
-        const coCdList = response.data.map((item) => item.coCd);
-        const divCdList = response.data.map((item) => item.divCd);
-        const divNmList = response.data.map((item) => item.divNm);
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
+        const coCd = response.data[0].coCd
         this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          coCdList: coCdList,
-          divCdList: divCdList,
-          divNmList: divNmList,
-          focused: coCdList[cardCount - 1],
-          coCd: '',
-          divNm: '',
-          jongmok: '',
-          businessType: '',
-          divNb: '',
-          toNb: '',
-          ceoNm: '',
-          divZip: '',
-          divAddr: '',
-          divAddr1: '',
-          isChanged: false
-        });
-        // window.location.reload();
-        // window.location.href="/acctmgmt/ozt/co";
+          coCd: coCd
+        })
+
+        const { divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
+        return DivsService.insertDivs(coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1)
+
+          .then((response) => {
+            console.log(response.data);
+            window.confirm('사업장등록 완료!');
+            const coCdList = response.data.map((item) => item.coCd);
+            const divCdList = response.data.map((item) => item.divCd);
+            const divNmList = response.data.map((item) => item.divNm);
+            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+            this.setState({
+              cardCount: cardCount, // state에 값을 저장
+              coCdList: coCdList,
+              divCdList: divCdList,
+              divNmList: divNmList,
+              focused: coCdList[cardCount - 1],
+              coCd: '',
+              divNm: '',
+              jongmok: '',
+              businessType: '',
+              divNb: '',
+              toNb: '',
+              ceoNm: '',
+              divZip: '',
+              divAddr: '',
+              divAddr1: '',
+              isChanged: false
+            });
+            // window.location.reload();
+            // window.location.href="/acctmgmt/ozt/co";
+          })
       })
       .catch((error) => {
         // 오류 발생 시의 처리
@@ -225,6 +243,7 @@ class DivMgmtComponent extends Component {
       divCd == '0000' ?
         this.setState({
           coCd: '',
+          coNm: '',
           divCd: '',
           divNm: '',
           ceoNm: '',
@@ -264,6 +283,14 @@ class DivMgmtComponent extends Component {
               divAddr: divAddr,
               divAddr1: divAddr1
             })
+            CompanyService.getCompany(coCd)
+              .then((response) => {
+                const coNm = response.data[0].coNm;
+
+                this.setState({
+                  coNm: coNm
+                })
+              })
           })
           .catch((error) => {
             // 오류 발생 시의 처리
@@ -424,8 +451,8 @@ class DivMgmtComponent extends Component {
 
   render() {
     const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1 } = this.state;
-    const { data } = this.state;
-    const { cardCount, divCdList, divNmList, coCdList } = this.state;
+    const { coNm } = this.state;
+    const { cardCount, divCdList, divNmList, coCdList, coNmList } = this.state;
 
 
     const currentDate = new Date();
@@ -484,13 +511,13 @@ class DivMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '165px', right: "35px" }}>
+          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '135px', right: "35px" }}>
             <SearchIcon fontSize="medium" />
           </Button>
         </CustomGridContainer >
 
         <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
-          <Grid container sx={{ width: '15%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
+          <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
 
             <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
               <CustomInputLabel >총 사업장:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
@@ -526,11 +553,15 @@ class DivMgmtComponent extends Component {
 
           <Grid container sx={{ ml: 1, height: 670, border: '2px solid #EAEAEA' }}>
             <Grid container sx={{ height: 40, borderBottom: '2px solid #000' }}>
-              <Grid item xs={10.6}>
-                <CustomInputLabel sx={{ mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
+              <Grid item xs={9.2}>
+                <CustomInputLabel sx={{ ml:1, mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
               </Grid>
 
-              <Grid item xs={0.7}>
+              <Grid item xs={1.4}>
+                <Button variant="outlined" onClick={this.comInfo}>회사정보불러오기</Button>
+              </Grid>
+
+              <Grid item xs={0.6} sx={{ml:0.3}}>
                 {coCd && divCd ?
                   <Button variant="outlined" onClick={this.updateDivs}>수정</Button>
                   :
@@ -538,22 +569,26 @@ class DivMgmtComponent extends Component {
                 }
               </Grid>
 
-              <Grid item xs={0.7}>
+              <Grid item xs={0.6} sx={{ml:0.5}}>
                 <Button variant="outlined" onClick={this.deleteDivs}>삭제</Button>
               </Grid>
 
               <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
-                <InputLabel>회사선택</InputLabel>
-                </Grid>
-                <Grid item xs={4} size='small' sx={{mt: 1,  display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA'}}>
+                <CustomInputLabel>회사선택</CustomInputLabel>
+              </Grid>
+              <Grid item xs={4} size='small' sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
                 {divCd != 0 ?
-                  <TextField xs={4} value={coCd} InputProps={{ readOnly: true }}></TextField>
+                  <CustomTextField xs={4} sx={{ ml: 2}} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomTextField> //disabled={true}
                   :
-                  <FormControl  sx={{ width: 200 }}>
-                    <Select name='coCd' value={coCd} onChange={this.handleCompany}>
-                      {coCdList.map((coCd) => (
-                        <MenuItem key={coCd} value={coCd}>
-                          {coCd}
+                  <FormControl sx={{
+                    ml: 2, width: 255, "& .MuiInputBase-root": {
+                      height: 40
+                    }
+                  }}>
+                    <Select name='coNm' value={coNm} onChange={this.handleCompany}>
+                      {coNmList.map((coNm) => (
+                        <MenuItem key={coNm} value={coNm}>
+                          {coNm}
                         </MenuItem>
                       ))}
                     </Select>
@@ -568,10 +603,10 @@ class DivMgmtComponent extends Component {
                 <CustomTextField sx={{ ml: 2, backgroundColor: '#FFA7A7' }} name='divCd' onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></CustomTextField>
               </Grid>
 
-              <Grid item xs={2} sx={{  display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }} >
+              <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }} >
                 <CustomInputLabel sx={{ color: 'black' }}  >사업장명</CustomInputLabel>
               </Grid>
-              <Grid item xs={4} sx={{  display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }} >
+              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }} >
                 <CustomTextField sx={{ ml: 2 }} name='divNm' onChange={this.handleCompany} value={divNm || ''}></CustomTextField>
               </Grid>
 
@@ -601,7 +636,7 @@ class DivMgmtComponent extends Component {
               </Grid>
 
 
-              <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <CustomInputLabel sx={{ color: 'black' }}  >사업자번호</CustomInputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
@@ -609,7 +644,7 @@ class DivMgmtComponent extends Component {
               </Grid>
 
 
-              <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50,display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <CustomInputLabel sx={{ color: 'black' }}  >세무서번호</CustomInputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>

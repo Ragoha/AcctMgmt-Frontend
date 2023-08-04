@@ -49,9 +49,9 @@ const columns = [
     headerAlign: "center",
   },
   {
-    field: "bgtData",
+    field: "hBgtNm",
     headerName: "상위예산과목",
-    width: 300,
+    width: 507,
     headerAlign: "center",
   },
 ];
@@ -81,7 +81,7 @@ class BgtCDDialogComponent extends Component {
 
   initBgtCDDialog = () => {
     this.setState({ keyword: "", rangeState: true });
-
+    this.handleClickSearchIcon();
     this.handleUp();
   }
 
@@ -162,6 +162,7 @@ class BgtCDDialogComponent extends Component {
         bgtGrNm: row.bgtGrNm,
         bgtCd: row.bgtCd,
         bgtNm: row.bgtNm,
+        hBgtNm: row.dataPath
       }));
       this.setState({ bgtCDRows: bgtCDRows });
 
