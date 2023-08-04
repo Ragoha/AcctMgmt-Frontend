@@ -480,17 +480,17 @@ class CoMgmtComponent extends Component {
 
 
     const cards = coCdList.map((coCd, index) => (
-      <Card key={coCd} focused={this.state.focused === coCd} sx={{ mb: 1, width: '100%', display: 'flex', justifyContent: 'center', border: this.state.focused === coCd ? '5px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#C5DFF8' : 'white' }}>
+      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#C5DFF8' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 15 }} gutterBottom style={{ position: 'absolute', top: '7px' }}>
+            <Typography sx={{ fontSize: 8 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
               {coCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "9px", bottom: '4px' }} >
+            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
               {formattedDate}
             </Typography>
 
-            <Typography sx={{ fontSize: 25 }} variant='h3' style={{ position: 'absolute', bottom: '8px' }}>
+            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
               {coNmList[index]}
             </Typography>
           </CardContent>
@@ -525,36 +525,42 @@ class CoMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '155px', right: "35px" }}>
+          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '165px', right: "35px" }}>
             <SearchIcon fontSize="medium" />
           </Button>
         </CustomGridContainer>
 
-        <Grid sx={{ display: 'flex' }} >
-          <Grid container sx={{ width: 300, height: 670, border: '1px solid #EAEAEA', backgroundColor: 'lightgray' }}>
-            <Grid item sx={{ display: 'flex', justifyContent: 'left', alignItems: "center", height: 22, width: '100%', backgroundColor: '#EAEAEA' }}>
+        <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }} >
+          <Grid container sx={{ width: '15%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
+            <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
               <CustomInputLabel >총 회사:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
             </Grid>
 
-            <Grid item sx={{ ml: 2.1, height: 'calc(100% - 5%)', overflowY: 'auto', width: '90%' }}>
-              <Grid item >
-                <Card item >
-                  {cards}
-                </Card>
-              </Grid>
+            <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
+              {cards.map((card, index) => (
+                <Grid key={index} item xs={12} sx={{ mb: 1 }}>
+                  {card}
+                </Grid>
+              ))}
             </Grid>
 
-            <Grid item sx={{ ml: 0.6, position: 'absolute', top: '820px', width: '20%' }} >
-              <Fab variant="extended" onClick={this.addCardButton}
+            <Grid container sx={{ position: 'relative', bottom: '60px', width: '100%' }} >
+              <Button variant="extended" onClick={this.addCardButton}
                 sx={{
-                  backgroundColor: '#4A55A2', color: 'white', display: 'flex', justifyContent: 'center', width: '95%',
+                  border: '1px solid',
+                  width: '100%',
+                  height: '60px',
+                  backgroundColor: '#F6F6F6',
+                  color: 'black',
+                  display: 'flex',
+                  justifyContent: 'center',
                   "&:hover": {
-                    backgroundColor: '#4A55A2'
+                    backgroundColor: '#e0e0e0'
                   }
                 }}>
                 <AddIcon />
                 추가
-              </Fab>
+              </Button>
             </Grid>
           </Grid>
 
