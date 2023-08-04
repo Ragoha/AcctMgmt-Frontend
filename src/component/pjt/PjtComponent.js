@@ -306,13 +306,43 @@ class PjtComponent extends Component {
               ),
             }}
           ></CustomTextField>
+
+          <CustomInputLabel >프로젝트구분</CustomInputLabel>
+          <CustomTextField name='CodialTextField' value={this.state.CodialTextField} placeholder="전체 "
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon onClick={this.helpClick} /></InputAdornment>
+              ),
+            }}
+          ></CustomTextField>
+
+          <CustomInputLabel >프로젝트분류</CustomInputLabel>
+          <CustomTextField name='CodialTextField' value={this.state.CodialTextField} placeholder="프로젝트그룹코드 "
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon onClick={this.helpClick} /></InputAdornment>
+              ),
+            }}
+          ></CustomTextField>
+
+          <CustomInputLabel >프로젝트기간</CustomInputLabel>
+          <CustomTextField name='CodialTextField' value={this.state.CodialTextField}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon onClick={this.helpClick} /></InputAdornment>
+              ),
+            }}
+          ></CustomTextField>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
 
         <Grid sx={{ position: 'relative', display: 'flex', width: '100%', }}>
           <Grid container
             bgcolor={'#f5f5f5'}
-            sx={{ width: '15%', height: 670, border: '1px solid #EAEAEA' }}>
+            sx={{ width: '15%', height: 580, border: '1px solid #EAEAEA' }}>
             <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
               <InputLabel >프로젝트:</InputLabel><InputLabel sx={{ ml: 0.5, color: '#0054FF', fontWeight: 'bold' }}>{cardCount}</InputLabel>건
             </Grid>
@@ -365,53 +395,53 @@ class PjtComponent extends Component {
               <hr />
             </Grid>
 
-            <Grid container width={"100%"} border={'4px solid #111111'}>
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+            <Grid container width={"100%"} border={'4px solid #e0e0e0'} >
+              <Grid item xs={2} sx={{height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트코드</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField disabled size='small' sx={{ ml: 2 }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
+              <Grid item xs={4} sx={{display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField disabled size='small' sx={{ ml: 2, width:'93%'}} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트구분</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFA7A7' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }} />
+              <Grid item xs={4} sx={{display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFA7A7', width:'93%' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트명</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFA7A7' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }} />
+              <Grid item xs={4} sx={{display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFA7A7', width:'93%' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} InputProps={{ readOnly: true }} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트약칭</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2 }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
+              <Grid item xs={4} sx={{  display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2, width:'93%' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트분류</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2 }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
+              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2, width:'93%' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >사용권한설정</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2 }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
+              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2, width:'93%' }} name='coCd' onChange={this.handleCompany} value={coCd || ''} />
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트기간</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderRight: '1px solid #EAEAEA' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker', 'DatePicker']}>
                     <DatePicker
@@ -430,13 +460,20 @@ class PjtComponent extends Component {
                 </LocalizationProvider>
               </Grid>
 
-              <Grid item xs={2} sx={{ mt: 1, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트시작일</InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+              <Grid item xs={4} sx={{display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA', width:'100%' }}>
                 <TextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} ></TextField>
               </Grid>
 
+
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid black', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+                <InputLabel sx={{ mr: 2, color: 'black' }}  >비고</InputLabel>
+              </Grid>
+              <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #000000', borderRight: '1px solid #EAEAEA' }}>
+                <TextField size='small' sx={{ ml: 2 , width:'80%', }} name='coCd' onChange={this.handleCompany} placeholder = '프로젝트 관련 비고 입력' />
+              </Grid>
 
 
             </Grid>
