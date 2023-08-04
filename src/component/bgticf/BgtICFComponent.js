@@ -7,7 +7,7 @@ import {
   Grid,
   InputAdornment,
   InputLabel,
-  TextField
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -15,28 +15,49 @@ import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
-import { CustomAutoComplete, CustomGridContainer, CustomInputLabel, CustomSearchButton, CustomTextField } from "../common/style/CommonStyle";
+import {
+  CustomAutoComplete,
+  CustomGridContainer,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 
 const BGTCD_COLUMN = [
-  { field: "bgtCd", headerName: "예산코드", flex: 1 /* editable: true, */ },
-  { field: "bgtFg", headerName: "예산구분", flex: 1 /* editable: true, */ },
   {
-    field: "bgtNm",
-    headerName: "예산과목명",
-    minWidth: 90,
-    flex: 1 /* editable: true, */,
+    field: "bgtCd",
+    headerName: "예산코드",
+    width: 80,
+    headerAlign: "center",
   },
-  { field: "amount", headerName: "금액", flex: 1 /* editable: true, */ },
+  {
+    field: "divFg",
+    headerName: "예산구분",
+    width: 80,
+    headerAlign: "center",
+  },
+  {
+    field: "dataPath",
+    headerName: "예산과목명",
+    width: 160,
+    headerAlign: "center",
+  },
+  {
+    field: "amount",
+    headerName: "금액",
+    headerAlign: "center",
+  },
 ];
 
 class BgtICFComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      bgtCDRows: [],
       divCd: "",
       divNm: "",
       divTextField: "",
@@ -157,9 +178,16 @@ class BgtICFComponent extends Component {
       gisu: this.state.gisu,
       bgtGr: this.state.bgtGr,
       grFg: this.state.grFg,
-      bgtCd: this.state.bgtCd
+      bgtCd: this.state.bgtCd,
+    }).then((response) => {
+      console.log(response);
+      const rowsWithId = response.map((row) => ({
+        ...row,
+        id: row.bgtCd,
+      }));
+      this.setState({ bgtCDRows: rowsWithId });
     });
-  }
+  };
 
   componentWillMount() {
     BgtICFService.findGisuByCoCd({
@@ -182,11 +210,17 @@ class BgtICFComponent extends Component {
       this.setState({ gisuText: gisuRows[gisuRows.length - 1] });
       const gisuLenght = gisuRows.length;
       const test = gisuRows[gisuLenght - 1];
-
+      console.log(test);
+      console.log(gisuRows.length);
       console.log(gisuRows);
       console.log(gisuRangeRows);
       console.log(gisuRows[gisuRows.lenght - 1]);
     });
+  }
+
+  handleClickBgtCDRow = (e) => {
+    console.log(e.row);
+    // BgtICFService.findBgtICFByCoCdAndBgtCd
   }
 
   render() {
@@ -251,6 +285,7 @@ class BgtICFComponent extends Component {
                 disableClearable
                 disablePortal
                 // defaultValue={}
+                value={this.state.gisuText}
                 options={this.state.gisuRows}
                 getOptionLabel={(option) => option.toString()}
                 size="small"
@@ -298,7 +333,7 @@ class BgtICFComponent extends Component {
                   variant="outlined"
                   onClick={this.handleClickSerachButton}
                 >
-                  <SearchIcon onClick={this.handleCickSearchIcon} />
+                  <SearchIcon />
                 </CustomSearchButton>
               </Box>
             </Grid>
@@ -310,12 +345,14 @@ class BgtICFComponent extends Component {
                 disableClearable
                 disablePortal
                 id="combo-box-demo"
-                defaultValue="전체"
+                defaultValue={this.grFg}
+                value={this.grFg}
                 options={[
                   { label: "전체", value: "전체" },
                   { label: "수입", value: "수입" },
                   { label: "지출", value: "지출" },
                 ]}
+                // onChange={}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>
@@ -338,8 +375,8 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            {/* <Button onClick={this.handleGetBgtICFList}>조회</Button> */}
-            <Button onClick={this.handleClickSerachButton}>조회</Button>
+            <Button onClick={this.handleGetBgtICFList}>조회</Button>
+            {/* <Button onClick={this.handleClickSerachButton}>조회</Button> */}
             {/* <AutocompleteWithRemove /> */}
           </Grid>
         </CustomGridContainer>
@@ -347,7 +384,7 @@ class BgtICFComponent extends Component {
           <Grid item xs={3}>
             <DataGrid
               sx={{
-                fontSize: 10,
+                // fontSize: 10,
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
@@ -355,7 +392,8 @@ class BgtICFComponent extends Component {
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"
-              rows={bgtDTO}
+              rows={this.state.bgtCDRows}
+              onRowClick={this.handleClickBgtCDRow}
               hideFooter
               hideFooterRowCount
               hideFooterPagination
@@ -395,5 +433,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (BgtICFComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  BgtICFComponent
+);
