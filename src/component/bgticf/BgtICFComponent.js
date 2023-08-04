@@ -220,7 +220,7 @@ class BgtICFComponent extends Component {
 
   handleClickBgtCDRow = (e) => {
     console.log(e.row);
-    BgtICFService.findBgtICFByCoCdAndBgtCd
+    // BgtICFService.findBgtICFByCoCdAndBgtCd
   }
 
   render() {
