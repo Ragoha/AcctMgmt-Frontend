@@ -94,6 +94,16 @@ class CompanyService {
       })
   };
 
+  getCoNm(coNm) {
+    return axios
+    .get(ACCTMGMT_API_BASE_URL + "/ozt/sconm", {
+      params: {
+        coNm: coNm
+      }
+    }
+    )
+  };
+
   getCoBycoCdAndcoNm(keyword) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/co/search", {

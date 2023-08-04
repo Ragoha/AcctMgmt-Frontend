@@ -7,8 +7,9 @@ import React, { Component } from 'react';
 import CompanyService from '../../../service/CompanyService';
 
 const columns =[
-  { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 286, headerAlign: 'center' }
+  { field: 'check', headerName: '', width: 10, headerAlign: 'center' },
+  { field: 'coCd', headerName: '프로젝트그룹코드', width: 180, headerAlign: 'center' },
+  { field: 'coNm', headerName: '프로젝트그룹명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
@@ -16,7 +17,7 @@ const rows = [
   { id: 3, coCd: "3", coNm: "John" },
 ]
 
-class CoDialogComponent extends Component {
+class PjtDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,18 +33,6 @@ class CoDialogComponent extends Component {
 
   handleUp = () => {
     this.setState({ open: true });
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
-    .then(
-      async (response) => {
-        const codialRows = response.map((row) => ({
-          id: row.coCd,
-          coCd: row.coCd,
-          coNm: row.coNm,
-        }));
-        await this.setState({ codialRows: codialRows });
-        console.log(this.state);
-      }
-    );
   }
 
   handleDown = () => {
@@ -62,7 +51,7 @@ class CoDialogComponent extends Component {
     this.handleSearchCoDial();
     }
   }
-  //검색 -> 이거 지워도 되나???????????????????????????????????????????????????????????????????
+  //검색
   handleSearchCoDial= () => {
     CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
     .then(
@@ -109,11 +98,11 @@ class CoDialogComponent extends Component {
             padding: 2,
           }}
         >
-          회사검색
+          프로젝트그룹코드
           <IconButton
             size="small"
             onClick={() =>
-              this.setState({ open: false })
+              this.setState({ open: false})
             }
           >
             <CloseIcon fontSize="medium" sx={{ color: "white" }} />
@@ -155,6 +144,11 @@ class CoDialogComponent extends Component {
                   variant="outlined"
                   size="small"
                   onKeyDown={this.handlePressEnter}
+                  sx={{
+                    '& input': {
+                     height: '9px',
+                   },
+                 }}
                 ></TextField>
                 <Button
                   variant="outlined"
@@ -220,4 +214,4 @@ class CoDialogComponent extends Component {
     );
   }
 }
-export default CoDialogComponent;
+export default PjtDialogComponent;

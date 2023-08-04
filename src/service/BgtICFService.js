@@ -97,8 +97,9 @@ class BtgICFService {
     console.log(data);
 
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/gisu", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
         params: {
+          gisu: 1,
           coCd: "1",
           divCd: "1001",
           groupCd: "101",

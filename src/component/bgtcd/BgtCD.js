@@ -131,7 +131,6 @@ console.log('데이터체크')
     this[openWhat]();
   }
 
-
   render() {
     const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
     return (
@@ -250,6 +249,7 @@ const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
   //groupcd: state.BgtCDStore || {}
+
 });
 
 const mapDispatchToProps = (dispatch) => {
