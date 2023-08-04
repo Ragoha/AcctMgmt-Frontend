@@ -83,8 +83,7 @@ class BgtCDDetailInfoFormControl extends Component {
             {menuItemValues.map((menuItemValue, index) => (
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
-              </MenuItem>
-            ))}
+              </MenuItem> ))}
           </CustomSelect>
         </Grid>
       </Grid>

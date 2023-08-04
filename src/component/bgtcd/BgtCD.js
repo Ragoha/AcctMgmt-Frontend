@@ -12,7 +12,9 @@ import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO ,SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
+import BgtCDSubReg from "./modal/BgtCDSubReg";
 import { CustomGridContainer, CustomInputLabel } from "../common/style/CommonStyle";
+
 
 {/* <Autocomplete
 variant=""
@@ -239,13 +241,12 @@ class BgtCD extends Component {
                   />
                   {/*자식컴포넌트에 state를 props로 전달 */}
                 </Grid>
-              </Grid>
-            </Grid>
-            <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-            <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
-            <BgtCDGroupReg ref={this.BgtCDGroupReg} />
-          </>
-        );
+                <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
+                <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
+                <BgtCDGroupReg ref={this.BgtCDGroupReg} />{/*그룹레벨설정 */}
+            </>
+        )
+
     }
 }
 const mapStateToProps = (state) => ({

@@ -16,29 +16,30 @@ class BgtCDDatagrid extends Component {
 
         }
     }
-    // processRowUpdate =(newRow)=>{
-    //     const updatedRow = { ...newRow, isNew: false };
-    //     this.setState((prevState) => ({
-    //         rows: prevState.rows.map((row) =>
-    //           row.id === newRow.id ? updatedRow : row
-    //         ),
-    //     }));
-    // }
+    processRowUpdate =(newRow)=>{
+        const updatedRow = { ...newRow, isNew: false };
+        this.setState((prevState) => ({
+            rows: prevState.rows.map((row) =>
+              row.id === newRow.id ? updatedRow : row
+            ),
+        }));
+    }
 
 
-    // pressEnterBtn=(params , event)=>{
-    //     //console.log(event.code);
-    //      console.log(params)
-    //     // console.log(event)
-    //     ///console.log(details)
-    //     if(event.code==="Enter"){
-    //         console.log(event.target.value)
-    //         console.log(params.field)
-    //     }
-    //     // console.log('pressEnterBtn이 실행되는가 ? 아래는 params값.')
-    //     //  console.log('여기서 걍 데이터패스일단 찍어봄'+params.row.dataPath);
+    pressEnterBtn=(params , event)=>{
+        //console.log(event.code);
+         //console.log(params)
+        console.log(event)
+        ///console.log(details)
+        if(event.code==="Enter"){
+            console.log(event.target.value)
+            console.log(params.field)
+            console.log('과연:'+event.target.row)
+        }
+        // console.log('pressEnterBtn이 실행되는가 ? 아래는 params값.')
+        //  console.log('여기서 걍 데이터패스일단 찍어봄'+params.row.dataPath);
         
-    // }
+    }
 
     clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
         console.log('clickedROw !' + params.row.bgtCd +'and DataPath '+ params.row.dataPath)
@@ -60,23 +61,21 @@ class BgtCDDatagrid extends Component {
         const{dataPath}=this.state;
         return dataPath ;
     }
-    // setDataPathFromHandleRowAdd=(dataPath)=>{
-    //     this.setState({dataPath:dataPath} , 
-    //         console.log('DataPath 변경 확인 '+this.state.dataPath+"|"));
-    // }
+    setDataPathFromHandleRowAdd=(dataPath)=>{
+        this.setState({dataPath:dataPath} , 
+            console.log('DataPath 변경 확인 '+this.state.dataPath+"|"));
+    }
 
 
     render() {
         const { columns } = this.state;
         const { rows } = this.props;
-        this.setState({rows:rows})
         const editableColumns = columns.map(column => ({
             ...column,
             editable: column.field !== 'id' ? true : false
         }));
 
         return (
-            <Box>
                 <Box style={{ height: 480, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '17px'}} >
                     <DataGridPro
                         treeData
@@ -86,10 +85,10 @@ class BgtCDDatagrid extends Component {
                         getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                         onRowClick={this.clickedRow}
-                        //onCellKeyDown ={this.pressEnterBtn}
+                        onCellKeyDown ={this.pressEnterBtn}
                         defaultGroupingExpansionDepth={7}
                         editMode='row' //row 단위로 편집 모양 잡힘
-                        processRowUpdate={this.changeRowValue}
+                        //processRowUpdate={this.pressEnterBtn}
                         groupingColDef={{
                             headerName: '분류명',
                         }}
@@ -98,7 +97,6 @@ class BgtCDDatagrid extends Component {
                         }}
                     />
                 </Box>
-            </Box>
         )
     }
 };
