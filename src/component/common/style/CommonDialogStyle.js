@@ -67,14 +67,6 @@ export const CustomLargeDataGridContainer = styled(Grid)(({ theme }) => ({
   marginRight: 16,
 }));
 
-
-
-export const CustomSearchButton = styled(Button)(({ theme }) => ({
-  padding: "0px",
-  minWidth: "5px",
-  position: "relative"
-}));
-
 export const CustomButtonGridContainer = styled(Grid)(({ theme }) => ({
   maxWidth: "468px",
   marginLeft: 16,

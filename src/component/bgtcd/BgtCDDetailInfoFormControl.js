@@ -65,13 +65,21 @@ class BgtCDDetailInfoFormControl extends Component {
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
-      <Grid container alignItems="center" sx={{marginTop:'13px' ,borderBottom:'1px lightgray solid' }}>
+      <Grid
+        container
+        alignItems="center"
+        sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" }}
+      >
         <Grid item md={6}>
           <InputLabel>{title}</InputLabel>
         </Grid>
-        <Grid item md={6} sx={{marginBottom:'3px'}} >
-          <CustomSelect value={defaultValue} onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까 
-            sx={{ width: '229px' }} size="small" > {/*inputProps={{ style: { height: '11px' } }}*/}
+        <Grid item md={6} sx={{ marginBottom: "3px" }}>
+          <CustomSelect
+            value={defaultValue}
+            onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까
+          >
+            {" "}
+            {/*inputProps={{ style: { height: '11px' } }}*/}
             {menuItemValues.map((menuItemValue, index) => (
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
