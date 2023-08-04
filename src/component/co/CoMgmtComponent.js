@@ -510,7 +510,6 @@ class CoMgmtComponent extends Component {
         </Grid>
         <CustomGridContainer container direction="row" spacing={2}
           justifyContent="left"
-          spacing={2}
           alignItems="center">
           <Grid item xs={4}>
             <Grid container alignItems="center">
