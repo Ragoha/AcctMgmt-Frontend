@@ -12,6 +12,7 @@ import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO ,SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
+import { CustomGridContainer, CustomInputLabel } from "../common/style/CommonStyle";
 
 {/* <Autocomplete
 variant=""
@@ -46,6 +47,7 @@ class BgtCD extends Component {
             kimChiBox: this.props.kimChiBox,
             open: false,
             rows: [],
+            groupcd: '101',
             focus: null,
 
         }
@@ -129,67 +131,121 @@ class BgtCD extends Component {
     render() {
         const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
         return (
-            <>
-                <Grid container spacing={2} padding={0} >
-                    <Grid item xs={12} >
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item>
-                                <ListIcon fontSize="large" />
-                            </Grid>
-                            <Grid item>
-                                <span>예산과목등록</span>
-                            </Grid>
-                            <Button
-                                variant="primary"
-                                size="medium"
-                                onClick={this.handleRowAdd}
-                                style={{
-                                    marginLeft: 'auto',
-                                    marginRight: '10px',
-                                    border: '1px solid',
-                                }}
-                            >추가</Button>
-                            <Button variant="primary"
-                                size="medium"
-                                onClick={() => this.getDataGridRows()}
-                                style={{ marginRight: '10px', border: '1px solid', }}
-                            >Grid채우기</Button>
-                            <Button variant="primary" size="medium" style={{ marginRight: '10px', border: '1px solid', }} onClick={this.BgtCDAddSubDialogOpen}>
-                                예산과목추가
-                            </Button>
-                            <Button variant="primary" size="medium" style={{ marginRight: '10px', border: '1px solid', }} onClick={this.BgtCDDevFgCustomOpen}>
-                                그룹레벨설정
-                            </Button>
-                            {/* 기능모음 드롭다운박스 */}
-                            <BgtCDDropDownBox />
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} sx={{marginTop:'-10px'}}>
-                        <Grid
-                            sx={{ height: '40px', alignItems: 'center', display: 'flex' ,border: "3px solid #EAEAEA"}}
-                            padding={2}
-                            variant>
-                            {/* <InputLabel sx={{ marginLeft: '20px' }}>예산그룹</InputLabel><TextField onChange={this.GroupCdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} /> */}
-                            <InputLabel>테스트용 리스트</InputLabel>
-                            <InputLabel>예산과목코드</InputLabel><TextField onClick={this.BgtCDGroupModalOpen} onChange={this.Bgt_nmOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} />
-                            <InputLabel>예산과목명</InputLabel><TextField onChange={this.Bgt_cdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px' }} />
-                            <Button onClick={this.searchClick}><SearchIcon /></Button>
-                        </Grid>
-                    </Grid>
-                    <Grid container xs={12}>
-                        <Grid item xs={7} >
-                            <BgtCDDatagrid ref={this.BgtDataGrid} rows={rows} setDetailInfo={this.setDetailInfo} />
-                        </Grid>
-                        <Grid item xs={5}justifyContent="center">
-                            <BgtCDDetailInfo ref={this.BgtCDDetailInfo} prevBgtCd={prevBgtCd} ctlFg={ctlFg} bgajustFg={bgajustFg} bottomFg={bottomFg} bizFg={bizFg} />{/*자식컴포넌트에 state를 props로 전달 */}
-                        </Grid>
-                    </Grid>
+          <>
+            <Grid container spacing={2} padding={0}>
+              <Grid item xs={12}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item>
+                    <ListIcon fontSize="large" />
+                  </Grid>
+                  <Grid item>
+                    <span>예산과목등록</span>
+                  </Grid>
+                  <Button
+                    variant="primary"
+                    size="medium"
+                    onClick={this.handleRowAdd}
+                    style={{
+                      marginLeft: "auto",
+                      marginRight: "10px",
+                      border: "1px solid",
+                    }}
+                  >
+                    추가
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="medium"
+                    onClick={() => this.getDataGridRows(groupcd)}
+                    style={{ marginRight: "10px", border: "1px solid" }}
+                  >
+                    Grid채우기
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="medium"
+                    style={{ marginRight: "10px", border: "1px solid" }}
+                    onClick={this.BgtCDAddSubDialogOpen}
+                  >
+                    예산과목추가
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="medium"
+                    style={{ marginRight: "10px", border: "1px solid" }}
+                    onClick={this.BgtCDDevFgCustomOpen}
+                  >
+                    그룹레벨설정
+                  </Button>
+                  {/* 기능모음 드롭다운박스 */}
+                  <BgtCDDropDownBox />
                 </Grid>
-                <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-                <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
-                <BgtCDGroupReg ref={this.BgtCDGroupReg} />
-            </>
-        )
+              </Grid>
+              <Grid item xs={12} sx={{ marginTop: "-10px" }}>
+                <CustomGridContainer
+                  container
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  {/* <InputLabel sx={{ marginLeft: '20px' }}>예산그룹</InputLabel><TextField onChange={this.GroupCdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} /> */}
+                  <Grid item xs={4}>
+                    <Grid container direction="row" alignItems="center">
+                      <CustomInputLabel>예산과목코드</CustomInputLabel>
+                      <TextField
+                        onClick={this.BgtCDGroupModalOpen}
+                        onChange={this.Bgt_nmOnChange}
+                        size="small"
+                        inputProps={{ style: { height: "11px" } }}
+                        sx={{ width: "200px", marginRight: "50px" }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Grid container direction="row" alignItems="center">
+                      <CustomInputLabel>예산과목명</CustomInputLabel>
+                      <TextField
+                        onChange={this.Bgt_cdOnChange}
+                        size="small"
+                        inputProps={{ style: { height: "11px" } }}
+                        sx={{ width: "200px" }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button onClick={this.searchClick}>
+                      <SearchIcon />
+                    </Button>
+                  </Grid>
+                </CustomGridContainer>
+              </Grid>
+              <Grid container xs={12}>
+                <Grid item xs={7}>
+                  <BgtCDDatagrid
+                    ref={this.BgtDataGrid}
+                    rows={rows}
+                    setDetailInfo={this.setDetailInfo}
+                  />
+                </Grid>
+                <Grid item xs={5} justifyContent="center">
+                  <BgtCDDetailInfo
+                    ref={this.BgtCDDetailInfo}
+                    prevBgtCd={prevBgtCd}
+                    ctlFg={ctlFg}
+                    bgajustFg={bgajustFg}
+                    bottomFg={bottomFg}
+                    bizFg={bizFg}
+                  />
+                  {/*자식컴포넌트에 state를 props로 전달 */}
+                </Grid>
+              </Grid>
+            </Grid>
+            <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
+            <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
+            <BgtCDGroupReg ref={this.BgtCDGroupReg} />
+          </>
+        );
     }
 }
 const mapStateToProps = (state) => ({

@@ -8,8 +8,8 @@ import {
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomSearchButton, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../common/style/CommonStyle";
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../common/style/CommonStyle";
 
 class DivDialogComponent extends Component {
   constructor(props) {
@@ -147,7 +147,7 @@ class DivDialogComponent extends Component {
                     }
                   }}
                 ></CustomTextField>
-                <CustomSearchButton variant="outlined" sx={{ right: "-48px" }}>
+                <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
                   <SearchIcon onClick={this.handleClickSearchIcon} />
                 </CustomSearchButton>
               </Grid>

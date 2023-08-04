@@ -9,9 +9,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
 import {
-  CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomSearchButton, CustomShortFormGridContainer
+  CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortFormGridContainer
 } from "../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomTextField, } from "../../common/style/CommonStyle";
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField, } from "../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -147,7 +147,7 @@ class BgtGrDialogComponent extends Component {
                   variant="outlined"
                   onKeyDown={this.handlePressEnter}
                 ></CustomTextField>
-                <CustomSearchButton variant="outlined" sx={{ right: "-48px" }}>
+                <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
                   <SearchIcon onClick={this.handleCickSearchIcon} />
                 </CustomSearchButton>
               </Grid>
