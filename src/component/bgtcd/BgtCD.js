@@ -243,6 +243,7 @@ class BgtCD extends Component {
                   />
                   {/*자식컴포넌트에 state를 props로 전달 */}
                 </Grid>
+
               </Grid>
             </Grid>
 
