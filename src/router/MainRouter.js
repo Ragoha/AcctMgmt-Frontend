@@ -8,8 +8,8 @@ import MainComponent from "../component/common/MainComponent";
 import CoMgmtComponent from "../component/co/CoMgmtComponent";
 import DivMgmtComponent from "../component/div/DivMgmtComponent";
 import DeptMgmtComponent from "../component/dept/DeptMgmtComponent";
-import ConfigComponent from "../component/user/ConfigComponent";
-import PjtComponent from "../component/user/PjtComponent";
+import ConfigComponent from "../component/syscfg/ConfigComponent";
+import PjtComponent from "../component/pjt/PjtComponent";
 
 class MainRouter extends Component {
   render() {

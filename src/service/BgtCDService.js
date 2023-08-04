@@ -42,8 +42,12 @@ class BgtCDService {
         return returnData;
     }
     getPath(bgtCd){
-        const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/getPath",bgtCd)
-            .then((response)=>response.data)
+        console.log('서비스에서 bgtCd:'+bgtCd+"이렇게 보낼것이야")
+        const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getPath", {
+            params:{
+                bgtCd:bgtCd
+            }
+        }).then((response)=>response.data)
             console.log(returnData)
         return returnData;
     }

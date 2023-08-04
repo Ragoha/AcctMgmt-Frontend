@@ -10,7 +10,7 @@ import BgtCDDatagrid from "./BgtCDDatagrid";
 import BgtCDGroupModal from "./modal/BgtCDEzSearch";
 import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
-
+import { SET_DETAILINFO ,SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import { CustomGridContainer, CustomInputLabel } from "../common/style/CommonStyle";
 
@@ -49,13 +49,11 @@ class BgtCD extends Component {
             rows: [],
             groupcd: '101',
             focus: null,
-            //testList: ['블레', '블래', '리퍼', '소서', '건슬', '기공', '알카'],
+
         }
     }
     componentDidMount() {
-        console.log('1--------------------------')
         console.log(this.state.kimChiBox);
-        console.log('2--------------------------')
     }
 
 
@@ -63,16 +61,17 @@ class BgtCD extends Component {
 
     /*상단 조건 검색바 end  */
     setDetailInfo = (target) => {
-        console.log('---setDetailInfo---')
+        console.log('---BgtCD의 setDetailInfo 함수---')
         console.log(target)
         this.BgtCDDetailInfo.current.setDetailInfo(target);
+        console.log('---BgtCD의 setDetailInfo 함수 끝임 ㅇㅇㅇㅇㅇ')
     }
 
     /*데이터그리드 부분 start*/
-    getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+    getDataGridRows() { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
         console.log('데이터체크')
-        console.log(this.state.kimChiBox);
-
+        const {groupcd}  = this.props.groupcd;
+        console.log('이상하네:'+groupcd)
         BgtCDService.getGridData(groupcd)
             .then(rows => {
                 console.log('통신성공')
@@ -82,26 +81,39 @@ class BgtCD extends Component {
                 console.error("Error fetching data:", error);
             });
     }
+
+    /*---로우 추가 관련된 메서드 start---*/
     //데이터 그리드에 추가하는 기능
     //[230728] TreeView 수정했는데 addRow 로직은 아직 변경하지 않음 한번 손봐야함
     handleRowAdd = () => {
-        //DetailInfo 에 저장된 BgtCd 값을 가져와 ->
-        console.log('추가버튼')
-        console.log(this.BgtCDDetailInfo.current.getBgtCd())
-        const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-        BgtCDService.getPath(bgtCd)
-            .then((path) => {
-                console.log("패스는 ? : " + path) //이 패스는 현재 찍은 위치의 path이다 
-                path = "수입,장,관,항                                  ";
-                const newRows = [
-                    ...this.state.rows,
-                    { dataPath: path, defNm: "", bgtCd: "", bgtNm: "", isNew: true },
-                ];
-                this.setState({ rows: newRows });
-            })
-        // *일단 로우를 특정하기부터 ..
-
+        const dataPath= this.BgtDataGrid.current.getDataPathFromDataGrid()+"                   ";
+        console.log("여긴 handleRowAdd: "+dataPath);
+        const newRows = [
+            ...this.state.rows,
+            { dataPath: dataPath, bgtCd: "abckk", bgtNm: "abc", isNew: true },
+        ];
+        this.setState({ rows: newRows });
     };
+    /*---로우 추가 관련된 메서드 end---*/
+
+        // *일단 로우를 특정하기 성공했고 
+        /*[230803] 혹시 만약 참고할거면 하고 위에 addRow기능 성공했으면 지워도 되는 코드
+        //DetailInfo 에 저장된 BgtCd 값을 가져와 ->
+        // console.log('추가버튼')
+        // console.log(this.BgtCDDetailInfo.current.getBgtCd());
+        // const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+        // console.log(bgtCd);
+        // BgtCDService.getPath(bgtCd)
+        //     .then((path) => {
+        //         console.log("패스는 ? : " + path) //이 패스는 현재 찍은 위치의 path이다
+        //         const newRows = [
+        //             ...this.state.rows,
+        //             { dataPath: path, defNm: "", bgtCd: "", bgtNm: "", isNew: true },
+        //         ];
+        //         this.setState({ rows: newRows });
+        //     })
+        */
+   
     /*  데이터 그리드 부분 end */
     /* DetailInfo부분 */
 
@@ -117,7 +129,7 @@ class BgtCD extends Component {
         this.BgtCDGroupReg.current.handleUp();
     }
     render() {
-        const { rows, groupcd, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
+        const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
         return (
           <>
             <Grid container spacing={2} padding={0}>
@@ -239,7 +251,13 @@ class BgtCD extends Component {
 const mapStateToProps = (state) => ({
     // accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
     // userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
-    kimChiBox: state.boxData.kimChiBox,
+    groupcd : state.BgtCDStore || {}
+   
 });
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        SET_GROUPCD :  (response) => dispatch(SET_GROUPCD(response)),
+    };
+}
 
-export default connect(mapStateToProps)(BgtCD);
+export default connect(mapStateToProps ,mapDispatchToProps, null, {forwardRef:true})(BgtCD);
