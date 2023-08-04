@@ -158,7 +158,7 @@ class BgtCD extends Component {
                   <Button
                     variant="primary"
                     size="medium"
-                    onClick={() => this.getDataGridRows(groupcd)}
+                    onClick={() => this.getDataGridRows()}
                     style={{ marginRight: "10px", border: "1px solid" }}
                   >
                     Grid채우기
@@ -240,6 +240,8 @@ class BgtCD extends Component {
                     bizFg={bizFg}
                   />
                   {/*자식컴포넌트에 state를 props로 전달 */}
+                </Grid>
+                </Grid>
                 </Grid>
                 <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
                 <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
