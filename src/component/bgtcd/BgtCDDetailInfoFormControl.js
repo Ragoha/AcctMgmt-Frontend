@@ -65,12 +65,8 @@ class BgtCDDetailInfoFormControl extends Component {
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
-      <Grid
-        container
-        alignItems="center"
-        sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" }}
-      >
-        <Grid item md={6}>
+      <Grid container alignItems="center" sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" , height:'80px'}} >
+        <Grid item md={6} >
           <InputLabel>{title}</InputLabel>
         </Grid>
         <Grid item md={6} sx={{ marginBottom: "3px" }}>

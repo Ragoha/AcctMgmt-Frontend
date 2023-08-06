@@ -76,7 +76,7 @@ class BgtCDDatagrid extends Component {
         }));
 
         return (
-                <Box style={{ height: 480, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '17px'}} >
+                <Box style={{ height: 800, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '17px'}} >
                     <DataGridPro
                         treeData
                         getTreeDataPath={(row) => row.dataPath.split(',')}

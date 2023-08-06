@@ -13,7 +13,7 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomGridContainer, CustomInputLabel } from "../common/style/CommonStyle";
+import { CustomBtnBgtcd, CustomGridContainer, CustomInputLabel } from "../common/style/CommonStyle";
 
 
 {/* <Autocomplete
@@ -144,34 +144,33 @@ console.log('데이터체크')
               <Grid item>
                 <span>예산과목등록</span>
               </Grid>
-              <Button
-                variant="primary"
-                size="medium"
+              <CustomBtnBgtcd
                 onClick={this.handleRowAdd}
+                variant="primary"
                 style={{
                   marginLeft: "auto",
                   marginRight: "10px",
-                  border: "1px solid",
+                  //border: "1px solid",
                 }}
               >
-                추가
-              </Button>
-              <Button
+                추    가
+              </CustomBtnBgtcd>
+              <CustomBtnBgtcd
                 variant="primary"
                 size="medium"
                 onClick={() => this.getDataGridRows()}
                 style={{ marginRight: "10px", border: "1px solid" }}
               >
                 Grid채우기
-              </Button>
-              <Button
+              </CustomBtnBgtcd>
+              <CustomBtnBgtcd
                 variant="primary"
                 size="medium"
                 style={{ marginRight: "10px", border: "1px solid" }}
                 onClick={this.BgtCDAddSubDialogOpen}
               >
                 예산과목추가
-              </Button>
+              </CustomBtnBgtcd>
               {/* 기능모음 드롭다운박스 */}
               <BgtCDDropDownBox  selectBgtCDDropDownBox={this.selectBgtCDDropDownBox} />
             </Grid>
