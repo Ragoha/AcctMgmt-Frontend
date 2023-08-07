@@ -47,7 +47,7 @@ const BGTCD_COLUMN = [
     headerAlign: "center",
   },
   {
-    field: "amount",
+    field: "carrAm",
     headerName: "금액",
     headerAlign: "center",
   },
@@ -61,22 +61,29 @@ class BgtICFComponent extends Component {
       divCd: "",
       divNm: "",
       divTextField: "",
+      bgtGrCd: "",
+      bgtGrNm: "",
       bgtGrTextField: "",
-      bgtCDTextField: "",
-      gisuText: 0,
+      gisuText: "",
       gisuRows: [],
+      gisuRangeText: "",
       gisuRangeRows: [],
       frDt: "",
       groupCd: "",
       grFg: "",
+      grFgText: "전체",
       bgtCd: "",
+      bgtNm: "",
+      bgtCDTextField: "",
       bgtDTO: [],
       divRows: [],
       selectedRowId: "",
+      selectedRowSq: "",
       isNew: false,
+      innerHeight: window.innerHeight
     };
 
-    this.childRef = createRef();
+    this.bgtICFRef = createRef();
     this.divRef = createRef();
     this.bgtGrRef = createRef();
     this.bgtCDRef = createRef();
@@ -87,15 +94,18 @@ class BgtICFComponent extends Component {
   };
 
   handleGetBgtICFList = (e) => {
-    this.childRef.current.handleGetBgtICFList();
+    this.bgtICFRef.current.handleGetBgtICFList();
   };
 
   handleRowAdd = () => {
-    this.childRef.current.handleRowAdd();
+    this.bgtICFRef.current.handleRowAdd();
   };
 
   handleRowDelete = () => {
-    this.childRef.current.handleDeleteClick(this.state.selectedRowId)();
+    this.bgtICFRef.current.handleDeleteClick({
+      bgtCd: this.state.selectedRowId,
+      sq: this.state.selectedRowSq
+    })();
   };
 
   handleInputChange = async (e) => {
@@ -103,6 +113,23 @@ class BgtICFComponent extends Component {
     await this.setState({ [name]: value });
     console.log(this.state);
   };
+
+  handleChangeGisuText = (event, newValue) => {
+    console.log("Selected value:", newValue);
+    const index = this.state.gisuRows.findIndex((value) => value === newValue);
+
+    this.setState({
+      gisuText: newValue,
+      gisuRangeText: this.state.gisuRangeRows[index],
+    });
+
+    console.log("Selected option index:", index);
+  };
+
+  handleChangeGrFgText = (event, newValue) => {
+    console.log(newValue);
+    this.setState({ grFg: newValue.value, grFgText: newValue.label });
+  }
 
   handleAddRow = () => {
     const { bgtDTO } = this.state;
@@ -133,20 +160,25 @@ class BgtICFComponent extends Component {
     }));
   };
 
-  setSelectedRowId = (selectedId) => {
-    console.log(this.state);
-    this.setState({ selectedRowId: selectedId });
+  setSelectedRowId = (row) => {
+    this.setState({ selectedRowId: row.bgtCd, selectedRowSq: row.sq });
   };
 
-  handleSetDivTextField = async (data) => {
+  handleSetDivTextField = (data) => {
     console.log(data);
-    await this.setState({ divTextField: data.divCd + ". " + data.divNm });
+    this.setState({
+      divTextField: data.divCd + ". " + data.divNm,
+      divCd: data.divCd,
+      divNm: data.divNm,
+    });
     console.log(this.state);
   };
 
-  handleSetBgtGrTextField = async (data) => {
-    await this.setState({
+  handleSetBgtGrTextField = (data) => {
+    this.setState({
       bgtGrTextField: data.bgtGrCd + ". " + data.bgtGrNm,
+      bgtGrCd: data.bgtGrCd,
+      bgtGrNm: data.bgtGrNm,
     });
   };
 
@@ -165,7 +197,7 @@ class BgtICFComponent extends Component {
   handleSetBgtCDTextField = (data) => {
     console.log(data);
 
-    this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm });
+    this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm, bgtCd: data.bgtCd, bgtNm: data.bgtNm });
   };
 
   handleClickSerachButton = () => {
@@ -175,15 +207,18 @@ class BgtICFComponent extends Component {
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       divCd: this.state.divCd,
-      gisu: this.state.gisu,
-      bgtGr: this.state.bgtGr,
+      divNm: this.state.divNm,
+      gisu: this.state.gisuText,
+      bgtGrCd: this.state.bgtGrCd,
+      bgtGrNm: this.state.bgtGrNm,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
+      bgtNm: this.state.bgtNm
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.bgtCd,
+        id: row.bgtCd,  
       }));
       this.setState({ bgtCDRows: rowsWithId });
     });
@@ -195,10 +230,6 @@ class BgtICFComponent extends Component {
       user: this.props.user,
     }).then((response) => {
       const gisuRows = response.map((row) => row.gisu);
-      // const gisuRows = response.map((row) => ({
-      //   label: row.gisu,
-      //   gisu: row.gisu
-      // }))
       const gisuRangeRows = response.map(
         (row) =>
           dayjs(row.frDt).format("YYYY-MM-DD") +
@@ -206,8 +237,12 @@ class BgtICFComponent extends Component {
           dayjs(row.toDt).format("YYYY-MM-DD")
       );
 
-      this.setState({ gisuRows: gisuRows, gisuRangeRows: gisuRangeRows });
-      this.setState({ gisuText: gisuRows[gisuRows.length - 1] });
+      this.setState({
+        gisuRows: gisuRows,
+        gisuRangeRows: gisuRangeRows,
+        gisuText: gisuRows[gisuRows.length - 1],
+        gisuRangeText: gisuRangeRows[gisuRangeRows.length - 1],
+      });
       const gisuLenght = gisuRows.length;
       const test = gisuRows[gisuLenght - 1];
       console.log(test);
@@ -221,7 +256,9 @@ class BgtICFComponent extends Component {
   handleClickBgtCDRow = (e) => {
     console.log(e.row);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
-  }
+    // this.bgtICFRef.current.handleGetBgtICFList();
+    this.bgtICFRef.current.getBgtICFList(e.row);
+  };
 
   render() {
     const labelStyle = {
@@ -237,22 +274,31 @@ class BgtICFComponent extends Component {
 
     return (
       <>
-        <Grid container spacing={2} alignItems="center">
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          sx={{
+            border: "1px solid black",
+            width: "calc(100% + 32px) !important",
+            marginBottom: 2,
+            height: "68px",
+            paddingBottom: 2,
+          }}
+        >
           <Grid item>
-            <ListIcon fontSize="large" />
+            <CustomInputLabel sx={{ fontSize: 22 }}>
+              예산초기이월등록
+            </CustomInputLabel>
           </Grid>
           <Grid item>
-            <span>예산초기이월등록</span>
+            <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
+            <Box style={floatRight}>
+              <Button onClick={this.handleRowAdd}>추가</Button>
+              <Button onClick={this.handleRowDelete}>삭제</Button>
+            </Box>
           </Grid>
         </Grid>
-        <Box>
-          {/* <InputLabel style={labelStyle}>예산초기이월등록</InputLabel> */}
-          <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
-          <Box style={floatRight}>
-            <Button onClick={this.handleRowAdd}>추가</Button>
-            <Button onClick={this.handleRowDelete}>삭제</Button>
-          </Box>
-        </Box>
         <CustomGridContainer
           container
           spacing={2}
@@ -282,11 +328,13 @@ class BgtICFComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>회계기간</CustomInputLabel>
               <Autocomplete
+                name="gisuText"
                 disableClearable
                 disablePortal
-                // defaultValue={}
+                defaultValue={this.state.gisuText}
                 value={this.state.gisuText}
                 options={this.state.gisuRows}
+                onChange={this.handleChangeGisuText}
                 getOptionLabel={(option) => option.toString()}
                 size="small"
                 sx={{ width: "65px", marginRight: "8px" }}
@@ -298,7 +346,8 @@ class BgtICFComponent extends Component {
                 )}
               />
               <TextField
-                value={this.state.gisuRangeRows[2]}
+                value={this.state.gisuRangeText}
+                disabled={true}
                 fontSize="13px"
                 sx={{
                   width: 182,
@@ -345,14 +394,14 @@ class BgtICFComponent extends Component {
                 disableClearable
                 disablePortal
                 id="combo-box-demo"
-                defaultValue={this.grFg}
-                value={this.grFg}
                 options={[
-                  { label: "전체", value: "전체" },
-                  { label: "수입", value: "수입" },
-                  { label: "지출", value: "지출" },
+                  { label: "전체", value: "" },
+                  { label: "수입", value: "0" },
+                  { label: "지출", value: "1" },
                 ]}
-                // onChange={}
+                // getOptionLabel={(option) => option.label}
+                value={this.state.grFgText}
+                onChange={this.handleChangeGrFgText}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>
@@ -381,9 +430,17 @@ class BgtICFComponent extends Component {
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid
+            item
+            xs={3}
+            sx={{
+              // height: `calc(${this.state.innerHeight}px - 345px)`,
+              maxHeight: `calc(100vh)`,
+            }}
+          >
             <DataGrid
               sx={{
+                // maxHeight: "calc(100vh - 0px)",
                 // fontSize: 10,
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
@@ -403,7 +460,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={9}>
             <DataGridComponent
-              ref={this.childRef}
+              ref={this.bgtICFRef}
               setSelectedRowId={this.setSelectedRowId}
             />
           </Grid>

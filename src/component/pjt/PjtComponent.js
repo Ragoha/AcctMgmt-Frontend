@@ -6,36 +6,40 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid'; // 변경된 import
-
+import { connect } from 'react-redux';
+import dayjs from 'dayjs';
 import ListIcon from '@mui/icons-material/List';
-
-import CompanyService from '../../service/CompanyService';
-
+import PjtService from '../../service/PjtService';
 import { CustomGridContainer, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
-
 import { Component, createRef } from 'react';
 import PjtDialogComponent from './dialog/PjtDialogComponent';
 
 class PjtComponent extends Component {
   constructor(props) {
     super(props);
-    this.pjtDialogRef =  createRef();
+    this.pjtDialogRef = createRef();
     this.state = {
       open: false,
       focused: null,
       cards: [],
       cardCount: 0,
-      pjtCd: 0,
-      selectedRow: { gisu: '', frDt: '', toDt: '' },
       pjtCdList: [],
       pjtNmList: [],
       progFgList: [],
       CodialTextField: '',
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
-      pjtNm: "",
-      progFg: "",
       dateRange: [null, null], // 날짜 범위를 배열로 저장합니다.
-      // value: dayjs('2022-04-17'),
+      coCd: 0,
+      pgrCd: 0,
+      pgrNm: "",
+      pjtCd: "",
+      pjtNm: "",
+      prDt: new Date(),
+      toDt: new Date(),
+      progFg: "",
+      apjtNm: "",
+      stDt: new Date(),
+      note: "",
     }
   }
 
@@ -43,21 +47,24 @@ class PjtComponent extends Component {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
-    CompanyService.getCoList() //카드리스트 전체조회 함수
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
+    PjtService.getPjtList(coCd) //카드리스트 전체조회 함수
       .then((response) => {
+        console.log("abc", response.data);
         const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
         const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
-        const progFgList = response.data.map((item) =>item.progFg); //
+        const progFgList = response.data.map((item) => item.progFg); //
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거) 
-
         const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
-
+        console.log("프젝네임 어디갔누?", pjtNmList);
+        console.log("프젝코드는 어디갔누?", pjtCdList);
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           pjtCdList: pjtCdList,
           pjtNmList: pjtNmList,
 
-          focused: pjtCd,
+          focused: '',
           pjtCd: pjtCd,
         })
       }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
@@ -97,9 +104,11 @@ class PjtComponent extends Component {
     }
   }//여기에 모든 state값 초기화 하면 됨 !!!!!
   // 저장 버튼 누르면 텍스트 필드 갑 읽어와서 저장 해주는 친구들
-  
+
   //카드를 클릭하면 우측에 데이터 랜더링 함수
   cardClick = (pjtCd) => {
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
     console.log(pjtCd);
     // this.setState({ pjtCd: pjtCdList[index] });
     // console.log(index)
@@ -110,14 +119,42 @@ class PjtComponent extends Component {
       {
         pjtCd == '000' ?
           this.setState({
-            pjtCd: '',
+            pjtCd: "",
+            pgrCd: 0,
+            pgrNm: "",
+            pjtNm: "",
+            prDt: "",
+            toDt: "",
+            progFg: "",
+            apjtNm: "",
+            stDt: "",
+            note: "",
           }) :
-          CompanyService.getCompany(pjtCd)
-
+          PjtService.getSelPjtList(pjtCd)
             .then((response) => {
+              console.log("하나 잘 갖고오니?", response.data);
               const pjtCd = response.data[0].pjtCd;
+              const pgrCd = response.data[0].pgrCd;
+              const pgrNm = response.data[0].pgrNm;
+              const pjtNm = response.data[0].pjtNm;
+              const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+              const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+              const progFg = response.data[0].progFg;
+              const apjtNm = response.data[0].apjtNm;
+              const stDt = dayjs(response.data[0].stDt).format('YYYY-MM-DD');
+              const note = response.data[0].note;
+
               this.setState({
                 pjtCd: pjtCd,
+                pgrCd: pgrCd,
+                pgrNm: pgrNm,
+                pjtNm: pjtNm,
+                prDt: prDt,
+                toDt: toDt,
+                progFg: progFg,
+                apjtNm: apjtNm,
+                stDt: stDt,
+                note: note,
               })
             })
             .catch((error) => {
@@ -149,35 +186,36 @@ class PjtComponent extends Component {
   // 검색한 내용들 나오는 곳
   searchClick = (pjtCd) => {
     // PjtService.getCompany(pjtCd)
-      // .then((response) => {
-      //   const pjtCdList = response.data.map((item) => item.pjtCd);
-      //   const pjtNmList = response.data.map((item) => item.pjtNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
-      //   const cardCount = response.data.length;
+    // .then((response) => {
+    //   const pjtCdList = response.data.map((item) => item.pjtCd);
+    //   const pjtNmList = response.data.map((item) => item.pjtNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
+    //   const cardCount = response.data.length;
 
-      //   const pjtCd = response.data[0].pjtCd;
+    //   const pjtCd = response.data[0].pjtCd;
 
-      //   this.setState({
-      //     cardCount: cardCount,//??????
-      //     pjtCdList: pjtCdList,
-      //     pjtNmList: pjtNmList,
+    //   this.setState({
+    //     cardCount: cardCount,//??????
+    //     pjtCdList: pjtCdList,
+    //     pjtNmList: pjtNmList,
 
-      //     focused: pjtCd,
-      //     pjtCd: pjtCd,
-      //   })
-      // })
-      // .catch((error) => {
-      //   // 오류 발생 시의 처리
-      //   console.error(error);
-      //   // alert("중복된 회사 또는 모두 입력해주세요");
-      // })
+    //     focused: pjtCd,
+    //     pjtCd: pjtCd,
+    //   })
+    // })
+    // .catch((error) => {
+    //   // 오류 발생 시의 처리
+    //   console.error(error);
+    //   // alert("중복된 회사 또는 모두 입력해주세요");
+    // })
   }
 
-  
+
   //db로 삭제 요청
-  
+
   render() {
 
-    const { pjtCd } = this.state;
+    const { pjtCd, progFg, pgrNm, pgrCd, pjtNm, prDt, toDt, apjtNm, stDt, note, pjtRole } = this.state;
+
     const { cardCount, pjtCdList, pjtNmList } = this.state;
     const { value } = this.state;
     const currentDate = new Date();
@@ -196,7 +234,7 @@ class PjtComponent extends Component {
             <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
               {formattedDate}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
+            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "5px" }}>
               {pjtNmList[index]}
             </Typography>
           </CardContent>
@@ -254,10 +292,10 @@ class PjtComponent extends Component {
 
           <CustomInputLabel >프로젝트기간</CustomInputLabel>
           <CustomTextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
-                     '& input': {
-                      height: '9px',
-                    },
-                  }}></CustomTextField>
+            '& input': {
+              height: '9px',
+            },
+          }}></CustomTextField>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
 
@@ -302,7 +340,7 @@ class PjtComponent extends Component {
           {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
           <Grid container alignItems="center" justifyContent="space-between" sx={{ width: '100%', maxHeight: 40, borderBottom: '3px solid #000' }}>
             <Grid item>
-              <InputLabel sx={{ ml: 2, mr: 2, mt: 1, textAlign: 'left', color: 'black', fontWeight: 'bold'}}>● 기본등록사항</InputLabel>
+              <InputLabel sx={{ ml: 2, mr: 2, mt: 1, textAlign: 'left', color: 'black', fontWeight: 'bold' }}>● 기본등록사항</InputLabel>
             </Grid>
             <Grid item alignItems={'right'}>
               {pjtCd ?
@@ -329,43 +367,43 @@ class PjtComponent extends Component {
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트구분</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFEAEA', width: '93%' }} name='pjtCd' onChange={this.handleCompany} value={pjtCd || ''} InputProps={{ readOnly: true }} />
+                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFEAEA', width: '93%' }} name='progFg' onChange={this.handleCompany} value={progFg || ''} InputProps={{ readOnly: true }} />
               </Grid>
 
               <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트명</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFEAEA', width: '93%' }} name='pjtCd' onChange={this.handleCompany} value={pjtCd || ''} InputProps={{ readOnly: true }} />
+                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFEAEA', width: '93%' }} name='pjtNm' onChange={this.handleCompany} value={pjtNm || ''} InputProps={{ readOnly: true }} />
               </Grid>
 
               <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트약칭</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pjtCd' onChange={this.handleCompany} value={pjtCd || ''} />
+                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='apjtNm' onChange={this.handleCompany} value={apjtNm || ''} />
               </Grid>
 
               <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트분류</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pjtCd' onChange={this.handleCompany} value={pjtCd || ''} />
+                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pgrCd' onChange={this.handleCompany} value={pgrCd || ''} placeholder='프로젝트그룹코드' />
               </Grid>
 
               <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >사용권한설정</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pjtCd' onChange={this.handleCompany} value={pjtCd || ''} />
+                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pjtRole' onChange={this.handleCompany} value={pjtRole || ''} />
               </Grid>
 
               <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트기간</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <Grid item xs={6} sx={{ ml: 2,  width: '100%' }}>
-                  <TextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
+                <Grid item xs={6} sx={{ ml: 2, width: '100%' }}>
+                  <TextField type="date" name='prDt' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
                     width: '100%', '& input': {
                       height: '9px',
                     },
@@ -373,7 +411,7 @@ class PjtComponent extends Component {
                 </Grid>
                 <RemoveIcon />
                 <Grid item xs={6} sx={{ borderRight: '1px solid #EAEAEA', width: '100%', mr: 2 }}>
-                  <TextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
+                  <TextField type="date" name='toDt' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
                     width: '100%', '& input': {
                       height: '9px',
                     },
@@ -385,7 +423,7 @@ class PjtComponent extends Component {
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트시작일</InputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', width: '100%' }}>
-                <TextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
+                <TextField type="date" name='stDt' value={this.state.dateRange || ''} onChange={this.handleCompany} sx={{
                   ml: 2, width: '100%', mr: 2, '& input': {
                     height: '9px',
                   },
@@ -397,7 +435,7 @@ class PjtComponent extends Component {
                 <InputLabel sx={{ mr: 2, color: 'black' }}  >비고</InputLabel>
               </Grid>
               <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '80%', }} name='pjtCd' onChange={this.handleCompany} placeholder='프로젝트 관련 비고 입력' />
+                <TextField size='small' sx={{ ml: 2, width: '80%', }} name='note' onChange={this.handleCompany} placeholder='프로젝트 관련 비고 입력' />
               </Grid>
 
 
@@ -410,6 +448,9 @@ class PjtComponent extends Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+});
 
-
-export default PjtComponent;
+export default connect(mapStateToProps)(PjtComponent);

@@ -58,7 +58,7 @@ class MainListItems extends Component {
       >
         <Divider />
         <ListItemButton>
-          <ListItemIcon>
+          <ListItemIcon sx={{ minWidth: 40 }}>
             <Tooltip
               title={this.props.drawerOpen ? "" : "Home"}
               placement="right"
@@ -71,7 +71,7 @@ class MainListItems extends Component {
         <Divider />
 
         <ListItemButton onClick={this.handleOrganizationClick}>
-          <ListItemIcon>
+          <ListItemIcon sx={{ minWidth: 40 }}>
             <Tooltip
               title={this.props.drawerOpen ? "" : "조직관리"}
               placement="right"
@@ -90,11 +90,11 @@ class MainListItems extends Component {
             >
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "회사등록"}
                     placement="right"
@@ -111,11 +111,11 @@ class MainListItems extends Component {
             >
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "사업장등록"}
                     placement="right"
@@ -132,11 +132,11 @@ class MainListItems extends Component {
             >
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "부서등록"}
                     placement="right"
@@ -150,11 +150,11 @@ class MainListItems extends Component {
             <Link to={"pjt"} style={{ textDecoration: "none", color: "black" }}>
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "프로젝트등록"}
                     placement="right"
@@ -169,7 +169,7 @@ class MainListItems extends Component {
         </Collapse>
         <Divider />
         <ListItemButton onClick={this.handleBudgetClick}>
-          <ListItemIcon>
+          <ListItemIcon sx={{ minWidth: 40 }}>
             <Tooltip
               title={this.props.drawerOpen ? "" : "예산관리"}
               placement="right"
@@ -188,11 +188,11 @@ class MainListItems extends Component {
             >
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "예산과목등록"}
                     placement="right"
@@ -209,11 +209,11 @@ class MainListItems extends Component {
             >
               <ListItemButton
                 sx={{
-                  pl: this.props.drawerOpen ? 6.7 : 2,
+                  pl: this.props.drawerOpen ? 5 : 2,
                   transition: "padding-left 300ms",
                 }}
               >
-                <ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   <Tooltip
                     title={this.props.drawerOpen ? "" : "예산초기이월등록"}
                     placement="right"
@@ -229,7 +229,7 @@ class MainListItems extends Component {
         <Divider />
         <Link to={"syscfg"} style={{ textDecoration: "none", color: "black" }}>
           <ListItemButton>
-            <ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 40 }}>
               <Tooltip
                 title={this.props.drawerOpen ? "" : "시스템환경설정"}
                 placement="right"
