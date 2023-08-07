@@ -6,6 +6,8 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { CustomBtnBgtcd } from '../common/style/CommonStyle';
 
 class BgtCDDropDownBox extends React.Component {
   constructor(props) {
@@ -51,16 +53,19 @@ class BgtCDDropDownBox extends React.Component {
   render() {
     return (
       <div>
-        <Button
+        <CustomBtnBgtcd
           ref={this.funtionList}
           id="composition-button"
           aria-controls={this.state.open ? 'composition-menu' : undefined}
           aria-expanded={this.state.open ? 'true' : undefined}
           aria-haspopup="true"
           onClick={this.handleToggle}
+          variant="primary"
+          sx={{border: "1px solid"}}
         >
           기능모음
-        </Button>
+        <SettingsIcon sx={{ml:'8px'}}/>
+        </CustomBtnBgtcd>
         <Popper
           open={this.state.open}
           anchorEl={this.funtionList.current}

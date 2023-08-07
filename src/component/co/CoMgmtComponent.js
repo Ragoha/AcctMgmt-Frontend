@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -48,6 +49,7 @@ class CoMgmtComponent extends Component {
       coAddr1: '', //상세주소
       coCdList: [],
       coNmList: [],
+      ceoNmList: [],
       CodialTextField: '',
       dateRange: '',
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
@@ -71,10 +73,20 @@ class CoMgmtComponent extends Component {
   }
 
   componentDidMount() {
-    CompanyService.getCoList()
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd });
+    // {coCd && empId?
+    CompanyService.getCompany({
+      accessToken: this.props.accessToken,
+      coCd: coCd})
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
+        const ceoNmList = response.data.map((item) => item.ceoNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
         const coCd = response.data[0].coCd;
@@ -94,6 +106,7 @@ class CoMgmtComponent extends Component {
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
           coNmList: coNmList,
+          ceoNmList: ceoNmList,
 
           focused: coCd,
           coCd: coCd,
@@ -116,7 +129,57 @@ class CoMgmtComponent extends Component {
         console.error(error);
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
-  }
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+// :    
+// CompanyService.getCoList()
+//       .then((response) => {
+//         const coCdList = response.data.map((item) => item.coCd);
+//         const coNmList = response.data.map((item) => item.coNm);
+//         const ceoNmList = response.data.map((item) => item.ceoNm);
+//         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+//         const coCd = response.data[0].coCd;
+//         const coNm = response.data[0].coNm;
+//         const gisu = response.data[0].gisu;
+//         const frDt = dayjs(response.data[0].frDt).format('YYYY-MM-DD');
+//         const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+//         const jongmok = response.data[0].jongmok;
+//         const businessType = response.data[0].businessType;
+//         const coNb = response.data[0].coNb;
+//         const ceoNm = response.data[0].ceoNm;
+//         const coZip = response.data[0].coZip;
+//         const coAddr = response.data[0].coAddr;
+//         const coAddr1 = response.data[0].coAddr1;
+
+//         this.setState({
+//           cardCount: cardCount, // state에 값을 저장
+//           coCdList: coCdList,
+//           coNmList: coNmList,
+//           ceoNmList: ceoNmList,
+
+//           focused: coCd,
+//           coCd: coCd,
+//           coNm: coNm,
+//           gisu: gisu,
+//           frDt: frDt,
+//           toDt: toDt,
+//           dateRange: frDt + ' ~ ' + toDt,
+//           jongmok: jongmok,
+//           businessType: businessType,
+//           coNb: coNb,
+//           ceoNm: ceoNm,
+//           coZip: coZip,
+//           coAddr: coAddr,
+//           coAddr1: coAddr1
+//         })
+//       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
+//       .catch((error) => {
+//         // 오류 발생 시의 처리
+//         console.error(error);
+//         // alert("중복된 회사 또는 모두 입력해주세요");
+//       });
+//   }
+}
 
 
   handleCompany = (e) => {
@@ -163,7 +226,20 @@ class CoMgmtComponent extends Component {
 
   insertCo = () => {
     const { coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
-    CompanyService.insertCo(coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
+    
+    CompanyService.insertCo({
+      accessToken: this.props.accessToken,
+      coNm: coNm, 
+      gisu: gisu, 
+      frDt: frDt, 
+      toDt: toDt, 
+      jongmok: jongmok, 
+      businessType: businessType, 
+      coNb: coNb, 
+      ceoNm: ceoNm, 
+      coZip: coZip, 
+      coAddr: coAddr, 
+      coAddr1: coAddr1})
 
       .then((response) => {
         console.log(response.data);
@@ -356,7 +432,7 @@ class CoMgmtComponent extends Component {
   }
 
   handleGisu = () => {
-    this.setState({ open: false });
+    this.setState({ open: true });
   }
 
   updateCo = () => {
@@ -369,11 +445,13 @@ class CoMgmtComponent extends Component {
         window.confirm('업데이트 완료!');
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
+        const ceoNmList = response.data.map((item) => item.ceoNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
           coNmList: coNmList,
+          ceoNmList: ceoNmList,
           focused: coCd,
           coCd: coCd,
           coNm: coNm,
@@ -390,7 +468,6 @@ class CoMgmtComponent extends Component {
           isChanged: false
         })
       })
-
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
@@ -468,7 +545,7 @@ class CoMgmtComponent extends Component {
     const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt } = this.state;
     const { selectedRow } = this.state;
     const { data } = this.state;
-    const { cardCount, coCdList, coNmList } = this.state;
+    const { cardCount, coCdList, coNmList, ceoNmList } = this.state;
 
 
     const currentDate = new Date();
@@ -486,7 +563,7 @@ class CoMgmtComponent extends Component {
               {coCdList[index]}
             </Typography>
             <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
-              {formattedDate}
+              {ceoNmList[index]}
             </Typography>
 
             <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
@@ -523,7 +600,7 @@ class CoMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '135px', right: "35px" }}>
+          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "1015px" }}>
             <SearchIcon fontSize="medium" />
           </Button>
         </CustomGridContainer>
@@ -710,6 +787,9 @@ class CoMgmtComponent extends Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  userInfo: state.user || {} //  userInfo 정보 매핑해주기..
+});
 
-
-export default CoMgmtComponent;
+export default connect(mapStateToProps)(CoMgmtComponent);

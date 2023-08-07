@@ -18,6 +18,10 @@ class BtgICFService {
     console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf", {
+        params: {
+          coCd: data.coCd,
+          bgtCd: data.bgtCd,
+        },
         headers: {
           "access-token": data.accessToken,
         },
@@ -26,8 +30,22 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  deleteBgtICF(sq) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
+  // deleteBgtICF(sq) {
+  //   return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
+  // }
+
+  deleteBgtICF(data) {
+    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf", {
+      params: {
+          coCd: data.coCd,
+          bgtCd: data.bgtCd,
+        },
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data);
   }
 
   findDivByCoCdAndKeyword(data) {
@@ -99,11 +117,12 @@ class BtgICFService {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
         params: {
-          gisu: 1,
-          coCd: "1",
-          divCd: "1001",
-          groupCd: "101",
-          grFg: "0"
+          gisu: data.gisu,
+          coCd: data.coCd,
+          divCd: data.divCd,
+          groupCd: data.bgtGrCd,
+          grFg: data.grFg,
+          bgtCd: data.bgtCd,
           // coCd: data.coCd,
           // divCd: data.divCd,
           // groupCd: data.groupCd,
