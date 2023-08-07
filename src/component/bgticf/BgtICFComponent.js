@@ -260,6 +260,11 @@ class BgtICFComponent extends Component {
     this.bgtICFRef.current.getBgtICFList(e.row);
   };
 
+  test = () => {
+    alert("Asdf");
+    this.bgtICFRef.current.updateBgtICF();
+  }
+
   render() {
     const labelStyle = {
       display: "inline",
@@ -282,7 +287,7 @@ class BgtICFComponent extends Component {
             border: "1px solid black",
             width: "calc(100% + 32px) !important",
             marginBottom: 2,
-            height: "68px",
+            height: "50px",
             paddingBottom: 2,
           }}
         >
@@ -424,9 +429,7 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Button onClick={this.handleGetBgtICFList}>조회</Button>
-            {/* <Button onClick={this.handleClickSerachButton}>조회</Button> */}
-            {/* <AutocompleteWithRemove /> */}
+            <Button onClick={this.test}>click</Button>
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2}>
@@ -462,6 +465,7 @@ class BgtICFComponent extends Component {
             <DataGridComponent
               ref={this.bgtICFRef}
               setSelectedRowId={this.setSelectedRowId}
+              handleClickSerachButton={this.handleClickSerachButton}
             />
           </Grid>
         </Grid>
