@@ -35,10 +35,17 @@ class PjtService {
     //         )
     // };
 
-    getSelPjtList(pjtCd){
+    getSelPjtList(pjtCd, coCd){
         return axios
-          .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd, {
+          .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd + "/" + coCd, {
           })
+    }
+
+    updatePjt(coCd, data){
+        return axios
+        .post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + coCd + "/" + data,{
+
+        })
     }
 }
 export default new PjtService();

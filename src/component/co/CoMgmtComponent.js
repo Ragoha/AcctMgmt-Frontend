@@ -80,7 +80,7 @@ class CoMgmtComponent extends Component {
 
     this.setState({ coCd: coCd });
     // {coCd && empId?
-    CompanyService.getCompany({
+    CompanyService.getCoList({
       accessToken: this.props.accessToken,
       coCd: coCd})
       .then((response) => {
