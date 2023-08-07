@@ -7,32 +7,38 @@ class PjtService {
     getListUser() {
         // return axios.get(ACCTMGMT_API_BASE_URL + "/");
     }
-    getCoList(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+    // coCd: "",
+    //   pgrCd: 0,
+    //   pgrNm: "",
+    //   pjtCd: "",
+    //   pjtNm: "",
+    //   prDt: new Date(),
+    //   toDt: new Date(),
+    //   progFg: "",
+    //   apjtNm: "",
+    //   stDt: new Date(),
+    //   note: "",
+    getPjtList(coCd) {
+
         return axios
-          .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
-            coCd: coCd,
-            coNm: coNm,
-            gisu: gisu,
-            frDt: frDt,
-            toDt: toDt,
-            jongmok: jongmok,
-            businessType: businessType,
-            coNb: coNb,
-            ceoNm: ceoNm,
-            coZip: coZip,
-            coAddr: coAddr,
-            coAddr1: coAddr1
+          .get(ACCTMGMT_API_BASE_URL + "/pjtDate/" + coCd, {
           })
       }
 
-    getCompany(pjtCd) {
+    // getCompany(pjtCd) {
+    //     return axios
+    //         .get(ACCTMGMT_API_BASE_URL + "/pjtDate", {
+    //             params: {
+    //                 pjtCd: pjtCd
+    //             }
+    //         }
+    //         )
+    // };
+
+    getSelPjtList(pjtCd){
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/pjtDate", {
-                params: {
-                    pjtCd: pjtCd
-                }
-            }
-            )
-    };
+          .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd, {
+          })
+    }
 }
 export default new PjtService();
