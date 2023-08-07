@@ -13,7 +13,7 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomBtnBgtcd, CustomGridContainer, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
 
 
 {/* <Autocomplete
@@ -135,15 +135,17 @@ console.log('데이터체크')
     const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
     return (
       <>
-        <Grid container spacing={2} padding={0}>
-          <Grid item xs={12}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item>
-                <ListIcon fontSize="large" />
-              </Grid>
-              <Grid item>
-                <CustomInputLabel>예산과목등록</CustomInputLabel>
-              </Grid>
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid item>
+            <CustomHeaderInputLabel>예산과목등록</CustomHeaderInputLabel>
+          </Grid>
+          <Grid item>
+            <Grid container direction="row">
               <CustomBtnBgtcd
                 onClick={this.handleRowAdd}
                 variant="primary"
@@ -153,7 +155,7 @@ console.log('데이터체크')
                   //border: "1px solid",
                 }}
               >
-                추    가
+                추 가
               </CustomBtnBgtcd>
               <CustomBtnBgtcd
                 variant="primary"
@@ -172,45 +174,45 @@ console.log('데이터체크')
                 예산과목추가
               </CustomBtnBgtcd>
               {/* 기능모음 드롭다운박스 */}
-              <BgtCDDropDownBox  selectBgtCDDropDownBox={this.selectBgtCDDropDownBox} />
+              <BgtCDDropDownBox
+                selectBgtCDDropDownBox={this.selectBgtCDDropDownBox}
+              />
             </Grid>
           </Grid>
-          <Grid item xs={12} sx={{ marginTop: "-10px" }}>
-            <CustomGridContainer
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-              spacing={2}
-            >
-              <Grid item xs={4}>
-                <CustomInputLabel>예산그룹</CustomInputLabel>
-                <CustomSelect>
-                </CustomSelect>
-              </Grid>
-              <Grid item xs={4}>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목코드</CustomInputLabel>
-                  <CustomTextField
-                    sx={{ width: "200px", marginRight: "50px"}}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={4}>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목명</CustomInputLabel>
-                  <CustomTextField
-                    sx={{ width: "200px", marginRight: "50px" }}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={4}>
-                <Button onClick={this.searchClick}>
-                  <SearchIcon />
-                </Button>
-              </Grid>
-            </CustomGridContainer>
+        </CustomHeaderGridContainer>
+        <CustomGridContainer
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산그룹</CustomInputLabel>
+              <CustomSelect></CustomSelect>
+            </Grid>
           </Grid>
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산과목코드</CustomInputLabel>
+              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산과목명</CustomInputLabel>
+              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Button onClick={this.searchClick}>
+              <SearchIcon />
+            </Button>
+          </Grid>
+        </CustomGridContainer>
+        <Grid container spacing={2} padding={0}>
+          <Grid item xs={12} sx={{ marginTop: "-10px" }}></Grid>
           <Grid container xs={12}>
             <Grid item xs={7}>
               <BgtCDDatagrid
@@ -219,7 +221,7 @@ console.log('데이터체크')
                 setDetailInfo={this.setDetailInfo}
               />
             </Grid>
-            <Grid item xs={5} justifyContent="center" >
+            <Grid item xs={5} justifyContent="center">
               <BgtCDDetailInfo
                 ref={this.BgtCDDetailInfo}
                 prevBgtCd={prevBgtCd}
@@ -233,11 +235,12 @@ console.log('데이터체크')
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-        <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
-        <BgtCDGroupReg ref={this.BgtCDGroupReg} />{/*그룹레벨설정 */}
-
+        <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
+        {/*예산그룹등록 */}
+        <BgtCDGroupReg ref={this.BgtCDGroupReg} />
+        {/*그룹레벨설정 */}
       </>
-    )
+    );
 
   }
 }

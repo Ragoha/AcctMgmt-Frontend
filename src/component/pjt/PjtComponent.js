@@ -349,18 +349,25 @@ class PjtComponent extends Component {
           </Grid>
         </Grid>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-        <CustomGridContainer container
+        <CustomGridContainer
+          container
           justifyContent="left"
           alignItems="center"
-          spacing={2}>
+          spacing={2}
+        >
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel >프로젝트</CustomInputLabel>
-              <CustomTextField sx={{ ml: 4, mt: -1 }} name='CodialTextField' value={this.state.CodialTextField} placeholder="프로젝트코드 "
+              <CustomInputLabel>프로젝트</CustomInputLabel>
+              <CustomTextField
+                sx={{ ml: 4, mt: -1 }}
+                name="CodialTextField"
+                value={this.state.CodialTextField}
+                placeholder="프로젝트코드 "
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <HelpCenterOutlinedIcon onClick={this.helpClick} /></InputAdornment>
+                      <HelpCenterOutlinedIcon onClick={this.helpClick} />
+                    </InputAdornment>
                   ),
                 }}
               />
@@ -369,12 +376,17 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel >프로젝트구분</CustomInputLabel>
-              <CustomTextField sx={{ mt: -1 }} name='CodialTextField' value={this.state.CodialTextField} placeholder="전체 "
+              <CustomInputLabel>프로젝트구분</CustomInputLabel>
+              <CustomTextField
+                sx={{ mt: -1 }}
+                name="CodialTextField"
+                value={this.state.CodialTextField}
+                placeholder="전체 "
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.helpClick} /></InputAdornment>
+                      <SearchIcon onClick={this.helpClick} />
+                    </InputAdornment>
                   ),
                 }}
               ></CustomTextField>
@@ -383,12 +395,17 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel >프로젝트분류</CustomInputLabel>
-              <CustomTextField sx={{ mt: -1 }} name='CodialTextField' value={this.state.CodialTextField} placeholder="프로젝트그룹코드 "
+              <CustomInputLabel>프로젝트분류</CustomInputLabel>
+              <CustomTextField
+                sx={{ mt: -1 }}
+                name="CodialTextField"
+                value={this.state.CodialTextField}
+                placeholder="프로젝트그룹코드 "
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <HelpCenterOutlinedIcon onClick={this.helpClick} /></InputAdornment>
+                      <HelpCenterOutlinedIcon onClick={this.helpClick} />
+                    </InputAdornment>
                   ),
                 }}
               ></CustomTextField>
@@ -397,27 +414,66 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel >프로젝트기간</CustomInputLabel>
-              <CustomTextField type="date" name='dateRange' value={this.state.dateRange || ''} onChange={this.handlePjt} sx={{
-                mt: -1,
-                '& input': {
-                  height: '9px',
-                },
-              }}></CustomTextField>
+              <CustomInputLabel>프로젝트기간</CustomInputLabel>
+              <CustomTextField
+                type="date"
+                name="dateRange"
+                value={this.state.dateRange || ""}
+                onChange={this.handlePjt}
+                sx={{
+                  mt: -1,
+                  "& input": {
+                    height: "9px",
+                  },
+                }}
+              ></CustomTextField>
             </Grid>
           </Grid>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-
-        <Grid sx={{ position: 'relative', display: 'flex', width: '100%', }}>
-          <Grid container
-            bgcolor={'#f5f5f5'}
-            sx={{ width: '22%', height: 500, border: '1px solid #EAEAEA', borderTop: '3px solid black' }}>
-            <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid #D8D8D8' }}>
-              <InputLabel >프로젝트:</InputLabel><InputLabel sx={{ ml: 0.5, color: '#0054FF', fontWeight: 'bold' }}>{cardCount}</InputLabel>건
+        <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
+          <Grid
+            container
+            bgcolor={"#f5f5f5"}
+            sx={{
+              width: "22%",
+              height: 500,
+              border: "1px solid #EAEAEA",
+              borderTop: "3px solid black",
+            }}
+          >
+            <Grid
+              item
+              sx={{
+                mb: 1,
+                display: "flex",
+                justifyContent: "left",
+                alignItems: "center",
+                width: "100%",
+                height: 22,
+                backgroundColor: "#f5f5f5",
+                borderBottom: "1px solid #D8D8D8",
+              }}
+            >
+              <InputLabel>프로젝트:</InputLabel>
+              <InputLabel
+                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold" }}
+              >
+                {cardCount}
+              </InputLabel>
+              건
             </Grid>
 
-            <Grid item ref={this.cardListRef} sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
+            <Grid
+              item
+              ref={this.cardListRef}
+              sx={{
+                pl: 1.2,
+                width: "95%",
+                height: "calc(100% - 5%)",
+                overflowY: "auto",
+              }}
+            >
               {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
               {cards.map((card, index) => (
                 <Grid key={index} item xs={12} sx={{ mb: 1 }}>
@@ -426,20 +482,24 @@ class PjtComponent extends Component {
               ))}
             </Grid>
 
-            <Grid container
-              sx={{ position: 'relative', bottom: '-13px', width: '100%' }} >
-              <Button variant="extended" onClick={this.addCardButton}
+            <Grid
+              container
+              sx={{ position: "relative", bottom: "-13px", width: "100%" }}
+            >
+              <Button
+                variant="extended"
+                onClick={this.addCardButton}
                 sx={{
-                  border: '1px solid',
-                  width: '100%',
-                  height: '60px',
-                  backgroundColor: '#F6F6F6',
-                  color: 'black',
-                  display: 'flex',
-                  justifyContent: 'center',
+                  border: "1px solid",
+                  width: "100%",
+                  height: "60px",
+                  backgroundColor: "#F6F6F6",
+                  color: "black",
+                  display: "flex",
+                  justifyContent: "center",
                   "&:hover": {
-                    backgroundColor: '#e0e0e0'
-                  }
+                    backgroundColor: "#e0e0e0",
+                  },
                 }}
               >
                 <AddIcon />
@@ -448,38 +508,130 @@ class PjtComponent extends Component {
             </Grid>
           </Grid>
           {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-          <Grid container alignItems="center" justifyContent="space-between" sx={{ width: '100%', maxHeight: 40, borderBottom: '3px solid #000' }}>
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{
+              width: "100%",
+              maxHeight: 40,
+              borderBottom: "3px solid #000",
+            }}
+          >
             <Grid item>
-              <InputLabel sx={{ ml: 2, mr: 2, mt: 1, textAlign: 'left', color: 'black', fontWeight: 'bold' }}>● 기본등록사항</InputLabel>
+              <InputLabel
+                sx={{
+                  ml: 2,
+                  mr: 2,
+                  mt: 1,
+                  textAlign: "left",
+                  color: "black",
+                  fontWeight: "bold",
+                }}
+              >
+                ● 기본등록사항
+              </InputLabel>
             </Grid>
-            <Grid item alignItems={'right'}>
-              {pjtCd ?
-                <Button variant="outlined" onClick={this.handleSave}>수정</Button>
-                :
+            <Grid item alignItems={"right"}>
+              {pjtCd ? (
+                <Button variant="outlined" onClick={this.handleSave}>
+                  수정
+                </Button>
+              ) : (
                 <Button variant="outlined">저장</Button>
-              }
-              <Button variant="outlined" >삭제</Button>
+              )}
+              <Button variant="outlined">삭제</Button>
             </Grid>
-            <Grid item xs={12} width={'100%'}>
-              <InputLabel sx={{ ml: 3.8, mr: 2, mt: 2, textAlign: 'left', color: '#0054FF', fontWeight: 'bold' }}>기본정보</InputLabel>
+            <Grid item xs={12} width={"100%"}>
+              <InputLabel
+                sx={{
+                  ml: 3.8,
+                  mr: 2,
+                  mt: 2,
+                  textAlign: "left",
+                  color: "#0054FF",
+                  fontWeight: "bold",
+                }}
+              >
+                기본정보
+              </InputLabel>
               <hr />
             </Grid>
 
-            <Grid container width={"100%"} border={'1px solid #e0e0e0'} >
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트코드</InputLabel>
+            <Grid container width={"100%"} border={"1px solid #e0e0e0"}>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트코드
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField disabled={!this.state.isPjtCdEditable} size='small' sx={{ ml: 2, width: '93%' }} name='pjtCd' onChange={this.handlePjt} value={pjtCd || ''} />
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  disabled={!this.state.isPjtCdEditable}
+                  size="small"
+                  sx={{ ml: 2, width: "93%" }}
+                  name="pjtCd"
+                  onChange={this.handlePjt}
+                  value={pjtCd || ""}
+                />
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트구분</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트구분
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}
-                onChange={this.handlePjt}>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+                onChange={this.handlePjt}
+              >
                 <Select
-                  sx={{ ml: 2, mt: 0.3, width: '93%', height: '40px', backgroundColor: '#FFEAEA' }}
+                  sx={{
+                    ml: 2,
+                    mt: 0.3,
+                    width: "93%",
+                    height: "40px",
+                    backgroundColor: "#FFEAEA",
+                  }}
                   name="selectedProgFg"
                   value={this.state.progFg}
                   onChange={this.handleProgFgChange}
@@ -491,80 +643,303 @@ class PjtComponent extends Component {
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트명</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트명
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, backgroundColor: '#FFEAEA', width: '93%' }} name='pjtNm' onChange={this.handlePjt} value={pjtNm || ''} />
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ ml: 2, backgroundColor: "#FFEAEA", width: "93%" }}
+                  name="pjtNm"
+                  onChange={this.handlePjt}
+                  value={pjtNm || ""}
+                />
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트약칭</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트약칭
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='apjtNm' onChange={this.handlePjt} value={apjtNm || ''} />
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ ml: 2, width: "93%" }}
+                  name="apjtNm"
+                  onChange={this.handlePjt}
+                  value={apjtNm || ""}
+                />
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트분류</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트분류
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pgrCd' onChange={this.handlePjt} value={pgrCd || ''} placeholder='프로젝트그룹코드' />
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ ml: 2, width: "93%" }}
+                  name="pgrCd"
+                  onChange={this.handlePjt}
+                  value={pgrCd || ""}
+                  placeholder="프로젝트그룹코드"
+                />
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >사용권한설정</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  사용권한설정
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '93%' }} name='pjtRole' onChange={this.handlePjt} value={pjtRole || ''} />
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ ml: 2, width: "93%" }}
+                  name="pjtRole"
+                  onChange={this.handlePjt}
+                  value={pjtRole || ""}
+                />
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트기간</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트기간
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <Grid item xs={6} sx={{ ml: 2, width: '100%' }}>
-                  <TextField type="date" name='prDt' value={dayjs(prDt).format('YYYY-MM-DD')} onChange={this.handlePjt} sx={{
-                    width: '100%', '& input': {
-                      height: '9px',
-                    },
-                  }}></TextField>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <Grid item xs={6} sx={{ ml: 2, width: "100%" }}>
+                  <TextField
+                    type="date"
+                    name="prDt"
+                    value={dayjs(prDt).format("YYYY-MM-DD")}
+                    onChange={this.handlePjt}
+                    sx={{
+                      width: "140px",
+                      "& input": {
+                        height: "9px",
+                      },
+                    }}
+                  ></TextField>
                 </Grid>
                 {/* <LinearScaleIcon /> */}&nbsp;~&nbsp;
-                <Grid item xs={6} sx={{ borderRight: '1px solid #EAEAEA', width: '100%', mr: 2 }}>
-                  <TextField type="date" name='toDt' value={dayjs(toDt).format('YYYY-MM-DD')} onChange={this.handlePjt} sx={{
-                    width: '100%', '& input': {
-                      height: '9px',
-                    },
-                  }}></TextField>
+                <Grid
+                  item
+                  xs={6}
+                  sx={{
+                    borderRight: "1px solid #EAEAEA",
+                    width: "140px",
+                    mr: 2,
+                  }}
+                >
+                  <TextField
+                    type="date"
+                    name="toDt"
+                    value={dayjs(toDt).format("YYYY-MM-DD")}
+                    onChange={this.handlePjt}
+                    sx={{
+                      width: "100%",
+                      "& input": {
+                        height: "9px",
+                      },
+                    }}
+                  ></TextField>
                 </Grid>
               </Grid>
 
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >프로젝트시작일</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>
+                  프로젝트시작일
+                </InputLabel>
               </Grid>
-              <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', width: '100%' }}>
-                <TextField type="date" name='stDt' value={dayjs(stDt).format('YYYY-MM-DD')} onChange={this.handlePjt} sx={{
-                  ml: 2, width: '100%', mr: 2, '& input': {
-                    height: '9px',
-                  },
-                }}></TextField>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  width: "100%",
+                }}
+              >
+                <TextField
+                  type="date"
+                  name="stDt"
+                  value={dayjs(stDt).format("YYYY-MM-DD")}
+                  onChange={this.handlePjt}
+                  sx={{
+                    ml: 2,
+                    width: "100%",
+                    mr: 2,
+                    "& input": {
+                      height: "9px",
+                    },
+                  }}
+                ></TextField>
               </Grid>
 
-
-              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                <InputLabel sx={{ mr: 2, color: 'black' }}  >비고</InputLabel>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+                <InputLabel sx={{ mr: 2, color: "black" }}>비고</InputLabel>
               </Grid>
-              <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #D8D8D8', borderRight: '1px solid #EAEAEA' }}>
-                <TextField size='small' sx={{ ml: 2, width: '80%', }} name='note' onChange={this.handlePjt} placeholder='프로젝트 관련 비고 입력' />
+              <Grid
+                item
+                xs={10}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #D8D8D8",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <TextField
+                  size="small"
+                  sx={{ ml: 2, width: "80%" }}
+                  name="note"
+                  onChange={this.handlePjt}
+                  placeholder="프로젝트 관련 비고 입력"
+                />
               </Grid>
-
-
             </Grid>
           </Grid>
           {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-        </Grid > {/*  전체화면 닫는 곳*/}
-        <PjtDialogComponent handleSetCodialTextField={this.handleSetCodialTextField} ref={this.pjtDialogRef} />
+        </Grid>{" "}
+        {/*  전체화면 닫는 곳*/}
+        <PjtDialogComponent
+          handleSetCodialTextField={this.handleSetCodialTextField}
+          ref={this.pjtDialogRef}
+        />
       </>
     );
   }

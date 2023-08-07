@@ -18,6 +18,8 @@ import BgtICFService from "../../service/BgtICFService";
 import {
   CustomAutoComplete,
   CustomGridContainer,
+  CustomHeaderGridContainer,
+  CustomHeaderInputLabel,
   CustomInputLabel,
   CustomSearchButton,
   CustomTextField,
@@ -26,6 +28,16 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+
+const currencyFormatter = new Intl.NumberFormat("ko-KR", {
+  /* style: "currency", currency: "KRW", */
+});
+
+const krAmount = {
+  type: "number",
+  valueFormatter: ({ value }) => currencyFormatter.format(value),
+  cellClassName: "font-tabular-nums",
+};
 
 const BGTCD_COLUMN = [
   {
@@ -50,6 +62,7 @@ const BGTCD_COLUMN = [
     field: "carrAm",
     headerName: "금액",
     headerAlign: "center",
+    ...krAmount,
   },
 ];
 
@@ -279,22 +292,9 @@ class BgtICFComponent extends Component {
 
     return (
       <>
-        <Grid
-          container
-          spacing={2}
-          alignItems="center"
-          sx={{
-            border: "1px solid black",
-            width: "calc(100% + 32px) !important",
-            marginBottom: 2,
-            height: "50px",
-            paddingBottom: 2,
-          }}
-        >
+        <CustomHeaderGridContainer container spacing={2} alignItems="center">
           <Grid item>
-            <CustomInputLabel sx={{ fontSize: 22 }}>
-              예산초기이월등록
-            </CustomInputLabel>
+            <CustomHeaderInputLabel>예산초기이월등록</CustomHeaderInputLabel>
           </Grid>
           <Grid item>
             <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
@@ -303,7 +303,7 @@ class BgtICFComponent extends Component {
               <Button onClick={this.handleRowDelete}>삭제</Button>
             </Box>
           </Grid>
-        </Grid>
+        </CustomHeaderGridContainer>
         <CustomGridContainer
           container
           spacing={2}
@@ -369,7 +369,7 @@ class BgtICFComponent extends Component {
               justifyContent="flex-start"
             >
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <TextField
+              <CustomTextField
                 name="bgtGrTextField"
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
@@ -382,14 +382,13 @@ class BgtICFComponent extends Component {
                   ),
                 }}
               />
-              <Box sx={{ marginLeft: "auto" }}>
-                <CustomSearchButton
-                  variant="outlined"
-                  onClick={this.handleClickSerachButton}
-                >
-                  <SearchIcon />
-                </CustomSearchButton>
-              </Box>
+              <CustomSearchButton
+                variant="outlined"
+                onClick={this.handleClickSerachButton}
+                sx={{ marginLeft: "auto" }}
+              >
+                <SearchIcon />
+              </CustomSearchButton>
             </Grid>
           </Grid>
           <Grid item xs={4}>
