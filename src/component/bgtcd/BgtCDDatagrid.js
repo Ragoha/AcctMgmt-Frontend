@@ -8,12 +8,12 @@ class BgtCDDatagrid extends Component {
         this.state = {
             columns: [
                 //{ field: 'defNm', headerName: '분류명', width: 100 },
-                { field: 'bgtCd', headerName: '예산코드', width: 100 },
+                { field: 'bgtCd', headerName: '예산코드', width: 140 },
                 { field: 'bgtNm', headerName: '예산과목명', width: 250 },
             ],
             rows: [],
             dataPath:'초기값그대로야~ 다시 뽑아 ~',
-
+            
         }
     }
     processRowUpdate =(newRow)=>{

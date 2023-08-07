@@ -9,6 +9,8 @@ import BgtCDDetailInfoFormControl from './BgtCDDetailInfoFormControl';
 import { ThreeDRotationSharp } from '@mui/icons-material';
 import { Divider } from '@material-ui/core';
 import { CustomInputLabel } from '../common/style/CommonStyle';
+import { connect } from 'react-redux';
+import { SET_GROUPCD } from '../../store/BgtCDStore';
 
 /*리덕스 import */
 // import { connect } from 'react-redux';
@@ -32,6 +34,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       title: ['예산통제구분', '예산전용구분', '회계계정과목', '최하위과목여부', '구매성격'],
       //months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       dbValue: props.dbValue,
+      coCd : this.props.userInfo,
       ctlFg: null,
       bgajustFg: null,
       bottomFg: null,
@@ -48,7 +51,8 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   setDetailInfo = (bgtCd) => {
     console.log('---DetailInfo.js에 있는 setDetailInfo---')
     this.setState({bgtCd : bgtCd},()=>console.log('setDetail에서 bgtcd 인식하는가 '+this.state.bgtCd))
-    BgtCDService.getDetailInfo(bgtCd)
+    const{accessToken} = this.props;
+    BgtCDService.getDetailInfo(bgtCd ,accessToken)
       .then(response => {
         console.log('ctlFg 값은 ? ' + response[0].ctlFg);
         console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
@@ -67,6 +71,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   }
   updateDetailInfo = () => {
     console.log('---updateDetailInfo---')
+    const{accessToken} = this.props;
     const updateData = {
       ctlFg: this.ctlFgControl.state.dataindex,
       bgajustFg: this.bgajustFgControl.state.dataindex,
@@ -74,7 +79,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bizFg: this.bizFgControl.state.dataindex,
       bgtCd: this.state.bgtCd,
     }
-    BgtCDService.updateDetailInfo(updateData)
+    BgtCDService.updateDetailInfo(updateData ,accessToken)
       .then(response => {
         console.log('여긴 detailINfo야 ~' + response)
       }).catch(error => {
@@ -84,7 +89,8 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   deleteRow = () => {
     console.log('deleteRow에서this.props.prevBgtCd 찍어봄  :  ' + this.state.bgtCd)
     const data = this.state.bgtCd
-    BgtCDService.deleteRow(data)
+    const{accessToken} = this.props;
+    BgtCDService.deleteRow(data,accessToken)
       .then(response => {
         if (response === 0) {
           alert('삭제완료야 ㅋㅋ')
@@ -95,12 +101,9 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
         console.error("deleteRow 에러야 :", error);
       }).then(
       /*여기서 내일 Redux로 부모의 함수하는거 붙이는거 해볼 예정 . */
-
-
     );
     /*[230720] : 지금 삭제는 되는데 삭제하고나서 DataGrid가 바뀌질 않음 -230721-에 해볼예정
     * [230801] : delete 이후에 dataGrid 다시 불러오기 구현 시작 
-    * 
     */
   }
   render() {
@@ -162,15 +165,15 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     );
   }
 }
-// const mapStateToProps = (state) => ({
-//   accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
-//   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
-//   configData: state.config.configData,
-// });
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     set_detailInfo: (response) => dispatch(set_detailInfo(response)),
-//   };
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+});
 
-// };
-export default BgtCDDetailInfo;//connect(mapStateToProps, mapDispatchToProps) (
+const mapDispatchToProps = (dispatch) => {
+  return {
+    SET_GROUPCD: (response) => dispatch(SET_GROUPCD(response)),
+  };
+}
+
+export default connect(mapStateToProps ,mapDispatchToProps,null ,{forwardRef: true }) (BgtCDDetailInfo);//connect(mapStateToProps, mapDispatchToProps) (
