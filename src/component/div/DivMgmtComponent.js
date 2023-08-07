@@ -34,10 +34,10 @@ class DivMgmtComponent extends Component {
       divCd: 0,
       coNm: '',
       divNm: '',
-      //insertId: '', //등록자
+      insertId: '', //등록자
       //insertDt: '', //등록일  String???
       //insertIp: '', //등록자 ip
-      //modifyId: '', //수정자
+      modifyId: '', //수정자
       //modifyDt: '', //수정일
       //modifyIp: '', //수정 ip
       jongmok: '', //종목
@@ -65,7 +65,8 @@ class DivMgmtComponent extends Component {
     this.setState({ coCd: coCd });
     DivsService.getDivision({
       accessToken: this.props.accessToken,
-      coCd: coCd })
+      coCd: coCd
+    })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
@@ -105,7 +106,8 @@ class DivMgmtComponent extends Component {
         })
         CompanyService.getCompany({
           accessToken: this.props.accessToken,
-          coCd: coCd})
+          coCd: coCd
+        })
           .then((response) => {
             const coNm = response.data[0].coNm;
 
@@ -175,7 +177,7 @@ class DivMgmtComponent extends Component {
     //     });
     // }
 
-}
+  }
 
 
   handleCompany = (e) => {
@@ -197,7 +199,8 @@ class DivMgmtComponent extends Component {
       const newDivCdList = [...this.state.divCdList, '0000'];
 
       CompanyService.getCoList({
-        accessToken: this.props.accessToken})
+        accessToken: this.props.accessToken
+      })
         .then((response) => {
           // const newDivNmList = response.data.map((item) => item.divNm);
           const coCdList = response.data.map((item) => item.coCd);
@@ -239,15 +242,19 @@ class DivMgmtComponent extends Component {
 
   comInfo = () => {
     const { coNm } = this.state;
-    CompanyService.getCoNm({accessToken: this.props.accessToken,
-      coNm: coNm})
+    CompanyService.getCoNm({
+      accessToken: this.props.accessToken,
+      coNm: coNm
+    })
       .then((response) => {
         const coCd = response.data[0].coCd
         this.setState({
           coCd: coCd
         })
-        CompanyService.getCompany({accessToken: this.props.accessToken,
-          coCd: coCd})
+        CompanyService.getCompany({
+          accessToken: this.props.accessToken,
+          coCd: coCd
+        })
           .then((response) => {
             // const newDivNmList = response.data.map((item) => item.divNm);
             const coCdList = response.data.map((item) => item.coCd);
@@ -290,65 +297,130 @@ class DivMgmtComponent extends Component {
 
   insertDivs = () => {
     const { coNm } = this.state;
+    const userInfo = this.props.userInfo;
+    const { empId, empEmail } = userInfo;
     CompanyService.getCoNm({
       accessToken: this.props.accessToken,
-      coNm: coNm})
+      coNm: coNm
+    })
       .then((response) => {
         const coCd = response.data[0].coCd
-       
+
         this.setState({
           coCd: coCd
         })
 
-        const {  divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
+        const { divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, insertId } = this.state;
         return DivsService.insertDivs({
           accessToken: this.props.accessToken,
-          coCd: coCd, 
-          divNm: divNm, 
-          ceoNm: ceoNm, 
-          jongmok: jongmok, 
-          businessType: businessType, 
-          divNb: divNb, 
-          toNb: toNb, 
-          divZip: divZip, 
-          divAddr: divAddr , 
-          divAddr1: divAddr1})
+          coCd: coCd,
+          divNm: divNm,
+          ceoNm: ceoNm,
+          jongmok: jongmok,
+          businessType: businessType,
+          divNb: divNb,
+          toNb: toNb,
+          divZip: divZip,
+          divAddr: divAddr,
+          divAddr1: divAddr1,
+          insertId: empId
+        })
 
           .then((response) => {
             console.log(response.data);
             window.confirm('사업장등록 완료!');
-            const coCdList = response.data.map((item) => item.coCd);
-            const divCdList = response.data.map((item) => item.divCd);
-            const divNmList = response.data.map((item) => item.divNm);
-            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-            this.setState({
-              cardCount: cardCount, // state에 값을 저장
-              coCdList: coCdList,
-              divCdList: divCdList,
-              divNmList: divNmList,
-              focused: coCdList[cardCount - 1],
-              coCd: '',
-              divNm: '',
-              jongmok: '',
-              businessType: '',
-              divNb: '',
-              toNb: '',
-              ceoNm: '',
-              divZip: '',
-              divAddr: '',
-              divAddr1: '',
-              isChanged: false
-            });
-            // window.location.reload();
-            // window.location.href="/acctmgmt/ozt/co";
+            console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+            this.setState({ coCd: coCd });
+            DivsService.getDivision({
+              accessToken: this.props.accessToken,
+              coCd: coCd
+            })
+              .then((response) => {
+                const coCdList = response.data.map((item) => item.coCd);
+                const divCdList = response.data.map((item) => item.divCd);
+                const divNmList = response.data.map((item) => item.divNm);
+                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                const coCd = response.data[0].coCd;
+                const divCd = response.data[0].divCd;
+                const divNm = response.data[0].divNm;
+                const ceoNm = response.data[0].ceoNm;
+                const jongmok = response.data[0].jongmok;
+                const businessType = response.data[0].businessType;
+                const divNb = response.data[0].divNb;
+                const toNb = response.data[0].toNb;
+                const divZip = response.data[0].divZip;
+                const divAddr = response.data[0].divAddr;
+                const divAddr1 = response.data[0].divAddr1;
+
+                this.setState({
+                  cardCount: cardCount, // state에 값을 저장
+                  coCdList: coCdList,
+                  divCdList: divCdList,
+                  divNmList: divNmList,
+
+                  focused: coCdList[cardCount - 1],
+                  coCd: coCd,
+                  divCd: divCd,
+                  divNm: divNm,
+                  ceoNm: ceoNm,
+                  jongmok: jongmok,
+                  businessType: businessType,
+                  divNb: divNb,
+                  toNb: toNb,
+                  divZip: divZip,
+                  divAddr: divAddr,
+                  divAddr1: divAddr1,
+                  insertId: insertId
+                })
+                CompanyService.getCompany({
+                  accessToken: this.props.accessToken,
+                  coCd: coCd
+                })
+                  .then((response) => {
+                    const coNm = response.data[0].coNm;
+
+                    this.setState({
+                      coNm: coNm
+                    })
+                  })
+              })
           })
       })
-      .catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        alert("중복된 사업장 또는 모두 입력해주세요");
-      });
+    //       const coCdList = response.data.map((item) => item.coCd);
+    //       const divCdList = response.data.map((item) => item.divCd);
+    //       const divNmList = response.data.map((item) => item.divNm);
+    //       const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+    //       this.setState({
+    //         cardCount: cardCount, // state에 값을 저장
+    //         coCdList: coCdList,
+    //         divCdList: divCdList,
+    //         divNmList: divNmList,
+    //         focused: coCdList[cardCount - 1],
+    //         coCd: '',
+    //         divNm: '',
+    //         jongmok: '',
+    //         businessType: '',
+    //         divNb: '',
+    //         toNb: '',
+    //         ceoNm: '',
+    //         divZip: '',
+    //         divAddr: '',
+    //         divAddr1: '',
+    //         isChanged: false
+    //       });
+    //       // window.location.reload();
+    //       // window.location.href="/acctmgmt/ozt/co";
+    //     })
+    // })
+    // .catch((error) => {
+    //   // 오류 발생 시의 처리
+    //   console.error(error);
+    //   alert("중복된 사업장 또는 모두 입력해주세요");
+    // });
   }
 
   addrButton = () => {
@@ -390,7 +462,8 @@ class DivMgmtComponent extends Component {
         }) :
         DivsService.getDiv({
           accessToken: this.props.accessToken,
-          divCd: divCd})
+          divCd: divCd
+        })
 
           .then((response) => {
             const coCd = response.data[0].coCd;
@@ -420,7 +493,8 @@ class DivMgmtComponent extends Component {
             })
             CompanyService.getCompany({
               accessToken: this.props.accessToken,
-              coCd:coCd})
+              coCd: coCd
+            })
               .then((response) => {
                 const coNm = response.data[0].coNm;
 
@@ -514,41 +588,89 @@ class DivMgmtComponent extends Component {
   }
 
   updateDivs = () => {
-    const { coCd, divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
+    const { divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, modifyId } = this.state;
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
 
+    console.log(divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, modifyId)
     console.log(divNm)
-    DivsService.updateDivs(divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1)
+
+    DivsService.updateDivs({
+      accessToken: this.props.accessToken,
+      divCd: divCd,
+      divNm: divNm,
+      ceoNm: ceoNm,
+      jongmok: jongmok,
+      businessType: businessType,
+      divNb: divNb,
+      toNb: toNb,
+      divZip: divZip,
+      divAddr: divAddr,
+      divAddr1: divAddr1,
+      modifyId: empId
+    })
       .then((response) => {
         console.log(response.data);
         window.confirm('업데이트 완료!');
-        const divCdList = response.data.map((item) => item.divCd);
-        const divNmList = response.data.map((item) => item.divNm);
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          divCdList: divCdList,
-          divNmList: divNmList,
-          focused: divCd,
-          coCd: coCd,
-          divCd: divCd,
-          divNm: divNm,
-          ceoNm: ceoNm,
-          jongmok: jongmok,
-          businessType: businessType,
-          divNb: divNb,
-          toNb: toNb,
-          divZip: divZip,
-          divAddr: divAddr,
-          divAddr1: divAddr1,
-          isChanged: false,
-        })
-      })
 
-      .catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        alert("업데이트 실패..");
-      });
+        console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+        this.setState({ coCd: coCd });
+        DivsService.getDivision({
+          accessToken: this.props.accessToken,
+          coCd: coCd
+        })
+          .then((response) => {
+            const coCdList = response.data.map((item) => item.coCd);
+            const divCdList = response.data.map((item) => item.divCd);
+            const divNmList = response.data.map((item) => item.divNm);
+            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+            const coCd = response.data[0].coCd;
+            const divCd = response.data[0].divCd;
+            const divNm = response.data[0].divNm;
+            const ceoNm = response.data[0].ceoNm;
+            const jongmok = response.data[0].jongmok;
+            const businessType = response.data[0].businessType;
+            const divNb = response.data[0].divNb;
+            const toNb = response.data[0].toNb;
+            const divZip = response.data[0].divZip;
+            const divAddr = response.data[0].divAddr;
+            const divAddr1 = response.data[0].divAddr1;
+
+            this.setState({
+              cardCount: cardCount, // state에 값을 저장
+              coCdList: coCdList,
+              divCdList: divCdList,
+              divNmList: divNmList,
+
+              focused: divCd,
+              coCd: coCd,
+              divCd: divCd,
+              divNm: divNm,
+              ceoNm: ceoNm,
+              jongmok: jongmok,
+              businessType: businessType,
+              divNb: divNb,
+              toNb: toNb,
+              divZip: divZip,
+              divAddr: divAddr,
+              divAddr1: divAddr1,
+              modifyId: modifyId
+            })
+            CompanyService.getCompany({
+              accessToken: this.props.accessToken,
+              coCd: coCd
+            })
+              .then((response) => {
+                const coNm = response.data[0].coNm;
+
+                this.setState({
+                  coNm: coNm
+                })
+              })
+          })
+      })
   }
 
   deleteDivs = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
@@ -556,39 +678,74 @@ class DivMgmtComponent extends Component {
 
     DivsService.deleteDivs({
       accessToken: this.props.accessToken,
-      divCd: divCd})
+      divCd: divCd
+    })
       .then((response) => {
         console.log(response.data);
         window.confirm('사업장삭제 완료!');
-        const divCdList = response.data.map((item) => item.divCd);
-        const divNmList = response.data.map((item) => item.divNm);
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          divCdList: divCdList,
-          divNmList: divNmList,
-          focused: divCdList[0],
-          coCd: '',
-          divCd: '',
-          divNm: '',
-          ceoNm: '',
-          jongmok: '',
-          businessType: '',
-          divNb: '',
-          toNb: '',
-          divZip: '',
-          divAddr: '',
-          divAddr1: ''
 
+        const userInfo = this.props.userInfo;
+        const { coCd, empId, empEmail } = userInfo;
+        console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+        this.setState({ coCd: coCd });
+        DivsService.getDivision({
+          accessToken: this.props.accessToken,
+          coCd: coCd
         })
-        console.log(divCdList)
-      })
-      .catch((error) => {
+          .then((response) => {
+            const coCdList = response.data.map((item) => item.coCd);
+            const divCdList = response.data.map((item) => item.divCd);
+            const divNmList = response.data.map((item) => item.divNm);
+            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+            const coCd = response.data[0].coCd;
+            const divCd = response.data[0].divCd;
+            const divNm = response.data[0].divNm;
+            const ceoNm = response.data[0].ceoNm;
+            const jongmok = response.data[0].jongmok;
+            const businessType = response.data[0].businessType;
+            const divNb = response.data[0].divNb;
+            const toNb = response.data[0].toNb;
+            const divZip = response.data[0].divZip;
+            const divAddr = response.data[0].divAddr;
+            const divAddr1 = response.data[0].divAddr1;
+
+            this.setState({
+              cardCount: cardCount, // state에 값을 저장
+              coCdList: coCdList,
+              divCdList: divCdList,
+              divNmList: divNmList,
+              focused: divCdList[0],
+              coCd: coCd,
+              divCd: divCd,
+              divNm: divNm,
+              ceoNm: ceoNm,
+              jongmok: jongmok,
+              businessType: businessType,
+              divNb: divNb,
+              toNb: toNb,
+              divZip: divZip,
+              divAddr: divAddr,
+              divAddr1: divAddr1
+            })
+            CompanyService.getCompany({
+              accessToken: this.props.accessToken,
+              coCd: coCd
+            })
+              .then((response) => {
+                const coNm = response.data[0].coNm;
+
+                this.setState({
+                  coNm: coNm
+                })
+              })
+          })
+      }).catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
-        alert("삭제 실패..");
+        alert("업데이트 실패..");
       });
-      console.log(this.props.accessToken)
   }
 
   handleChange = (e) => {
@@ -598,7 +755,7 @@ class DivMgmtComponent extends Component {
   }
 
   render() {
-    const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1 } = this.state;
+    const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1, modifyId } = this.state;
     const { coNm } = this.state;
     const { cardCount, divCdList, divNmList, coCdList, coNmList } = this.state;
 
@@ -840,4 +997,4 @@ const mapStateToProps = (state) => ({
   userInfo: state.user || {} //  userInfo 정보 매핑해주기..
 });
 
-export default connect(mapStateToProps)(DivMgmtComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(DivMgmtComponent);

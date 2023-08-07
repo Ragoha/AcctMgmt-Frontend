@@ -47,6 +47,8 @@ class BgtCDDropDownBox extends React.Component {
       
     }else if(name=="예산과목일괄설정"){
       
+    }else if(name=="예산그룹등록"){
+      this.props.selectBgtCDDropDownBox('BgtCDAddSubDialogOpen')
     }
          
   }
@@ -97,6 +99,8 @@ class BgtCDDropDownBox extends React.Component {
                     <MenuItem onClick={this.selectFun}
                     >예산과목복사</MenuItem>
                     <MenuItem onClick={this.selectFun}
+                    >예산그룹등록</MenuItem>
+                    <MenuItem onClick={this.selectFun}
                     >과목분류명등록</MenuItem>
                     <MenuItem onClick={this.selectFun}
                     >회계계정과목복사</MenuItem>
@@ -104,6 +108,7 @@ class BgtCDDropDownBox extends React.Component {
                     >예산과목엑셀업로드</MenuItem>
                     <MenuItem onClick={this.selectFun}
                     >예산과목일괄설정</MenuItem>
+                   
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

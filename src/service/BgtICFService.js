@@ -34,11 +34,54 @@ class BtgICFService {
   //   return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
   // }
 
+  updateBgtICF(data) {
+    console.log(data);
+    return axios
+      .put(
+        ACCTMGMT_API_BASE_URL + "/bgticf",
+        {
+          coCd: data.user.coCd,
+          gisu: data.row.gisu,
+          sq: data.row.sq,
+          bgtCd: data.row.bgtCd,
+          divCd: data.row.divCd,
+          deptCd: data.row.deptCd,
+          mgtCd: data.row.mgtCd,
+          bgtFg: data.row.bgtFg,
+          bottomNm: data.row.bottomNm,
+          carrAm: data.row.carrAm,
+          carrAm1: data.row.carrAm1,
+          carrAm2: data.row.carrAm2,
+          carrAm3: data.row.carrAm3,
+          empCd: data.user.empCd,
+          remDc: data.row.remDc,
+          modifyId: data.user.empId,
+        },
+        {
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        console.log("응답:", response.data); // 성공적으로 응답이 도착한 경우 응답 데이터 출력
+        return response.data; // 다음 처리를 위해 응답 데이터 반환
+      })
+      .catch((error) => {
+        console.error("오류:", error); // 오류가 발생한 경우 오류 메시지 출력
+        throw error; // 오류를 다음 단계로 넘겨서 처리하도록 예외 던지기
+      });
+  }
+
   deleteBgtICF(data) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf", {
-      params: {
+    console.log(data);
+    return axios
+      .delete(ACCTMGMT_API_BASE_URL + "/bgticf", {
+        params: {
           coCd: data.coCd,
           bgtCd: data.bgtCd,
+          sq: data.sq,
         },
         headers: {
           "access-token": data.accessToken,

@@ -83,6 +83,20 @@ class BgtCDService {
         console.log(returnData)
         return returnData ;
     }
+    getBgtGrData(coCd ,accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getBgtGrData",{
+        params:{
+          coCd: coCd
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      }).then((response)=>response.data);
+
+      return returnData;
+    }
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData

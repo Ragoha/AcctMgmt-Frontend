@@ -14,26 +14,47 @@ import {
     CustomSearchButton,
     CustomShortFormGridContainer
 } from "../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomTextField } from "../../common/style/CommonStyle";
+import { CustomBtnBgtcd, CustomDataGrid, CustomInputLabel, CustomTextField } from "../../common/style/CommonStyle";
 import { DataGrid } from "@mui/x-data-grid";
+import BgtCDService from "../../../service/BgtCDService";
+import { connect } from 'react-redux';
 class BgtCDADDSubDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: true,
-            columns : [
-                {field:"groupcd" , headerName:"그룹코드",width:220, headerAlign:"center", editable:true},
-                {field:"groupName" , headerName:"그룹명",width:220, headerAlign:"center",editable:true},
+            idCounter: 0,
+            columns: [
+                { field: "bgtGrCd", headerName: "그룹코드",  flex: 1, headerAlign: "center", editable: true },
+                { field: "bgtGrNm", headerName: "그룹명",  flex: 1, headerAlign: "center", editable: true },
             ],
-            rows:[
-                { id: 1, groupcd: 'Snow', groupName: 'Jon' },
-                { id: 2, groupcd: 'Snow', groupName: 'Jon' },
-                { id: 3, groupcd: 'Snow', groupName: 'Jon' },
-            
+            rows: [
+                { bgtGrCd: 'ABC', bgtGrNm: 'Jon1' },
+                { bgtGrCd: 'DEF', bgtGrNm: 'Jon2' },
+                { bgtGrCd: 'JYP', bgtGrNm: 'Jon3' },
             ]
         };
     }
-
+    componentDidMount(){
+        const{coCd} = this.props.userInfo;
+        const {accessToken } = this.props;
+        BgtCDService.getBgtGrData(coCd ,accessToken)
+        .then(data=>{
+            console.log('BgtCDADDSubDialog입니다 처음에 로우뿌려보는거입니다.')
+            console.dir(data);
+            this.setState({rows: data})
+        }).catch(error => {
+            console.error("Error fetching data:", error);
+        });
+    }
+    
+    createRandomRow = () => {
+        var idCounter = this.state.idCounter;
+        idCounter+=1;
+        this.setState({idCounter:idCounter},()=>console.log('idcounter ? :' + idCounter))
+        return { groupcd: "", groupName: idCounter };
+      };
+    /*default function */
     handleUp = () => {
         this.setState({ open: true });
     };
@@ -41,9 +62,19 @@ class BgtCDADDSubDialog extends Component {
     handleDown = () => {
         this.setState({ open: false });
     };
+    /* additional function */
+    processRowUpdate =(event)=>{
+        console.log("eh되는거냐~")
+        console.log(event)
+        const nRow= this.createRandomRow();
+        const newRows = [
+            ...this.state.rows,  nRow
+        ];
+        this.setState({rows:newRows})
+    }
 
     render() {
-        const { open ,columns,rows} = this.state;
+        const { open, columns, rows } = this.state;
 
         return (
             <Dialog
@@ -57,17 +88,21 @@ class BgtCDADDSubDialog extends Component {
                 </CustomDialogTitle>
                 <CustomDialogContent >
                     <CustomShortFormGridContainer container direction="row" spacing={2}>
-                        <Grid item xs={12}>
-                            <Button>
-                                삭제
-                            </Button>
-
+                        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }} >
+                            <CustomConfirmButton onClick={this.processRowUpdate} variant="contained">
+                                등록
+                            </CustomConfirmButton>
+                            <Button variant="outlined" sx={{ mr: '16px' }}>삭제</Button>
                         </Grid>
+                    </CustomShortFormGridContainer>
+                    
+                    <CustomDataGridContainer>
                         <Grid item xs={12}>
                             <CustomDataGrid
-                                sx={{borderTop: "3px solid black"}}
+                                sx={{ borderTop: "3px solid black" }}
                                 columns={columns}
                                 rows={rows}
+                                getRowId={(row) => row.bgtGrCd}
                                 showColumnVerticalBorder={true}
                                 showCellVerticalBorder={true} // 각 셀마다 영역주기
                                 editMode='row'
@@ -75,13 +110,22 @@ class BgtCDADDSubDialog extends Component {
                             />
 
                         </Grid>
-                    </CustomShortFormGridContainer>
+
+                    </CustomDataGridContainer>
+
+
+
                 </CustomDialogContent>
 
             </Dialog>
         );
     }
 }
-
-export default BgtCDADDSubDialog;
+const mapStateToProps = (state) => ({
+    accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+    userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+    //groupcd: state.BgtCDStore || {}
+  
+  });
+export default connect(mapStateToProps, null, null, { forwardRef: true })(BgtCDADDSubDialog);
 

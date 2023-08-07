@@ -80,7 +80,7 @@ class CoMgmtComponent extends Component {
 
     this.setState({ coCd: coCd });
     // {coCd && empId?
-    CompanyService.getCompany({
+    CompanyService.getCoList({
       accessToken: this.props.accessToken,
       coCd: coCd})
       .then((response) => {
@@ -172,13 +172,13 @@ class CoMgmtComponent extends Component {
 //           coAddr: coAddr,
 //           coAddr1: coAddr1
 //         })
-//       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
-//       .catch((error) => {
-//         // 오류 발생 시의 처리
-//         console.error(error);
-//         // alert("중복된 회사 또는 모두 입력해주세요");
-//       });
-//   }
+      // }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
+      // .catch((error) => {
+      //   // 오류 발생 시의 처리
+      //   console.error(error);
+      //   // alert("중복된 회사 또는 모두 입력해주세요");
+      // });
+  // }
 }
 
 
@@ -792,4 +792,4 @@ const mapStateToProps = (state) => ({
   userInfo: state.user || {} //  userInfo 정보 매핑해주기..
 });
 
-export default connect(mapStateToProps)(CoMgmtComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(CoMgmtComponent);

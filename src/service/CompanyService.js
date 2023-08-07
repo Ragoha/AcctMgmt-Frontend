@@ -9,9 +9,9 @@ class CompanyService {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
         headers: {
-        "access-token": data.accessToken,
-      },
-      withCredentials: true,
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
         coCd: data.coCd,
         coNm: data.coNm,
         gisu: data.gisu,
@@ -99,16 +99,16 @@ class CompanyService {
 
   getCoNm(data) {
     return axios
-    .get(ACCTMGMT_API_BASE_URL + "/ozt/sconm", {
-      headers: {
-        "access-token": data.accessToken,
-      },
-      withCredentials: true,
-      params: {
-        coNm: data.coNm
+      .get(ACCTMGMT_API_BASE_URL + "/ozt/sconm", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+        params: {
+          coNm: data.coNm
+        }
       }
-    }
-    )
+      )
   };
 
   getCoBycoCdAndcoNm(keyword) {

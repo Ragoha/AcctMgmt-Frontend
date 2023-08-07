@@ -17,6 +17,7 @@ class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      bgtCd: "",
       rows: [],
       rowModesModel: {},
       selectedRowId: "",
@@ -68,46 +69,89 @@ class DataGridComponent extends Component {
   }
 
   handleDeleteClick = (data) => () => {
-    console.log(data);
-    // BgtICFService.deleteBgtICF({
-    //   accessToken: this.props.accessToken,
-    //   coCd: this.props.user.coCd,
-    //   bgtCd: bgtCd
-    // }).then(() => {
-    //   this.handleGetBgtICFList();
-    // });
+    BgtICFService.deleteBgtICF({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      bgtCd: data.bgtCd,
+      sq: data.sq
+    }).then(() => {
+      this.handleGetBgtICFList();
+    });
     
   };
-h
-  getBgtICFList = (data) => {
+
+  getBgtICFList = async (data) => {
     console.log(data);
+    await this.setState({ bgtCd : data.bgtCd});
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
-      bgtCd: data.bgtCd
+      bgtCd: this.state.bgtCd
     }).then(
       (response) => {
+        console.log(this.state.rows);
         const rowsWithId = response.map((row) => ({
           ...row,
-          id: row.bgtCd,
+          id: row.sq,
         }));
         this.setState({ rows: rowsWithId });
       }
     );
   }
 
+  updateBgtICF = (row) => {
+    BgtICFService.updateBgtICF({
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+      row: row,
+    })
+      .then(() => {
+        this.props.handleClickSerachButton();
+        BgtICFService.getBgtICFList({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
+          bgtCd: this.state.bgtCd,
+        }).then((response) => {
+          console.log(this.state.rows);
+          const rowsWithId = response.map((row) => ({
+            ...row,
+            id: row.sq,
+          }));
+          this.setState({ rows: rowsWithId });
+        });
+      }
+      );
+  }
+
   processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
+
     this.setState((prevState) => ({
       rows: prevState.rows.map((row) =>
         row.id === newRow.id ? updatedRow : row
       ),
     }));
 
+    this.updateBgtICF(updatedRow);
+    // BgtICFService.deleteBgtICF({
+    //   accessToken: this.props.accessToken,
+    //   coCd: this.props.user.coCd,
+    //   bgtCd: "B002",
+    //   sq: "1",
+    // }).then(() => {
+    //   this.handleGetBgtICFList();
+    // });
+
+    
+
     return updatedRow;
   };
 
+  
+
   handleRowModesModelChange = (newRowModesModel) => {
+    console.log("asdf11")
+    console.log(newRowModesModel);
     this.setState({ rowModesModel: newRowModesModel });
   };
 
