@@ -13,7 +13,7 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomBtnBgtcd, CustomGridContainer, CustomInputLabel, CustomTextField } from "../common/style/CommonStyle";
+import { CustomBtnBgtcd, CustomGridContainer, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
 
 
 {/* <Autocomplete
@@ -183,17 +183,16 @@ console.log('데이터체크')
               alignItems="center"
               spacing={2}
             >
-              {/* <InputLabel sx={{ marginLeft: '20px' }}>예산그룹</InputLabel><TextField onChange={this.GroupCdOnChange} size="small" inputProps={{ style: { height: '11px' } }} sx={{ width: '200px', marginRight: '50px' }} /> */}
+              <Grid item xs={4}>
+                <CustomInputLabel>예산그룹</CustomInputLabel>
+                <CustomSelect>
+                </CustomSelect>
+              </Grid>
               <Grid item xs={4}>
                 <Grid container direction="row" alignItems="center">
                   <CustomInputLabel>예산과목코드</CustomInputLabel>
                   <CustomTextField
                     sx={{ width: "200px", marginRight: "50px"}}
-                    InputProps={{
-                      style: {
-                        borderRadius: 0 
-                      }
-                    }}
                   />
                 </Grid>
               </Grid>
@@ -202,11 +201,6 @@ console.log('데이터체크')
                   <CustomInputLabel>예산과목명</CustomInputLabel>
                   <CustomTextField
                     sx={{ width: "200px", marginRight: "50px" }}
-                    InputProps={{
-                      style: {
-                        borderRadius: 0 
-                      }
-                    }}
                   />
                 </Grid>
               </Grid>
@@ -225,7 +219,7 @@ console.log('데이터체크')
                 setDetailInfo={this.setDetailInfo}
               />
             </Grid>
-            <Grid item xs={5} justifyContent="center">
+            <Grid item xs={5} justifyContent="center" >
               <BgtCDDetailInfo
                 ref={this.BgtCDDetailInfo}
                 prevBgtCd={prevBgtCd}
