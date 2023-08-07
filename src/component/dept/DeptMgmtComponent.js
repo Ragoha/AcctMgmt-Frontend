@@ -3,6 +3,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
@@ -21,6 +22,15 @@ import AddressComponent from './dialog/AddressComponent';
 import DivDialogComponent from './dialog/DivDialogComponent';
 
 class DeptMgmtComponent extends Component {
+
+    renderTree = (nodes) => (
+        <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
+            {Array.isArray(nodes.children)
+                ? nodes.children.map((node) => this.renderTree(node))
+                : null}
+        </TreeItem>
+    );
+
     constructor(props) {
         super(props);
         this.divDialogRef = React.createRef();
@@ -58,7 +68,15 @@ class DeptMgmtComponent extends Component {
     }
 
     componentDidMount() {
-        DivsService.getDivsList()
+        const userInfo = this.props.userInfo;
+        const { coCd, empId, empEmail } = userInfo;
+        console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+        this.setState({ coCd: coCd });
+        DivsService.getDivision({
+            accessToken: this.props.accessToken,
+            coCd: coCd
+        })
             .then((response) => {
                 const coCdList = response.data.map((item) => item.coCd);
                 const divCdList = response.data.map((item) => item.divCd);
@@ -96,7 +114,10 @@ class DeptMgmtComponent extends Component {
                     divAddr: divAddr,
                     divAddr1: divAddr1
                 })
-                CompanyService.getCompany(coCd)
+                CompanyService.getCompany({
+                    accessToken: this.props.accessToken,
+                    coCd: coCd
+                })
                     .then((response) => {
                         const coNm = response.data[0].coNm;
 
@@ -105,11 +126,6 @@ class DeptMgmtComponent extends Component {
                         })
                     })
             })
-            .catch((error) => {
-                // 오류 발생 시의 처리
-                console.error(error);
-                // alert("중복된 회사 또는 모두 입력해주세요");
-            });
     }
 
     handleCompany = (e) => {
@@ -268,15 +284,7 @@ class DeptMgmtComponent extends Component {
     }
 
     addrButton = () => {
-        // this.setState((current) => ({
-        //   openAddr: !current.openAddr
-        // }));
-        // this.setState({ openAddr: true });
         this.addrRef.current.handleUp();
-        //  this.setState({ coZip: this.addrRef.current.value.coZip });
-        //  this.setState({ coAddr: this.addrRef.current.value.coAddr });
-
-        // console.log(this.addrRef.current.value.coZip, this.addrRef.current.value.coAddr);
     }
 
     closeAddrDialog = () => {
@@ -515,27 +523,26 @@ class DeptMgmtComponent extends Component {
         const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
         //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
-
-        const cards = divCdList.map((divCd, index) => (
-            <Card key={divCd} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === divCd ? '#C5DFF8' : 'white' }}>
-                <CardActionArea onClick={() => this.cardClick(divCd)}>
-                    <CardContent sx={{ height: 90 }}>
-                        <Typography sx={{ fontSize: 8 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
-                            {divCdList[index]}
-                        </Typography>
-                        <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
-                            {formattedDate}
-                        </Typography>
-                        {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
-              {index + 1}
-            </Typography> */}
-                        <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
-                            {divNmList[index]}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        ));
+        const data = {
+            id: 'root',
+            name: coNm,
+            children: [
+                {
+                    id: '1',
+                    name: divNm,
+                },
+                {
+                    id: '3',
+                    name: divNm,
+                    children: [
+                        {
+                            id: '4',
+                            name: '부서자리'
+                        },
+                    ],
+                },
+            ],
+        };
 
         return (
             <>
@@ -592,11 +599,14 @@ class DeptMgmtComponent extends Component {
                         </Grid>
 
                         <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
-                            {cards.map((card, index) => (
-                                <Grid key={index} item xs={12} sx={{ mb: 1 }}>
-                                    {card}
-                                </Grid>
-                            ))}
+                            <TreeView
+                                defaultCollapseIcon={<ExpandMoreIcon />}
+                                defaultExpanded={['root']}
+                                defaultExpandIcon={<ChevronRightIcon />}
+                                sx={{ height: 110, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                            >
+                                {this.renderTree(data)}
+                            </TreeView>
                         </Grid>
 
                         <Grid container sx={{ position: 'relative', bottom: '60px', width: '100%' }} >
@@ -625,7 +635,7 @@ class DeptMgmtComponent extends Component {
                                 <CustomInputLabel sx={{ ml: 1, mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
                             </Grid>
 
-                            <Grid item xs={0.6} sx={{mr:0.2}}>
+                            <Grid item xs={0.6} sx={{ mr: 0.2 }}>
                                 <Button variant="outlined" onClick={this.comInfo}>추가</Button>
                             </Grid>
 
@@ -752,4 +762,9 @@ class DeptMgmtComponent extends Component {
         );
     }
 }
-export default DeptMgmtComponent;
+
+const mapStateToProps = (state) => ({
+    accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+    userInfo: state.user || {} //  userInfo 정보 매핑해주기..
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(DeptMgmtComponent);

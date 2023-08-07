@@ -53,13 +53,23 @@ class DivsService {
             )
     };
 
+    // getCoCd(data) {
+    //     return axios
+    //         .get(ACCTMGMT_API_BASE_URL + "/ozt/scodi", {
+    //             headers: {
+    //                 "access-token": data.accessToken,
+    //             },
+    //             withCredentials: true,
+    //             params: {
+    //                 divCd: data.divCd
+    //             }
+    //         }
+    //         )
+    // };
+
     insertDivs(data) {
         return axios
             .post(ACCTMGMT_API_BASE_URL + "/ozt/idiv", {
-                headers: {
-                    "access-token": data.accessToken,
-                },
-                withCredentials: true,
                 coCd: data.coCd,
                 divNm: data.divNm,
                 ceoNm: data.ceoNm,
@@ -69,35 +79,49 @@ class DivsService {
                 toNb: data.toNb,
                 divZip: data.divZip,
                 divAddr: data.divAddr,
-                divAddr1: data.divAddr1
+                divAddr1: data.divAddr1,
+                insertId: data.insertId
+            },{
+                headers: {
+                    "access-token": data.accessToken,
+                },
+                withCredentials: true
             })
     };
 
-    updateDivs(divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1) {
+    updateDivs(data) {
+        console.log(data);
         return axios
-            .post(ACCTMGMT_API_BASE_URL + "/ozt/udiv", {
-                divCd: divCd,
-                divNm: divNm,
-                ceoNm: ceoNm,
-                jongmok: jongmok,
-                businessType: businessType,
-                divNb: divNb,
-                toNb: toNb,
-                divZip: divZip,
-                divAddr: divAddr,
-                divAddr1: divAddr1
-            })
+            .put(ACCTMGMT_API_BASE_URL + "/ozt/udiv", {
+                divCd: data.divCd,
+                divNm: data.divNm,
+                ceoNm: data.ceoNm,
+                jongmok: data.jongmok,
+                businessType: data.businessType,
+                divNb: data.divNb,
+                toNb: data.toNb,
+                divZip: data.divZip,
+                divAddr: data.divAddr,
+                divAddr1: data.divAddr1,
+                modifyId: data.modifyId
+                
+            },{
+                headers: {
+                  "access-token": data.accessToken,
+                },
+                withCredentials: true
+              })
     };
 
     deleteDivs(data) {
         return axios
-            .post(ACCTMGMT_API_BASE_URL + "/ozt/ddiv", {
+            .delete(ACCTMGMT_API_BASE_URL + "/ozt/ddiv",{
                 headers: {
-                    "access-token": data.accessToken,
+                  "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                divCd: data.divCd
-            })
+                params :{divCd:data.divCd}
+              })
     };
 
     getDivBydivCdAnddivNm(keyword) {
