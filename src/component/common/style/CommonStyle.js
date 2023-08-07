@@ -11,7 +11,7 @@ export const CustomBtnBgtcd = styled(Button)(({theme}) =>({
   width:'120px',
   fontSize: 15,
   padding: '3px 3px',
-  border: '1px solid',
+  border: '2px solid',
   backgroundColor: '#FFFFFF',
   color: '#1976D2', // 기본 글씨 색을 '#1976D2'로 설정
   borderColor: '#0062cc',

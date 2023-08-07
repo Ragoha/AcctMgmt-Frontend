@@ -8,8 +8,8 @@ class BgtCDDatagrid extends Component {
         this.state = {
             columns: [
                 //{ field: 'defNm', headerName: '분류명', width: 100 },
-                { field: 'bgtCd', headerName: '예산코드', width: 140 },
-                { field: 'bgtNm', headerName: '예산과목명', width: 250 },
+                { field: 'bgtCd', headerName: '예산코드', width: 140 , headerAlign: 'center',},
+                { field: 'bgtNm', headerName: '예산과목명', width: 250 , headerAlign: 'center',},
             ],
             rows: [],
             dataPath:'초기값그대로야~ 다시 뽑아 ~',
@@ -88,10 +88,17 @@ class BgtCDDatagrid extends Component {
                         onCellKeyDown ={this.pressEnterBtn}
                         defaultGroupingExpansionDepth={7}
                         editMode='row' //row 단위로 편집 모양 잡힘
+                        headerAlign="center"
                         //processRowUpdate={this.pressEnterBtn}
                         groupingColDef={{
-                            headerName: '분류명',
+                            headerName: '분류명', headerAlign: 'center',
                         }}
+                        InputProps={{
+                            style: {
+                              font:15
+                            }
+                          }}
+                       
                         components={{
                             Footer: () => null
                         }}

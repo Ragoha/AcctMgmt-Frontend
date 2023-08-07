@@ -40,7 +40,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bottomFg: null,
       bizFg: null,
       bgtCd: null,
-      insa:'hi!!yo!!!',
+      currentTime : new Date(),
       /*업데이트 하기위해 조회조건의 bgt_cd값이 필요함 */
       //prevBgtCd: props.prevBgtCd,
     }
@@ -133,9 +133,11 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
                       slotProps={{
                         textField: {
                           size: "small",
-                          sx: { width: "229px", mr: "3px", marginTop: '13px',marginBottom:'3px' }, 
+                          sx: { width: "255px", mr: "3px", marginTop: '13px',marginBottom:'3px' }, 
                           inputProps: {
-                            sx: { height: "auto" },
+                            style: { 
+                              borderRadius: 0 
+                            }
                           },
                         },
                       }}
