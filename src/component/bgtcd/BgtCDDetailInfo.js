@@ -8,7 +8,7 @@ import BgtCDService from '../../service/BgtCDService';
 import BgtCDDetailInfoFormControl from './BgtCDDetailInfoFormControl';
 import { ThreeDRotationSharp } from '@mui/icons-material';
 import { Divider } from '@material-ui/core';
-import { CustomInputLabel } from '../common/style/CommonStyle';
+import { CustomBtnBgtcd, CustomInputLabel } from '../common/style/CommonStyle';
 import { connect } from 'react-redux';
 import { SET_GROUPCD } from '../../store/BgtCDStore';
 
@@ -40,7 +40,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bottomFg: null,
       bizFg: null,
       bgtCd: null,
-      insa:'hi!!yo!!!',
+      currentTime : new Date(),
       /*업데이트 하기위해 조회조건의 bgt_cd값이 필요함 */
       //prevBgtCd: props.prevBgtCd,
     }
@@ -110,18 +110,20 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     const { menuItemValues, ctlFg, bgajustFg, bottomFg, bizFg } = this.state;
     return (
       <Container >
-        <Grid container sx={{borderTop: "3px solid black"}} bgcolor={"gray"} >
+        <Grid container sx={{borderTop: "3px solid black" }}>
           <Grid item xs={12}  >
-            <Grid container bgcolor={"orange"}>
+             <Grid container >
               <BgtCDDetailInfoFormControl title={'예산통제구분'} ctlFg={ctlFg} menuItemValues={menuItemValues[0]}
                 ref={(ref) => (this.ctlFgControl = ref)}
               />
               <BgtCDDetailInfoFormControl title={'예산전용구분'} bgajustFg={bgajustFg} menuItemValues={menuItemValues[1]}
                 ref={(ref) => (this.bgajustFgControl = ref)}
               />
-              <Grid container sx={{borderBottom:'1px lightgray solid' }}>
-                <Grid item md={6} sx={{ marginTop: '11px' }}>
-                  <InputLabel sx={{marginLeft:'16px', marginTop: '5px' }}>사용기한</InputLabel>  </Grid>
+
+<Grid container alignItems="center" sx={{  borderBottom: "1px lightgray solid" , height:'80px'}} >
+                <Grid item md={6} >
+                  <InputLabel sx={{marginLeft:'16px', marginTop: '5px' }}>사용기한</InputLabel>  
+                </Grid>
                 <Grid >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -131,9 +133,11 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
                       slotProps={{
                         textField: {
                           size: "small",
-                          sx: { width: "229px", mr: "3px", marginTop: '13px',marginBottom:'3px' }, 
+                          sx: { width: "255px", mr: "3px", marginTop: '13px',marginBottom:'3px' }, 
                           inputProps: {
-                            sx: { height: "auto" },
+                            style: { 
+                              borderRadius: 0 
+                            }
                           },
                         },
                       }}
@@ -154,9 +158,9 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
             </Grid>
           </Grid>
           <Grid container direction="row" justifyContent="center" alignItems="center">
-            <Grid sx={{marginTop: '50px'}}>
-              <Button onClick={this.updateDetailInfo} variant="contained" size='small' sx={{ width: '100px',marginRight:'50px' }} style={{ border: '1px solid' }}>저 장</Button>
-              <Button onClick={this.deleteRow} variant="contained" size='small' sx={{ width: '100px' }} style={{ border: '1px solid' }}>삭 제</Button>
+            <Grid sx={{marginTop: '50px'}}> 
+              <CustomBtnBgtcd onClick={this.updateDetailInfo} variant="contained" size='large' sx={{ width: '100px',borderColor:'#4A55A2',marginRight:'50px' }} style={{ border: '1px solid' }}>저 장</CustomBtnBgtcd>
+              <CustomBtnBgtcd onClick={this.deleteRow} variant="contained" size='large' sx={{ width: '100px' , borderColor:'#4A55A2' }} style={{ border: '1px solid' }}>삭 제</CustomBtnBgtcd>
             </Grid>
 
           </Grid>
