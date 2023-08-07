@@ -4,48 +4,47 @@ import axios from "axios";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class CompanyService {
-  getListUser() {
-    // return axios.get(ACCTMGMT_API_BASE_URL + "/");
-  }
 
-  getTime() {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/time")
-      .then((response) => response.data);
-  }
-
-  getCoList(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+  getCoList(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
-        coCd: coCd,
-        coNm: coNm,
-        gisu: gisu,
-        frDt: frDt,
-        toDt: toDt,
-        jongmok: jongmok,
-        businessType: businessType,
-        coNb: coNb,
-        ceoNm: ceoNm,
-        coZip: coZip,
-        coAddr: coAddr,
-        coAddr1: coAddr1
+        headers: {
+        "access-token": data.accessToken,
+      },
+      withCredentials: true,
+        coCd: data.coCd,
+        coNm: data.coNm,
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+        jongmok: data.jongmok,
+        businessType: data.businessType,
+        coNb: data.coNb,
+        ceoNm: data.ceoNm,
+        coZip: data.coZip,
+        coAddr: data.coAddr,
+        coAddr1: data.coAddr1
       })
   }
 
-  insertCo(coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+  insertCo(data) {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
-        coNm: coNm,
-        gisu: gisu,
-        frDt: frDt,
-        toDt: toDt,
-        jongmok: jongmok,
-        businessType: businessType,
-        coNb: coNb,
-        ceoNm: ceoNm,
-        coZip: coZip,
-        coAddr: coAddr,
-        coAddr1: coAddr1
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+        coNm: data.coNm,
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+        jongmok: data.jongmok,
+        businessType: data.businessType,
+        coNb: data.coNb,
+        ceoNm: data.ceoNm,
+        coZip: data.coZip,
+        coAddr: data.coAddr,
+        coAddr1: data.coAddr1
       })
   };
 
@@ -59,11 +58,15 @@ class CompanyService {
       )
   };
 
-  getCompany(coCd) {
+  getCompany(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/scom", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
         params: {
-          coCd: coCd
+          coCd: data.coCd
         }
       }
       )
@@ -94,11 +97,15 @@ class CompanyService {
       })
   };
 
-  getCoNm(coNm) {
+  getCoNm(data) {
     return axios
     .get(ACCTMGMT_API_BASE_URL + "/ozt/sconm", {
+      headers: {
+        "access-token": data.accessToken,
+      },
+      withCredentials: true,
       params: {
-        coNm: coNm
+        coNm: data.coNm
       }
     }
     )
