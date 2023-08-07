@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import AddIcon from '@mui/icons-material/Add';
 import ListIcon from '@mui/icons-material/List';
@@ -17,12 +18,12 @@ import { CustomGridContainer, CustomInputLabel, CustomTextField } from '../commo
 import CompanyService from '../../service/CompanyService';
 import DivsService from '../../service/DivsService';
 import AddressComponent from './dialog/AddressComponent';
-import CoDialogComponent from './dialog/CoDialogComponent';
+import DivDialogComponent from './dialog/DivDialogComponent';
 
 class DivMgmtComponent extends Component {
   constructor(props) {
     super(props);
-    this.coDialogRef = React.createRef();
+    this.divDialogRef = React.createRef();
     this.addrRef = React.createRef();
     this.state = {
       open: false,
@@ -57,7 +58,14 @@ class DivMgmtComponent extends Component {
   }
 
   componentDidMount() {
-    DivsService.getDivsList()
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd });
+    DivsService.getDivision({
+      accessToken: this.props.accessToken,
+      coCd: coCd })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
@@ -95,7 +103,9 @@ class DivMgmtComponent extends Component {
           divAddr: divAddr,
           divAddr1: divAddr1
         })
-        CompanyService.getCompany(coCd)
+        CompanyService.getCompany({
+          accessToken: this.props.accessToken,
+          coCd: coCd})
           .then((response) => {
             const coNm = response.data[0].coNm;
 
@@ -104,12 +114,68 @@ class DivMgmtComponent extends Component {
             })
           })
       })
-      .catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        // alert("중복된 회사 또는 모두 입력해주세요");
-      });
-  }
+    // .catch((error) => {
+    //   // 오류 발생 시의 처리
+    //   console.error(error);
+    //   // alert("중복된 회사 또는 모두 입력해주세요");
+    // });
+
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    //   DivsService.getDivsList()
+    //     .then((response) => {
+    //       const coCdList = response.data.map((item) => item.coCd);
+    //       const divCdList = response.data.map((item) => item.divCd);
+    //       const divNmList = response.data.map((item) => item.divNm);
+    //       const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+    //       const coCd = response.data[0].coCd;
+    //       const divCd = response.data[0].divCd;
+    //       const divNm = response.data[0].divNm;
+    //       const ceoNm = response.data[0].ceoNm;
+    //       const jongmok = response.data[0].jongmok;
+    //       const businessType = response.data[0].businessType;
+    //       const divNb = response.data[0].divNb;
+    //       const toNb = response.data[0].toNb;
+    //       const divZip = response.data[0].divZip;
+    //       const divAddr = response.data[0].divAddr;
+    //       const divAddr1 = response.data[0].divAddr1;
+
+    //       this.setState({
+    //         cardCount: cardCount, // state에 값을 저장
+    //         coCdList: coCdList,
+    //         divCdList: divCdList,
+    //         divNmList: divNmList,
+
+    //         focused: divCd,
+    //         coCd: coCd,
+    //         divCd: divCd,
+    //         divNm: divNm,
+    //         ceoNm: ceoNm,
+    //         jongmok: jongmok,
+    //         businessType: businessType,
+    //         divNb: divNb,
+    //         toNb: toNb,
+    //         divZip: divZip,
+    //         divAddr: divAddr,
+    //         divAddr1: divAddr1
+    //       })
+    //       CompanyService.getCompany(coCd)
+    //         .then((response) => {
+    //           const coNm = response.data[0].coNm;
+
+    //           this.setState({
+    //             coNm: coNm
+    //           })
+    //         })
+    //     })
+    //     .catch((error) => {
+    //       // 오류 발생 시의 처리
+    //       console.error(error);
+    //       // alert("중복된 회사 또는 모두 입력해주세요");
+    //     });
+    // }
+
+}
 
 
   handleCompany = (e) => {
@@ -122,6 +188,7 @@ class DivMgmtComponent extends Component {
   }
 
   addCardButton = () => {
+    console.log(this.state.cardCount);
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
     if (this.state.divCdList.includes('0000')) {
       alert("미등록 사업장이 존재합니다.");
@@ -129,7 +196,8 @@ class DivMgmtComponent extends Component {
       const newCardCount = this.state.cardCount + 1;
       const newDivCdList = [...this.state.divCdList, '0000'];
 
-      CompanyService.getCoList()
+      CompanyService.getCoList({
+        accessToken: this.props.accessToken})
         .then((response) => {
           // const newDivNmList = response.data.map((item) => item.divNm);
           const coCdList = response.data.map((item) => item.coCd);
@@ -169,17 +237,82 @@ class DivMgmtComponent extends Component {
     }
   }
 
-  insertDivs = () => {
+  comInfo = () => {
     const { coNm } = this.state;
-    CompanyService.getCoNm(coNm)
+    CompanyService.getCoNm({accessToken: this.props.accessToken,
+      coNm: coNm})
       .then((response) => {
         const coCd = response.data[0].coCd
         this.setState({
           coCd: coCd
         })
+        CompanyService.getCompany({accessToken: this.props.accessToken,
+          coCd: coCd})
+          .then((response) => {
+            // const newDivNmList = response.data.map((item) => item.divNm);
+            const coCdList = response.data.map((item) => item.coCd);
+            const coNmList = response.data.map((item) => item.coNm);
 
-        const { divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
-        return DivsService.insertDivs(coCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1)
+            const coCd = response.data[0].coCd;
+            const coNm = response.data[0].coNm;
+            const jongmok = response.data[0].jongmok;
+            const businessType = response.data[0].businessType;
+            const ceoNm = response.data[0].ceoNm;
+            const coZip = response.data[0].coZip;
+            const coAddr = response.data[0].coAddr;
+            const coAddr1 = response.data[0].coAddr1;
+            this.setState({
+              coCdList: coCdList,
+              coNmList: coNmList,
+              // divNmList: newDivNmList,
+              focused: '0000',
+              coCd: coCd,
+              coNm: coNm,
+              divCd: '',
+              divNm: '',
+              ceoNm: ceoNm,
+              jongmok: jongmok,
+              businessType: businessType,
+              divNb: '',
+              toNb: '',
+              divZip: coZip,
+              divAddr: coAddr,
+              divAddr1: coAddr1
+            })
+          })
+      }).catch((error) => {
+        // 오류 발생 시의 처리
+        console.error(error);
+        // alert("중복된 회사 또는 모두 입력해주세요");
+      })
+  }
+
+
+  insertDivs = () => {
+    const { coNm } = this.state;
+    CompanyService.getCoNm({
+      accessToken: this.props.accessToken,
+      coNm: coNm})
+      .then((response) => {
+        const coCd = response.data[0].coCd
+       
+        this.setState({
+          coCd: coCd
+        })
+
+        const {  divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1 } = this.state;
+        return DivsService.insertDivs({
+          accessToken: this.props.accessToken,
+          coCd: coCd, 
+          divNm: divNm, 
+          ceoNm: ceoNm, 
+          jongmok: jongmok, 
+          businessType: businessType, 
+          divNb: divNb, 
+          toNb: toNb, 
+          divZip: divZip, 
+          divAddr: divAddr , 
+          divAddr1: divAddr1})
 
           .then((response) => {
             console.log(response.data);
@@ -255,7 +388,9 @@ class DivMgmtComponent extends Component {
           divAddr: '',
           divAddr1: ''
         }) :
-        DivsService.getDivision(divCd)
+        DivsService.getDiv({
+          accessToken: this.props.accessToken,
+          divCd: divCd})
 
           .then((response) => {
             const coCd = response.data[0].coCd;
@@ -283,7 +418,9 @@ class DivMgmtComponent extends Component {
               divAddr: divAddr,
               divAddr1: divAddr1
             })
-            CompanyService.getCompany(coCd)
+            CompanyService.getCompany({
+              accessToken: this.props.accessToken,
+              coCd:coCd})
               .then((response) => {
                 const coNm = response.data[0].coNm;
 
@@ -301,7 +438,7 @@ class DivMgmtComponent extends Component {
   }
 
   helpClick = () => {
-    this.coDialogRef.current.handleUp();
+    this.divDialogRef.current.handleUp();
   };
 
 
@@ -309,22 +446,27 @@ class DivMgmtComponent extends Component {
     this.dialogRef.current.handleDown();
   }
 
-  handleSetCodialTextField = async (data) => {
+  handleSetDivdialTextField = async (data) => {
     await this.setState({
-      CodialTextField: data.coCd + ". " + data.coNm,
-      coCd: data.coCd  //밑에 coCd 넘겨주기
+      DivdialTextField: data.divCd + ". " + data.divNm,
+      divCd: data.divCd  //밑에 coCd 넘겨주기
     });
   };
 
-  searchClick = (coCd) => {
-    CompanyService.getCo(coCd)
+
+  searchClick = (divCd) => {
+    DivsService.getDivision(divCd)
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
+        const divCdList = response.data.map((item) => item.divCd);
         const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
+        const divNmList = response.data.map((item) => item.divNm);
         const cardCount = response.data.length;
 
         const coCd = response.data[0].coCd;
         const coNm = response.data[0].coNm;
+        const divCd = response.data[0].divCd;
+        const divNm = response.data[0].divNm;
         const jongmok = response.data[0].jongmok;
         const businessType = response.data[0].businessType;
         const coNb = response.data[0].coNb;
@@ -336,11 +478,15 @@ class DivMgmtComponent extends Component {
         this.setState({
           cardCount: cardCount,//??????
           coCdList: coCdList,
-          coNmList: coNmList,
+          coNmList: coNmList,  // 하고나서 coNm 불러오는 것도 해야함!!
+          divCdList: divCdList,
+          divNmList: divNmList,
 
           focused: coCd,
           coCd: coCd,
           coNm: coNm,
+          divCd: divCd,
+          divNm: divNm,
           jongmok: jongmok,
           businessType: businessType,
           coNb: coNb,
@@ -408,7 +554,9 @@ class DivMgmtComponent extends Component {
   deleteDivs = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { divCd } = this.state;
 
-    DivsService.deleteDivs(divCd)
+    DivsService.deleteDivs({
+      accessToken: this.props.accessToken,
+      divCd: divCd})
       .then((response) => {
         console.log(response.data);
         window.confirm('사업장삭제 완료!');
@@ -435,12 +583,12 @@ class DivMgmtComponent extends Component {
         })
         console.log(divCdList)
       })
-      // window.location.href="/acctmgmt/ozt/co";
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
         alert("삭제 실패..");
       });
+      console.log(this.props.accessToken)
   }
 
   handleChange = (e) => {
@@ -501,7 +649,7 @@ class DivMgmtComponent extends Component {
           <Grid item xs={4}>
             <Grid container alignItems="center">
               <CustomInputLabel >사업장</CustomInputLabel>
-              <CustomTextField name='CodialTextField' value={this.state.CodialTextField} placeholder="사업장코드/사업장명 "
+              <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="사업장코드/사업장명 "
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -511,7 +659,7 @@ class DivMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button variant="outlined" onClick={() => this.searchClick(coCd)} style={{ padding: "0px", minWidth: "5px", position: 'absolute', top: '135px', right: "35px" }}>
+          <Button variant="outlined" onClick={() => this.searchClick(divCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "1015px" }}>
             <SearchIcon fontSize="medium" />
           </Button>
         </CustomGridContainer >
@@ -554,14 +702,14 @@ class DivMgmtComponent extends Component {
           <Grid container sx={{ ml: 1, height: 670, border: '2px solid #EAEAEA' }}>
             <Grid container sx={{ height: 40, borderBottom: '2px solid #000' }}>
               <Grid item xs={9.2}>
-                <CustomInputLabel sx={{ ml:1, mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
+                <CustomInputLabel sx={{ ml: 1, mt: 1, color: 'black' }}>기본정보</CustomInputLabel>
               </Grid>
 
               <Grid item xs={1.4}>
                 <Button variant="outlined" onClick={this.comInfo}>회사정보불러오기</Button>
               </Grid>
 
-              <Grid item xs={0.6} sx={{ml:0.3}}>
+              <Grid item xs={0.6} sx={{ ml: 0.3 }}>
                 {coCd && divCd ?
                   <Button variant="outlined" onClick={this.updateDivs}>수정</Button>
                   :
@@ -569,7 +717,7 @@ class DivMgmtComponent extends Component {
                 }
               </Grid>
 
-              <Grid item xs={0.6} sx={{ml:0.5}}>
+              <Grid item xs={0.6} sx={{ ml: 0.5 }}>
                 <Button variant="outlined" onClick={this.deleteDivs}>삭제</Button>
               </Grid>
 
@@ -578,7 +726,7 @@ class DivMgmtComponent extends Component {
               </Grid>
               <Grid item xs={4} size='small' sx={{ mt: 1, display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
                 {divCd != 0 ?
-                  <CustomTextField xs={4} sx={{ ml: 2}} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomTextField> //disabled={true}
+                  <CustomTextField xs={4} sx={{ ml: 2 }} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomTextField> //disabled={true}
                   :
                   <FormControl sx={{
                     ml: 2, width: 255, "& .MuiInputBase-root": {
@@ -636,7 +784,7 @@ class DivMgmtComponent extends Component {
               </Grid>
 
 
-              <Grid item xs={2} sx={{height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <CustomInputLabel sx={{ color: 'black' }}  >사업자번호</CustomInputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
@@ -644,7 +792,7 @@ class DivMgmtComponent extends Component {
               </Grid>
 
 
-              <Grid item xs={2} sx={{ height: 50,display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
+              <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#EAEAEA' }}>
                 <CustomInputLabel sx={{ color: 'black' }}  >세무서번호</CustomInputLabel>
               </Grid>
               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
@@ -680,14 +828,16 @@ class DivMgmtComponent extends Component {
           </Grid>
         </Grid>
 
-
-
         <AddressComponent setDivZipAddr={this.setDivZipAddr} ref={this.addrRef} />
-        <CoDialogComponent handleSetCodialTextField={this.handleSetCodialTextField} ref={this.coDialogRef} />
+        <DivDialogComponent handleSetDivdialTextField={this.handleSetDivdialTextField} ref={this.divDialogRef} />
       </>
     );
   }
 }
 
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+  userInfo: state.user || {} //  userInfo 정보 매핑해주기..
+});
 
-export default DivMgmtComponent;
+export default connect(mapStateToProps)(DivMgmtComponent);
