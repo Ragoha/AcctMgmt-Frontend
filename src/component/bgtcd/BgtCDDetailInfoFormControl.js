@@ -2,7 +2,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@m
 import { Component } from "react"
 // import { connect } from 'react-redux';
 // import { set_detailInfo } from '../../store/BgtCDStore';
-import { CustomSelect } from "../common/style/CommonStyle";
+import { CustomInputLabel, CustomSelect } from "../common/style/CommonStyle";
 
 class BgtCDDetailInfoFormControl extends Component {
   constructor(props) {
@@ -65,13 +65,9 @@ class BgtCDDetailInfoFormControl extends Component {
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
-      <Grid
-        container
-        alignItems="center"
-        sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" }}
-      >
-        <Grid item md={6}>
-          <InputLabel>{title}</InputLabel>
+      <Grid container alignItems="center" sx={{ marginTop: "13px", borderBottom: "1px lightgray solid" , height:'80px'}} >
+        <Grid item md={6} >
+          <CustomInputLabel sx={{ml:"25px" ,fontSize:50}}>{title}</CustomInputLabel>
         </Grid>
         <Grid item md={6} sx={{ marginBottom: "3px" }}>
           <CustomSelect
