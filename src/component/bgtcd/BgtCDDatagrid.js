@@ -26,20 +26,20 @@ class BgtCDDatagrid extends Component {
     }
 
 
-    pressEnterBtn=(params , event)=>{
-        //console.log(event.code);
-         //console.log(params)
-        console.log(event)
-        ///console.log(details)
-        if(event.code==="Enter"){
-            console.log(event.target.value)
-            console.log(params.field)
-            console.log('과연:'+event.target.row)
-        }
-        // console.log('pressEnterBtn이 실행되는가 ? 아래는 params값.')
-        //  console.log('여기서 걍 데이터패스일단 찍어봄'+params.row.dataPath);
+    // pressEnterBtn=(params , event)=>{
+    //     //console.log(event.code);
+    //      //console.log(params)
+    //     console.log(event)
+    //     ///console.log(details)
+    //     if(event.code==="Enter"){
+    //         console.log(event.target.value)
+    //         console.log(params.field)
+    //         console.log('과연:'+event.target.row)
+    //     }
+    //     // console.log('pressEnterBtn이 실행되는가 ? 아래는 params값.')
+    //     //  console.log('여기서 걍 데이터패스일단 찍어봄'+params.row.dataPath);
         
-    }
+    // }
 
     clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
         console.log('clickedROw !' + params.row.bgtCd +'and DataPath '+ params.row.dataPath)
@@ -85,7 +85,7 @@ class BgtCDDatagrid extends Component {
                         getRowId={(row) => row.bgtCd}
                         headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                         onRowClick={this.clickedRow}
-                        onCellKeyDown ={this.pressEnterBtn}
+                        //onCellKeyDown ={this.pressEnterBtn}
                         defaultGroupingExpansionDepth={7}
                         editMode='row' //row 단위로 편집 모양 잡힘
                         headerAlign="center"
@@ -98,7 +98,6 @@ class BgtCDDatagrid extends Component {
                               font:15
                             }
                           }}
-                       
                         components={{
                             Footer: () => null
                         }}

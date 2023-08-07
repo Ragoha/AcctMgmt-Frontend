@@ -8,6 +8,7 @@ import { updateRowTree } from "@mui/x-data-grid-pro/internals";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import BgtCD from "../BgtCD";
 import { connect } from "react-redux";
+import { CustomBtnBgtcd, CustomDataGrid } from "../../common/style/CommonStyle";
 
 class BgtCDDevFgCustom extends Component {
 
@@ -18,8 +19,8 @@ class BgtCDDevFgCustom extends Component {
             rows: [],
             changes: [],
             columns: [
-                { field: 'divFg', headerName: '구분', flex: 1 },
-                { field: 'defNm', headerName: '과목분류', editable: true, flex: 1 },
+                { field: 'divFg', headerName: '구분', flex: 1 ,headerAlign:"center",align:'center'},
+                { field: 'defNm', headerName: '과목분류', editable: true, flex: 1,headerAlign:"center"},
             ],
         }
     }
@@ -108,6 +109,8 @@ class BgtCDDevFgCustom extends Component {
                         editMode="row" //row단위로 편집창이뜸 
                         columns={columns}
                         getRowId={(row) => row.divFg}
+                        rowHeight={48}
+                        sx={{mt:'16px', height:'444px'}}
                         components={{
                             Pagination: () => null,
                             Footer: () => null
