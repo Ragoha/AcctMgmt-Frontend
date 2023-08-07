@@ -67,13 +67,34 @@ class DataGridComponent extends Component {
     });
   }
 
-  handleDeleteClick = (id) => () => {
-    BgtICFService.deleteBgtICF(id).then(
-      () => {
-        this.handleGetBgtICFList();
-      });
+  handleDeleteClick = (data) => () => {
+    console.log(data);
+    // BgtICFService.deleteBgtICF({
+    //   accessToken: this.props.accessToken,
+    //   coCd: this.props.user.coCd,
+    //   bgtCd: bgtCd
+    // }).then(() => {
+    //   this.handleGetBgtICFList();
+    // });
     
   };
+h
+  getBgtICFList = (data) => {
+    console.log(data);
+    BgtICFService.getBgtICFList({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      bgtCd: data.bgtCd
+    }).then(
+      (response) => {
+        const rowsWithId = response.map((row) => ({
+          ...row,
+          id: row.bgtCd,
+        }));
+        this.setState({ rows: rowsWithId });
+      }
+    );
+  }
 
   processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
@@ -91,8 +112,7 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = (params) => {
-    console.log(params.row);
-    this.props.setSelectedRowId(params.row.id);
+    this.props.setSelectedRowId(params.row);
   };
 
   componentDidMount() {}
