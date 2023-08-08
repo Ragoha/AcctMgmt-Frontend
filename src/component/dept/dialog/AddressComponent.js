@@ -40,15 +40,15 @@ class AddressComponent extends Component {
         }
 
         console.log(fullAddr, data.zonecode);
-        this.setState({ divZip: data.zonecode });
-        this.setState({ divAddr: fullAddr });
+        this.setState({ deptZip: data.zonecode });
+        this.setState({ deptAddr: fullAddr });
         this.setState({ openAddr: false });// dialog창 꺼주기
 
         // 추가 코드: 주소 정보를 텍스트 필드에 설정
         // document.getElementById("coZip").value = data.zonecode;
         // document.getElementById("coAddr").value = fullAddr;
    
-        this.props.setDivZipAddr({divZip : data.zonecode, divAddr : fullAddr});
+        this.props.setDeptZipAddr({deptZip : data.zonecode, deptAddr : fullAddr});
 
     };
 

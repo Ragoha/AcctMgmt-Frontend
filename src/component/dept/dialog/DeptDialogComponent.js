@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputLabel, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import CompanyService from '../../../service/CompanyService';
+import { DataGrid } from '@mui/x-data-grid';
+import React, { Component } from 'react';
 import DivsService from '../../../service/DivsService';
 
 const columns = [
