@@ -154,7 +154,7 @@ class MainComponent extends Component {
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
-                <div style={{ marginLeft: '15px' }}>
+                <div style={{ marginLeft: "15px" }}>
                   <a onClick={this.logout}>LogOut</a>
                 </div>
               </IconButton>
@@ -191,11 +191,17 @@ class MainComponent extends Component {
           </Drawer>
 
           {/* Main */}
-          <Scrollbars style={{ height: "100vh" }}>
-            <Box sx={{ pt: 10, pb: 2, pl: open ? 32 : 9, pr: 2, transition: "padding 0.4s" }}>
+            <Box
+              sx={{
+                pt: 10,
+                pb: 2,
+                pl: open ? 32 : 9,
+                pr: 2,
+                transition: "padding 0.4s",
+              }}
+            >
               <Outlet />
             </Box>
-          </Scrollbars>
         </Box>
       </ThemeProvider>
     );

@@ -13,7 +13,7 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 class BgtCD extends Component {
   constructor(props) {
@@ -162,48 +162,58 @@ console.log('데이터체크')
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <CustomSelect></CustomSelect>
+              <CustomSelect />
             </Grid>
           </Grid>
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목코드</CustomInputLabel>
-              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+              <CustomTextField />
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>예산과목명</CustomInputLabel>
-              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Grid item>
+                <Grid container direction="row" alignItems="center">
+                  <CustomInputLabel>예산과목명</CustomInputLabel>
+                  <CustomTextField />
+                </Grid>
+              </Grid>
+              <Grid item>
+                <CustomSearchButton
+                  variant="outlined"
+                  onClick={this.handleClickSerachButton}
+                  sx={{ marginLeft: "auto" }}
+                >
+                  <SearchIcon />
+                </CustomSearchButton>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={4}>
-            <Button onClick={this.searchClick}>
-              <SearchIcon />
-            </Button>
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2} padding={0}>
-          <Grid item xs={12} sx={{ marginTop: "-10px" }}></Grid>
-          <Grid container xs={12}>
-            <Grid item xs={7}>
-              <BgtCDDatagrid
-                ref={this.BgtDataGrid}
-                rows={rows}
-                setDetailInfo={this.setDetailInfo}
-              />
-            </Grid>
-            <Grid item xs={5} justifyContent="center">
-              <BgtCDDetailInfo
-                ref={this.BgtCDDetailInfo}
-                prevBgtCd={prevBgtCd}
-                ctlFg={ctlFg}
-                bgajustFg={bgajustFg}
-                bottomFg={bottomFg}
-                bizFg={bizFg}
-              />
-              {/*자식컴포넌트에 state를 props로 전달 */}
-            </Grid>
+        <Grid container spacing={2} direction="row">
+          <Grid item xs={7}>
+            <BgtCDDatagrid
+              ref={this.BgtDataGrid}
+              rows={rows}
+              setDetailInfo={this.setDetailInfo}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <BgtCDDetailInfo
+              ref={this.BgtCDDetailInfo}
+              prevBgtCd={prevBgtCd}
+              ctlFg={ctlFg}
+              bgajustFg={bgajustFg}
+              bottomFg={bottomFg}
+              bizFg={bizFg}
+            />
+            {/*자식컴포넌트에 state를 props로 전달 */}
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />

@@ -112,10 +112,6 @@ class BgtICFComponent extends Component {
     this.bgtICFRef.current.handleGetBgtICFList();
   };
 
-  handleRowAdd = () => {
-    this.bgtICFRef.current.handleRowAdd();
-  };
-
   handleRowDelete = () => {
     this.bgtICFRef.current.handleDeleteClick({
       bgtCd: this.state.selectedRowId,
@@ -280,14 +276,6 @@ class BgtICFComponent extends Component {
   }
 
   render() {
-    const labelStyle = {
-      display: "inline",
-    };
-
-    const floatRight = {
-      float: "right",
-    };
-
     const { bgtDTO, startDate, mainHeader, divTextField, bgtCDTextField } =
       this.state;
 
@@ -306,11 +294,7 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
-            <Box style={floatRight}>
-              <Button onClick={this.handleRowAdd}>추가</Button>
               <Button onClick={this.handleRowDelete}>삭제</Button>
-            </Box>
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -437,22 +421,16 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay/>
+            {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{height: "calc(100vh - 280px)" }}>
           <Grid
             item
             xs={3}
-            sx={{
-              // height: `calc(${this.state.innerHeight}px - 345px)`,
-              maxHeight: `calc(100vh)`,
-            }}
           >
             <DataGrid
               sx={{
-                // maxHeight: "calc(100vh - 0px)",
-                // fontSize: 10,
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },

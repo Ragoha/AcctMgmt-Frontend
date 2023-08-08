@@ -123,7 +123,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   render() {
     const { menuItemValues, ctlFg, bgajustFg, bottomFg, bizFg, toDt } = this.state;
     return (
-      <Container >
         <Grid container sx={{ borderTop: "3px solid black" }}>
           <Grid item xs={12} >
             <Grid container >
@@ -180,7 +179,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
 
           </Grid>
         </Grid>
-      </Container> //최상위 컨테이너
     );
   }
 }

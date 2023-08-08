@@ -84,7 +84,6 @@ export const CustomSearchButton = styled(Button)({
   padding: "0px",
   marginRight: 8,
   minWidth: "5px",
-  // position: "absolute",
 });
 
 export const CustomDatePicker = styled(DatePicker)({

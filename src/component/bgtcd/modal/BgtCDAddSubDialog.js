@@ -12,6 +12,8 @@ import {
     CustomDialogTitle,
     CustomLargeFormGridContainer,
     CustomSearchButton,
+    CustomShortDataGridContainer,
+    CustomShortDialog,
     CustomShortFormGridContainer
 } from "../../common/style/CommonDialogStyle";
 import { CustomBtnBgtcd, CustomDataGrid, CustomInputLabel, CustomTextField } from "../../common/style/CommonStyle";
@@ -22,7 +24,7 @@ class BgtCDADDSubDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: true,
+            open: false,
             idCounter: 0,
             columns: [
                 { field: "bgtGrCd", headerName: "그룹코드",  flex: 1, headerAlign: "center", editable: true },
@@ -77,9 +79,7 @@ class BgtCDADDSubDialog extends Component {
         const { open, columns, rows } = this.state;
 
         return (
-            <Dialog
-                open={open}
-                PaperProps={{ sx: { width: 500, height: 600 } }}>
+          <CustomShortDialog open={open}>
                 <CustomDialogTitle>
                     예산과목등록
                     <IconButton size="small" onClick={this.handleDown}>
@@ -96,28 +96,22 @@ class BgtCDADDSubDialog extends Component {
                         </Grid>
                     </CustomShortFormGridContainer>
                     
-                    <CustomDataGridContainer>
-                        <Grid item xs={12}>
-                            <CustomDataGrid
-                                sx={{ borderTop: "3px solid black" }}
-                                columns={columns}
-                                rows={rows}
-                                getRowId={(row) => row.bgtGrCd}
-                                showColumnVerticalBorder={true}
-                                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                                editMode='row'
-                                hideFooter
-                            />
-
-                        </Grid>
-
-                    </CustomDataGridContainer>
-
-
-
-                </CustomDialogContent>
-
-            </Dialog>
+              <CustomShortDataGridContainer>
+                
+                <Grid item xs={12}>
+                    <CustomDataGrid
+                        columns={columns}
+                        rows={rows}
+                        getRowId={(row) => row.bgtGrCd}
+                        showColumnVerticalBorder={true}
+                        showCellVerticalBorder={true} // 각 셀마다 영역주기
+                        editMode='row'
+                        hideFooter
+                    />
+                </Grid>
+              </CustomShortDataGridContainer>
+            </CustomDialogContent>
+          </CustomShortDialog>
         );
     }
 }

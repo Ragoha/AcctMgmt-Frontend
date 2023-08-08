@@ -92,9 +92,37 @@ class DataGridComponent extends Component {
       bgtCd: data.bgtCd,
       sq: data.sq,
     }).then(() => {
-      this.handleGetBgtICFList();
+      this.props.handleClickSerachButton();
+      BgtICFService.getBgtICFList({
+        accessToken: this.props.accessToken,
+        coCd: this.props.user.coCd,
+        bgtCd: this.state.bgtCd,
+      }).then((response) => {
+        console.log(this.state.rows);
+        const rowsWithId = response.map((row) => ({
+          ...row,
+          id: row.sq,
+        }));
+
+        rowsWithId.push({
+          id: randomId(),
+          bgtCd: this.state.bgtCd,
+          mgtCd: this.state.mgtCd,
+          bottomNm: "",
+          carrAm: 0,
+          carrAm1: 0,
+          carrAm2: 0,
+          carrAm3: 0,
+          remDc: "",
+          bgtTy: "",
+          modifyId: "",
+          isNew: true,
+        });
+
+        this.setState({ rows: rowsWithId });
+      });
     });
-  };
+  }
 
   getBgtICFList = async (data) => {
     console.log(data);
@@ -274,48 +302,17 @@ class DataGridComponent extends Component {
         headerName: "프로젝트",
         headerAlign: "center",
         editable: true,
-        // renderCell: (params) => {
+        // renderCell: (params) =>{
         //   console.log(params);
-        //   const handleCellClick = () => {
-        //     if (params.mode !== "edit") {
-        //       const newRowModesModel = {
-        //         ...rowModesModel,
-        //         [params.id]: { mode: GridRowModes.Edit },
-        //       };
-        //       this.setState({ rowModesModel: newRowModesModel });
-        //     }
-        //   };
-
-        //   if (params.mode === "edit") {
-        //     return (
-        //       <div
-        //         className="d-flex justify-content-between align-items-center"
-        //         style={{ cursor: "pointer" }}
-        //       >
-        //         <FormControlLabel
-        //           control={
-        //             <IconButton
-        //               color="secondary"
-        //               aria-label="add an alarm"
-        //               onClick={handleCellClick}
-        //             >
-        //               <PlaylistAddIcon />
-        //             </IconButton>
-        //           }
-        //         />
-        //       </div>
-        //     );
-        //   } else {
-        //     return (
-        //       <div
-        //         className="d-flex justify-content-between align-items-center"
-        //         style={{ cursor: "pointer" }}
-        //         onClick={handleCellClick}
-        //       >
-        //         {params.value}
-        //       </div>
-        //     );
-        //   }
+        //   return (
+        //     <div
+        //       className="d-flex justify-content-between align-items-center"
+        //       style={{ cursor: "pointer" }}
+        //     >
+        //       {params.row.name}
+        //       <MatEdit index={params.row.id} />
+        //     </div>
+        //   );
         // },
       },
       {
@@ -375,7 +372,7 @@ class DataGridComponent extends Component {
     return (
       <Box
         sx={{
-          height: 500,
+          height: "100%",
           width: "100%",
           "& .actions": {
             color: "text.secondary",

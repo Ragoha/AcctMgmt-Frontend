@@ -23,11 +23,9 @@ class App extends Component {
     return (
       <Provider store={storeInstance.store}>
         <PersistGate loading={null} persistor={storeInstance.getPersistor()}>
-          <Scrollbars style={{ height: "100vh" }}>
             <div className="App">
               <Routers />
             </div>
-          </Scrollbars>
         </PersistGate>
       </Provider>
     );
