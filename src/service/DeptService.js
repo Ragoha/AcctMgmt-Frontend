@@ -32,5 +32,16 @@ class DeptService {
             })
 };
 
+getDepartment(data) {
+    return axios
+        .get(ACCTMGMT_API_BASE_URL + "/ozt/sdepart", {
+            headers: {
+                "access-token": data.accessToken,
+            },
+            withCredentials: true,
+            params :{deptCd:data.deptCd}
+        })
+};
+
 }
 export default new DeptService();
