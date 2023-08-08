@@ -29,6 +29,7 @@ export const CustomBtnBgtcd = styled(Button)(({theme}) =>({
 //---------------------------------------
 
 export const CustomInputLabel = styled(InputLabel)({
+  color: "black",
   fontWeight: "bold",
   marginRight: 8,
 });
@@ -39,6 +40,15 @@ export const CustomDataGrid = styled(DataGrid)({
 
 export const CustomTextField = styled(TextField)({
   width: 255,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomWideTextField = styled(TextField)({
+  marginRight: 16,
+  marginLeft: 16,
+  width: "100%",
   "& .MuiInputBase-root": {
     height: 40,
   },
@@ -89,6 +99,7 @@ export const CustomHeaderGridContainer = styled(Grid)({
 });
 
 export const CustomHeaderInputLabel = styled(InputLabel)({
+  color: "black",
   fontWeight: "bold",
   fontSize: 22,
-})
+});
