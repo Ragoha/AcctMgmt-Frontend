@@ -46,7 +46,7 @@ class PjtService {
   }
 
   insertPjt(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/" + coCd, Pjt);
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/insert/" + coCd, Pjt);
   }
 
   deletePjt(Pjt) {
