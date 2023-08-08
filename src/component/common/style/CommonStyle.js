@@ -1,5 +1,6 @@
 import { Autocomplete, Button, Grid, InputLabel, Select, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { DatePicker } from "@mui/x-date-pickers";
 import { styled } from "styled-components";
 
 //[230806] seunghong's BGTCD CustomBotton 
@@ -28,6 +29,7 @@ export const CustomBtnBgtcd = styled(Button)(({theme}) =>({
 //---------------------------------------
 
 export const CustomInputLabel = styled(InputLabel)({
+  color: "black",
   fontWeight: "bold",
   marginRight: 8,
 });
@@ -38,6 +40,15 @@ export const CustomDataGrid = styled(DataGrid)({
 
 export const CustomTextField = styled(TextField)({
   width: 255,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomWideTextField = styled(TextField)({
+  marginRight: 16,
+  marginLeft: 16,
+  width: "100%",
   "& .MuiInputBase-root": {
     height: 40,
   },
@@ -74,4 +85,21 @@ export const CustomSearchButton = styled(Button)({
   marginRight: 8,
   minWidth: "5px",
   // position: "absolute",
+});
+
+export const CustomDatePicker = styled(DatePicker)({
+  width: "140px"
+});
+
+export const CustomHeaderGridContainer = styled(Grid)({
+  width: "calc(100% + 32px) !important",
+  height: "50px",
+  // border: "1px solid black",
+  paddingRight: "16px !important",
+});
+
+export const CustomHeaderInputLabel = styled(InputLabel)({
+  color: "black",
+  fontWeight: "bold",
+  fontSize: 22,
 });

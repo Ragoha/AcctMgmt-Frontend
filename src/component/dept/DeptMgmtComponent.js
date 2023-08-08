@@ -1,23 +1,23 @@
+import AddIcon from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import GroupIcon from "@mui/icons-material/Group";
+import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
+import { Button, TextField } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AddIcon from '@mui/icons-material/Add';
-import ListIcon from '@mui/icons-material/List';
-import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, InputLabel, TextField, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
 
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { CustomGridContainer, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 import CompanyService from '../../service/CompanyService';
 import DivsService from '../../service/DivsService';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import DivDialogComponent from './dialog/DivDialogComponent';
 
@@ -546,14 +546,19 @@ class DeptMgmtComponent extends Component {
 
         return (
             <>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                        <ListIcon fontSize="large" />
-                    </Grid>
-                    <Grid item>
-                        <span>부서관리</span>
-                    </Grid>
-                </Grid>
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid item>
+            <Grid container direction="row">
+              <GroupIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>부서등록</CustomHeaderInputLabel>
+            </Grid>
+          </Grid>
+        </CustomHeaderGridContainer>
 
                 <CustomGridContainer container direction="row" spacing={2}
                     justifyContent="left"
