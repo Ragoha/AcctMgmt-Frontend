@@ -556,17 +556,17 @@ class CoMgmtComponent extends Component {
 
 
     const cards = coCdList.map((coCd, index) => (
-      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#C5DFF8' : 'white' }}>
+      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#E5FFFF' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 8 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
+            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
               {coCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
+            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "190px", bottom: '33px' }} >
               {ceoNmList[index]}
             </Typography>
 
-            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
+            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: 'relative', bottom: "15px", left: "-9px" }}>
               {coNmList[index]}
             </Typography>
           </CardContent>
