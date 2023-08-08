@@ -984,7 +984,7 @@ class CoMgmtComponent extends Component {
                   회계기수
                 </CustomInputLabel>
               </Grid>
-              <Grid item xs={5} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
                 <CustomInputLabel
                   sx={{ ml: 2 }}
                   name="gisu"
@@ -1000,6 +1000,7 @@ class CoMgmtComponent extends Component {
                   name="dateRange"
                   disabled={true}
                   value={this.state.dateRange || ""}
+                  sx={{width:240, minWidth:240}}
                   onChange={this.handleCompany}
                   InputProps={{
                     readOnly: true,
@@ -1021,7 +1022,6 @@ class CoMgmtComponent extends Component {
                   기수등록
                 </Button>
               </Grid>
-              <Grid item xs={5}></Grid>
             </Grid>
           </Grid>
           <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
