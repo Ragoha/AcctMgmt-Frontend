@@ -1,26 +1,28 @@
-import React from 'react';
+import SettingsIcon from "@mui/icons-material/Settings";
 import axios from "axios";
+import React from 'react';
 import { connect } from 'react-redux';
 import { SET_CONFIG } from '../../store/Config';
 
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    FormControl,
-    FormLabel,
-    Grid,
-    Tabs,
-    Tab,
-    TextField,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  Paper,
+  Radio,
+  RadioGroup,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tabs,
+  TextField,
 } from '@mui/material';
+import { CustomHeaderGridContainer, CustomHeaderInputLabel } from '../common/style/CommonStyle';
 
 class ConfigComponent extends React.Component {
     constructor(props) {
@@ -86,40 +88,8 @@ class ConfigComponent extends React.Component {
         console.log(option);
     };
 
-    // 라디오 버튼 선택 시 실행되는 함수
-    // handleRadioChange = (e) => {
-    //     const selectedValue = e.target.value;
 
-    //     this.setState((prevState) => ({
-    //         data: prevState.data.map((row) =>
-    //             row.id === prevState.selectedRowId
-    //                 ? { ...row, commonSettingValue: selectedValue }
-    //                 : row
-    //         ),
-    //         selectedValue,
-    //     }));
-    // handleRadioChange = (e) => {
-    //     const selectedValue = e.target.value;
-    //     const selectedIndex = parseInt(selectedValue, 10);
-
-    //     this.setState((prevState) => {
-    //         const selectedData = prevState.data.find(
-    //             (row) => row.id === prevState.selectedRowId
-    //         );
-
-    //         if (selectedData) {
-    //             const optionsIndex = selectedData.value.indexOf(selectedValue);
-    //             const commonSettingValue = selectedData.options[optionsIndex];
-
-    //             return {
-    //                 data: prevState.data.map((row) =>
-    //                     row.id === prevState.selectedRowId ? { ...row, commonSettingValue } : row
-    //                 ),
-    //                 selectedValue,
-    //             };
-    //         }
-    //     });
-    handleRadioChange = (e, settingsKey) => {
+    handleRadioChange = (e) => {
         const selectedValue = e.target.value;
         this.setState((prevState) => {
             const selectedData = prevState.data.find(
@@ -129,7 +99,7 @@ class ConfigComponent extends React.Component {
             if (selectedData) {
                 const optionsIndex = selectedData.value.indexOf(selectedValue);
                 const commonSettingValue = selectedData.options[optionsIndex];
-
+                
                 const newData = {
                     id: selectedData.id,
                     option: selectedData.option,
@@ -249,102 +219,119 @@ class ConfigComponent extends React.Component {
         const { selectedTab, coNm, data, selectedRowId } = this.state;
 
         // console.log('aeeee', coCd);
-        const settingsKey =
-            selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
-
+        const settingsKey ='commonSettingValue';
+        console.log("셋팅 키 값 : "+ settingsKey);
         const selectedRowData = data.find((row) => row.id === selectedRowId);
 
         return (
+          <>
+            <CustomHeaderGridContainer
+              container
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Grid item>
+                <Grid container direction="row">
+                  <SettingsIcon sx={{ fontSize: 31 }} />
+                  <CustomHeaderInputLabel>시스템환경설정</CustomHeaderInputLabel>
+                </Grid>
+              </Grid>
+            </CustomHeaderGridContainer>
+
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    {/* <TextField aria-readonly placeholder={coNm} disabled ></TextField> */}
-                    <TextField
-                        value={coNm}
-                        disabled
-                        variant="standard"
-                        InputProps={{
-                            style: {
-                                color: "",      // 원하는 색상으로 변경
-                                fontSize: '95px',  // 원하는 글꼴 크기로 변경
-                            },
-                        }}
-                    />
+              <Grid item xs={12} sx={{mt:3}}> 
+                {/* <TextField aria-readonly placeholder={coNm} disabled ></TextField> */}
+                <TextField
+                  value={coNm}
+                  disabled
+                  InputProps={{
+                    style: {
+                      width:'200px',
+                      height:'29px',
+                      color: "", // 원하는 색상으로 변경
+                      fontSize: "15px", // 원하는 글꼴 크기로 변경
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Tabs value={selectedTab} onChange={this.handleTabChange}>
+                  <Tab label="공통설정" value="common" />
+                </Tabs>
+              </Grid>
+              <Grid item xs={8}>
+                <TableContainer component={Paper}>
+                  <Table style={{ border: "1px solid #ccc" }}>
+                    <TableHead sx={{ bgcolor: "beige" }}>
+                      <TableRow>
+                        <TableCell
+                          style={{ border: "1px solid #ccc", width: "19vh" }}
+                        >
+                          옵션명(option)
+                        </TableCell>
+                        <TableCell
+                          style={{ border: "1px solid #ccc", width: "10vh" }}
+                        >
+                          설정값(SettingValue)
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.map((row) => (
+                        <TableRow
+                          key={row.id}
+                          onClick={() => this.handleRowClick(row)}
+                          style={{
+                            backgroundColor:
+                              row.id === selectedRowId ? "#e8f0fe" : "white",
+                            border: "1px solid #ccc",
+                          }}
+                        >
+                          <TableCell style={{ border: "1px solid #ccc" }}>
+                            {row.option}
+                          </TableCell>
+                          <TableCell style={{ border: "1px solid #ccc" }}>
+                            {row[settingsKey]}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              {selectedRowData && (
+                <Grid item xs={4}>
+                  <Paper style={{ padding: 10 }}>
+                    <FormControl component="fieldset" sx={{ width: "30vh" }}>
+                      <FormLabel component="label">설정</FormLabel>
+                      <RadioGroup
+                        name={`radio-group-${selectedRowData.id}`}
+                        value={selectedRowData[settingsKey]}
+                        // onChange={this.handleRadioChange}
+                        onChange={(e) => this.handleRadioChange(e)}
+                      >
+                        {selectedRowData.options.map(
+                          (optionValue, idx, options) => (
+                            <FormControlLabel
+                              key={optionValue}
+                              // value={optionValue}
+                              value={selectedRowData.value[idx]}
+                              // value = {options[idx]}
+                              // control={<Radio />}
+                              control={<Radio />}
+                              // label={`${idx + 1}.${optionValue}`} // 라벨을 순서와 함께 표시
+                              label={optionValue}
+                            />
+                          )
+                        )}
+                      </RadioGroup>
+                    </FormControl>
+                  </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                    <Tabs value={selectedTab} onChange={this.handleTabChange}>
-                        <Tab label="공통설정" value="common" />
-                    </Tabs>
-                </Grid>
-                <Grid item xs={8}>
-                    <TableContainer component={Paper}>
-                        <Table style={{ border: "1px solid #ccc" }}>
-                            <TableHead sx={{ bgcolor: 'beige' }}>
-                                <TableRow>
-                                    <TableCell style={{ border: "1px solid #ccc", width: "19vh" }}>
-                                        옵션명(option)
-                                    </TableCell>
-                                    <TableCell
-                                        style={{ border: "1px solid #ccc", width: "10vh" }}
-                                    >
-                                        설정값(SettingValue)
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {data.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        onClick={() => this.handleRowClick(row)}
-                                        style={{
-                                            backgroundColor:
-                                                row.id === selectedRowId ? "#e8f0fe" : "white",
-                                            border: "1px solid #ccc",
-                                        }}
-                                    >
-                                        <TableCell style={{ border: "1px solid #ccc" }}>
-                                            {row.option}
-                                        </TableCell>
-                                        <TableCell style={{ border: "1px solid #ccc" }}>
-                                            {row[settingsKey]}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
-                {selectedRowData && (
-                    <Grid item xs={4}>
-                        <Paper style={{ padding: 10 }}>
-                            <FormControl component="fieldset" sx={{ width: '30vh' }}>
-                                <FormLabel component="label" >
-                                    설정
-                                </FormLabel>
-                                <RadioGroup
-                                    name={`radio-group-${selectedRowData.id}`}
-                                    value={selectedRowData[settingsKey]}
-                                    // onChange={this.handleRadioChange}
-                                    onChange={(e) => this.handleRadioChange(e)}
-                                >
-                                    {selectedRowData.options.map((optionValue, idx, options) => (
-                                        <FormControlLabel
-                                            key={optionValue}
-                                            // value={optionValue}
-                                            value={selectedRowData.value[idx]}
-                                            // value = {options[idx]}
-                                            // control={<Radio />}
-                                            control={
-                                                <Radio />}
-                                            // label={`${idx + 1}.${optionValue}`} // 라벨을 순서와 함께 표시
-                                            label={optionValue}
-                                        />
-                                    ))}
-                                </RadioGroup>
-                            </FormControl>
-                        </Paper>
-                    </Grid>
-                )}
+              )}
             </Grid>
+          </>
         );
     }
 }

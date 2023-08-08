@@ -14,6 +14,7 @@ import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
 import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -110,7 +111,10 @@ console.log('데이터체크')
           justifyContent="space-between"
         >
           <Grid item>
-            <CustomHeaderInputLabel>예산과목등록</CustomHeaderInputLabel>
+            <Grid container>
+              <PostAddIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>예산과목등록</CustomHeaderInputLabel>
+            </Grid>
           </Grid>
           <Grid item>
             <Grid container direction="row">
