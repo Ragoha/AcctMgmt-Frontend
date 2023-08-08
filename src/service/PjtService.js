@@ -52,6 +52,14 @@ class PjtService {
   deletePjt(Pjt) {
     return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/", Pjt);
   }
-  
+  getPgrBy(keyword) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch", {
+        params: {
+          keyword: keyword
+        },
+      })
+      .then((response) => response.data);
+  }
 }
 export default new PjtService();

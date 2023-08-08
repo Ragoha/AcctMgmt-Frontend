@@ -88,40 +88,8 @@ class ConfigComponent extends React.Component {
         console.log(option);
     };
 
-    // 라디오 버튼 선택 시 실행되는 함수
-    // handleRadioChange = (e) => {
-    //     const selectedValue = e.target.value;
 
-    //     this.setState((prevState) => ({
-    //         data: prevState.data.map((row) =>
-    //             row.id === prevState.selectedRowId
-    //                 ? { ...row, commonSettingValue: selectedValue }
-    //                 : row
-    //         ),
-    //         selectedValue,
-    //     }));
-    // handleRadioChange = (e) => {
-    //     const selectedValue = e.target.value;
-    //     const selectedIndex = parseInt(selectedValue, 10);
-
-    //     this.setState((prevState) => {
-    //         const selectedData = prevState.data.find(
-    //             (row) => row.id === prevState.selectedRowId
-    //         );
-
-    //         if (selectedData) {
-    //             const optionsIndex = selectedData.value.indexOf(selectedValue);
-    //             const commonSettingValue = selectedData.options[optionsIndex];
-
-    //             return {
-    //                 data: prevState.data.map((row) =>
-    //                     row.id === prevState.selectedRowId ? { ...row, commonSettingValue } : row
-    //                 ),
-    //                 selectedValue,
-    //             };
-    //         }
-    //     });
-    handleRadioChange = (e, settingsKey) => {
+    handleRadioChange = (e) => {
         const selectedValue = e.target.value;
         this.setState((prevState) => {
             const selectedData = prevState.data.find(
@@ -131,7 +99,7 @@ class ConfigComponent extends React.Component {
             if (selectedData) {
                 const optionsIndex = selectedData.value.indexOf(selectedValue);
                 const commonSettingValue = selectedData.options[optionsIndex];
-
+                
                 const newData = {
                     id: selectedData.id,
                     option: selectedData.option,
@@ -251,9 +219,8 @@ class ConfigComponent extends React.Component {
         const { selectedTab, coNm, data, selectedRowId } = this.state;
 
         // console.log('aeeee', coCd);
-        const settingsKey =
-            selectedTab === 'common' ? 'commonSettingValue' : 'decisionSettingValue';
-
+        const settingsKey ='commonSettingValue';
+        console.log("셋팅 키 값 : "+ settingsKey);
         const selectedRowData = data.find((row) => row.id === selectedRowId);
 
         return (
@@ -273,16 +240,17 @@ class ConfigComponent extends React.Component {
             </CustomHeaderGridContainer>
 
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{mt:3}}> 
                 {/* <TextField aria-readonly placeholder={coNm} disabled ></TextField> */}
                 <TextField
                   value={coNm}
                   disabled
-                  variant="standard"
                   InputProps={{
                     style: {
+                      width:'200px',
+                      height:'29px',
                       color: "", // 원하는 색상으로 변경
-                      fontSize: "95px", // 원하는 글꼴 크기로 변경
+                      fontSize: "15px", // 원하는 글꼴 크기로 변경
                     },
                   }}
                 />
