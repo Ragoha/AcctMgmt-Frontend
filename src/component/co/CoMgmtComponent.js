@@ -556,17 +556,17 @@ class CoMgmtComponent extends Component {
 
 
     const cards = coCdList.map((coCd, index) => (
-      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#C5DFF8' : 'white' }}>
+      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#E5FFFF' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(coCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 8 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
+            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
               {coCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
+            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "190px", bottom: '33px' }} >
               {ceoNmList[index]}
             </Typography>
 
-            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
+            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: 'relative', bottom: "15px", left: "-9px" }}>
               {coNmList[index]}
             </Typography>
           </CardContent>
@@ -606,12 +606,12 @@ class CoMgmtComponent extends Component {
         </CustomGridContainer>
 
         <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }} >
-          <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
-            <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
+          <Grid container sx={{ width: '22%', height: 500, border: '1px solid #EAEAEA', borderTop: '3px solid black', overflowY: 'auto'}}>
+            <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid #D8D8D8' }}>
               <CustomInputLabel >총 회사:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
             </Grid>
 
-            <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
+            <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)' }}>
               {cards.map((card, index) => (
                 <Grid key={index} item xs={12} sx={{ mb: 1 }}>
                   {card}
@@ -619,7 +619,7 @@ class CoMgmtComponent extends Component {
               ))}
             </Grid>
 
-            <Grid container sx={{ position: 'relative', bottom: '60px', width: '100%' }} >
+            <Grid container sx={{ position: 'relative', bottom: '-13px', width: '100%' }} >
               <Button variant="extended" onClick={this.addCardButton}
                 sx={{
                   border: '1px solid',
