@@ -1,10 +1,17 @@
-import styled from "styled-components";
-import { DialogTitle, DialogContent, DialogActions, Grid, InputLabel, IconButton, Button, TextField, } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
-import { DataGrid } from "@mui/x-data-grid";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import styled from "styled-components";
 
-export const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
+
+export const CustomShortDialog = styled(Dialog)({
+  "& .MuiPaper-elevation": {
+    width: 500,
+    height: 600,
+    minHeight: 600
+  },
+})
+
+export const CustomDialogTitle = styled(DialogTitle)({
   backgroundColor: "#7895CB",
   color: "white",
   fontWeight: "bold",
@@ -13,23 +20,23 @@ export const CustomDialogTitle = styled(DialogTitle)(({ theme }) => ({
   alignItems: "center",
   height: 60,
   padding: 16,
-}));
+});
 
-export const CustomCloseIcon = styled(CloseIcon)(({ theme }) => ({
+export const CustomCloseIcon = styled(CloseIcon)({
   color: "white" 
-}));
+});
 
-export const CustomDialogContent = styled(DialogContent)(({ theme }) => ({
+export const CustomDialogContent = styled(DialogContent)({
   margin: 0,
   padding: 0,
-}));
+});
 
-export const CustomDialogActions = styled(DialogActions)(({ theme }) => ({
+export const CustomDialogActions = styled(DialogActions)({
   margin: 0,
   padding: 0,
-}));
+});
 
-export const CustomShortFormGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomShortFormGridContainer = styled(Grid)({
   position:"relative",
   maxWidth: "468px",
   border: "3px solid #EAEAEA",
@@ -39,9 +46,9 @@ export const CustomShortFormGridContainer = styled(Grid)(({ theme }) => ({
   marginRight: 16,
   marginBottom: 16,
   paddingBottom: 16
-}));
+});
 
-export const CustomLargeFormGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomLargeFormGridContainer = styled(Grid)({
   position: "relative",
   maxWidth: "1168px",
   border: "3px solid #EAEAEA",
@@ -51,41 +58,41 @@ export const CustomLargeFormGridContainer = styled(Grid)(({ theme }) => ({
   marginRight: 16,
   marginBottom: 16,
   paddingBottom: 16,
-}));
+});
 
-export const CustomDataGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomShortDataGridContainer = styled(Grid)({
   height: "370px",
   maxWidth: "468px",
   marginLeft: 16,
   marginRight: 16
-}));
+});
 
-export const CustomLargeDataGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomLargeDataGridContainer = styled(Grid)({
   height: "552px",
   maxWidth: "1168px",
   marginLeft: 16,
   marginRight: 16,
-}));
+});
 
-export const CustomButtonGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomButtonGridContainer = styled(Grid)({
   maxWidth: "468px",
   marginLeft: 16,
   marginRight: 16,
   marginBottom: 16,
-}));
+});
 
-export const CustomLargeButtonGridContainer = styled(Grid)(({ theme }) => ({
+export const CustomLargeButtonGridContainer = styled(Grid)({
   maxWidth: "1168px",
   marginLeft: 16,
   marginRight: 16,
   marginBottom: 16,
-}));
+});
 
-export const CustomConfirmButton = styled(Button)(({ theme }) => ({
+export const CustomConfirmButton = styled(Button)({
   backgroundColor: "#4A55A2",
   color: "white",
   "&:hover": {
     backgroundColor: "#4A55A2",
   },
   marginRight: 8,
-}));
+});

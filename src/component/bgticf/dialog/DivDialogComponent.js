@@ -1,14 +1,13 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
-  Dialog,
   Grid,
   IconButton
 } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
 import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../common/style/CommonStyle";
 
 class DivDialogComponent extends Component {
@@ -33,12 +32,6 @@ class DivDialogComponent extends Component {
             width: 286,
             headerAlign: "center",
           },
-        ],
-        rows: [
-          {id:1, divCd: 1, divNm: "John" },
-          {id:2, divCd: 2, divNm: "Jane" },
-          {id:3, divCd: 3, divNm: "Bob" },
-          // Add more rows here...
         ],
       },
     };
@@ -113,7 +106,7 @@ class DivDialogComponent extends Component {
     const { open, data } = this.state;
 
     return (
-      <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+      <CustomShortDialog open={open}>
         <CustomDialogTitle>
           사업장검색
           <IconButton size="small" onClick={this.handleDown}>
@@ -127,7 +120,7 @@ class DivDialogComponent extends Component {
             alignItems="center"
             spacing={2}
           >
-            <Grid item xs={12}>
+            <Grid item>
               <Grid
                 container
                 direction="row"
@@ -153,10 +146,7 @@ class DivDialogComponent extends Component {
               </Grid>
             </Grid>
           </CustomShortFormGridContainer>
-          <Grid
-            container
-            sx={{ height: "371px", maxWidth: "468px", ml: 2, mr: 2 }}
-          >
+          <CustomShortDataGridContainer container>
             <CustomDataGrid
               rows={this.state.divRows}
               columns={data.columns}
@@ -165,7 +155,7 @@ class DivDialogComponent extends Component {
               onRowClick={this.handleClickRow}
               hideFooter
             />
-          </Grid>
+          </CustomShortDataGridContainer>
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
@@ -180,7 +170,7 @@ class DivDialogComponent extends Component {
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>
-      </Dialog>
+      </CustomShortDialog>
     );
   }
 }

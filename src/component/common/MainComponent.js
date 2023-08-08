@@ -121,7 +121,7 @@ class MainComponent extends Component {
           <CssBaseline />
 
           {/* Header */}
-          <AppBar position="fixed" open={open}>
+          <AppBar position="fixed" open={open} sx={{ background: "#4A55A2" }}>
             <Toolbar
               sx={{
                 pr: "24px", // keep right padding when drawer closed
@@ -149,12 +149,13 @@ class MainComponent extends Component {
                 sx={{ flexGrow: 1 }}
               >
                 DOUZONE
+                {/* <img src="/img/logo.png"></img> */}
               </Typography>
               <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
-                <div style={{ marginLeft: '15px' }}>
+                <div style={{ marginLeft: "15px" }}>
                   <a onClick={this.logout}>LogOut</a>
                 </div>
               </IconButton>
@@ -191,11 +192,17 @@ class MainComponent extends Component {
           </Drawer>
 
           {/* Main */}
-          <Scrollbars style={{ height: "100vh" }}>
-            <Box sx={{ pt: 10, pb: 2, pl: open ? 32 : 9, pr: 2, transition: "padding 0.4s" }}>
-              <Outlet />
-            </Box>
-          </Scrollbars>
+          <Box
+            sx={{
+              pt: 10,
+              pb: 2,
+              pl: open ? 32 : 9,
+              pr: 2,
+              transition: "padding 0.4s",
+            }}
+          >
+            <Outlet />
+          </Box>
         </Box>
       </ThemeProvider>
     );

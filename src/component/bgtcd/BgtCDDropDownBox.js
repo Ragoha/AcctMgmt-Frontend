@@ -55,19 +55,18 @@ class BgtCDDropDownBox extends React.Component {
   render() {
     return (
       <div>
-        <CustomBtnBgtcd
+        <Button
           ref={this.funtionList}
           id="composition-button"
           aria-controls={this.state.open ? 'composition-menu' : undefined}
           aria-expanded={this.state.open ? 'true' : undefined}
           aria-haspopup="true"
           onClick={this.handleToggle}
-          variant="primary"
-          sx={{border: "1px solid"}}
+          variant="outlined"
         >
           기능모음
         <SettingsIcon sx={{ml:'8px'}}/>
-        </CustomBtnBgtcd>
+        </Button>
         <Popper
           open={this.state.open}
           anchorEl={this.funtionList.current}
