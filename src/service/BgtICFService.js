@@ -6,7 +6,6 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 class BtgICFService {
   getBGT(formData) {
     // const data = JSON.stringify(formData);
-    alert(formData);
     return axios.post(ACCTMGMT_API_BASE_URL + "/budget", formData, {
       headers: {
         "Content-Type": "application/json",
@@ -33,6 +32,45 @@ class BtgICFService {
   // deleteBgtICF(sq) {
   //   return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
   // }
+
+  insertBgtICF(data) {
+    console.log("asdfasdfiweoidosodsodsowo");
+    console.log(data);
+    console.log("asdfasdfiweoidosodsodsowo");
+
+    return axios
+      .post(
+        ACCTMGMT_API_BASE_URL + "/bgticf",
+        {
+          coCd: data.user.coCd,
+          gisu: data.row.gisu,
+          sq: data.row.sq,
+          bgtCd: data.row.bgtCd,
+          divCd: data.row.divCd,
+          deptCd: data.row.deptCd,
+          mgtCd: data.row.mgtCd,
+          bgtFg: data.row.bgtFg,
+          bottomNm: data.row.bottomNm,
+          carrAm: data.row.carrAm,
+          carrAm1: data.row.carrAm1,
+          carrAm2: data.row.carrAm2,
+          carrAm3: data.row.carrAm3,
+          empCd: data.user.empCd,
+          remDc: data.row.remDc,
+          modifyId: data.user.empId,
+        },
+        {
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        console.log("응답:", response.data); // 성공적으로 응답이 도착한 경우 응답 데이터 출력
+        return response.data; // 다음 처리를 위해 응답 데이터 반환
+      });
+  }
 
   updateBgtICF(data) {
     console.log(data);

@@ -13,29 +13,8 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomBtnBgtcd, CustomGridContainer, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
-
-
-{/* <Autocomplete
-variant=""
-size="small"
-
-openOnFocus
-// clearOnEscape
-options={[
-   { label: "간편검색", value: "" },
-   { label: "예산그룹등록", value: "deran" },
-   { label: "예산과목복사", value: "deran" },
-   { label: "과목분류명등록", value: "deran" },
-   { label: "회계계정과목복사", value: "deran" },
-   { label: "예산과목엑셀업로드", value: "deran" },
-   { label: "예산과목 일괄설정", value: "deran" },
-]}
-sx={{ width: '200px', marginRight: '50px',}}// backgroundColor: "#7895CB",
-
-renderInput={(params) => <TextField {...params} />}
-></Autocomplete> */}
-
+import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -83,34 +62,24 @@ console.log('데이터체크')
   /*---로우 추가 관련된 메서드 start---*/
   //데이터 그리드에 추가하는 기능
   //[230728] TreeView 수정했는데 addRow 로직은 아직 변경하지 않음 한번 손봐야함
+  //[230808] 
   handleRowAdd = () => {
-    const dataPath = this.BgtDataGrid.current.getDataPathFromDataGrid() + "                   ";
-    console.log("여긴 handleRowAdd: " + dataPath);
-    const newRows = [
-      ...this.state.rows,
-      { dataPath: dataPath, bgtCd: "abckk", bgtNm: "abc", isNew: true },
-    ];
-    this.setState({ rows: newRows });
+    const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+    const {coCd} = this.props.userInfo;
+    const {accessToken } = this.props;
+    const data = {bgtCd:bgtCd , coCd :coCd}
+    BgtCDService.getAddRowData(data,accessToken)
+    .then(data=>{
+
+    })
+    // const newRows = [
+    //   ...this.state.rows,
+    //   { dataPath: dataPath, bgtCd: "", bgtNm: "", isNew: true },
+    // ];
+    // this.setState({ rows: newRows });
   };
   /*---로우 추가 관련된 메서드 end---*/
 
-  // *일단 로우를 특정하기 성공했고 
-  /*[230803] 혹시 만약 참고할거면 하고 위에 addRow기능 성공했으면 지워도 되는 코드
-  //DetailInfo 에 저장된 BgtCd 값을 가져와 ->
-  // console.log('추가버튼')
-  // console.log(this.BgtCDDetailInfo.current.getBgtCd());
-  // const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-  // console.log(bgtCd);
-  // BgtCDService.getPath(bgtCd)
-  //     .then((path) => {
-  //         console.log("패스는 ? : " + path) //이 패스는 현재 찍은 위치의 path이다
-  //         const newRows = [
-  //             ...this.state.rows,
-  //             { dataPath: path, defNm: "", bgtCd: "", bgtNm: "", isNew: true },
-  //         ];
-  //         this.setState({ rows: newRows });
-  //     })
-  */
 
   /*  데이터 그리드 부분 end */
   /* DetailInfo부분 */
@@ -135,15 +104,20 @@ console.log('데이터체크')
     const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
     return (
       <>
-        <Grid container spacing={2} padding={0}>
-          <Grid item xs={12}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item>
-                <ListIcon fontSize="large" />
-              </Grid>
-              <Grid item>
-                <CustomInputLabel>예산과목등록</CustomInputLabel>
-              </Grid>
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid item>
+            <Grid container>
+              <PostAddIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>예산과목등록</CustomHeaderInputLabel>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Grid container direction="row">
               <CustomBtnBgtcd
                 onClick={this.handleRowAdd}
                 variant="primary"
@@ -153,7 +127,7 @@ console.log('데이터체크')
                   //border: "1px solid",
                 }}
               >
-                추    가
+                추 가
               </CustomBtnBgtcd>
               <CustomBtnBgtcd
                 variant="primary"
@@ -172,45 +146,45 @@ console.log('데이터체크')
                 예산과목추가
               </CustomBtnBgtcd>
               {/* 기능모음 드롭다운박스 */}
-              <BgtCDDropDownBox  selectBgtCDDropDownBox={this.selectBgtCDDropDownBox} />
+              <BgtCDDropDownBox
+                selectBgtCDDropDownBox={this.selectBgtCDDropDownBox}
+              />
             </Grid>
           </Grid>
-          <Grid item xs={12} sx={{ marginTop: "-10px" }}>
-            <CustomGridContainer
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-              spacing={2}
-            >
-              <Grid item xs={4}>
-                <CustomInputLabel>예산그룹</CustomInputLabel>
-                <CustomSelect>
-                </CustomSelect>
-              </Grid>
-              <Grid item xs={4}>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목코드</CustomInputLabel>
-                  <CustomTextField
-                    sx={{ width: "200px", marginRight: "50px"}}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={4}>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목명</CustomInputLabel>
-                  <CustomTextField
-                    sx={{ width: "200px", marginRight: "50px" }}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={4}>
-                <Button onClick={this.searchClick}>
-                  <SearchIcon />
-                </Button>
-              </Grid>
-            </CustomGridContainer>
+        </CustomHeaderGridContainer>
+        <CustomGridContainer
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산그룹</CustomInputLabel>
+              <CustomSelect></CustomSelect>
+            </Grid>
           </Grid>
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산과목코드</CustomInputLabel>
+              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산과목명</CustomInputLabel>
+              <CustomTextField sx={{ width: "200px", marginRight: "50px" }} />
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Button onClick={this.searchClick}>
+              <SearchIcon />
+            </Button>
+          </Grid>
+        </CustomGridContainer>
+        <Grid container spacing={2} padding={0}>
+          <Grid item xs={12} sx={{ marginTop: "-10px" }}></Grid>
           <Grid container xs={12}>
             <Grid item xs={7}>
               <BgtCDDatagrid
@@ -219,7 +193,7 @@ console.log('데이터체크')
                 setDetailInfo={this.setDetailInfo}
               />
             </Grid>
-            <Grid item xs={5} justifyContent="center" >
+            <Grid item xs={5} justifyContent="center">
               <BgtCDDetailInfo
                 ref={this.BgtCDDetailInfo}
                 prevBgtCd={prevBgtCd}
@@ -233,11 +207,12 @@ console.log('데이터체크')
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-        <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />{/*예산그룹등록 */}
-        <BgtCDGroupReg ref={this.BgtCDGroupReg} />{/*그룹레벨설정 */}
-
+        <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
+        {/*예산그룹등록 */}
+        <BgtCDGroupReg ref={this.BgtCDGroupReg} />
+        {/*그룹레벨설정 */}
       </>
-    )
+    );
 
   }
 }

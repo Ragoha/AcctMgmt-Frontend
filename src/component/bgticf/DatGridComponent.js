@@ -12,16 +12,24 @@ import { DataGrid } from "@mui/x-data-grid";
 import BgtICFService from "../../service/BgtICFService";
 import { forwardRef } from "react";
 import { connect } from "react-redux";
+import PjtDialogComponent from "./dialog/PjtDialogComponent";
+import { createRef } from "react";
+import { Button } from "@mui/base";
+import { FormControlLabel, IconButton } from "@mui/material";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 
 class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bgtCd: "",
+      mgtCd: "",
       rows: [],
       rowModesModel: {},
       selectedRowId: "",
     };
+
+    this.pjtRef = createRef();
   }
 
   handleRowAdd = () => {
@@ -37,6 +45,13 @@ class DataGridComponent extends Component {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
+
+    this.setState((prevState) => ({
+      rowModesModel: {
+        ...prevState.rowModesModel,
+        [params.id]: { mode: GridRowModes.View },
+      },
+    }));
   };
 
   handleEditClick = (id) => () => {
@@ -59,13 +74,15 @@ class DataGridComponent extends Component {
   };
 
   handleGetBgtICFList() {
-    BgtICFService.getBgtICFList({accessToken: this.props.accessToken}).then((response) => {
-      const rowsWithId = response.map((row) => ({
-        ...row,
-        id: row.bgtCd,
-      }));
-      this.setState({ rows: rowsWithId });
-    });
+    BgtICFService.getBgtICFList({ accessToken: this.props.accessToken }).then(
+      (response) => {
+        const rowsWithId = response.map((row) => ({
+          ...row,
+          id: row.bgtCd,
+        }));
+        this.setState({ rows: rowsWithId });
+      }
+    );
   }
 
   handleDeleteClick = (data) => () => {
@@ -73,30 +90,81 @@ class DataGridComponent extends Component {
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: data.bgtCd,
-      sq: data.sq
+      sq: data.sq,
     }).then(() => {
       this.handleGetBgtICFList();
     });
-    
   };
 
   getBgtICFList = async (data) => {
     console.log(data);
-    await this.setState({ bgtCd : data.bgtCd});
+    await this.setState({ bgtCd: data.bgtCd });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
-      bgtCd: this.state.bgtCd
-    }).then(
-      (response) => {
+      bgtCd: this.state.bgtCd,
+    }).then((response) => {
+      console.log(this.state.rows);
+      const rowsWithId = response.map((row) => ({
+        ...row,
+        id: row.sq,
+      }));
+
+      rowsWithId.push({
+        id: randomId(),
+        bgtCd: this.state.bgtCd,
+        divCd: this.state.divCd,
+        bottomNm: "",
+        carrAm: 0,
+        carrAm1: 0,
+        carrAm2: 0,
+        carrAm3: 0,
+        remDc: "",
+        bgtTy: "",
+        modifyId: "",
+        isNew: true,
+      });
+
+      this.setState({ rows: rowsWithId });
+    });
+  };
+
+  insertBgtICF = (row) => {
+    BgtICFService.insertBgtICF({
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+      row: row,
+    }).then(() => {
+      this.props.handleClickSerachButton();
+      BgtICFService.getBgtICFList({
+        accessToken: this.props.accessToken,
+        coCd: this.props.user.coCd,
+        bgtCd: this.state.bgtCd,
+      }).then((response) => {
         console.log(this.state.rows);
         const rowsWithId = response.map((row) => ({
           ...row,
           id: row.sq,
         }));
+
+        rowsWithId.push({
+          id: randomId(),
+          bgtCd: this.state.bgtCd,
+          mgtCd: this.state.mgtCd,
+          bottomNm: "",
+          carrAm: 0,
+          carrAm1: 0,
+          carrAm2: 0,
+          carrAm3: 0,
+          remDc: "",
+          bgtTy: "",
+          modifyId: "",
+          isNew: true,
+        });
+
         this.setState({ rows: rowsWithId });
-      }
-    );
+      });
+    });
   }
 
   updateBgtICF = (row) => {
@@ -104,35 +172,59 @@ class DataGridComponent extends Component {
       accessToken: this.props.accessToken,
       user: this.props.user,
       row: row,
-    })
-      .then(() => {
-        this.props.handleClickSerachButton();
-        BgtICFService.getBgtICFList({
-          accessToken: this.props.accessToken,
-          coCd: this.props.user.coCd,
+    }).then(() => {
+      this.props.handleClickSerachButton();
+      BgtICFService.getBgtICFList({
+        accessToken: this.props.accessToken,
+        coCd: this.props.user.coCd,
+        bgtCd: this.state.bgtCd,
+      }).then((response) => {
+        console.log(this.state.rows);
+        const rowsWithId = response.map((row) => ({
+          ...row,
+          id: row.sq,
+        }));
+
+        rowsWithId.push({
+          id: randomId(),
           bgtCd: this.state.bgtCd,
-        }).then((response) => {
-          console.log(this.state.rows);
-          const rowsWithId = response.map((row) => ({
-            ...row,
-            id: row.sq,
-          }));
-          this.setState({ rows: rowsWithId });
+          mgtCd: this.state.mgtCd,
+          bottomNm: "",
+          carrAm: 0,
+          carrAm1: 0,
+          carrAm2: 0,
+          carrAm3: 0,
+          remDc: "",
+          bgtTy: "",
+          modifyId: "",
+          isNew: true,
         });
-      }
-      );
-  }
+
+        this.setState({ rows: rowsWithId });
+      });
+    });
+  };
 
   processRowUpdate = (newRow) => {
+    console.log(newRow.isNew);
+    console.log(newRow.isNew);
+    console.log(newRow.isNew);
+
+    if (newRow.isNew) {
+      this.insertBgtICF(newRow);
+    } else {
+      const updatedRow = { ...newRow, isNew: false };
+
+      this.setState((prevState) => ({
+        rows: prevState.rows.map((row) =>
+          row.id === newRow.id ? updatedRow : row
+        ),
+      }));
+      this.updateBgtICF(updatedRow);
+    }
+
     const updatedRow = { ...newRow, isNew: false };
 
-    this.setState((prevState) => ({
-      rows: prevState.rows.map((row) =>
-        row.id === newRow.id ? updatedRow : row
-      ),
-    }));
-
-    this.updateBgtICF(updatedRow);
     // BgtICFService.deleteBgtICF({
     //   accessToken: this.props.accessToken,
     //   coCd: this.props.user.coCd,
@@ -142,22 +234,23 @@ class DataGridComponent extends Component {
     //   this.handleGetBgtICFList();
     // });
 
-    
-
     return updatedRow;
   };
 
-  
-
   handleRowModesModelChange = (newRowModesModel) => {
-    console.log("asdf11")
+    console.log("asdf11");
     console.log(newRowModesModel);
     this.setState({ rowModesModel: newRowModesModel });
   };
 
   handleRowClick = (params) => {
+    console.log(params);
     this.props.setSelectedRowId(params.row);
   };
+
+  test = () => {
+    console.log("테스트입니다.");
+  }
 
   componentDidMount() {}
 
@@ -177,10 +270,53 @@ class DataGridComponent extends Component {
 
     const columns = [
       {
-        field: "divCd",
-        headerName: "사업",
+        field: "mgtCd",
+        headerName: "프로젝트",
         headerAlign: "center",
         editable: true,
+        // renderCell: (params) => {
+        //   console.log(params);
+        //   const handleCellClick = () => {
+        //     if (params.mode !== "edit") {
+        //       const newRowModesModel = {
+        //         ...rowModesModel,
+        //         [params.id]: { mode: GridRowModes.Edit },
+        //       };
+        //       this.setState({ rowModesModel: newRowModesModel });
+        //     }
+        //   };
+
+        //   if (params.mode === "edit") {
+        //     return (
+        //       <div
+        //         className="d-flex justify-content-between align-items-center"
+        //         style={{ cursor: "pointer" }}
+        //       >
+        //         <FormControlLabel
+        //           control={
+        //             <IconButton
+        //               color="secondary"
+        //               aria-label="add an alarm"
+        //               onClick={handleCellClick}
+        //             >
+        //               <PlaylistAddIcon />
+        //             </IconButton>
+        //           }
+        //         />
+        //       </div>
+        //     );
+        //   } else {
+        //     return (
+        //       <div
+        //         className="d-flex justify-content-between align-items-center"
+        //         style={{ cursor: "pointer" }}
+        //         onClick={handleCellClick}
+        //       >
+        //         {params.value}
+        //       </div>
+        //     );
+        //   }
+        // },
       },
       {
         field: "bottomNm",
@@ -256,16 +392,22 @@ class DataGridComponent extends Component {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={this.handleRowModesModelChange}
-          onRowEditStop={this.handleRowEditStopop}
+          onRowEditStop={this.handleRowEditStop}
           showCellVerticalBorder
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
+          onCellClick={(e) => {
+            if (e.field == "divCd" && e.cellMode == "edit") {
+              this.pjtRef.current.handleUp();
+            }
+          }}
           components={{
             NoRowsOverlay: () => "",
           }}
           sx={{ borderTop: "3px solid black" }}
           hideFooter
         />
+        <PjtDialogComponent ref={this.pjtRef} />
       </Box>
     );
   }
