@@ -128,17 +128,19 @@ class PjtComponent extends Component {
         note,
       } = this.state;
       const data = {
-        pjtCd,
-        pgrCd,
-        pgrNm,
-        pjtNm,
-        prDt,
-        toDt,
-        progFg,
-        apjtNm,
-        stDt,
-        note,
+        coCd: coCd,
+        pgrCd: pgrCd,
+        pgrNm: pgrNm,
+        pjtCd: pjtCd,
+        pjtNm: pjtNm,
+        prDt: prDt,
+        toDt: toDt,
+        progFg: progFg,
+        apjtNm: apjtNm,
+        startDt: stDt,
+        note: note,
       };
+      console.log("넌 뭔값이야?" , data);
       PjtService.updatePjt(coCd, data)
       .then((response) => {
         // 수정 완료 시 변경 감지 변수(isChanged)를 초기화하고 알림창 띄우기

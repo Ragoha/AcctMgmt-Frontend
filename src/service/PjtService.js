@@ -41,11 +41,9 @@ class PjtService {
           })
     }
 
-    updatePjt(coCd, data){
-        return axios
-        .post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + coCd + "/" + data,{
-
-        })
-    }
+    updatePjt(coCd, data) {
+        return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + coCd, data);
+      }
+      
 }
 export default new PjtService();
