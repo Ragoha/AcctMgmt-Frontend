@@ -51,22 +51,23 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   }
   setDetailInfo = (bgtCd) => {
     console.log('---DetailInfo.js에 있는 setDetailInfo---')
-    this.setState({ bgtCd: bgtCd }, () => console.log('setDetail에서 bgtcd 인식하는가 ' + this.state.bgtCd))
+    this.setState({ bgtCd: bgtCd })
     const { accessToken } = this.props;
     BgtCDService.getDetailInfo(bgtCd, accessToken)
       .then(response => {
-        console.log('ctlFg 값은 ? ' + response[0].ctlFg);
-        console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
-        console.log('bottomFg 값은 ? ' + response[0].bottomFg);
-        console.log('bizFG 값은 ? ' + response[0].bizFg);
-        console.log('bgtCd 값은 ? ' + response[0].bgtCd);
-        console.log('Todt는 값은 ? ' + response[0].toDt);
+        // console.log('ctlFg 값은 ? ' + response[0].ctlFg);
+        // console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
+        // console.log('bottomFg 값은 ? ' + response[0].bottomFg);
+        // console.log('bizFG 값은 ? ' + response[0].bizFg);
+        // console.log('bgtCd 값은 ? ' + response[0].bgtCd);
+        // console.log('Todt는 값은 ? ' + response[0].toDt);
         this.setState({
           ctlFg: response[0].ctlFg,
           bgajustFg: response[0].bgajustFg,
           bottomFg: response[0].bottomFg,
           bizFg: response[0].bizFg,
           toDt : response[0].toDt,
+          
         });
         //여기서 redux에 response[0]의 데이터를 집어넣는다.
         //this.props.set_detailInfo(response[0]);
