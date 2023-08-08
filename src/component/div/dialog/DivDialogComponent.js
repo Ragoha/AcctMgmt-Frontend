@@ -1,11 +1,26 @@
-import React, { Component } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, InputLabel, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import CompanyService from '../../../service/CompanyService';
+import React, { Component } from 'react';
 import DivsService from '../../../service/DivsService';
+
+import {
+  CustomButtonGridContainer,
+  CustomCloseIcon,
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomShortDataGridContainer,
+  CustomShortDialog,
+  CustomShortFormGridContainer,
+} from "../../common/style/CommonDialogStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../common/style/CommonStyle";
 
 const columns = [
   { field: 'divCd', headerName: '사업장코드', width: 180, headerAlign: 'center' },
@@ -97,124 +112,67 @@ class CoDialogComponent extends Component {
 
     return (
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
-      <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
-        <DialogTitle
-          sx={{
-            backgroundColor: "#7895CB",
-            color: "white",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: 60,
-            padding: 2
-          }}
-        >사업장검색
-          {this.props.DialogTitle}
+      <CustomShortDialog open={open}>
+        <CustomDialogTitle>
+          사업장검색
           <IconButton
             size="small"
-            onClick={() =>
-              this.setState({ open: false })
-            }>
-            <CloseIcon fontSize="medium" sx={{ color: "white" }} />
+            onClick={() => this.setState({ open: false })}
+          >
+            <CustomCloseIcon />
           </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ margin: 0, padding: 0 }}>
-          <Grid
+        </CustomDialogTitle>
+        <CustomDialogContent>
+          <CustomShortFormGridContainer
             container
             direction="row"
             alignItems="center"
             spacing={2}
-            sx={{
-              maxWidth: "468px",
-              border: "3px solid #EAEAEA",
-              display: "flex",
-              ml: 2,
-              mt: 1,
-              mr: 2,
-              mb: 2,
-              pb: 2,
-            }}
-            position="relative"
           >
-            <Grid item xs={12}>
+            <Grid item>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
               >
-                <InputLabel sx={{ fontWeight: "bold", mr: 1 }}>
-                  검색
-                </InputLabel>
-                <TextField
+                <CustomInputLabel>검색</CustomInputLabel>
+                <CustomTextField
                   id="keyword"
                   name="keyword"
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  size="small"
                   onKeyDown={this.handlePressEnter}
-                ></TextField>
-                <Button
-                  variant="outlined"
-                  style={{
-                    padding: "0px",
-                    minWidth: "5px",
-                    position: "relative",
-                    right: "-66px",
-                  }}
-                >
-                  <SearchIcon fontSize="medium" onClick={this.handleSearchDivDial} />
-                </Button>
+                />
+                <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
+                  <SearchIcon onClick={this.handleSearchDivDial} />
+                </CustomSearchButton>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            container
-            sx={{ height: "364px", maxWidth: "468px", ml: 2, mr: 2 }}
-          >
-            <DataGrid
+          </CustomShortFormGridContainer>
+          <CustomShortDataGridContainer container>
+            <CustomDataGrid
               columns={columns}
               rows={this.state.divdialRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
-              sx={{ borderTop: "3px solid black" }}
             />
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ margin: 0, padding: 0 }}>
-          <Grid
-            container
-            justifyContent="flex-end"
-            sx={{ maxWidth: "468px", ml: 2, mr: 2, mb: 2 }}
-          >
-            <Button
-              variant="outlined"
-              sx={{
-                backgroundColor: "#4A55A2",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#4A55A2",
-                },
-                mr: 1,
-              }}
-              onClick={this.handleClickConfirm}
-            >
+          </CustomShortDataGridContainer>
+        </CustomDialogContent>
+        <CustomDialogActions>
+          <CustomButtonGridContainer container justifyContent="flex-end">
+            <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
               확인
-            </Button>
-
-            <Button
-              variant="outlined"
-              onClick={() => this.setState({ open: false })}
-            >
+            </CustomConfirmButton>
+            <Button variant="outlined" onClick={() => this.setState({ open: false })}>
               취소
             </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog>
+          </CustomButtonGridContainer>
+        </CustomDialogActions>
+      </CustomShortDialog>
     );
   }
 }

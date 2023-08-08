@@ -198,7 +198,7 @@ class PjtComponent extends Component {
         note: note,
       };
       const impValues = {
-        pgrNm: pgrNm,
+        pjtNm: pjtNm,
         progFg: progFg,
       }
       if (Object.values(impValues).some((value) => value === "")) {

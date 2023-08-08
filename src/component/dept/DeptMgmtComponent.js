@@ -7,7 +7,6 @@ import GroupIcon from "@mui/icons-material/Group";
 import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
-import ListIcon from '@mui/icons-material/List';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
@@ -18,7 +17,6 @@ import Select from '@mui/material/Select';
 import InputAdornment from '@mui/material/InputAdornment';
 import CompanyService from '../../service/CompanyService';
 import DeptService from '../../service/DeptService';
-import DivsService from '../../service/DivsService';
 import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import DivDialogComponent from './dialog/DeptDialogComponent';
