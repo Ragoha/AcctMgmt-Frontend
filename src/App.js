@@ -1,14 +1,11 @@
 import { Component } from "react";
-import Routers from "./router/Routers";
 import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
+import Routers from "./router/Routers";
 import storeInstance from './store/store'; // store를 가져옵니다.
 
 
 // Redux & Redux-Thunk test
-import { legacy_createStore as createStore } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import Scrollbars from "react-custom-scrollbars";
 
 // import { Provider } from "react-redux";
 // import reducers from "./reducer";

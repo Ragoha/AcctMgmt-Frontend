@@ -123,62 +123,122 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   render() {
     const { menuItemValues, ctlFg, bgajustFg, bottomFg, bizFg, toDt } = this.state;
     return (
-        <Grid container sx={{ borderTop: "3px solid black" }}>
-          <Grid item xs={12} >
-            <Grid container >
-              <BgtCDDetailInfoFormControl title={'예산통제구분'} ctlFg={ctlFg} menuItemValues={menuItemValues[0]}
-                ref={(ref) => (this.ctlFgControl = ref)}
-              />
-              <BgtCDDetailInfoFormControl title={'예산전용구분'} bgajustFg={bgajustFg} menuItemValues={menuItemValues[1]}
-                ref={(ref) => (this.bgajustFgControl = ref)}
-              />
+      <Grid container sx={{ borderTop: "3px solid black" }}>
+        <Grid item sx={{ border: "2px solid #EAEAEA" }}>
+          <Grid container>
+            <BgtCDDetailInfoFormControl
+              title={"예산통제구분"}
+              ctlFg={ctlFg}
+              menuItemValues={menuItemValues[0]}
+              ref={(ref) => (this.ctlFgControl = ref)}
+            />
+            <BgtCDDetailInfoFormControl
+              title={"예산전용구분"}
+              bgajustFg={bgajustFg}
+              menuItemValues={menuItemValues[1]}
+              ref={(ref) => (this.bgajustFgControl = ref)}
+            />
 
-              <Grid container alignItems="center" sx={{ borderBottom: "1px lightgray solid", height: '80px' }} >
-                <Grid item md={6} sx={{ display: 'flex', justifyContent: 'flex-end', backgroundColor: '#FCFCFC',alignItems: 'center',height: "100%",borderRight: '1px solid #EAEAEA'}}>
-                  <CustomInputLabel sx={{ display: 'flex', justifyContent: 'flex-end' }}>사용기한</CustomInputLabel>
-                </Grid>
-                <Grid >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      name="date"
-                      format="YYYY-MM-DD"
-                      value={dayjs(toDt)}
-                      onChange={this.handleChangeDatePicker}
-                      slotProps={{
-                        textField: {
-                          size: "small",
-                          sx: { width: "255px",ml:"18px", mr: "3px", marginTop: '13px', marginBottom: '3px' },
-                          inputProps: {
-                            style: {
-                              borderRadius: 0
-                            }
+            <Grid
+              container
+              alignItems="center"
+              sx={{ borderBottom: "1px lightgray solid" }}
+            >
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  backgroundColor: "#FCFCFC",
+                  alignItems: "center",
+                  height: "100%",
+                  borderRight: "1px solid #EAEAEA",
+                }}
+              >
+                <CustomInputLabel
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  사용기한
+                </CustomInputLabel>
+              </Grid>
+              <Grid item xs={8}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    name="date"
+                    format="YYYY-MM-DD"
+                    value={dayjs(toDt)}
+                    onChange={this.handleChangeDatePicker}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        sx: {
+                          width: "150px",
+                          ml: "18px",
+                          mr: "3px",
+                          marginTop: "13px",
+                          marginBottom: "3px",
+                        },
+                        inputProps: {
+                          style: {
+                            borderRadius: 0,
                           },
                         },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </Grid>
-                {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </Grid>
-              <BgtCDDetailInfoFormControl title={'회계계정과목'} menuItemValues={menuItemValues[1]}
-              />
-              <BgtCDDetailInfoFormControl title={'최하위과목여부'} bottomFg={bottomFg} menuItemValues={menuItemValues[2]}
-                ref={(ref) => (this.bottomFgControl = ref)}
-              />
-              <BgtCDDetailInfoFormControl title={'구매성격'} bizFg={bizFg} menuItemValues={menuItemValues[3]}
-
-                ref={(ref) => (this.bizFgControl = ref)}
-              />
+              {/*기간 범위 넣을 수 있음 https://reactdatepicker.com/#example-custom-header */}
             </Grid>
-          </Grid>
-          <Grid container direction="row" justifyContent="center" alignItems="center">
-            <Grid sx={{ marginTop: '50px' }}>
-              <CustomBtnBgtcd onClick={this.updateDetailInfo} variant="contained" size='large' sx={{ width: '100px', borderColor: '#4A55A2', marginRight: '50px' }} style={{ border: '1px solid' }}>저 장</CustomBtnBgtcd>
-              <CustomBtnBgtcd onClick={this.deleteRow} variant="contained" size='large' sx={{ width: '100px', borderColor: '#4A55A2' }} style={{ border: '1px solid' }}>삭 제</CustomBtnBgtcd>
-            </Grid>
-
+            <BgtCDDetailInfoFormControl
+              title={"회계계정과목"}
+              menuItemValues={menuItemValues[1]}
+            />
+            <BgtCDDetailInfoFormControl
+              title={"최하위과목여부"}
+              bottomFg={bottomFg}
+              menuItemValues={menuItemValues[2]}
+              ref={(ref) => (this.bottomFgControl = ref)}
+            />
+            <BgtCDDetailInfoFormControl
+              title={"구매성격"}
+              bizFg={bizFg}
+              menuItemValues={menuItemValues[3]}
+              ref={(ref) => (this.bizFgControl = ref)}
+            />
           </Grid>
         </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid sx={{ marginTop: "50px" }}>
+            <Button
+              onClick={this.updateDetailInfo}
+              variant="contained"
+              size="large"
+              sx={{
+                width: "100px",
+                borderColor: "#4A55A2",
+                marginRight: "8px",
+              }}
+            >
+              저 장
+            </Button>
+            <Button
+              onClick={this.deleteRow}
+              variant="outlined"
+              size="large"
+              sx={{ width: "100px", borderColor: "#4A55A2" }}
+            >
+              삭 제
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
     );
   }
 }

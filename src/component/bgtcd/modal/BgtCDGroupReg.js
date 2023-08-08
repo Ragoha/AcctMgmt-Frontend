@@ -1,12 +1,8 @@
-import React, { Component } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, InputLabel, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import React, { Component } from "react";
 import BgtCDService from "../../../service/BgtCDService";
-import { updateRowTree } from "@mui/x-data-grid-pro/internals";
-import { DataGridPro } from "@mui/x-data-grid-pro";
-import BgtCD from "../BgtCD";
 class BgtCDGroupReg extends Component {
 constructor(props) {
     super(props);

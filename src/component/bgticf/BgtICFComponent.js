@@ -1,13 +1,11 @@
-import ListIcon from "@mui/icons-material/List";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
-  Box,
   Button,
   Grid,
   InputAdornment,
-  InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -28,8 +26,7 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import ListDisplay from "./test";
+import { borderBottom } from "@mui/system";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -276,8 +273,7 @@ class BgtICFComponent extends Component {
   }
 
   render() {
-    const { bgtDTO, startDate, mainHeader, divTextField, bgtCDTextField } =
-      this.state;
+    const { divTextField, bgtCDTextField } = this.state;
 
     return (
       <>
@@ -294,7 +290,9 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-              <Button onClick={this.handleRowDelete}>삭제</Button>
+            <Button variant="outlined" onClick={this.handleRowDelete}>
+              삭 제
+            </Button>
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -424,17 +422,17 @@ class BgtICFComponent extends Component {
             {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2} sx={{height: "calc(100vh - 280px)" }}>
-          <Grid
-            item
-            xs={3}
-          >
+        <Grid container spacing={2} sx={{ height: "calc(100vh - 280px)" }}>
+          <Grid item xs={3}>
             <DataGrid
               sx={{
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
                 borderTop: "3px solid black",
+                borderLeft: "2px solid #EAEAEA",
+                borderRight: "2px solid #EAEAEA",
+                borderBottom: "2px solid #EAEAEA",
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"

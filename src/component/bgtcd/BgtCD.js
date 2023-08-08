@@ -1,20 +1,17 @@
-import { Autocomplete, Box, Button, Container, Grid, InputLabel, TextField } from "@mui/material";
-import React, { Component } from 'react';
-import ListIcon from "@mui/icons-material/List";
-import SearchIcon from '@mui/icons-material/Search';
-import BgtCDService from "../../service/BgtCDService";
-import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
-import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
-import BgtCDDetailInfo from "./BgtCDDetailInfo";
-import BgtCDDatagrid from "./BgtCDDatagrid";
-import BgtCDGroupModal from "./modal/BgtCDEzSearch";
-import BgtCDGroupReg from "./modal/BgtCDGroupReg";
-import BgtCDDropDownBox from "./BgtCDDropDownBox";
-import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
-import { connect } from 'react-redux';
-import BgtCDSubReg from "./modal/BgtCDSubReg";
-import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
 import PostAddIcon from "@mui/icons-material/PostAdd";
+import SearchIcon from '@mui/icons-material/Search';
+import { Button, Grid } from "@mui/material";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import BgtCDService from "../../service/BgtCDService";
+import { SET_GROUPCD } from '../../store/BgtCDStore';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import BgtCDDatagrid from "./BgtCDDatagrid";
+import BgtCDDetailInfo from "./BgtCDDetailInfo";
+import BgtCDDropDownBox from "./BgtCDDropDownBox";
+import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
+import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
+import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -118,33 +115,30 @@ console.log('데이터체크')
           </Grid>
           <Grid item>
             <Grid container direction="row">
-              <CustomBtnBgtcd
+              <Button
                 onClick={this.handleRowAdd}
-                variant="primary"
+                variant="outlined"
                 style={{
-                  marginLeft: "auto",
-                  marginRight: "10px",
+                  marginRight: "8px",
                   //border: "1px solid",
                 }}
               >
                 추 가
-              </CustomBtnBgtcd>
-              <CustomBtnBgtcd
-                variant="primary"
-                size="medium"
+              </Button>
+              <Button
+                variant="outlined"
                 onClick={() => this.getDataGridRows()}
-                style={{ marginRight: "10px", border: "1px solid" }}
+                style={{ marginRight: "8px"}}
               >
                 Grid채우기
-              </CustomBtnBgtcd>
-              <CustomBtnBgtcd
-                variant="primary"
-                size="medium"
-                style={{ marginRight: "10px", border: "1px solid" }}
+              </Button>
+              <Button
+                variant="outlined"
+                style={{ marginRight: "8px" }}
                 onClick={this.BgtCDAddSubDialogOpen}
               >
                 예산과목추가
-              </CustomBtnBgtcd>
+              </Button>
               {/* 기능모음 드롭다운박스 */}
               <BgtCDDropDownBox
                 selectBgtCDDropDownBox={this.selectBgtCDDropDownBox}

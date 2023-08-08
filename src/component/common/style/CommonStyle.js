@@ -54,10 +54,17 @@ export const CustomWideTextField = styled(TextField)({
   },
 });
 
-
 export const CustomSelect = styled(Select)({
   width: 255,
   height: 40,
+});
+
+export const CustomWideSelect = styled(Select)({
+  width: "100%",
+  height: 40,
+  marginRight: 16,
+  marginTop: 8,
+  marginBottom: 8,
 });
 
 export const CustomAutoComplete = styled(Autocomplete)({
