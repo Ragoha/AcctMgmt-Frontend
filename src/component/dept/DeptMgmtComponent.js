@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import GroupIcon from "@mui/icons-material/Group";
+import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
-
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, TextField } from '@mui/material';
@@ -200,14 +201,19 @@ class DeptMgmtComponent extends Component {
 
         return (
             <>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                        <ListIcon fontSize="large" />
-                    </Grid>
-                    <Grid item>
-                        <span>부서관리</span>
-                    </Grid>
-                </Grid>
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid item>
+            <Grid container direction="row">
+              <GroupIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>부서등록</CustomHeaderInputLabel>
+            </Grid>
+          </Grid>
+        </CustomHeaderGridContainer>
 
                 <CustomGridContainer container direction="row" spacing={2}
                     justifyContent="left"

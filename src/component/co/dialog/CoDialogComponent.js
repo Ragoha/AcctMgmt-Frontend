@@ -162,7 +162,7 @@ class CoDialogComponent extends Component {
                     padding: "0px",
                     minWidth: "5px",
                     position: "relative",
-                    right: "-66px",
+                    right: "-64px",
                   }}
                 >
                   <SearchIcon
