@@ -1,13 +1,11 @@
-import ListIcon from "@mui/icons-material/List";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
-  Box,
   Button,
   Grid,
   InputAdornment,
-  InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -28,8 +26,7 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import ListDisplay from "./test";
+import { borderBottom } from "@mui/system";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -110,10 +107,6 @@ class BgtICFComponent extends Component {
 
   handleGetBgtICFList = (e) => {
     this.bgtICFRef.current.handleGetBgtICFList();
-  };
-
-  handleRowAdd = () => {
-    this.bgtICFRef.current.handleRowAdd();
   };
 
   handleRowDelete = () => {
@@ -280,16 +273,7 @@ class BgtICFComponent extends Component {
   }
 
   render() {
-    const labelStyle = {
-      display: "inline",
-    };
-
-    const floatRight = {
-      float: "right",
-    };
-
-    const { bgtDTO, startDate, mainHeader, divTextField, bgtCDTextField } =
-      this.state;
+    const { divTextField, bgtCDTextField } = this.state;
 
     return (
       <>
@@ -306,11 +290,9 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
-            <Box style={floatRight}>
-              <Button onClick={this.handleRowAdd}>추가</Button>
-              <Button onClick={this.handleRowDelete}>삭제</Button>
-            </Box>
+            <Button variant="outlined" onClick={this.handleRowDelete}>
+              삭 제
+            </Button>
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -437,26 +419,20 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay/>
+            {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              // height: `calc(${this.state.innerHeight}px - 345px)`,
-              maxHeight: `calc(100vh)`,
-            }}
-          >
+        <Grid container spacing={2} sx={{ height: "calc(100vh - 280px)" }}>
+          <Grid item xs={3}>
             <DataGrid
               sx={{
-                // maxHeight: "calc(100vh - 0px)",
-                // fontSize: 10,
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
                 borderTop: "3px solid black",
+                borderLeft: "2px solid #EAEAEA",
+                borderRight: "2px solid #EAEAEA",
+                borderBottom: "2px solid #EAEAEA",
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"
