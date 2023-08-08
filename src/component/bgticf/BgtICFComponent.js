@@ -28,6 +28,7 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -292,9 +293,17 @@ class BgtICFComponent extends Component {
 
     return (
       <>
-        <CustomHeaderGridContainer container spacing={2} alignItems="center">
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <Grid item>
-            <CustomHeaderInputLabel>예산초기이월등록</CustomHeaderInputLabel>
+            <Grid container direction="row">
+              <PlaylistAddIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>예산초기이월등록</CustomHeaderInputLabel>
+            </Grid>
           </Grid>
           <Grid item>
             <InputLabel style={labelStyle}>{mainHeader}</InputLabel>

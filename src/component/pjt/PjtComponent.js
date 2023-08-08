@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import PjtService from '../../service/PjtService';
-import { CustomGridContainer, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 import PjtDialogComponent from './dialog/PjtDialogComponent';
 import { MenuItem, Select } from '@mui/material';
 
@@ -340,14 +340,19 @@ class PjtComponent extends Component {
 
     return (
       <>
-        <Grid container spacing={2} alignItems="center">
+        <CustomHeaderGridContainer
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <Grid item>
-            <AssignmentIcon fontSize="large" sx={{ pb: 2 }} />
+            <Grid container direction="row">
+              <AssignmentIcon sx={{ fontSize: 31 }} />
+              <CustomHeaderInputLabel>프로젝트 등록</CustomHeaderInputLabel>
+            </Grid>
           </Grid>
-          <Grid item sx={{ pb: 2 }}>
-            <span>프로젝트 등록</span>
-          </Grid>
-        </Grid>
+        </CustomHeaderGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         <CustomGridContainer
           container
