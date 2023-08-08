@@ -82,7 +82,8 @@ class CoMgmtComponent extends Component {
     // {coCd && empId?
     CompanyService.getCoList({
       accessToken: this.props.accessToken,
-      coCd: coCd})
+      coCd: coCd
+    })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
@@ -129,57 +130,57 @@ class CoMgmtComponent extends Component {
         console.error(error);
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-// :    
-// CompanyService.getCoList()
-//       .then((response) => {
-//         const coCdList = response.data.map((item) => item.coCd);
-//         const coNmList = response.data.map((item) => item.coNm);
-//         const ceoNmList = response.data.map((item) => item.ceoNm);
-//         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    // :    
+    // CompanyService.getCoList()
+    //       .then((response) => {
+    //         const coCdList = response.data.map((item) => item.coCd);
+    //         const coNmList = response.data.map((item) => item.coNm);
+    //         const ceoNmList = response.data.map((item) => item.ceoNm);
+    //         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-//         const coCd = response.data[0].coCd;
-//         const coNm = response.data[0].coNm;
-//         const gisu = response.data[0].gisu;
-//         const frDt = dayjs(response.data[0].frDt).format('YYYY-MM-DD');
-//         const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
-//         const jongmok = response.data[0].jongmok;
-//         const businessType = response.data[0].businessType;
-//         const coNb = response.data[0].coNb;
-//         const ceoNm = response.data[0].ceoNm;
-//         const coZip = response.data[0].coZip;
-//         const coAddr = response.data[0].coAddr;
-//         const coAddr1 = response.data[0].coAddr1;
+    //         const coCd = response.data[0].coCd;
+    //         const coNm = response.data[0].coNm;
+    //         const gisu = response.data[0].gisu;
+    //         const frDt = dayjs(response.data[0].frDt).format('YYYY-MM-DD');
+    //         const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+    //         const jongmok = response.data[0].jongmok;
+    //         const businessType = response.data[0].businessType;
+    //         const coNb = response.data[0].coNb;
+    //         const ceoNm = response.data[0].ceoNm;
+    //         const coZip = response.data[0].coZip;
+    //         const coAddr = response.data[0].coAddr;
+    //         const coAddr1 = response.data[0].coAddr1;
 
-//         this.setState({
-//           cardCount: cardCount, // state에 값을 저장
-//           coCdList: coCdList,
-//           coNmList: coNmList,
-//           ceoNmList: ceoNmList,
+    //         this.setState({
+    //           cardCount: cardCount, // state에 값을 저장
+    //           coCdList: coCdList,
+    //           coNmList: coNmList,
+    //           ceoNmList: ceoNmList,
 
-//           focused: coCd,
-//           coCd: coCd,
-//           coNm: coNm,
-//           gisu: gisu,
-//           frDt: frDt,
-//           toDt: toDt,
-//           dateRange: frDt + ' ~ ' + toDt,
-//           jongmok: jongmok,
-//           businessType: businessType,
-//           coNb: coNb,
-//           ceoNm: ceoNm,
-//           coZip: coZip,
-//           coAddr: coAddr,
-//           coAddr1: coAddr1
-//         })
-      // }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
-      // .catch((error) => {
-      //   // 오류 발생 시의 처리
-      //   console.error(error);
-      //   // alert("중복된 회사 또는 모두 입력해주세요");
-      // });
-  // }
-}
+    //           focused: coCd,
+    //           coCd: coCd,
+    //           coNm: coNm,
+    //           gisu: gisu,
+    //           frDt: frDt,
+    //           toDt: toDt,
+    //           dateRange: frDt + ' ~ ' + toDt,
+    //           jongmok: jongmok,
+    //           businessType: businessType,
+    //           coNb: coNb,
+    //           ceoNm: ceoNm,
+    //           coZip: coZip,
+    //           coAddr: coAddr,
+    //           coAddr1: coAddr1
+    //         })
+    // }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
+    // .catch((error) => {
+    //   // 오류 발생 시의 처리
+    //   console.error(error);
+    //   // alert("중복된 회사 또는 모두 입력해주세요");
+    // });
+    // }
+  }
 
 
   handleCompany = (e) => {
@@ -226,20 +227,21 @@ class CoMgmtComponent extends Component {
 
   insertCo = () => {
     const { coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
-    
+
     CompanyService.insertCo({
       accessToken: this.props.accessToken,
-      coNm: coNm, 
-      gisu: gisu, 
-      frDt: frDt, 
-      toDt: toDt, 
-      jongmok: jongmok, 
-      businessType: businessType, 
-      coNb: coNb, 
-      ceoNm: ceoNm, 
-      coZip: coZip, 
-      coAddr: coAddr, 
-      coAddr1: coAddr1})
+      coNm: coNm,
+      gisu: gisu,
+      frDt: frDt,
+      toDt: toDt,
+      jongmok: jongmok,
+      businessType: businessType,
+      coNb: coNb,
+      ceoNm: ceoNm,
+      coZip: coZip,
+      coAddr: coAddr,
+      coAddr1: coAddr1
+    })
 
       .then((response) => {
         console.log(response.data);
@@ -646,7 +648,7 @@ class CoMgmtComponent extends Component {
                 borderBottom: "1px solid",
               }}
             >
-              <CustomInputLabel>총 회사:</CustomInputLabel>
+              <CustomInputLabel sx={{ml:1}}>총 회사:</CustomInputLabel>
               <CustomInputLabel>{cardCount}</CustomInputLabel>
             </Grid>
 
@@ -694,20 +696,20 @@ class CoMgmtComponent extends Component {
 
           <Grid container direction="column" sx={{ ml: 1, height: 670 }}>
             <Grid item></Grid>
-            <Grid container justifyContent="space-between" sx={{mb: 1}}>
+            <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
               <Grid item>
-                <CustomInputLabel sx={{fontSize:18,mt:1}}>
+                <CustomInputLabel sx={{ fontSize: 18, mt: 1 }}>
                   기본정보
                 </CustomInputLabel>
               </Grid>
               <Grid item sx={{ ml: 0.3 }}>
                 <Grid container>
                   {coCd ? (
-                    <Button variant="outlined" onClick={this.updateCo}>
+                    <Button sx={{mr:1}} variant="outlined" onClick={this.updateCo}>
                       수정
                     </Button>
                   ) : (
-                    <Button variant="outlined" onClick={this.insertCo}>
+                    <Button sx={{mr:1}} variant="outlined" onClick={this.insertCo}>
                       저장
                     </Button>
                   )}
@@ -728,7 +730,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel>회사코드</CustomInputLabel>
@@ -744,7 +746,7 @@ class CoMgmtComponent extends Component {
                 }}
               >
                 <CustomWideTextField
-                  sx={{ backgroundColor: "#FFA7A7" }}
+                  sx={{ backgroundColor: "#FFEAEA" }}
                   name="coCd"
                   onChange={this.handleCompany}
                   value={coCd || ""}
@@ -761,7 +763,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel>회사명</CustomInputLabel>
@@ -792,7 +794,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel>
@@ -825,7 +827,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel sx={{ color: "black" }}>
@@ -858,7 +860,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel>대표자명</CustomInputLabel>
@@ -889,7 +891,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <CustomInputLabel>사업자번호</CustomInputLabel>
@@ -917,7 +919,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "flex-start",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
                 }}
               >
@@ -959,7 +961,7 @@ class CoMgmtComponent extends Component {
                       InputProps={{ readOnly: true }}
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item >
                     <CustomWideTextField
                       name="coAddr1"
                       onChange={this.handleCompany}
@@ -976,15 +978,16 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  backgroundColor: "#EAEAEA",
+                  backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
+
                 }}
               >
                 <CustomInputLabel sx={{ color: "black" }}>
                   회계기수
                 </CustomInputLabel>
               </Grid>
-              <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={10} sx={{ display: "flex", alignItems: "center", borderTop: "1px solid #EAEAEA", }}>
                 <CustomInputLabel
                   sx={{ ml: 2 }}
                   name="gisu"
@@ -1000,7 +1003,7 @@ class CoMgmtComponent extends Component {
                   name="dateRange"
                   disabled={true}
                   value={this.state.dateRange || ""}
-                  sx={{width:240, minWidth:240}}
+                  sx={{ width: 240, minWidth: 240 }}
                   onChange={this.handleCompany}
                   InputProps={{
                     readOnly: true,
