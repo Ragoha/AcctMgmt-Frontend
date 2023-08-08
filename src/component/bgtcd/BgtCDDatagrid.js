@@ -41,7 +41,8 @@ class BgtCDDatagrid extends Component {
         
     // }
 
-    clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+    clickedRow = (params,event) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+        console.dir(params)
         console.log('clickedROw !' + params.row.bgtCd +'and DataPath '+ params.row.dataPath)
         console.log("isnew ?: " + params.row.isNew);
         const {bgtCd,dataPath} = params.row;
@@ -89,7 +90,7 @@ class BgtCDDatagrid extends Component {
                         defaultGroupingExpansionDepth={7}
                         editMode='row' //row 단위로 편집 모양 잡힘
                         headerAlign="center"
-                        //processRowUpdate={this.pressEnterBtn}
+                        // processRowUpdate={this.processRowUpdate}
                         groupingColDef={{
                             headerName: '분류명', headerAlign: 'center',
                         }}

@@ -70,13 +70,19 @@ console.log('데이터체크')
     const data = {bgtCd:bgtCd , coCd :coCd}
     BgtCDService.getAddRowData(data,accessToken)
     .then(data=>{
-
+      console.log('handleRowAdd 리턴하고 보자 BGTCD야 여긴')
+      console.dir(data);
+      console.log(data.dataPath);
+      console.log(data.bgtCd);
+      console.log('여기까진 나와야 돼 ')
+      const dataPath =data.dataPath;
+      const bgtCd = data.bgtCd;
+      const newRows = [
+        ...this.state.rows,
+        { dataPath: dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true },
+      ];
+      this.setState({ rows: newRows });
     })
-    // const newRows = [
-    //   ...this.state.rows,
-    //   { dataPath: dataPath, bgtCd: "", bgtNm: "", isNew: true },
-    // ];
-    // this.setState({ rows: newRows });
   };
   /*---로우 추가 관련된 메서드 end---*/
 

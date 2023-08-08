@@ -22,7 +22,7 @@ class BgtCDADDSubDialog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: true,
+            open: false,
             idCounter: 0,
             columns: [
                 { field: "bgtGrCd", headerName: "그룹코드",  flex: 1, headerAlign: "center", editable: true },
