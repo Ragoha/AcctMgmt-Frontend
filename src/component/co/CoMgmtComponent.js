@@ -614,12 +614,12 @@ class CoMgmtComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            <CustomSearchButton
+            {/* <CustomSearchButton
               variant="outlined"
               onClick={() => this.searchClick(coCd)}
             >
               <SearchIcon fontSize="medium" />
-            </CustomSearchButton>
+            </CustomSearchButton> */}
           </Grid>
         </CustomGridContainer>
 

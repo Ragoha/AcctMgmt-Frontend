@@ -29,6 +29,7 @@ import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import ListDisplay from "./test";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -215,7 +216,6 @@ class BgtICFComponent extends Component {
   };
 
   handleClickSerachButton = () => {
-    alert("asdf");
 
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
       accessToken: this.props.accessToken,
@@ -437,7 +437,7 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <Button onClick={this.test}>click</Button>
+            <ListDisplay/>
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2}>
