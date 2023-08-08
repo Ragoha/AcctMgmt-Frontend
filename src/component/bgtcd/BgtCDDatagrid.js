@@ -8,7 +8,7 @@ class BgtCDDatagrid extends Component {
         this.state = {
             columns: [
                 //{ field: 'defNm', headerName: '분류명', width: 100 },
-                { field: 'bgtCd', headerName: '예산코드', width: 140 , headerAlign: 'center',},
+                { field: 'bgtCd', headerName: '예산코드'  , width: 140 , headerAlign: 'center',},
                 { field: 'bgtNm', headerName: '예산과목명', width: 250 , headerAlign: 'center',},
             ],
             rows: [],
@@ -46,7 +46,7 @@ class BgtCDDatagrid extends Component {
         console.log("isnew ?: " + params.row.isNew);
         const {bgtCd,dataPath} = params.row;
         this.setState({dataPath:dataPath},()=>console.log("state가 바뀜!!"+this.state.dataPath))
-        if(params.row.isNew!==true){//새로만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
+        if(params.row.isNew!==true){//새로 만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
             if (bgtCd !== null && bgtCd !== undefined) {
                 console.log(bgtCd)
                 console.log('이게 bgtCd야 : ' + bgtCd);
@@ -76,7 +76,7 @@ class BgtCDDatagrid extends Component {
         }));
 
         return (
-                <Box style={{ height: 800, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '17px'}} >
+                <Box style={{ height: 800, width: '95%' ,borderTop: "3px solid black" }} sx={{ml: '16px'}} >
                     <DataGridPro
                         treeData
                         getTreeDataPath={(row) => row.dataPath.split(',')}

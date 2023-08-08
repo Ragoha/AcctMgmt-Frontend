@@ -14,28 +14,6 @@ import { SET_DETAILINFO, SET_GROUPCD } from '../../store/BgtCDStore';
 import { connect } from 'react-redux';
 import BgtCDSubReg from "./modal/BgtCDSubReg";
 import { CustomBtnBgtcd, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
-
-
-{/* <Autocomplete
-variant=""
-size="small"
-
-openOnFocus
-// clearOnEscape
-options={[
-   { label: "간편검색", value: "" },
-   { label: "예산그룹등록", value: "deran" },
-   { label: "예산과목복사", value: "deran" },
-   { label: "과목분류명등록", value: "deran" },
-   { label: "회계계정과목복사", value: "deran" },
-   { label: "예산과목엑셀업로드", value: "deran" },
-   { label: "예산과목 일괄설정", value: "deran" },
-]}
-sx={{ width: '200px', marginRight: '50px',}}// backgroundColor: "#7895CB",
-
-renderInput={(params) => <TextField {...params} />}
-></Autocomplete> */}
-
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -83,34 +61,24 @@ console.log('데이터체크')
   /*---로우 추가 관련된 메서드 start---*/
   //데이터 그리드에 추가하는 기능
   //[230728] TreeView 수정했는데 addRow 로직은 아직 변경하지 않음 한번 손봐야함
+  //[230808] 
   handleRowAdd = () => {
-    const dataPath = this.BgtDataGrid.current.getDataPathFromDataGrid() + "                   ";
-    console.log("여긴 handleRowAdd: " + dataPath);
-    const newRows = [
-      ...this.state.rows,
-      { dataPath: dataPath, bgtCd: "abckk", bgtNm: "abc", isNew: true },
-    ];
-    this.setState({ rows: newRows });
+    const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+    const {coCd} = this.props.userInfo;
+    const {accessToken } = this.props;
+    const data = {bgtCd:bgtCd , coCd :coCd}
+    BgtCDService.getAddRowData(data,accessToken)
+    .then(data=>{
+
+    })
+    // const newRows = [
+    //   ...this.state.rows,
+    //   { dataPath: dataPath, bgtCd: "", bgtNm: "", isNew: true },
+    // ];
+    // this.setState({ rows: newRows });
   };
   /*---로우 추가 관련된 메서드 end---*/
 
-  // *일단 로우를 특정하기 성공했고 
-  /*[230803] 혹시 만약 참고할거면 하고 위에 addRow기능 성공했으면 지워도 되는 코드
-  //DetailInfo 에 저장된 BgtCd 값을 가져와 ->
-  // console.log('추가버튼')
-  // console.log(this.BgtCDDetailInfo.current.getBgtCd());
-  // const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-  // console.log(bgtCd);
-  // BgtCDService.getPath(bgtCd)
-  //     .then((path) => {
-  //         console.log("패스는 ? : " + path) //이 패스는 현재 찍은 위치의 path이다
-  //         const newRows = [
-  //             ...this.state.rows,
-  //             { dataPath: path, defNm: "", bgtCd: "", bgtNm: "", isNew: true },
-  //         ];
-  //         this.setState({ rows: newRows });
-  //     })
-  */
 
   /*  데이터 그리드 부분 end */
   /* DetailInfo부분 */

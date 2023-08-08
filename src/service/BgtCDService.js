@@ -97,6 +97,22 @@ class BgtCDService {
 
       return returnData;
     }
+    getAddRowData(data,accessToken){
+      console.log("getAddRowData서비스 !")
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+ "/getAddRowData",{
+        params:{
+          bgtCd:data.bgtCd,
+          coCd:data.coCd,
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      }).then((response)=>response.data)
+
+      return returnData;
+    }
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData
