@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 
 
 import CompanyService from '../../service/CompanyService';
@@ -971,12 +971,12 @@ class DivMgmtComponent extends Component {
               }}
             >
               {divCd != 0 ? (
-                <CustomTextField
+                <CustomWideTextField
                   xs={4}
                   sx={{ ml: 2 }}
                   value={coCd + " . " + coNm}
                   InputProps={{ readOnly: true }}
-                ></CustomTextField> //disabled={true}
+                ></CustomWideTextField> //disabled={true}
               ) : (
                 <FormControl
                   sx={{
@@ -1029,13 +1029,13 @@ class DivMgmtComponent extends Component {
                 borderRight: "1px solid #EAEAEA",
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 sx={{ ml: 2, backgroundColor: "#FFEAEA" }}
                 name="divCd"
                 onChange={this.handleCompany}
                 value={divCd || ""}
                 InputProps={{ readOnly: true }}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1064,12 +1064,12 @@ class DivMgmtComponent extends Component {
                 borderRight: '1px solid #EAEAEA'
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 sx={{ ml: 2 }}
                 name="divNm"
                 onChange={this.handleCompany}
                 value={divNm || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1099,12 +1099,12 @@ class DivMgmtComponent extends Component {
                 borderRight: "1px solid #EAEAEA",
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 sx={{ ml: 2 }}
                 name="jongmok"
                 onChange={this.handleCompany}
                 value={jongmok || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1133,12 +1133,12 @@ class DivMgmtComponent extends Component {
                 borderRight: '1px solid #EAEAEA'
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 sx={{ ml: 2 }}
                 name="businessType"
                 onChange={this.handleCompany}
                 value={businessType || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1168,12 +1168,12 @@ class DivMgmtComponent extends Component {
                 borderRight: "1px solid #EAEAEA",
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 sx={{ ml: 2 }}
                 name="ceoNm"
                 onChange={this.handleCompany}
                 value={ceoNm || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1203,12 +1203,12 @@ class DivMgmtComponent extends Component {
                 borderRight: '1px solid #EAEAEA'
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 name="divNb"
                 sx={{ ml: 2 }}
                 onChange={this.handleCompany}
                 value={divNb || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
@@ -1237,97 +1237,74 @@ class DivMgmtComponent extends Component {
                 borderBottom: "1px solid #EAEAEA",
               }}
             >
-              <CustomTextField
+              <CustomWideTextField
                 name="toNb"
                 sx={{ ml: 2 }}
                 onChange={this.handleCompany}
                 value={toNb || ""}
-              ></CustomTextField>
+              ></CustomWideTextField>
             </Grid>
 
             <Grid
-              item
-              xs={2}
-              sx={{
-                height: 50,
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                backgroundColor: "#FCFCFC",
-                borderRight: '1px solid #EAEAEA'
-              
-              }}
-            >
-              <CustomInputLabel sx={{ color: "black" }}>
-                사업장주소
-              </CustomInputLabel>
-            </Grid>
-            <Grid item xs={4} sx={{ display: "flex", alignItems: "center" }}>
-              <TextField
-                size="small"
-                id="divZip"
-                name="divZip"
-                onChange={this.handleCompany}
-                value={divZip || ""}
-                InputProps={{ readOnly: true }}
-                sx={{ ml: 2, width: "150px" }}
-              ></TextField>
-              <Button
-                sx={{ ml: 1 }}
-                variant="outlined"
-                onClick={this.addrButton}
+                item
+                xs={2}
+                sx={{
+                  height: 150,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-start",
+                  backgroundColor: "#FCFCFC",
+                  borderBottom: "1px solid lightgray",
+                  borderRight: '1px solid #EAEAEA'
+                }}
               >
-                우편번호
-              </Button>
-            </Grid>
-
-            <Grid item xs={6}></Grid>
-
-            <Grid
-              item
-              xs={2}
-              sx={{
-                height: 50,
-                backgroundColor: "#FCFCFC",
-                borderRight: '1px solid #EAEAEA'
-              }}
-            ></Grid>
-            <Grid item xs={6}>
-              <TextField
-                size="small"
-                sx={{ ml: 2, width: "570px" }}
-                id="divAddr"
-                name="divAddr"
-                onChange={this.handleCompany}
-                value={divAddr || ""}
-                InputProps={{ readOnly: true }}
-              ></TextField>
-            </Grid>
-            <Grid item xs={4}></Grid>
-
-            <Grid
-              item
-              xs={2}
-              sx={{
-                height: 50,
-                backgroundColor: "#FCFCFC",
-                borderRight: '1px solid #EAEAEA'
-              }}
-            ></Grid>
-            <Grid item xs={6} sx={{ borderBottom: "1px solid #EAEAEA" }}>
-              <TextField
-                size="small"
-                sx={{ ml: 2, width: "570px" }}
-                name="divAddr1"
-                onChange={this.handleCompany}
-                value={divAddr1 || ""}
-              ></TextField>
-            </Grid>
-            <Grid
-              item
-              xs={4}
-              sx={{ borderBottom: "1px solid #EAEAEA" }}
-            ></Grid>
+                <CustomInputLabel sx={{ mt: 1 }}>사업장주소</CustomInputLabel>
+              </Grid>
+              <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
+                <Grid
+                  container
+                  direction="column"
+                  spacing={1}
+                  sx={{ width: "calc(100% + -24px)" }}
+                >
+                  <Grid item>
+                    <Grid container direction="row">
+                      <TextField
+                        size="small"
+                        id="divZip"
+                        name="divZip"
+                        onChange={this.handleCompany}
+                        value={divZip || ""}
+                        InputProps={{ readOnly: true }}
+                        sx={{ ml: 2, width: "150px" }}
+                      ></TextField>
+                      <Button
+                        sx={{ ml: 1 }}
+                        variant="outlined"
+                        onClick={this.addrButton}
+                      >
+                        우편번호
+                      </Button>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <CustomWideTextField
+                      id="divAddr"
+                      name="divAddr"
+                      onChange={this.handleCompany}
+                      value={divAddr || ""}
+                      InputProps={{ readOnly: true }}
+                    />
+                  </Grid>
+                  <Grid item >
+                    <CustomWideTextField
+                      name="divAddr1"
+                      onChange={this.handleCompany}
+                      value={divAddr1 || ""}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
           </Grid>
         </Grid>
         </Grid>

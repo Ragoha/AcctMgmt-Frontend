@@ -921,6 +921,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "flex-start",
                   backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
+                  borderRight: '1px solid #EAEAEA'
                 }}
               >
                 <CustomInputLabel sx={{ mt: 1 }}>회사주소</CustomInputLabel>
@@ -980,6 +981,7 @@ class CoMgmtComponent extends Component {
                   alignItems: "center",
                   backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
+                  borderRight: '1px solid #EAEAEA'
 
                 }}
               >
