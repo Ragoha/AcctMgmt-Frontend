@@ -230,9 +230,6 @@ class DataGridComponent extends Component {
   };
 
   processRowUpdate = (newRow) => {
-    console.log(newRow.isNew);
-    console.log(newRow.isNew);
-    console.log(newRow.isNew);
 
     if (newRow.isNew) {
       this.insertBgtICF(newRow);
