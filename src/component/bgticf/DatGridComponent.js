@@ -2,13 +2,8 @@ import Box from "@mui/material/Box";
 import React, { Component } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  randomId,
-} from "@mui/x-data-grid-generator";
-import {
-  GridRowEditStopReasons,
-  GridRowModes,
-} from "@mui/x-data-grid-pro";
+import { randomId } from "@mui/x-data-grid-generator";
+import { GridRowEditStopReasons, GridRowModes } from "@mui/x-data-grid-pro";
 import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
@@ -118,7 +113,7 @@ class DataGridComponent extends Component {
         this.setState({ rows: rowsWithId });
       });
     });
-  }
+  };
 
   getBgtICFList = async (data) => {
     console.log(data);
@@ -189,7 +184,7 @@ class DataGridComponent extends Component {
         this.setState({ rows: rowsWithId });
       });
     });
-  }
+  };
 
   updateBgtICF = (row) => {
     BgtICFService.updateBgtICF({
@@ -230,7 +225,6 @@ class DataGridComponent extends Component {
   };
 
   processRowUpdate = (newRow) => {
-
     if (newRow.isNew) {
       this.insertBgtICF(newRow);
     } else {
@@ -259,8 +253,6 @@ class DataGridComponent extends Component {
   };
 
   handleRowModesModelChange = (newRowModesModel) => {
-    console.log("asdf11");
-    console.log(newRowModesModel);
     this.setState({ rowModesModel: newRowModesModel });
   };
 
@@ -271,7 +263,7 @@ class DataGridComponent extends Component {
 
   test = () => {
     console.log("테스트입니다.");
-  }
+  };
 
   componentDidMount() {}
 
@@ -398,7 +390,8 @@ class DataGridComponent extends Component {
             borderTop: "3px solid black",
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",
-            borderBottom: "2px solid #EAEAEA", }}
+            borderBottom: "2px solid #EAEAEA",
+          }}
           hideFooter
         />
         <PjtDialogComponent ref={this.pjtRef} />
@@ -412,7 +405,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (DataGridComponent);
-
-
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  DataGridComponent
+);
