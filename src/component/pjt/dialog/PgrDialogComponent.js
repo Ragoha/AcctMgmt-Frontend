@@ -113,7 +113,7 @@ class PjtDialogComponent extends Component {
                 alignItems="center"
                 spacing={2}
               >
-                <Grid item>
+                <Grid item xs={12}>
                   <Grid
                     container
                     direction="row"
@@ -131,7 +131,7 @@ class PjtDialogComponent extends Component {
                     />
                     <CustomSearchButton
                       variant="outlined"
-                      sx={{ right: "-50px" }}
+                      sx={{ right: "-30px" }}
                     >
                       <SearchIcon onClick={this.handleSearchPgrDial} />
                     </CustomSearchButton>
