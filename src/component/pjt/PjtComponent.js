@@ -79,7 +79,7 @@ class PjtComponent extends Component {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
-    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef );
+    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef);
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     PjtService.getPjtList(coCd) //카드리스트 전체조회 함수
@@ -403,6 +403,55 @@ class PjtComponent extends Component {
       PjtdialTextField: data.pjtCd + ". " + data.pjtNm,
       pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
     });
+
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
+    PjtService.getPjtList(coCd, data) //카드리스트 전체조회 함수
+      .then((response) => {
+        console.log("abc", response.data);
+        const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
+        const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
+        const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
+        const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
+        const progFgList = response.data.map((item) => item.progFg); //
+        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거) 
+        const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
+        const pgrCd = response.data[0].pgrCd;
+        const pgrNm = response.data[0].pgrNm;
+        const pjtNm = response.data[0].pjtNm;
+        const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+        const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+        const progFg = response.data[0].progFg;
+        const apjtNm = response.data[0].apjtNm;
+        const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
+        const note = response.data[0].note;
+        console.log("프젝네임 어디갔누?", pjtNmList);
+        console.log("프젝코드는 어디갔누?", pjtCdList);
+        this.setState({
+          cardCount: cardCount, // state에 값을 저장
+          pjtCdList: pjtCdList,
+          pjtNmList: pjtNmList,
+          pjtPrList: pjtPrList,
+          pjtToList: pjtToList,
+          progFgList: progFgList,
+          focused: pjtCdList[0],
+          pjtCd: pjtCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtNm: pjtNm,
+          prDt: prDt,
+          toDt: toDt,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          startDt: startDt,
+          note: note,
+        })
+      }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
+      .catch((error) => {
+        // 오류 발생 시의 처리
+        console.error(error);
+        // alert("중복된 회사 또는 모두 입력해주세요");
+      });
   };
 
   handleSetPgrTextField = async (data) => {
@@ -621,7 +670,7 @@ class PjtComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay/>
+            <ListDisplay />
           </Grid>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
@@ -704,7 +753,7 @@ class PjtComponent extends Component {
             >
               {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
               {cards.map((card, index) => (
-                <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1, ml: 2, mr:2}}>
+                <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1, ml: 2, mr: 2 }}>
                   {card}
                 </Grid>
               ))}
@@ -732,7 +781,7 @@ class PjtComponent extends Component {
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "px", width: "100%"}}
+              sx={{ position: "relative", bottom: "px", width: "100%" }}
             >
               <Button
                 variant="extended"
@@ -764,7 +813,7 @@ class PjtComponent extends Component {
               width: "100%",
               maxHeight: 40,
               borderBottom: "2px solid #000",
-              ml:1,
+              ml: 1,
             }}
           >
             <Grid item>
