@@ -99,6 +99,7 @@ class MainComponent extends Component {
     Cookie.removeCookieToken();
     console.log("삭제 후 설정정보 : " + config);
     this.props.delConfig(config);
+    window.location.href = "/";
     // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
     // });  
   };

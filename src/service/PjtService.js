@@ -52,9 +52,20 @@ class PjtService {
   deletePjt(Pjt) {
     return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/", Pjt);
   }
-  getPgrBy(keyword) {
+
+  getPjtBy(keyword, coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch", {
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + coCd, {
+        params: {
+          keyword: keyword
+        },
+      })
+      .then((response) => response.data);
+  }
+
+  getPgrBy(keyword, coCd) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch", coCd, {
         params: {
           keyword: keyword
         },

@@ -1,8 +1,9 @@
 import SearchIcon from '@mui/icons-material/Search';
+import { connect } from 'react-redux';
 import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
-import CompanyService from '../../../service/CompanyService';
+import PjtService from '../../../service/PjtService';
 import {
   CustomButtonGridContainer,
   CustomCloseIcon,
@@ -21,15 +22,15 @@ import {
   CustomTextField,
 } from "../../common/style/CommonStyle";
 
-const columns =[
+const columns = [
   { field: 'check', headerName: '', width: 10, headerAlign: 'center' },
-  { field: 'coCd', headerName: '프로젝트그룹코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '프로젝트그룹명', width: 286, headerAlign: 'center' }
+  { field: 'pjtCd', headerName: '프로젝트코드', width: 180, headerAlign: 'center' },
+  { field: 'pjtNm', headerName: '프로젝트명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
-  { id: 1, coCd: "1", coNm: "John" },
-  { id: 2, coCd: "2", coNm: "John" },
-  { id: 3, coCd: "3", coNm: "John" },
+  { id: 1, pjtCd: "1", pjtNm: "John" },
+  { id: 2, pjtCd: "2", pjtNm: "John" },
+  { id: 3, pjtCd: "3", pjtNm: "John" },
 ]
 
 class PjtDialogComponent extends Component {
@@ -38,8 +39,8 @@ class PjtDialogComponent extends Component {
     this.state = {
       open: false,
 
-      selectedRow: { coCd: "", coNm: "" }, //클릭된 열의 cd와 이름 
-      codialRows: [],          //열 배열넣기
+      selectedRow: { pjtCd: "", pjtNm: "" }, //클릭된 열의 cd와 이름 
+      pjtRows: [],          //열 배열넣기
       keyword: "",
       rows: rows,
       columns: columns
@@ -48,12 +49,14 @@ class PjtDialogComponent extends Component {
 
   handleUp = () => {
     this.setState({ open: true });
+
+    this.handleSearchPjt();
   }
 
   handleDown = () => {
     this.setState({ open: false });
   }
-  
+
   //텍스트필드변화
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -61,40 +64,50 @@ class PjtDialogComponent extends Component {
     console.log(this.state);
   }
   //엔터키 입력처리
-  handlePressEnter= (e) => {
+  handlePressEnter = (e) => {
     if (e.key === "Enter") {
-    this.handleSearchCoDial();
+      this.handleSearchPjt();
     }
   }
   //검색
-  handleSearchCoDial= () => {
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
-    .then(
-      async (response) => {
-        const codialRows = response.map((row) => ({
-          id: row.coCd,
-          coCd: row.coCd,
-          coNm: row.coNm,
-        }));
-        await this.setState({ codialRows: codialRows });
-        console.log(this.state);
-      }
-    );
+  handleSearchPjt = () => {
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
+    PjtService.getPjtBy(this.state.keyword, coCd)
+      .then(
+        async (response) => {
+          const pjtRows = response.map((row) => ({
+            id: row.pjtCd,
+            pjtCd: row.pjtCd,
+            pjtNm: row.pjtNm,
+          }));
+          await this.setState({ pjtRows: pjtRows}, () => {
+            console.log(this.state);
+          });
+        }
+      );
   };
 
-  handleClickConfirm = async () =>{
+  handleClickConfirm = async () => {
+    if (!this.state.selectedRow.pjtCd || !this.state.selectedRow.pjtNm) {
+      // 선택된 값이 없거나 빈 값인 경우
+      const emptyRow = { pjtCd: "", pjtNm: "" };
+      this.setState({ selectedRow: emptyRow }); // 선택된 값을 빈 값으로 설정
+    }
+  
     console.log(this.state.selectedRow);
     this.handleDown();
-    await this.props.handleSetCodialTextField(this.state.selectedRow);
+    await this.props.handleSetPjtTextField(this.state.selectedRow);
   }
+  
+  
 
   //열 클릭처리
-  handleClickRow= (params) => {
+  handleClickRow = (params) => {
     this.setState({ selectedRow: params.row }, () => {
       console.log(this.state.selectedRow);
     });
   }
-
   render() {
     const { open, columns } = this.state;
 
@@ -102,7 +115,7 @@ class PjtDialogComponent extends Component {
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          프로젝트그룹코드
+          프로젝트코드
           <IconButton
             size="small"
             onClick={() => this.setState({ open: false })}
@@ -134,7 +147,7 @@ class PjtDialogComponent extends Component {
                   onKeyDown={this.handlePressEnter}
                 />
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleSearchCoDial} />
+                  <SearchIcon onClick={this.handleSearchPjt} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
@@ -142,7 +155,7 @@ class PjtDialogComponent extends Component {
           <CustomShortDataGridContainer container>
             <CustomDataGrid
               columns={columns}
-              rows={this.state.codialRows}
+              rows={this.state.pjtRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -164,4 +177,8 @@ class PjtDialogComponent extends Component {
     );
   }
 }
-export default PjtDialogComponent;
+const mapStateToProps = (state) => ({
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(PjtDialogComponent);
+// export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(BgtCD);
