@@ -46,21 +46,23 @@ const BGTCD_COLUMN = [
     headerAlign: "center",
   },
   {
-    field: "divFg",
+    field: "defNm",
     headerName: "예산구분",
     width: 80,
     headerAlign: "center",
   },
   {
-    field: "dataPath",
+    field: "bgtNm",
     headerName: "예산과목명",
-    width: 160,
+    width: 100,
     headerAlign: "center",
+    cellClassName: "bgtNm"
   },
   {
     field: "carrAm",
     headerName: "금액",
     headerAlign: "center",
+    width: 120,
     ...krAmount,
   },
 ];
@@ -426,6 +428,9 @@ class BgtICFComponent extends Component {
           <Grid item xs={3}>
             <DataGrid
               sx={{
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
@@ -433,6 +438,48 @@ class BgtICFComponent extends Component {
                 borderLeft: "2px solid #EAEAEA",
                 borderRight: "2px solid #EAEAEA",
                 borderBottom: "2px solid #EAEAEA",
+                "& .MuiDataGrid-row:hover": {
+                  background: "#EDAF8C",
+                },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  background: "#FFC19E",
+                  fontWeight: "bold",
+                },
+                "& .MuiDataGrid-row.Mui-selected:hover": {
+                  background: "#FFD8D8",
+                },
+                "& .style-divfg-1": { background: "#86E57F" },
+                "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "0px !important",
+                },
+                "& .style-divfg-2": { background: "#AAFFA3" },
+                "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "8px !important",
+                },
+                "& .style-divfg-3": { background: "#CEFFC7" },
+                "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "16px !important",
+                },
+                "& .style-divfg-4": { background: "#F2FFEB" },
+                "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "24px !important",
+                },
+                "& .style-divfg-5": { background: "#FFFFFF" },
+                "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "32px !important",
+                },
+                "& .style-divfg-6": { background: "#FFFFFF" },
+                "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "40px !important",
+                },
+                "& .style-divfg-7": { background: "#FFFFFF" },
+                "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "48px !important",
+                },
+                "& .style-divfg-8": { background: "#FFFFFF" },
+                "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "56px !important",
+                },
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"
@@ -443,6 +490,7 @@ class BgtICFComponent extends Component {
               hideFooterPagination
               hideFooterSelectedRowCount
               onEditCellChange={this.handleEditCellChange}
+              getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
             />
           </Grid>
           <Grid item xs={9}>
