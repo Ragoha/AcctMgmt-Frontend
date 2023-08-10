@@ -33,7 +33,7 @@ class DivsService {
                 },
                 withCredentials: true,
                 params: {
-                    coCd: data.coCd
+                    coCd:data.coCd
                 }
             }
             )
@@ -47,7 +47,7 @@ class DivsService {
                 },
                 withCredentials: true,
                 params: {
-                    divCd: data.divCd
+                    divCd:data.divCd
                 }
             }
             )
@@ -124,11 +124,15 @@ class DivsService {
               })
     };
 
-    getDivBydivCdAnddivNm(keyword) {
+    getDivBydivCdAnddivNm(data) {
         return axios
             .get(ACCTMGMT_API_BASE_URL + "/ozt/div/search", {
+                headers: {
+                    "access-token": data.accessToken,
+                  },
+                  withCredentials: true,
                 params: {
-                    keyword: keyword
+                    keyword: data.keyword
                 },
             })
             .then((response) => response.data);

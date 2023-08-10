@@ -13,10 +13,11 @@ import dayjs from 'dayjs';
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InputAdornment from '@mui/material/InputAdornment';
 import CompanyService from '../../service/CompanyService';
-import { CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle } from '../common/style/CommonDialogStyle';
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../common/style/CommonDialogStyle';
 import { CustomDataGrid, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import CoDialogComponent from './dialog/CoDialogComponent';
+import { DataGrid } from '@mui/x-data-grid';
 
 class CoMgmtComponent extends Component {
   constructor(props) {
@@ -57,8 +58,8 @@ class CoMgmtComponent extends Component {
       data: {
         columns: [
           { field: 'gisu', headerName: '기수', editable: true, width: 90, headerAlign: 'center' },
-          { field: 'frDt', headerName: '시작일', type: 'date', editable: true, width: 180.1, headerAlign: 'center' },
-          { field: 'toDt', headerName: '종료일', type: 'date', editable: true, width: 180.2, headerAlign: 'center' },
+          { field: 'frDt', headerName: '시작일', type: 'date', editable: true, width: 188.2, headerAlign: 'center' },
+          { field: 'toDt', headerName: '종료일', type: 'date', editable: true, width: 188.2, headerAlign: 'center' },
         ],
         rows: [
           { id: 1, 'gisu': '', 'frDt': '', 'toDt': '' },
@@ -317,7 +318,9 @@ class CoMgmtComponent extends Component {
             coAddr: '',
             coAddr1: ''
           }) :
-          CompanyService.getCompany(coCd)
+          CompanyService.getCompany({
+            accessToken: this.props.accessToken,
+            coCd: coCd})
 
             .then((response) => {
               const coCd = response.data[0].coCd;
@@ -376,7 +379,9 @@ class CoMgmtComponent extends Component {
   };
 
   searchClick = (coCd) => {
-    CompanyService.getCompany(coCd)
+    CompanyService.getCompany({ 
+      accessToken: this.props.accessToken,
+      coCd: coCd})
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
@@ -441,7 +446,20 @@ class CoMgmtComponent extends Component {
     const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
 
     console.log(coNm)
-    CompanyService.updateCo(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1)
+    CompanyService.updateCo({ 
+      accessToken: this.props.accessToken,
+      coCd: coCd, 
+      coNm: coNm, 
+      gisu: gisu, 
+      frDt: frDt, 
+      toDt: toDt, 
+      jongmok: jongmok, 
+      businessType: businessType, 
+      coNb: coNb, 
+      ceoNm: ceoNm, 
+      coZip: coZip, 
+      coAddr: coAddr, 
+      coAddr1: coAddr1})
       .then((response) => {
         console.log(response.data);
         window.confirm('업데이트 완료!');
@@ -480,7 +498,9 @@ class CoMgmtComponent extends Component {
   deleteCo = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd } = this.state;
 
-    CompanyService.deleteCo(coCd)
+    CompanyService.deleteCo({ 
+      accessToken: this.props.accessToken,
+      coCd: coCd})
       .then((response) => {
         console.log(response.data);
         window.confirm('회사삭제 완료!');
@@ -648,7 +668,7 @@ class CoMgmtComponent extends Component {
                 borderBottom: "1px solid",
               }}
             >
-              <CustomInputLabel sx={{ml:1}}>총 회사:</CustomInputLabel>
+              <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
               <CustomInputLabel>{cardCount}</CustomInputLabel>
             </Grid>
 
@@ -705,11 +725,11 @@ class CoMgmtComponent extends Component {
               <Grid item sx={{ ml: 0.3 }}>
                 <Grid container>
                   {coCd ? (
-                    <Button sx={{mr:1}} variant="outlined" onClick={this.updateCo}>
+                    <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
                       수정
                     </Button>
                   ) : (
-                    <Button sx={{mr:1}} variant="outlined" onClick={this.insertCo}>
+                    <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertCo}>
                       저장
                     </Button>
                   )}
@@ -1029,7 +1049,7 @@ class CoMgmtComponent extends Component {
               </Grid>
             </Grid>
           </Grid>
-          <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+          <CustomShortDialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
             <CustomDialogTitle sx={{ fontWeight: "bold" }}>
               회계기수 등록
               <IconButton
@@ -1042,13 +1062,14 @@ class CoMgmtComponent extends Component {
             </CustomDialogTitle>
             <CustomDialogContent>
               <Grid container direction="column" alignItems="flex-end">
-                <Button sx={{ mt: 1, mb: 1 }} variant="outlined">
+                <Button sx={{ mt: 1, mb: 1,mr:2 }} variant="outlined">
                   삭제
                 </Button>
               </Grid>
 
               <Grid style={{ height: 350, width: "100%" }}>
-                <CustomDataGrid
+              <CustomShortDataGridContainer container>
+                <DataGrid
                   sx={{ borderTop: "2px solid #000" }}
                   rows={data.rows}
                   columns={data.columns}
@@ -1058,10 +1079,11 @@ class CoMgmtComponent extends Component {
                   onRowClick={this.handleClickRow}
                   hideFooter
                 />
+                </CustomShortDataGridContainer>
               </Grid>
             </CustomDialogContent>
-            <Divider />
             <CustomDialogActions>
+            <CustomButtonGridContainer container justifyContent="flex-end">
               <CustomConfirmButton
                 variant="outlined"
                 onClick={() => this.insertDate(selectedRow)}
@@ -1075,8 +1097,9 @@ class CoMgmtComponent extends Component {
               >
                 취소
               </Button>
+              </CustomButtonGridContainer>
             </CustomDialogActions>
-          </Dialog>
+          </CustomShortDialog>
         </Grid>
 
         <AddressComponent setCoZipAddr={this.setCoZipAddr} ref={this.addrRef} />
