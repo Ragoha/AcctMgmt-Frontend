@@ -30,10 +30,6 @@ class CompanyService {
   insertCo(data) {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
         coNm: data.coNm,
         gisu: data.gisu,
         frDt: data.frDt,
@@ -45,14 +41,23 @@ class CompanyService {
         coZip: data.coZip,
         coAddr: data.coAddr,
         coAddr1: data.coAddr1
+      },{
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
       })
   };
 
-  getCo(coCd) {
+  getCo(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/sco", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
         params: {
-          coCd: coCd
+          coCd: data.coCd
         }
       }
       )
@@ -72,28 +77,39 @@ class CompanyService {
       )
   };
 
-  deleteCo(coCd) {
+  deleteCo(data) {
     return axios
-      .post(ACCTMGMT_API_BASE_URL + "/ozt/dco", {
-        coCd: coCd
+      .delete(ACCTMGMT_API_BASE_URL + "/ozt/dco", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+        params: {
+        coCd: data.coCd
+        }
       })
   };
 
-  updateCo(coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1) {
+  updateCo(data) {
     return axios
-      .post(ACCTMGMT_API_BASE_URL + "/ozt/uco", {
-        coCd: coCd,
-        coNm: coNm,
-        gisu: gisu,
-        frDt: frDt,
-        toDt: toDt,
-        jongmok: jongmok,
-        businessType: businessType,
-        coNb: coNb,
-        ceoNm: ceoNm,
-        coZip: coZip,
-        coAddr: coAddr,
-        coAddr1: coAddr1
+      .put(ACCTMGMT_API_BASE_URL + "/ozt/uco", {
+        coCd: data.coCd,
+        coNm: data.coNm,
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+        jongmok: data.jongmok,
+        businessType: data.businessType,
+        coNb: data.coNb,
+        ceoNm: data.ceoNm,
+        coZip: data.coZip,
+        coAddr: data.coAddr,
+        coAddr1: data.coAddr1
+      },{
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
       })
   };
 
@@ -111,15 +127,19 @@ class CompanyService {
       )
   };
 
-  getCoBycoCdAndcoNm(keyword) {
+  getCoBycoCdAndcoNm(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/co/search", {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
         params: {
-          keyword: keyword
+          keyword: data.keyword
         },
       })
       .then((response) => response.data);
-  }
+  };
 }
 
 export default new CompanyService();
