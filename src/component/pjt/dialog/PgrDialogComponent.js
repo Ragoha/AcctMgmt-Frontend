@@ -28,7 +28,7 @@ const columns = [
     { field: 'pgrNm', headerName: '프로젝트그룹명', width: 286, headerAlign: 'center' }
 ]
 
-class PjtDialogComponent extends Component {
+class PgrDialogComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -169,4 +169,4 @@ class PjtDialogComponent extends Component {
         );
     }
 }
-export default PjtDialogComponent;
+export default PgrDialogComponent;
