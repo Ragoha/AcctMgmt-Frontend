@@ -50,7 +50,7 @@ console.log('데이터체크')
       .then(rows => {
         console.log('통신성공')
         console.dir(rows) //데이터 받았음 .
-        this.setState({ rows }, () => console.log(this.state));
+        this.setState({ rows });
       }).catch(error => {
         console.error("Error fetching data:", error);
       });
@@ -58,7 +58,6 @@ console.log('데이터체크')
 
   /*---로우 추가 관련된 메서드 start---*/
   //데이터 그리드에 추가하는 기능
-  //[230728] TreeView 수정했는데 addRow 로직은 아직 변경하지 않음 한번 손봐야함
   //[230808] 
   handleRowAdd = () => {
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
@@ -67,14 +66,50 @@ console.log('데이터체크')
     const data = {bgtCd:bgtCd , coCd :coCd}
     BgtCDService.getAddRowData(data,accessToken)
     .then(data=>{
-
+      console.log('handleRowAdd 리턴하고 보자 BGTCD야 여긴')
+      console.dir(data);
+      console.log(data.dataPath);
+      console.log(data.bgtCd);
+      console.log('여기까진 나와야 돼 ')
+      const dataPath =data.dataPath;
+      const bgtCd = data.bgtCd;
+      const newRows = [
+        ...this.state.rows,
+        { dataPath: dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true },
+      ];
+      this.setState({ rows: newRows });
+      this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
     })
-    // const newRows = [
-    //   ...this.state.rows,
-    //   { dataPath: dataPath, bgtCd: "", bgtNm: "", isNew: true },
-    // ];
-    // this.setState({ rows: newRows });
   };
+  //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
+  insertAddRow=(data)=>{
+    console.log('BgtCd의 insertAddRow입니다.')
+    const {coCd} = this.props.userInfo;
+    const {accessToken } = this.props;
+    data.coCd=coCd;
+    console.log('한번더!')
+    console.log(data)
+    const detailInfo = this.BgtCDDetailInfo.current.selectData();
+    console.log('두번더!')
+    console.log(detailInfo)
+    console.log(detailInfo.ctlFg)
+    console.log(detailInfo.bgajustFg)
+    console.log(detailInfo.bizFg)
+    console.log('백으로 넘길 데이터에 세팅해주기 ')
+    data.ctlFg    =detailInfo.ctlFg;
+    data.bgajustFg=detailInfo.bgajustFg;
+    data.bizFg    =detailInfo.bgajustFg;
+    data.toDt     =detailInfo.toDt;
+    data.bottomFg =detailInfo.bottomFg;
+    data.insertId =this.props.userInfo.empId;
+    BgtCDService.insertAddRow(data,accessToken).then(
+      ()=>{this.getDataGridRows()},
+      console.log('여기되는건가 체크==<<<<=====<<<<===<<<<< ')
+    )
+
+  }
+
+  
   /*---로우 추가 관련된 메서드 end---*/
 
 
@@ -98,7 +133,7 @@ console.log('데이터체크')
   }
 
   render() {
-    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd } = this.state;
+    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd ,rowModesModel} = this.state;
     return (
       <>
         <CustomHeaderGridContainer
@@ -196,6 +231,7 @@ console.log('데이터체크')
               ref={this.BgtDataGrid}
               rows={rows}
               setDetailInfo={this.setDetailInfo}
+              insertAddRow={this.insertAddRow}
             />
           </Grid>
           <Grid item xs={5}>
