@@ -40,8 +40,7 @@ class BgtCDService {
 
         return returnData1;
     }
-    getBgtCDTerm(CO_CD ,accessToken){ //(★임시로 데이터 테스트 용 CoCd, 반드시 수정해야함!!!) BgtCD 그룹레벨설정 할때 초기값.
-        console.log("1111찍어보자 : " + CO_CD)
+    getBgtCDTerm(CO_CD ,accessToken){ 
         const returnData=axios.get(ACCTMGMT_API_BASE_URL + "/getBgtCDTerm" ,{
             params:{
                 CO_CD : CO_CD
@@ -83,6 +82,16 @@ class BgtCDService {
         console.log(returnData)
         return returnData ;
     }
+    insertAddRow(data,accessToken){
+      const returnData =axios.post(ACCTMGMT_API_BASE_URL + "/insertAddRow", data,{
+          headers: {
+            "access-token": accessToken,
+          },
+          withCredentials: true,
+        })
+      .then((response)=>response.data);
+      return returnData ;
+  }
     getBgtGrData(coCd ,accessToken){
       const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getBgtGrData",{
         params:{
@@ -110,7 +119,6 @@ class BgtCDService {
         },
         withCredentials: true,
       }).then((response)=>response.data)
-
       return returnData;
     }
     /*---select  end  ---*/
