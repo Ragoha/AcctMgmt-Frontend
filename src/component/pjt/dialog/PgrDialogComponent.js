@@ -65,17 +65,17 @@ class PjtDialogComponent extends Component {
     //검색
     handleSearchPgrDial = () => {
         PjtService.getPgrBy(this.state.keyword)
-        .then(
-          async (response) => {
-            const codialRows = response.map((row) => ({
-              id: row.pgrCd,
-              pgrCd: row.pgrCd,
-              pgrNm: row.pgrNm,
-            }));
-            await this.setState({ codialRows: codialRows });
-            console.log(this.state);
-          }
-        );
+            .then(
+                async (response) => {
+                    const codialRows = response.map((row) => ({
+                        id: row.pgrCd,
+                        pgrCd: row.pgrCd,
+                        pgrNm: row.pgrNm,
+                    }));
+                    await this.setState({ codialRows: codialRows });
+                    console.log(this.state);
+                }
+            );
     };
 
     handleClickConfirm = async () => {
@@ -113,7 +113,7 @@ class PjtDialogComponent extends Component {
                 alignItems="center"
                 spacing={2}
               >
-                <Grid item>
+                <Grid item xs={12}>
                   <Grid
                     container
                     direction="row"
@@ -131,7 +131,7 @@ class PjtDialogComponent extends Component {
                     />
                     <CustomSearchButton
                       variant="outlined"
-                      sx={{ right: "-50px" }}
+                      sx={{ right: "-30px" }}
                     >
                       <SearchIcon onClick={this.handleSearchPgrDial} />
                     </CustomSearchButton>
