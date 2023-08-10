@@ -73,6 +73,29 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
         //this.props.set_detailInfo(response[0]);
       })
   }
+  setDetailInfoAfterAddRow=(detailInfo)=>{//addRow시 추가된 빈 로우 값에 DetailInfo(기본 값 설정.)
+    this.setState({
+      ctlFg:detailInfo.ctlFg,
+      bgajustFg:detailInfo.bgajustFg,
+      bottomFg: detailInfo.bottomFg,
+      bizFg:detailInfo.bizFg,
+      toDt:detailInfo.toDt,
+    })
+    
+  }
+  selectData=()=>{
+    const detailInfo={
+      ctlFg: this.ctlFgControl.state.dataindex,
+      bgajustFg: this.bgajustFgControl.state.dataindex,
+      bottomFg: this.bottomFgControl.state.dataindex,
+      bizFg: this.bizFgControl.state.dataindex,
+      bgtCd: this.state.bgtCd,
+      toDt: this.state.toDt
+    }
+    return detailInfo;
+  }
+
+
   updateDetailInfo = () => {
     console.log('---updateDetailInfo---')
     const { accessToken } = this.props;
