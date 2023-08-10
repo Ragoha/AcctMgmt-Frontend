@@ -406,7 +406,7 @@ class PjtComponent extends Component {
 
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    PjtService.getPjtList(coCd, data) //카드리스트 전체조회 함수
+    PjtService.selPjtList(coCd, data) //카드리스트 전체조회 함수
       .then((response) => {
         console.log("abc", response.data);
         const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
