@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HelpCenterOutlinedIcon from '@mui/icons-material/HelpCenterOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography, Checkbox } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography, Checkbox, ButtonGroup } from '@mui/material';
 import Grid from '@mui/material/Grid'; // 변경된 import
 import dayjs from 'dayjs';
 import { Component, createRef } from 'react';
@@ -13,8 +13,10 @@ import PjtDialogComponent from './dialog/PjtDialogComponent';
 import PgrDialogComponent from './dialog/PgrDialogComponent';
 import { MenuItem, Select } from '@mui/material';
 import Swal from 'sweetalert2';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Alert from '@mui/material/Alert';
 import './styles.css'; // 스타일시트 불러오기
+import ListDisplay from '../bgticf/test';
 
 class PjtComponent extends Component {
   constructor(props) {
@@ -30,7 +32,8 @@ class PjtComponent extends Component {
       pjtCdList: [],
       pjtNmList: [],
       progFgList: [],
-      CodialTextField: '',
+      PjtdialTextField: '',
+      PgrdialTextField: '',
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
       dateRange: [null, null], // 날짜 범위를 배열로 저장합니다.
       coCd: 0,
@@ -45,11 +48,13 @@ class PjtComponent extends Component {
       startDt: new Date(),
       note: "",
       progFgOptions: ['0.완료', '1.진행중', '9.미사용'],
+      searchProgFgOptions: ['전체', '완료', '진행중', '미사용'],
       isPjtCdEditable: false, // 추가 버튼을 클릭하면 프로젝트코드 텍스트 필드 활성화 여부
       selectedCards: [], // 선택된 카드의 인덱스를 저장하는 배열
       selectedCount: 0,  // 선택된 카드 수
       selectAllChecked: false,//체크박스 전체 영향
       successAlert: false,//성공 알럿
+      selectedProgFg: "전체",
     }
   }
   //드롭리스트 부분 프로젝트구분에서
@@ -61,11 +66,20 @@ class PjtComponent extends Component {
     }));
   };
 
+  handleProgFgChange2 = (e) => {
+    const { name, value } = e.target;
+    this.setState((prevState) => ({
+      selectedProgFg: value,
+      isChanged: prevState[name] !== value,
+    }));
+  };
+
 
   handleDateRangeChange = (newValue) => {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
+    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef );
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     PjtService.getPjtList(coCd) //카드리스트 전체조회 함수
@@ -202,7 +216,7 @@ class PjtComponent extends Component {
       alert("저장할 내용이 없습니다.");
     }
   };
-  
+
 
   handleDel = (e) => {
     const userInfo = this.props.userInfo;
@@ -224,13 +238,13 @@ class PjtComponent extends Component {
         container: 'custom-swal-container',
         popup: 'custom-swal-popup',
       },
-    });    
-    
+    });
+
     PjtService.deletePjt(Pjt)
       .then((response) => {
         this.setState({
-          isPjtCdEditable : false
-      })
+          isPjtCdEditable: false
+        })
         this.componentDidMount();
         this.setState({ successAlert: true }, () => {
           setTimeout(() => {
@@ -310,7 +324,7 @@ class PjtComponent extends Component {
         pjtNm: "",
         prDt: "",
         toDt: "",
-        progFg: "",
+        progFg: "1.진행중",
         apjtNm: "",
         startDt: "",
         note: "",
@@ -331,12 +345,12 @@ class PjtComponent extends Component {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     console.log(pjtCd);
-    
+
     if (this.state.isChanged) {
       alert('변경된 내용이 저장되지 않았습니다.');
     } else {
       this.setState({ focused: pjtCd });
-      
+
       if (pjtCd === '000') {
         this.setState({
           isPjtCdEditable: true,
@@ -352,7 +366,7 @@ class PjtComponent extends Component {
             const toDt = dayjs(data.toDt).format('YYYY-MM-DD');
             const startDt = dayjs(data.startDt).format('YYYY-MM-DD');
             console.log("하나 잘 갖고오니?", response.data);
-            
+
             this.setState({
               isPjtCdEditable: false,
               pjtCd: data.pjtCd, pgrCd: data.pgrCd, pgrNm: data.pgrNm,
@@ -368,7 +382,7 @@ class PjtComponent extends Component {
       }
     }
   }
-  
+
 
 
   //헬퍼코드
@@ -384,10 +398,17 @@ class PjtComponent extends Component {
     this.pgrDialogRef.current.handleDown();
   }
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
-  handleSetCodialTextField = async (data) => {
+  handleSetPjtTextField = async (data) => {
     await this.setState({
-      CodialTextField: data.pjtCd + ". " + data.pjtNm,
-      pjtCd: data.pjtCd  //밑에 pjtCd 넘겨주기
+      PjtdialTextField: data.pjtCd + ". " + data.pjtNm,
+      pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
+    });
+  };
+
+  handleSetPgrTextField = async (data) => {
+    await this.setState({
+      PgrdialTextField: data.pgrCd + ". " + data.pgrNm,
+      pgrCd: data.pgrCd  //밑에 pjtCd 넘겨주기
     });
   };
   // 검색한 내용들 나오는 곳
@@ -460,11 +481,11 @@ class PjtComponent extends Component {
     const { pjtCd, progFg, pgrNm, pgrCd, pjtNm, prDt, toDt, apjtNm, startDt, note, pjtRole, isPjtCdEditable } = this.state;
     const { successAlert, showAlert } = this.state;
 
-    const { cardCount, pjtCdList, pjtNmList, pjtPrList, pjtToList, progFgList, selectedProgFg, progFgOptions } = this.state;
+    const { cardCount, pjtCdList, pjtNmList, pjtPrList, pjtToList, progFgList, selectedProgFg, progFgOptions, searchProgFgOptions } = this.state;
     const { value } = this.state;
     // const currentDate = prDtFormatted;
-    const formattedPjtPrList = pjtPrList ? pjtPrList.map(date => dayjs(date).isValid() ? dayjs(date).format('YYYY-MM-DD') : ""): [];    
-    const formattedpjtToList = pjtToList ? pjtToList.map(date => dayjs(date).isValid() ? dayjs(date).format('YYYY-MM-DD') : ""): [];
+    const formattedPjtPrList = pjtPrList ? pjtPrList.map(date => dayjs(date).isValid() ? dayjs(date).format('YYYY-MM-DD') : "") : [];
+    const formattedpjtToList = pjtToList ? pjtToList.map(date => dayjs(date).isValid() ? dayjs(date).format('YYYY-MM-DD') : "") : [];
 
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
@@ -474,7 +495,7 @@ class PjtComponent extends Component {
         key={pjtCd}
         ref={this.cardRef}
         focused={this.state.focused === pjtCd}
-        sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === pjtCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === pjtCd ? '#E5FFFF' : 'white' }}>
+        sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === pjtCd ? '2px solid #6798FD' : '1px solid #D5D5D5', backgroundColor: this.state.focused === pjtCd ? '#E5FFFF' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(pjtCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-3px', left: "-15px" }}>
@@ -503,13 +524,22 @@ class PjtComponent extends Component {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Grid item>
-            <Grid container direction="row">
-              <AssignmentIcon sx={{ fontSize: 31 }} />
-              <CustomHeaderInputLabel>프로젝트 등록</CustomHeaderInputLabel>
-            </Grid>
+          <Grid item container direction="row" alignItems="center" xs={8}>
+            <AssignmentIcon sx={{ fontSize: 31 }} />
+            <CustomHeaderInputLabel>프로젝트 등록</CustomHeaderInputLabel>
+          </Grid>
+          <Grid item container justifyContent="flex-end" xs={4}>
+            <ButtonGroup>
+              <Button variant="outlined">프로젝트그룹추가</Button>
+              {isPjtCdEditable ? (<Button variant="outlined" onClick={this.handleSave}>저장 </Button>
+              ) : (
+                <Button variant="outlined" onClick={this.handleFix}> 수정</Button>
+              )}
+              <Button variant="outlined" onClick={this.handleDel}> 삭제 </Button>
+            </ButtonGroup>
           </Grid>
         </CustomHeaderGridContainer>
+
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         <CustomGridContainer
           container
@@ -521,8 +551,8 @@ class PjtComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel sx={{ ml: 4 }}>프로젝트</CustomInputLabel>
               <CustomTextField
-                name="CodialTextField"
-                value={this.state.CodialTextField}
+                name="PjtTextField"
+                value={this.state.PjtdialTextField}
                 placeholder="프로젝트코드 "
                 InputProps={{
                   endAdornment: (
@@ -536,19 +566,22 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel>프로젝트구분</CustomInputLabel>
-              <CustomTextField
-                sx={{ mt: -1 }}
-                name="CodialTextField"
-                value={this.state.CodialTextField}
-                placeholder="전체 "
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.pjthelpClick} /></InputAdornment>
-                  ),
+              <CustomInputLabel sx={{ pt: 1 }}>프로젝트구분</CustomInputLabel>
+              <Select
+                sx={{
+                  width: "255px",
+                  height: "40px",
                 }}
-              ></CustomTextField>
+                name="selectedProgFg"
+                value={this.state.selectedProgFg}
+                onChange={this.handleProgFgChange2}
+              >
+                {searchProgFgOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
             </Grid>
           </Grid>
 
@@ -557,8 +590,8 @@ class PjtComponent extends Component {
               <CustomInputLabel>프로젝트분류</CustomInputLabel>
               <CustomTextField
                 sx={{ mt: -1 }}
-                name="CodialTextField"
-                value={this.state.CodialTextField}
+                name="PgrTextField"
+                value={this.state.PgrdialTextField}
                 placeholder="프로젝트그룹코드 "
                 InputProps={{
                   endAdornment: (
@@ -587,76 +620,129 @@ class PjtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
+          <Grid item xs={4}>
+            <ListDisplay/>
+          </Grid>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
           <Grid
             container
-            bgcolor={"#f5f5f5"}
+            bgcolor={"#FAFAF5"}
             sx={{
-              width: "22%",
-              height: 500,
-              border: "1px solid #EAEAEA",
-              borderTop: "0px solid black",
+              width: "25%",
+              height: 540,
+              border: "1px solid #FAFAF5",
             }}
           >
             <Grid
               item
               sx={{
-                mb: 1,
+                // pb: 1,
+                // mt: 2,
+                // mb: 1,
                 display: "flex",
                 justifyContent: "left",
                 alignItems: "center",
                 width: "100%",
                 height: 22,
-                backgroundColor: "#f5f5f5",
-                borderBottom: "1px solid #D8D8D8",
+                backgroundColor: "#FAFAF5",
+                borderBottom: "1px solid #FAFAF5",
+
               }}
             >
               <Checkbox
                 checked={this.state.selectAllChecked}
                 onChange={this.handleSelectAllChange}
+                sx={{ mb: 2 }}
               />
-              <InputLabel>프로젝트:</InputLabel>
               <InputLabel
-                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold" }}
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                }}
+              >프로젝트:</InputLabel>
+              <InputLabel
+                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold", mb: 2, }}
               >
                 {cardCount}
-              </InputLabel>
-              건
-            </Grid>
 
-            <Grid
-              item
+              </InputLabel>
+              <InputLabel
+                sx={{
+                  mb: 2,
+                  fontWeight: "bold",
+                }}
+              >건</InputLabel>
+            </Grid>
+            <Scrollbars
               ref={this.cardListRef}
-              sx={{
-                pl: 1.2,
-                width: "95%",
-                height: "calc(100% - 5%)",
-                overflowY: "auto",
+              style={{
+                width: '95%',
+                height: 'calc(100% - 5%)',
               }}
+              renderThumbVertical={({ style }) => (
+                <div
+                  style={{
+                    ...style,
+                    width: '5px', // 스크롤바의 너비를 설정
+                    backgroundColor: '#D8D8D8', // 스크롤바의 색상
+                    borderRadius: '3px', // 스크롤바의 둥근 모서리
+                  }}
+                />
+              )}
+              renderView={(props) => (
+                <div
+                  {...props}
+                  style={{
+                    ...props.style,
+                    borderRight: '1px solid #FAFAF5', // 오른쪽에 선을 추가하여 스크롤바가 오버레이 되도록 함
+                    marginRight: '-17px', // 스크롤바 너비만큼 우측으로 이동하여 스크롤바 위치 조정
+                  }}
+                />
+              )}
             >
               {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
               {cards.map((card, index) => (
-                <Grid key={index} item xs={12} sx={{ mb: 1 }}>
+                <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1, ml: 2, mr:2}}>
                   {card}
                 </Grid>
               ))}
-            </Grid>
+            </Scrollbars>
+            {/* <Grid
+                item
+                ref={this.cardListRef}
+                sx={{
+                  pr: 2, // 우측 여백 추가
+                  pl: 2,
+                  width: "95%",
+                  height: "calc(100% - 5%)",
+                  overflowY: "scroll",
+                  scrollbarWidth: "thin", // 스크롤바의 너비를 얇게 조절합니다
+                  scrollbarColor: "#D8D8D8 transparent", // 스크롤바의 색상을 설정합니다
+                }}
+              >
+                {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
+            {/* {cards.map((card, index) => (
+                  <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1 }}>
+                    {card}
+                  </Grid>
+                ))}
+              </Grid> */}
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "-13px", width: "100%" }}
+              sx={{ position: "relative", bottom: "px", width: "100%"}}
             >
               <Button
                 variant="extended"
                 onClick={this.addCardButton}
                 sx={{
-                  border: "1px solid",
+                  border: "1px solid #D5D5D5",
                   width: "100%",
-                  height: "60px",
-                  backgroundColor: "#F6F6F6",
-                  color: "black",
+                  height: "80px",
+                  backgroundColor: "white",
+                  color: "#5D5D5D",
                   display: "flex",
                   justifyContent: "center",
                   "&:hover": {
@@ -664,7 +750,7 @@ class PjtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon />
+                <AddIcon sx={{ color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -677,7 +763,8 @@ class PjtComponent extends Component {
             sx={{
               width: "100%",
               maxHeight: 40,
-              borderBottom: "3px solid #000",
+              borderBottom: "2px solid #000",
+              ml:1,
             }}
           >
             <Grid item>
@@ -685,38 +772,15 @@ class PjtComponent extends Component {
                 sx={{
                   ml: 2,
                   mr: 2,
-                  mt: 1,
+                  mb: 2,
                   textAlign: "left",
                   color: "black",
                   fontWeight: "bold",
+                  fontSize: 18,
                 }}
               >
-                ● 기본등록사항
+                기본등록사항
               </InputLabel>
-            </Grid>
-            <Grid item alignItems={'right'}>
-              {isPjtCdEditable ?
-                <Button variant="outlined" onClick={this.handleSave}>저장</Button>
-                :
-                <Button variant="outlined" onClick={this.handleFix}>수정</Button>
-              }
-              <Button variant="outlined" onClick={this.handleDel}>삭제
-              </Button>
-            </Grid>
-            <Grid item xs={12} width={"100%"}>
-              <InputLabel
-                sx={{
-                  ml: 3.8,
-                  mr: 2,
-                  mt: 2,
-                  textAlign: "left",
-                  color: "#0054FF",
-                  fontWeight: "bold",
-                }}
-              >
-                기본정보
-              </InputLabel>
-              <hr />
             </Grid>
 
             <Grid container width={"100%"} border={"1px solid #e0e0e0"}>
@@ -794,7 +858,7 @@ class PjtComponent extends Component {
                   sx={{
                     ml: 2,
                     mt: 0.3,
-                    width: "93%",
+                    width: "405px",
                     height: "40px",
                     backgroundColor: "#FFEAEA",
                   }}
@@ -1115,11 +1179,11 @@ class PjtComponent extends Component {
             )}
           </Grid>
         </Grid>
-        <PjtDialogComponent handleSetCodialTextField={this.handleSetCodialTextField} ref={this.pjtDialogRef} />
-        <PgrDialogComponent handleSetCodialTextField={this.handleSetCodialTextField} ref={this.pgrDialogRef} />
+        <PjtDialogComponent handleSetPjtTextField={this.handleSetPjtTextField} ref={this.pjtDialogRef} />
+        <PgrDialogComponent handleSetPgrTextField={this.handleSetPgrTextField} ref={this.pgrDialogRef} />
         <div>
           <div className={`alert-container ${successAlert ? 'show' : ''}`}>
-              <Alert variant="filled" severity="success">
+            <Alert variant="filled" severity="success">
               삭제되었습니다
             </Alert>
           </div>
