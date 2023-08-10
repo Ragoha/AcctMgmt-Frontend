@@ -1,0 +1,25 @@
+
+
+.alert-container {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.alert-container.show {
+  opacity: 1;
+}
+
+.swal2-container {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* .swal2-popup {
+  background: #fff !important;
+} */

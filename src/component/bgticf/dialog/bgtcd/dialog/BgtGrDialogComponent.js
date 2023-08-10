@@ -1,15 +1,13 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
-  Dialog,
   Grid,
-  IconButton,
-  TextField
+  IconButton
 } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDataGridContainer, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortFormGridContainer } from "../../../../common/style/CommonDialogStyle";
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../../../common/style/CommonDialogStyle";
 import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../../common/style/CommonStyle";
 
 const columns = [
@@ -105,10 +103,10 @@ class BgtGrDialogComponent extends Component {
   };
 
   render() {
-    const { open, columns, rows } = this.state;
+    const { open, columns} = this.state;
 
     return (
-      <Dialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+      <CustomShortDialog open={open}>
         <CustomDialogTitle>
           예산그룹검색
           <IconButton size="small" onClick={this.handleDown}>
@@ -144,7 +142,7 @@ class BgtGrDialogComponent extends Component {
               </Grid>
             </Grid>
           </CustomShortFormGridContainer>
-          <CustomDataGridContainer container>
+          <CustomShortDataGridContainer container>
             <CustomDataGrid
               columns={columns}
               rows={this.state.bgtGrRows}
@@ -153,7 +151,7 @@ class BgtGrDialogComponent extends Component {
               onRowClick={this.handleClickRow}
               hideFooter
             />
-          </CustomDataGridContainer>
+          </CustomShortDataGridContainer>
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
@@ -168,7 +166,7 @@ class BgtGrDialogComponent extends Component {
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>
-      </Dialog>
+      </CustomShortDialog>
     );
   }
 }

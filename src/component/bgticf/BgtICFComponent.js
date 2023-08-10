@@ -1,13 +1,11 @@
-import ListIcon from "@mui/icons-material/List";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
-  Box,
   Button,
   Grid,
   InputAdornment,
-  InputLabel,
-  TextField,
+  TextField
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -28,8 +26,7 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import ListDisplay from "./test";
+import { borderBottom } from "@mui/system";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -49,21 +46,23 @@ const BGTCD_COLUMN = [
     headerAlign: "center",
   },
   {
-    field: "divFg",
+    field: "defNm",
     headerName: "예산구분",
     width: 80,
     headerAlign: "center",
   },
   {
-    field: "dataPath",
+    field: "bgtNm",
     headerName: "예산과목명",
-    width: 160,
+    width: 100,
     headerAlign: "center",
+    cellClassName: "bgtNm"
   },
   {
     field: "carrAm",
     headerName: "금액",
     headerAlign: "center",
+    width: 120,
     ...krAmount,
   },
 ];
@@ -110,10 +109,6 @@ class BgtICFComponent extends Component {
 
   handleGetBgtICFList = (e) => {
     this.bgtICFRef.current.handleGetBgtICFList();
-  };
-
-  handleRowAdd = () => {
-    this.bgtICFRef.current.handleRowAdd();
   };
 
   handleRowDelete = () => {
@@ -280,16 +275,7 @@ class BgtICFComponent extends Component {
   }
 
   render() {
-    const labelStyle = {
-      display: "inline",
-    };
-
-    const floatRight = {
-      float: "right",
-    };
-
-    const { bgtDTO, startDate, mainHeader, divTextField, bgtCDTextField } =
-      this.state;
+    const { divTextField, bgtCDTextField } = this.state;
 
     return (
       <>
@@ -306,11 +292,9 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            <InputLabel style={labelStyle}>{mainHeader}</InputLabel>
-            <Box style={floatRight}>
-              <Button onClick={this.handleRowAdd}>추가</Button>
-              <Button onClick={this.handleRowDelete}>삭제</Button>
-            </Box>
+            <Button variant="outlined" onClick={this.handleRowDelete}>
+              삭 제
+            </Button>
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -437,26 +421,65 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay/>
+            {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={3}
-            sx={{
-              // height: `calc(${this.state.innerHeight}px - 345px)`,
-              maxHeight: `calc(100vh)`,
-            }}
-          >
+        <Grid container spacing={2} sx={{ height: "calc(100vh - 280px)" }}>
+          <Grid item xs={3}>
             <DataGrid
               sx={{
-                // maxHeight: "calc(100vh - 0px)",
-                // fontSize: 10,
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                 },
                 borderTop: "3px solid black",
+                borderLeft: "2px solid #EAEAEA",
+                borderRight: "2px solid #EAEAEA",
+                borderBottom: "2px solid #EAEAEA",
+                "& .MuiDataGrid-row:hover": {
+                  background: "#EDAF8C",
+                },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  background: "#FFC19E",
+                  fontWeight: "bold",
+                },
+                "& .MuiDataGrid-row.Mui-selected:hover": {
+                  background: "#FFD8D8",
+                },
+                "& .style-divfg-1": { background: "#86E57F" },
+                "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "0px !important",
+                },
+                "& .style-divfg-2": { background: "#AAFFA3" },
+                "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "8px !important",
+                },
+                "& .style-divfg-3": { background: "#CEFFC7" },
+                "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "16px !important",
+                },
+                "& .style-divfg-4": { background: "#F2FFEB" },
+                "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "24px !important",
+                },
+                "& .style-divfg-5": { background: "#FFFFFF" },
+                "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "32px !important",
+                },
+                "& .style-divfg-6": { background: "#FFFFFF" },
+                "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "40px !important",
+                },
+                "& .style-divfg-7": { background: "#FFFFFF" },
+                "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "48px !important",
+                },
+                "& .style-divfg-8": { background: "#FFFFFF" },
+                "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "56px !important",
+                },
               }}
               columns={BGTCD_COLUMN}
               // editMode="cell"
@@ -467,6 +490,7 @@ class BgtICFComponent extends Component {
               hideFooterPagination
               hideFooterSelectedRowCount
               onEditCellChange={this.handleEditCellChange}
+              getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
             />
           </Grid>
           <Grid item xs={9}>

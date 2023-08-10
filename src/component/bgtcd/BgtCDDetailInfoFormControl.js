@@ -1,8 +1,8 @@
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
-import { Component } from "react"
+import { Grid, MenuItem } from "@mui/material";
+import { Component } from "react";
 // import { connect } from 'react-redux';
 // import { set_detailInfo } from '../../store/BgtCDStore';
-import { CustomInputLabel, CustomSelect } from "../common/style/CommonStyle";
+import { CustomInputLabel, CustomWideSelect } from "../common/style/CommonStyle";
 
 class BgtCDDetailInfoFormControl extends Component {
   constructor(props) {
@@ -65,12 +65,12 @@ class BgtCDDetailInfoFormControl extends Component {
   render() {
     const { menuItemValues, title, defaultValue } = this.state;
     return (
-      <Grid container sx={{ borderBottom: "1px lightgray solid" , height:'80px'}} >
-        <Grid item md={6} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center',height: "100%", backgroundColor: '#FCFCFC',borderRight: '1px solid #EAEAEA'}} >
+      <Grid container sx={{ borderBottom: "1px lightgray solid"}} >
+        <Grid item md={4} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center',height: "100%", backgroundColor: '#FCFCFC',borderRight: '1px solid #EAEAEA'}} >
           <CustomInputLabel sx={{ display: 'flex', justifyContent: 'flex-end'}}>{title}</CustomInputLabel>
         </Grid>
-        <Grid item md={6} sx={{ marginBottom: "3px" ,display: 'flex', alignItems: 'center'}}>
-          <CustomSelect
+        <Grid item md={8} sx={{ marginBottom: "3px" ,display: 'flex', alignItems: 'center'}}>
+          <CustomWideSelect
           sx={{ml:"16px"}}
             value={defaultValue}
             onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까
@@ -81,7 +81,7 @@ class BgtCDDetailInfoFormControl extends Component {
               <MenuItem key={index} value={menuItemValue} dataindex={index}>
                 {menuItemValue}
               </MenuItem> ))}
-          </CustomSelect>
+          </CustomWideSelect>
         </Grid>
       </Grid>
     );

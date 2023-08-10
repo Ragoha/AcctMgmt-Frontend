@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 
 
 import CompanyService from '../../service/CompanyService';
@@ -60,8 +60,8 @@ class DivMgmtComponent extends Component {
     const userInfo = this.props.userInfo;
     const { coCd, empId, empEmail } = userInfo;
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
-    this.setState({ coCd: coCd });
+    
+    this.setState({ coCd: coCd })
     DivsService.getDivision({
       accessToken: this.props.accessToken,
       coCd: coCd
@@ -115,68 +115,69 @@ class DivMgmtComponent extends Component {
             })
           })
       })
-    // .catch((error) => {
-    //   // 오류 발생 시의 처리
-    //   console.error(error);
-    //   // alert("중복된 회사 또는 모두 입력해주세요");
-    // });
+    .catch((error) => {
+      // 오류 발생 시의 처리
+      console.error(error);
+      // alert("중복된 회사 또는 모두 입력해주세요");
+    });
 
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    //   DivsService.getDivsList()
-    //     .then((response) => {
-    //       const coCdList = response.data.map((item) => item.coCd);
-    //       const divCdList = response.data.map((item) => item.divCd);
-    //       const divNmList = response.data.map((item) => item.divNm);
-    //       const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+      // DivsService.getDivsList({
+      //   accessToken: this.props.accessToken})
+      //   .then((response) => {
+      //     const coCdList = response.data.map((item) => item.coCd);
+      //     const divCdList = response.data.map((item) => item.divCd);
+      //     const divNmList = response.data.map((item) => item.divNm);
+      //     const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-    //       const coCd = response.data[0].coCd;
-    //       const divCd = response.data[0].divCd;
-    //       const divNm = response.data[0].divNm;
-    //       const ceoNm = response.data[0].ceoNm;
-    //       const jongmok = response.data[0].jongmok;
-    //       const businessType = response.data[0].businessType;
-    //       const divNb = response.data[0].divNb;
-    //       const toNb = response.data[0].toNb;
-    //       const divZip = response.data[0].divZip;
-    //       const divAddr = response.data[0].divAddr;
-    //       const divAddr1 = response.data[0].divAddr1;
+      //     const coCd = response.data[0].coCd;
+      //     const divCd = response.data[0].divCd;
+      //     const divNm = response.data[0].divNm;
+      //     const ceoNm = response.data[0].ceoNm;
+      //     const jongmok = response.data[0].jongmok;
+      //     const businessType = response.data[0].businessType;
+      //     const divNb = response.data[0].divNb;
+      //     const toNb = response.data[0].toNb;
+      //     const divZip = response.data[0].divZip;
+      //     const divAddr = response.data[0].divAddr;
+      //     const divAddr1 = response.data[0].divAddr1;
 
-    //       this.setState({
-    //         cardCount: cardCount, // state에 값을 저장
-    //         coCdList: coCdList,
-    //         divCdList: divCdList,
-    //         divNmList: divNmList,
+      //     this.setState({
+      //       cardCount: cardCount, // state에 값을 저장
+      //       coCdList: coCdList,
+      //       divCdList: divCdList,
+      //       divNmList: divNmList,
 
-    //         focused: divCd,
-    //         coCd: coCd,
-    //         divCd: divCd,
-    //         divNm: divNm,
-    //         ceoNm: ceoNm,
-    //         jongmok: jongmok,
-    //         businessType: businessType,
-    //         divNb: divNb,
-    //         toNb: toNb,
-    //         divZip: divZip,
-    //         divAddr: divAddr,
-    //         divAddr1: divAddr1
-    //       })
-    //       CompanyService.getCompany(coCd)
-    //         .then((response) => {
-    //           const coNm = response.data[0].coNm;
+      //       focused: divCd,
+      //       coCd: coCd,
+      //       divCd: divCd,
+      //       divNm: divNm,
+      //       ceoNm: ceoNm,
+      //       jongmok: jongmok,
+      //       businessType: businessType,
+      //       divNb: divNb,
+      //       toNb: toNb,
+      //       divZip: divZip,
+      //       divAddr: divAddr,
+      //       divAddr1: divAddr1
+      //     })
+      //     CompanyService.getCompany(coCd)
+      //       .then((response) => {
+      //         const coNm = response.data[0].coNm;
 
-    //           this.setState({
-    //             coNm: coNm
-    //           })
-    //         })
-    //     })
-    //     .catch((error) => {
-    //       // 오류 발생 시의 처리
-    //       console.error(error);
-    //       // alert("중복된 회사 또는 모두 입력해주세요");
-    //     });
-    // }
+      //         this.setState({
+      //           coNm: coNm
+      //         })
+      //       })
+      //   })
+      //   .catch((error) => {
+      //     // 오류 발생 시의 처리
+      //     console.error(error);
+      //     // alert("중복된 회사 또는 모두 입력해주세요");
+      //   });
+    }
 
-  }
+  
 
 
   handleCompany = (e) => {
@@ -528,7 +529,9 @@ class DivMgmtComponent extends Component {
 
 
   searchClick = (divCd) => {
-    DivsService.getDivision(divCd)
+    DivsService.getDivision({
+      accessToken: this.props.accessToken,
+      divCd:divCd})
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
@@ -767,19 +770,19 @@ class DivMgmtComponent extends Component {
 
 
     const cards = divCdList.map((divCd, index) => (
-      <Card key={divCd} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #7895CB' : '1px solid #000', backgroundColor: this.state.focused === divCd ? '#C5DFF8' : 'white' }}>
+      <Card key={divCd} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === divCd ? '#E5FFFF' : 'white'  }}>
         <CardActionArea onClick={() => this.cardClick(divCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 8 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
+            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
               {divCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "90px" }} >
+            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "180px", bottom: '33px' }} >
               {formattedDate}
             </Typography>
             {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
               {index + 1}
             </Typography> */}
-            <Typography sx={{ fontSize: 10 }} variant='h3' style={{ position: 'relative', bottom: "2px" }}>
+            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: 'relative', bottom: "15px", left: "-9px" }}>
               {divNmList[index]}
             </Typography>
           </CardContent>
@@ -865,7 +868,7 @@ class DivMgmtComponent extends Component {
                 borderBottom: "1px solid",
               }}
             >
-              <CustomInputLabel>총 사업장:</CustomInputLabel>
+              <CustomInputLabel sx={{ml:1}}>총 사업장:</CustomInputLabel>
               <CustomInputLabel>{cardCount}</CustomInputLabel>
             </Grid>
 
@@ -911,428 +914,404 @@ class DivMgmtComponent extends Component {
             </Grid>
           </Grid>
 
-          <Grid
-            container
-            sx={{ ml: 1, height: 670, border: "2px solid #EAEAEA" }}
-          >
-            <Grid container sx={{ height: 40, borderBottom: "2px solid #000" }}>
-              <Grid item xs={9.2}>
-                <CustomInputLabel sx={{ ml: 1, mt: 1, color: "black" }}>
+          <Grid container direction="column" sx={{ ml: 1, height: 670 }}>
+            <Grid item></Grid>
+            <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
+              <Grid item>
+                <CustomInputLabel sx={{ fontSize: 18, mt: 1 }}>
                   기본정보
                 </CustomInputLabel>
               </Grid>
 
-              <Grid item xs={1.4}>
-                <Button variant="outlined" onClick={this.comInfo}>
-                  회사정보불러오기
-                </Button>
-              </Grid>
+              <Grid item sx={{ ml: 0.3 }}>
+                <Grid container>
 
-              <Grid item xs={0.6} sx={{ ml: 0.3 }}>
-                {coCd && divCd ? (
-                  <Button variant="outlined" onClick={this.updateDivs}>
-                    수정
+                  <Button sx={{mr:1}} variant="outlined" onClick={this.comInfo}>
+                    회사정보불러오기
                   </Button>
-                ) : (
-                  <Button variant="outlined" onClick={this.insertDivs}>
-                    저장
+
+                  {coCd && divCd ? (
+                    <Button sx={{mr:1}} variant="outlined" onClick={this.updateDivs}>
+                      수정
+                    </Button>
+                  ) : (
+                    <Button sx={{mr:1}} variant="outlined" onClick={this.insertDivs}>
+                      저장
+                    </Button>
+                  )}
+                  <Button variant="outlined" onClick={this.deleteDivs}>
+                    삭제
                   </Button>
-                )}
+                </Grid>
               </Grid>
-
-              <Grid item xs={0.6} sx={{ ml: 0.5 }}>
-                <Button variant="outlined" onClick={this.deleteDivs}>
-                  삭제
-                </Button>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  mt: 1,
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel>회사명</CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                size="small"
-                sx={{
-                  mt: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                  borderRight: "1px solid #EAEAEA",
-                }}
-              >
-                {divCd != 0 ? (
-                  <CustomTextField
-                    xs={4}
-                    sx={{ ml: 2 }}
-                    value={coCd + " . " + coNm}
-                    InputProps={{ readOnly: true }}
-                  ></CustomTextField> //disabled={true}
-                ) : (
-                  <FormControl
-                    sx={{
-                      ml: 2,
-                      width: 255,
-                      "& .MuiInputBase-root": {
-                        height: 40,
-                      },
-                    }}
-                  >
-                    <Select
-                      name="coNm"
-                      value={coNm}
-                      onChange={this.handleCompany}
-                    >
-                      {coNmList.map((coNm) => (
-                        <MenuItem key={coNm} value={coNm}>
-                          {coNm}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  mt: 1,
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  사업장코드
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  mt: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                  borderRight: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  sx={{ ml: 2, backgroundColor: "#FFA7A7" }}
-                  name="divCd"
-                  onChange={this.handleCompany}
-                  value={divCd || ""}
-                  InputProps={{ readOnly: true }}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  사업장명
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  sx={{ ml: 2 }}
-                  name="divNm"
-                  onChange={this.handleCompany}
-                  value={divNm || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  종목
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                  borderRight: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  sx={{ ml: 2 }}
-                  name="jongmok"
-                  onChange={this.handleCompany}
-                  value={jongmok || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  업태
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  sx={{ ml: 2 }}
-                  name="businessType"
-                  onChange={this.handleCompany}
-                  value={businessType || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  대표자명
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                  borderRight: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  sx={{ ml: 2 }}
-                  name="ceoNm"
-                  onChange={this.handleCompany}
-                  value={ceoNm || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  사업자번호
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  name="divNb"
-                  sx={{ ml: 2 }}
-                  onChange={this.handleCompany}
-                  value={divNb || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  borderBottom: "1px solid lightgray",
-                  borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#EAEAEA",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  세무서번호
-                </CustomInputLabel>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
-                }}
-              >
-                <CustomTextField
-                  name="toNb"
-                  sx={{ ml: 2 }}
-                  onChange={this.handleCompany}
-                  value={toNb || ""}
-                ></CustomTextField>
-              </Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  backgroundColor: "#EAEAEA",
-                  borderBottom: "1px solid lightgray",
-                }}
-              >
-                <CustomInputLabel sx={{ color: "black" }}>
-                  사업장주소
-                </CustomInputLabel>
-              </Grid>
-              <Grid item xs={4} sx={{ display: "flex", alignItems: "center" }}>
-                <TextField
-                  size="small"
-                  id="divZip"
-                  name="divZip"
-                  onChange={this.handleCompany}
-                  value={divZip || ""}
-                  InputProps={{ readOnly: true }}
-                  sx={{ ml: 2, width: "150px" }}
-                ></TextField>
-                <Button
-                  sx={{ ml: 1 }}
-                  variant="outlined"
-                  onClick={this.addrButton}
-                >
-                  우편번호
-                </Button>
-              </Grid>
-
-              <Grid item xs={6}></Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  borderBottom: "1px solid lightgray",
-                  backgroundColor: "#EAEAEA",
-                }}
-              ></Grid>
-              <Grid item xs={6}>
-                <TextField
-                  size="small"
-                  sx={{ ml: 2, width: "570px" }}
-                  id="divAddr"
-                  name="divAddr"
-                  onChange={this.handleCompany}
-                  value={divAddr || ""}
-                  InputProps={{ readOnly: true }}
-                ></TextField>
-              </Grid>
-              <Grid item xs={4}></Grid>
-
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  height: 50,
-                  borderBottom: "1px solid lightgray",
-                  backgroundColor: "#EAEAEA",
-                }}
-              ></Grid>
-              <Grid item xs={6} sx={{ borderBottom: "1px solid #EAEAEA" }}>
-                <TextField
-                  size="small"
-                  sx={{ ml: 2, width: "570px" }}
-                  name="divAddr1"
-                  onChange={this.handleCompany}
-                  value={divAddr1 || ""}
-                ></TextField>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                sx={{ borderBottom: "1px solid #EAEAEA" }}
-              ></Grid>
             </Grid>
+
+            <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 50,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  borderBottom: "1px solid lightgray",
+                  borderRight: "1px solid #EAEAEA",
+                  backgroundColor: "#FCFCFC",
+                }}
+              >
+              <CustomInputLabel>회사명</CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              size="small"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: "1px solid #EAEAEA",
+              }}
+            >
+              {divCd != 0 ? (
+                <CustomWideTextField
+                  xs={4}
+                  sx={{ ml: 2 }}
+                  value={coCd + " . " + coNm}
+                  InputProps={{ readOnly: true }}
+                ></CustomWideTextField> //disabled={true}
+              ) : (
+                <FormControl
+                  sx={{
+                    ml: 2,
+                    width: 255,
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                    },
+                  }}
+                >
+                  <Select
+                    name="coNm"
+                    value={coNm}
+                    onChange={this.handleCompany}
+                  >
+                    {coNmList.map((coNm) => (
+                      <MenuItem key={coNm} value={coNm}>
+                        {coNm}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                height: 50,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                사업장코드
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: "1px solid #EAEAEA",
+              }}
+            >
+              <CustomWideTextField
+                sx={{ ml: 2, backgroundColor: "#FFEAEA" }}
+                name="divCd"
+                onChange={this.handleCompany}
+                value={divCd || ""}
+                InputProps={{ readOnly: true }}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                사업장명
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: '1px solid #EAEAEA'
+              }}
+            >
+              <CustomWideTextField
+                sx={{ ml: 2 }}
+                name="divNm"
+                onChange={this.handleCompany}
+                value={divNm || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                height: 50,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                종목
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: "1px solid #EAEAEA",
+              }}
+            >
+              <CustomWideTextField
+                sx={{ ml: 2 }}
+                name="jongmok"
+                onChange={this.handleCompany}
+                value={jongmok || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                업태
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: '1px solid #EAEAEA'
+              }}
+            >
+              <CustomWideTextField
+                sx={{ ml: 2 }}
+                name="businessType"
+                onChange={this.handleCompany}
+                value={businessType || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                height: 50,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                대표자명
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: "1px solid #EAEAEA",
+              }}
+            >
+              <CustomWideTextField
+                sx={{ ml: 2 }}
+                name="ceoNm"
+                onChange={this.handleCompany}
+                value={ceoNm || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                height: 50,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                사업자번호
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+                borderRight: '1px solid #EAEAEA'
+              }}
+            >
+              <CustomWideTextField
+                name="divNb"
+                sx={{ ml: 2 }}
+                onChange={this.handleCompany}
+                value={divNb || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+              item
+              xs={2}
+              sx={{
+                height: 50,
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                borderBottom: "1px solid lightgray",
+                borderRight: "1px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+              }}
+            >
+              <CustomInputLabel sx={{ color: "black" }}>
+                세무서번호
+              </CustomInputLabel>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid #EAEAEA",
+              }}
+            >
+              <CustomWideTextField
+                name="toNb"
+                sx={{ ml: 2 }}
+                onChange={this.handleCompany}
+                value={toNb || ""}
+              ></CustomWideTextField>
+            </Grid>
+
+            <Grid
+                item
+                xs={2}
+                sx={{
+                  height: 150,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-start",
+                  backgroundColor: "#FCFCFC",
+                  borderBottom: "1px solid lightgray",
+                  borderRight: '1px solid #EAEAEA'
+                }}
+              >
+                <CustomInputLabel sx={{ mt: 1 }}>사업장주소</CustomInputLabel>
+              </Grid>
+              <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
+                <Grid
+                  container
+                  direction="column"
+                  spacing={1}
+                  sx={{ width: "calc(100% + -24px)" }}
+                >
+                  <Grid item>
+                    <Grid container direction="row">
+                      <TextField
+                        size="small"
+                        id="divZip"
+                        name="divZip"
+                        onChange={this.handleCompany}
+                        value={divZip || ""}
+                        InputProps={{ readOnly: true }}
+                        sx={{ ml: 2, width: "150px" }}
+                      ></TextField>
+                      <Button
+                        sx={{ ml: 1 }}
+                        variant="outlined"
+                        onClick={this.addrButton}
+                      >
+                        우편번호
+                      </Button>
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <CustomWideTextField
+                      id="divAddr"
+                      name="divAddr"
+                      onChange={this.handleCompany}
+                      value={divAddr || ""}
+                      InputProps={{ readOnly: true }}
+                    />
+                  </Grid>
+                  <Grid item >
+                    <CustomWideTextField
+                      name="divAddr1"
+                      onChange={this.handleCompany}
+                      value={divAddr1 || ""}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
           </Grid>
         </Grid>
+        </Grid>
+
 
         <AddressComponent
           setDivZipAddr={this.setDivZipAddr}

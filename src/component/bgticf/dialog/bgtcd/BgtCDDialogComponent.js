@@ -19,8 +19,8 @@ import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../service/BgtICFService";
 import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer } from "../../../common/style/CommonDialogStyle";
-import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../common/style/CommonStyle";
+import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
 const columns = [
   {
@@ -186,12 +186,9 @@ class BgtCDDialogComponent extends Component {
   render() {
     const {
       open,
-      bgtGrCd,
       columns,
       rangeState,
-      bgtCDMarkTextField,
       bgtGrTextField,
-      keywordTextField,
       rangeTextField,
     } = this.state;
 
@@ -199,7 +196,7 @@ class BgtCDDialogComponent extends Component {
       <>
         <Dialog
           open={open}
-          PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840 } }}
+          PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840, minHeight: 840 } }}
         >
           <CustomDialogTitle>
             예산과목검색
