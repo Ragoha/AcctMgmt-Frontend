@@ -1,18 +1,15 @@
 import Box from "@mui/material/Box";
 import React, { Component } from "react";
 
-import { DataGrid } from "@mui/x-data-grid";
-import {
-  randomId,
-} from "@mui/x-data-grid-generator";
-import {
-  GridRowEditStopReasons,
-  GridRowModes,
-} from "@mui/x-data-grid-pro";
+import { DataGrid, GridRowEditStopReasons } from "@mui/x-data-grid";
+import { randomId } from "@mui/x-data-grid-generator";
 import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import PjtDialogComponent from "./dialog/PjtDialogComponent";
+import { GridRowModes } from "@mui/x-data-grid";
+import { Button } from "@mui/base";
+import SearchIcon from "@mui/icons-material/Search";
 
 class DataGridComponent extends Component {
   constructor(props) {
@@ -20,9 +17,12 @@ class DataGridComponent extends Component {
     this.state = {
       bgtCd: "",
       mgtCd: "",
+      gisu: "",
       rows: [],
       rowModesModel: {},
       selectedRowId: "",
+      pjtCd: "",
+      pjtNm: "",
     };
 
     this.pjtRef = createRef();
@@ -42,12 +42,12 @@ class DataGridComponent extends Component {
       event.defaultMuiPrevented = true;
     }
 
-    this.setState((prevState) => ({
-      rowModesModel: {
-        ...prevState.rowModesModel,
-        [params.id]: { mode: GridRowModes.View },
-      },
-    }));
+    // this.setState((prevState) => ({
+    //   rowModesModel: {
+    //     ...prevState.rowModesModel,
+    //     [params.id]: { mode: GridRowModes.View },
+    //   },
+    // }));
   };
 
   handleEditClick = (id) => () => {
@@ -104,11 +104,12 @@ class DataGridComponent extends Component {
           id: randomId(),
           bgtCd: this.state.bgtCd,
           mgtCd: this.state.mgtCd,
+          gisu: this.state.gisu,
           bottomNm: "",
-          carrAm: 0,
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm: "",
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -118,7 +119,7 @@ class DataGridComponent extends Component {
         this.setState({ rows: rowsWithId });
       });
     });
-  }
+  };
 
   getBgtICFList = async (data) => {
     console.log(data);
@@ -127,7 +128,7 @@ class DataGridComponent extends Component {
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
-    }).then((response) => {
+    }).then(async (response) => {
       console.log(this.state.rows);
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -138,18 +139,19 @@ class DataGridComponent extends Component {
         id: randomId(),
         bgtCd: this.state.bgtCd,
         divCd: this.state.divCd,
+        gisu: this.state.gisu,
         bottomNm: "",
-        carrAm: 0,
-        carrAm1: 0,
-        carrAm2: 0,
-        carrAm3: 0,
+        carrAm: "",
+        carrAm1: "",
+        carrAm2: "",
+        carrAm3: "",
         remDc: "",
         bgtTy: "",
         modifyId: "",
         isNew: true,
       });
 
-      this.setState({ rows: rowsWithId });
+      await this.setState({ rows: rowsWithId });
     });
   };
 
@@ -175,11 +177,12 @@ class DataGridComponent extends Component {
           id: randomId(),
           bgtCd: this.state.bgtCd,
           mgtCd: this.state.mgtCd,
+          gisu: this.state.gisu,
           bottomNm: "",
-          carrAm: 0,
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm: "",
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -189,7 +192,7 @@ class DataGridComponent extends Component {
         this.setState({ rows: rowsWithId });
       });
     });
-  }
+  };
 
   updateBgtICF = (row) => {
     BgtICFService.updateBgtICF({
@@ -213,11 +216,12 @@ class DataGridComponent extends Component {
           id: randomId(),
           bgtCd: this.state.bgtCd,
           mgtCd: this.state.mgtCd,
+          gisu: this.state.gisu,
           bottomNm: "",
-          carrAm: 0,
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm: "",
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -230,10 +234,6 @@ class DataGridComponent extends Component {
   };
 
   processRowUpdate = (newRow) => {
-    console.log(newRow.isNew);
-    console.log(newRow.isNew);
-    console.log(newRow.isNew);
-
     if (newRow.isNew) {
       this.insertBgtICF(newRow);
     } else {
@@ -262,8 +262,6 @@ class DataGridComponent extends Component {
   };
 
   handleRowModesModelChange = (newRowModesModel) => {
-    console.log("asdf11");
-    console.log(newRowModesModel);
     this.setState({ rowModesModel: newRowModesModel });
   };
 
@@ -274,7 +272,7 @@ class DataGridComponent extends Component {
 
   test = () => {
     console.log("테스트입니다.");
-  }
+  };
 
   componentDidMount() {}
 
@@ -298,30 +296,67 @@ class DataGridComponent extends Component {
         headerName: "프로젝트",
         headerAlign: "center",
         editable: true,
-        // renderCell: (params) =>{
-        //   console.log(params);
-        //   return (
-        //     <div
-        //       className="d-flex justify-content-between align-items-center"
-        //       style={{ cursor: "pointer" }}
-        //     >
-        //       {params.row.name}
-        //       <MatEdit index={params.row.id} />
-        //     </div>
-        //   );
-        // },
-      },
-      {
-        field: "bottomNm",
-        headerName: "하위사업",
-        headerAlign: "center",
-        editable: true,
+        renderCell: (params) => {
+          console.log(params);
+          return (
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ cursor: "pointer" }}
+            >
+              {params.row.mgtCd}
+              {/* <SearchIcon
+                onClick={async () => {
+                  this.pjtRef.current.handleUp();
+                  console.log("asdf");
+                  console.log(params.row.id);
+                  await this.setState((prevState) => ({
+                    rowModesModel: {
+                      ...prevState.rowModesModel,
+                      [params.row.id]: { mode: GridRowModes.Edit },
+                    },
+                  }));
+                }}
+              /> */}
+            </div>
+          );
+        },
+        renderEditCell: (params) => {
+          console.log(params);
+          return (
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ cursor: "pointer" }}
+            >
+              {params.row.mgtCd}
+              <SearchIcon
+                className="mgt-dialog-icon"
+                sx={{
+                  position: "absolute",
+                right:0}}
+                onClick={() => {
+                  this.pjtRef.current.handleUp();
+                  console.log("asdf");
+                  console.log(params.row.id);
+                  this.setState((prevState) => ({
+                    rowModesModel: {
+                      ...prevState.rowModesModel,
+                      [params.row.id]: { mode: GridRowModes.Edit },
+                    },
+                  }));
+                }}
+              />
+            </div>
+          );
+        },
+        className:"mgtCd"
+        // editable: false,
       },
       {
         field: "carrAm",
         headerName: "이월금액",
         headerAlign: "center",
-        editable: true,
+        // editable: true,
+        editable: false,
         ...krAmount,
       },
       {
@@ -383,11 +418,10 @@ class DataGridComponent extends Component {
           rows={rows}
           columns={columns}
           editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={this.handleRowModesModelChange}
-          onRowEditStop={this.handleRowEditStop}
+          // onRowModesModelChange={this.handleRowModesModelChange}
+          // onRowEditStop={this.handleRowEditStop}
           showCellVerticalBorder
-          processRowUpdate={this.processRowUpdate}
+          // processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           onCellClick={(e) => {
             if (e.field === "divCd" && e.cellMode === "edit") {
@@ -401,8 +435,29 @@ class DataGridComponent extends Component {
             borderTop: "3px solid black",
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",
-            borderBottom: "2px solid #EAEAEA", }}
-          hideFooter
+            borderBottom: "2px solid #EAEAEA",
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-cell--editing": {
+              position: "relative",
+            },
+          }}
+          // hideFooter
+          initialState={{
+            aggregation: {
+              model: {
+                carrAm: "SUM",
+                사고이월금액: "SUM",
+                명시이월금액: "SUM",
+                예비이월금액: "SUM",
+              },
+            },
+          }}
+          slots={{
+            footer: CustomFooterStatusComponent,
+          }}
+          slotProps={rows}
         />
         <PjtDialogComponent ref={this.pjtRef} />
       </Box>
@@ -415,7 +470,35 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
+class CustomFooterStatusComponent extends Component {
+  state = {
+    carrAmTotal: 0,
+  };
 
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (DataGridComponent);
+  componentDidUpdate(prevProps) {
+    console.log(this.props.slotProps);
+    if (this.props.slotProps !== prevProps.slotProps) {
+      
+      const { slotProps } = this.props;
+      console.log(slotProps);
+      const carrAmTotal = slotProps.reduce(
+        (total, current) => total + (current.carrAm || 0),
+        0
+      );
+      this.setState({ carrAmTotal: carrAmTotal });
+    }
+  }
+
+  render() {
+    const { carrAmTotal } = this.state;
+    return (
+      <Box sx={{ p: 1, display: "flex" }}>Total carrAm: {carrAmTotal}</Box>
+    );
+  }
+}
 
 
+
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  DataGridComponent
+);

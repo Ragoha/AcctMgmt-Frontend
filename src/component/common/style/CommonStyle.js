@@ -36,6 +36,9 @@ export const CustomInputLabel = styled(InputLabel)({
 
 export const CustomDataGrid = styled(DataGrid)({
   borderTop: "3px solid black",
+  "& .MuiDataGrid-columnHeaderTitle": {
+    fontWeight: "bold",
+  },
 });
 
 export const CustomTextField = styled(TextField)({

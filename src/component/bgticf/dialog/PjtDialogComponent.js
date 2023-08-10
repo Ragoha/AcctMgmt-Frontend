@@ -1,5 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Grid, IconButton } from "@mui/material";
+import { Autocomplete, Button, Checkbox, FormControlLabel, Grid, IconButton, TextField } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
@@ -15,6 +15,7 @@ import {
   CustomShortFormGridContainer,
 } from "../../common/style/CommonDialogStyle";
 import {
+  CustomAutoComplete,
   CustomDataGrid,
   CustomInputLabel,
   CustomSearchButton,
@@ -26,40 +27,42 @@ class PjtDialogComponent extends Component {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { divCd: "", divNm: "" },
-      divRows: [],
+      selectedRow: { pjtCd: "", pjtNm: "" },
+      pjtRows: [],
       keyword: "",
       data: {
         columns: [
           {
-            field: "divCd",
-            headerName: "사업장코드",
+            field: "pjtCd",
+            headerName: "프로젝트코드",
             width: 180,
             headerAlign: "center",
           },
           {
-            field: "divNm",
-            headerName: "사업장명",
+            field: "pjtNm",
+            headerName: "프로젝트명",
             width: 286,
             headerAlign: "center",
           },
         ],
       },
+      use: "",
+      useText: "전체",
     };
   }
 
-  initDivDialog = () => {
+  initPjtDialog = () => {
     this.setState({ keyword: "", divRows: [] });
-    BgtICFService.findDivByCoCdAndKeyword({
+    BgtICFService.findPjtByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
     }).then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
+      const pjtRows = response.map((row) => ({
+        id: row.pjtCd,
+        pjtCd: row.pjtCd,
+        pjtNm: row.pjtNm,
       }));
-      await this.setState({ divRows: divRows });
+      await this.setState({ pjtRows: pjtRows });
     });
 
     this.handleUp();
@@ -88,7 +91,7 @@ class PjtDialogComponent extends Component {
   handleClickConfirm = async () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    await this.props.handleSetDivTextField(this.state.selectedRow);
+    await this.props.handleSetPjtTextField(this.state.selectedRow);
   };
 
   handleInputChange = async (e) => {
@@ -98,28 +101,34 @@ class PjtDialogComponent extends Component {
   };
 
   handleClickSearchIcon = () => {
-    BgtICFService.findDivByCoCdAndKeyword({
+    BgtICFService.findPjtByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
     }).then(async (response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
+      console.log(response);
+      const pjtRows = response.map((row) => ({
+        id: row.pjtCd,
+        pjtCd: row.pjtCd,
+        pjtNm: row.pjtNm,
       }));
-      await this.setState({ divRows: divRows });
+      await this.setState({ pjtRows: pjtRows });
       console.log(this.state);
     });
+  };
+
+  handleChangeUseText = (event, newValue) => {
+    console.log(newValue);
+    this.setState({ use: newValue.value, useText: newValue.label });
   };
 
   render() {
     const { open, data } = this.state;
 
     return (
-      <CustomShortDialog open={open}>
+      <CustomShortDialog open={false}>
         <CustomDialogTitle>
-          사업장검색
+          프로젝트 검색
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -150,8 +159,34 @@ class PjtDialogComponent extends Component {
                       console.log(`Pressed keyCode ${e.key}`);
                     }
                   }}
-                ></CustomTextField>
-                <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
+                  sx={{mr:1}}
+                />
+                <Autocomplete
+                  disableClearable
+                  disablePortal
+                  options={[
+                    { label: "전체", value: "전체" },
+                    { label: "완료", value: "완료" },
+                    { label: "진행중", value: "진행중" },
+                    { label: "미사용", value: "미사용" },
+                  ]}
+                  // getOptionLabel={(option) => option.label}
+                  value={this.state.useText}
+                  onChange={this.handleChangeUseText}
+                  renderInput={(params) => <TextField {...params} />}
+                  sx={{
+                    width: 105,
+                    "& .MuiInputBase-root": {
+                      height: 40,
+                      paddingLeft: 1,
+                      paddingTop: 0,
+                      paddingRight: 0,
+                      paddingBottom: 0,
+                    },
+                    marginRight: 2,
+                  }}
+                />
+                <CustomSearchButton variant="outlined" sx={{ right: "-10px" }}>
                   <SearchIcon onClick={this.handleClickSearchIcon} />
                 </CustomSearchButton>
               </Grid>
@@ -159,7 +194,7 @@ class PjtDialogComponent extends Component {
           </CustomShortFormGridContainer>
           <CustomShortDataGridContainer container>
             <CustomDataGrid
-              rows={this.state.divRows}
+              rows={this.state.pjtRows}
               columns={data.columns}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기

@@ -187,7 +187,7 @@ class DataGridComponent extends Component {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={this.handleRowModesModelChange}
-          onRowEditStop={this.handleRowEditStopop}
+          onRowEditStop={this.handleRowEditStop}
           showCellVerticalBorder
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}

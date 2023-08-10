@@ -60,8 +60,8 @@ class DivMgmtComponent extends Component {
     const userInfo = this.props.userInfo;
     const { coCd, empId, empEmail } = userInfo;
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
-    this.setState({ coCd: coCd });
+    
+    this.setState({ coCd: coCd })
     DivsService.getDivision({
       accessToken: this.props.accessToken,
       coCd: coCd
@@ -115,68 +115,69 @@ class DivMgmtComponent extends Component {
             })
           })
       })
-    // .catch((error) => {
-    //   // 오류 발생 시의 처리
-    //   console.error(error);
-    //   // alert("중복된 회사 또는 모두 입력해주세요");
-    // });
+    .catch((error) => {
+      // 오류 발생 시의 처리
+      console.error(error);
+      // alert("중복된 회사 또는 모두 입력해주세요");
+    });
 
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    //   DivsService.getDivsList()
-    //     .then((response) => {
-    //       const coCdList = response.data.map((item) => item.coCd);
-    //       const divCdList = response.data.map((item) => item.divCd);
-    //       const divNmList = response.data.map((item) => item.divNm);
-    //       const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+      // DivsService.getDivsList({
+      //   accessToken: this.props.accessToken})
+      //   .then((response) => {
+      //     const coCdList = response.data.map((item) => item.coCd);
+      //     const divCdList = response.data.map((item) => item.divCd);
+      //     const divNmList = response.data.map((item) => item.divNm);
+      //     const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-    //       const coCd = response.data[0].coCd;
-    //       const divCd = response.data[0].divCd;
-    //       const divNm = response.data[0].divNm;
-    //       const ceoNm = response.data[0].ceoNm;
-    //       const jongmok = response.data[0].jongmok;
-    //       const businessType = response.data[0].businessType;
-    //       const divNb = response.data[0].divNb;
-    //       const toNb = response.data[0].toNb;
-    //       const divZip = response.data[0].divZip;
-    //       const divAddr = response.data[0].divAddr;
-    //       const divAddr1 = response.data[0].divAddr1;
+      //     const coCd = response.data[0].coCd;
+      //     const divCd = response.data[0].divCd;
+      //     const divNm = response.data[0].divNm;
+      //     const ceoNm = response.data[0].ceoNm;
+      //     const jongmok = response.data[0].jongmok;
+      //     const businessType = response.data[0].businessType;
+      //     const divNb = response.data[0].divNb;
+      //     const toNb = response.data[0].toNb;
+      //     const divZip = response.data[0].divZip;
+      //     const divAddr = response.data[0].divAddr;
+      //     const divAddr1 = response.data[0].divAddr1;
 
-    //       this.setState({
-    //         cardCount: cardCount, // state에 값을 저장
-    //         coCdList: coCdList,
-    //         divCdList: divCdList,
-    //         divNmList: divNmList,
+      //     this.setState({
+      //       cardCount: cardCount, // state에 값을 저장
+      //       coCdList: coCdList,
+      //       divCdList: divCdList,
+      //       divNmList: divNmList,
 
-    //         focused: divCd,
-    //         coCd: coCd,
-    //         divCd: divCd,
-    //         divNm: divNm,
-    //         ceoNm: ceoNm,
-    //         jongmok: jongmok,
-    //         businessType: businessType,
-    //         divNb: divNb,
-    //         toNb: toNb,
-    //         divZip: divZip,
-    //         divAddr: divAddr,
-    //         divAddr1: divAddr1
-    //       })
-    //       CompanyService.getCompany(coCd)
-    //         .then((response) => {
-    //           const coNm = response.data[0].coNm;
+      //       focused: divCd,
+      //       coCd: coCd,
+      //       divCd: divCd,
+      //       divNm: divNm,
+      //       ceoNm: ceoNm,
+      //       jongmok: jongmok,
+      //       businessType: businessType,
+      //       divNb: divNb,
+      //       toNb: toNb,
+      //       divZip: divZip,
+      //       divAddr: divAddr,
+      //       divAddr1: divAddr1
+      //     })
+      //     CompanyService.getCompany(coCd)
+      //       .then((response) => {
+      //         const coNm = response.data[0].coNm;
 
-    //           this.setState({
-    //             coNm: coNm
-    //           })
-    //         })
-    //     })
-    //     .catch((error) => {
-    //       // 오류 발생 시의 처리
-    //       console.error(error);
-    //       // alert("중복된 회사 또는 모두 입력해주세요");
-    //     });
-    // }
+      //         this.setState({
+      //           coNm: coNm
+      //         })
+      //       })
+      //   })
+      //   .catch((error) => {
+      //     // 오류 발생 시의 처리
+      //     console.error(error);
+      //     // alert("중복된 회사 또는 모두 입력해주세요");
+      //   });
+    }
 
-  }
+  
 
 
   handleCompany = (e) => {
@@ -528,7 +529,9 @@ class DivMgmtComponent extends Component {
 
 
   searchClick = (divCd) => {
-    DivsService.getDivision(divCd)
+    DivsService.getDivision({
+      accessToken: this.props.accessToken,
+      divCd:divCd})
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
