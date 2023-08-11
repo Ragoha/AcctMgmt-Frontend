@@ -72,5 +72,10 @@ class PjtService {
       })
       .then((response) => response.data);
   }
+
+  selPjtBy(coCd, data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + coCd, data,)
+  }
 }
 export default new PjtService();
