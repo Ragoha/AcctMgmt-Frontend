@@ -25,16 +25,6 @@ class PjtService {
       })
   }
 
-  // getCompany(pjtCd) {
-  //     return axios
-  //         .get(ACCTMGMT_API_BASE_URL + "/pjtDate", {
-  //             params: {
-  //                 pjtCd: pjtCd
-  //             }
-  //         }
-  //         )
-  // };
-
   getSelPjtList(pjtCd, coCd) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd + "/" + coCd, {
@@ -73,9 +63,9 @@ class PjtService {
       .then((response) => response.data);
   }
 
-  selPjtBy(coCd, data) {
+  selPjtBy(selData) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + coCd, data,)
+      .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", selData)
   }
 }
 export default new PjtService();

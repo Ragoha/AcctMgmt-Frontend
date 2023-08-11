@@ -389,7 +389,9 @@ class PjtComponent extends Component {
   //헬퍼코드
   pjthelpClick = () => {
     this.pjtDialogRef.current.handleUp();
+    this.pjtDialogRef.current.setPjtKeyword(this.state.PjtdialTextField);
   };
+
   pgrhelpClick = () => {
     this.pgrDialogRef.current.handleUp();
   };
@@ -400,14 +402,23 @@ class PjtComponent extends Component {
   }
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
   handleSetPjtTextField = async (data) => {
+    console.log("넘어오는 데이터들? " , data)
     await this.setState({
       PjtdialTextField: data.pjtCd + ". " + data.pjtNm,
       pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
     });
-
+    console.log('값이 들어잇긴 해 ?', data);
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    PjtService.selPjtList(coCd, data) //카드리스트 전체조회 함수
+    const {
+      pjtCd,
+    } = this.state;
+    const selData = {
+      pjtCd: pjtCd,
+      coCd: coCd,
+      pjtNm: data.pjtNm,
+    }
+    PjtService.selPjtBy(selData) //카드리스트 전체조회 함수
       .then((response) => {
         console.log("abc", response.data);
         const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
@@ -462,31 +473,6 @@ class PjtComponent extends Component {
     });
   };
   // 검색한 내용들 나오는 곳
-  searchClick = (pjtCd) => {
-    // PjtService.getCompany(pjtCd)
-    // .then((response) => {
-    //   const pjtCdList = response.data.map((item) => item.pjtCd);
-    //   const pjtNmList = response.data.map((item) => item.pjtNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
-    //   const cardCount = response.data.length;
-
-    //   const pjtCd = response.data[0].pjtCd;
-
-    //   this.setState({
-    //     cardCount: cardCount,//??????
-    //     pjtCdList: pjtCdList,
-    //     pjtNmList: pjtNmList,
-
-    //     focused: pjtCd,
-    //     pjtCd: pjtCd,
-    //   })
-    // })
-    // .catch((error) => {
-    //   // 오류 발생 시의 처리
-    //   console.error(error);
-    //   // alert("중복된 회사 또는 모두 입력해주세요");
-    // })
-  }
-
 
   //db로 삭제 요청
   handleCardSelect = (index) => {
@@ -523,6 +509,22 @@ class PjtComponent extends Component {
         selectAllChecked: true,
         selectedCards: Array.from({ length: pjtCdList.length }, (_, index) => index),
       });
+    }
+  };
+  //디폴트 값 말고 직접 입력해서 검색할 때 필요한 친구
+  handleTextFieldChange = (e) => {
+    this.setState({ PjtdialTextField: e.target.value });
+  };
+  //코드피커 엔터처리
+  // handleEnterKey = (event) => {
+  //   if (event.key === "Enter") {
+  //     this.pjthelpClick();
+  //   }
+  // };
+
+  handleEnterKey = (event) => {
+    if (event.key === 'Enter') {
+      this.pjthelpClick();
     }
   };
 
@@ -609,11 +611,14 @@ class PjtComponent extends Component {
               <CustomTextField
                 name="PjtTextField"
                 value={this.state.PjtdialTextField}
-                placeholder="프로젝트코드 "
+                onChange={this.handleTextFieldChange} // 입력 필드 값이 변경될 때 호출되는 핸들러 함수
+                onKeyDown={this.handleEnterKey} // 엔터 키 입력 처리
+                placeholder="프로젝트코드"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <HelpCenterOutlinedIcon onClick={this.pjthelpClick} /></InputAdornment>
+                      <HelpCenterOutlinedIcon onClick={this.pjthelpClick} />
+                    </InputAdornment>
                   ),
                 }}
               />
