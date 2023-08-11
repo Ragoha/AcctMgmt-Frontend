@@ -1,6 +1,6 @@
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid } from "@mui/material";
+import { Autocomplete, Button, Grid, InputAdornment, TextField } from "@mui/material";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import BgtCDService from "../../service/BgtCDService";
@@ -23,10 +23,23 @@ class BgtCD extends Component {
     this.BgtCDGroupReg = React.createRef();
     this.BgtCDDropDownBox = React.createRef();
     this.state = {
-      kimChiBox: this.props.kimChiBox,
       open: false,
       rows: [],
-      focus: null,
+      //focus: null,
+      top100Films: [
+        { title: 'The Shawshank Redemption', year: 1994 },
+        { title: 'The Godfather', year: 1972 },
+        { title: 'The Godfather: Part II', year: 1974 },
+        { title: 'The Dark Knight', year: 2008 },
+        { title: '12 Angry Men', year: 1957 },
+        { title: "Schindler's List", year: 1993 },
+        { title: 'Pulp Fiction', year: 1994 },
+        {
+          title: 'The Lord of the Rings: The Return of the King',
+          year: 2003,
+        },
+        { title: 'The Good, the Bad and the Ugly', year: 1966 },],
+
 
     }
   }
@@ -42,14 +55,14 @@ class BgtCD extends Component {
 
   /*데이터그리드 부분 start*/
   getDataGridRows() { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-console.log('데이터체크')
-    const {coCd} = this.props.userInfo;
-    const {accessToken } = this.props;
-// console.log('토큰씨 :' +  accessToken + " coCd: " +coCd)
-    BgtCDService.getGridData(coCd ,accessToken)
+    console.log('데이터체크')
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    // console.log('토큰씨 :' +  accessToken + " coCd: " +coCd)
+    BgtCDService.getGridData(coCd, accessToken)
       .then(rows => {
-        console.log('통신성공')
-        console.dir(rows) //데이터 받았음 .
+        // console.log('통신성공')
+        // console.dir(rows) //데이터 받았음 .
         this.setState({ rows });
       }).catch(error => {
         console.error("Error fetching data:", error);
@@ -61,55 +74,58 @@ console.log('데이터체크')
   //[230808] 
   handleRowAdd = () => {
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-    const {coCd} = this.props.userInfo;
-    const {accessToken } = this.props;
-    const data = {bgtCd:bgtCd , coCd :coCd}
-    BgtCDService.getAddRowData(data,accessToken)
-    .then(data=>{
-      console.log('handleRowAdd 리턴하고 보자 BGTCD야 여긴')
-      console.dir(data);
-      console.log(data.dataPath);
-      console.log(data.bgtCd);
-      console.log('여기까진 나와야 돼 ')
-      const dataPath =data.dataPath;
-      const bgtCd = data.bgtCd;
-      const newRows = [
-        ...this.state.rows,
-        { dataPath: dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true },
-      ];
-      this.setState({ rows: newRows });
-      this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
-    })
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    const data = { bgtCd: bgtCd, coCd: coCd }
+    BgtCDService.getAddRowData(data, accessToken)
+      .then(data => {
+        // console.log('handleRowAdd 리턴하고 보자 BGTCD야 여긴')
+        // console.dir(data);
+        // console.log(data.dataPath);
+        // console.log(data.bgtCd);
+        // console.log('여기까진 나와야 돼 ')f
+        const dataPath = data.dataPath;
+        const bgtCd = data.bgtCd;
+        const newRows = [
+          ...this.state.rows,
+          { dataPath: dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true },
+        ];
+        this.setState({ rows: newRows });
+        this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
+      })
   };
-  //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
-  insertAddRow=(data)=>{
-    console.log('BgtCd의 insertAddRow입니다.')
-    const {coCd} = this.props.userInfo;
-    const {accessToken } = this.props;
-    data.coCd=coCd;
-    console.log('한번더!')
-    console.log(data)
-    const detailInfo = this.BgtCDDetailInfo.current.selectData();
-    console.log('두번더!')
-    console.log(detailInfo)
-    console.log(detailInfo.ctlFg)
-    console.log(detailInfo.bgajustFg)
-    console.log(detailInfo.bizFg)
-    console.log('백으로 넘길 데이터에 세팅해주기 ')
-    data.ctlFg    =detailInfo.ctlFg;
-    data.bgajustFg=detailInfo.bgajustFg;
-    data.bizFg    =detailInfo.bgajustFg;
-    data.toDt     =detailInfo.toDt;
-    data.bottomFg =detailInfo.bottomFg;
-    data.insertId =this.props.userInfo.empId;
-    BgtCDService.insertAddRow(data,accessToken).then(
-      ()=>{this.getDataGridRows()},
-      console.log('여기되는건가 체크==<<<<=====<<<<===<<<<< ')
-    )
+  updateDetailInfo = () => {
+    const { accessToken } = this.props;
+    let updateData;
+    updateData = this.BgtCDDetailInfo.current.getDetailInfo();
+    BgtCDService.updateDetailInfo(updateData, accessToken)
+      .then(response => {
+      }).catch(error => {
+        console.error("Error fetching data:", error);
+      });
+
+    // }
 
   }
 
-  
+  //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
+  insertAddRow = (data) => {
+    console.log('BgtCd의 insertAddRow입니다.')
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    data.coCd = coCd;
+    const detailInfo = this.BgtCDDetailInfo.current.selectData();
+    data.ctlFg = detailInfo.ctlFg;
+    data.bgajustFg = detailInfo.bgajustFg;
+    data.bizFg = detailInfo.bgajustFg;
+    data.toDt = detailInfo.toDt;
+    data.bottomFg = detailInfo.bottomFg;
+    data.insertId = this.props.userInfo.empId;
+    BgtCDService.insertAddRow(data, accessToken);
+
+  }
+
+
   /*---로우 추가 관련된 메서드 end---*/
 
 
@@ -122,18 +138,33 @@ console.log('데이터체크')
     this.BgtCDDevFgCustom.current.handleUp();
   }
   BgtCDAddSubDialogOpen = () => {
-    this.BgtCDAddSubDialog.current.handleUp();
+    this.BgtCDAddSubDialog.current.initStart();
   }
   BgtCDGroupRegOpen = () => {
     this.BgtCDGroupReg.current.handleUp();
   }
-  selectBgtCDDropDownBox=(openWhat)=>{
+  selectBgtCDDropDownBox = (openWhat) => {
     console.log('오픈왓 :' + openWhat) //BgtCDDevFgCustomOpen
     this[openWhat]();
   }
 
+  handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    await this.setState({ [name]: value });
+    console.log(this.state);
+  };
+
+  handleClickSubCodeSearchIcon = () => {
+    this.BgtCDAddSubDialog.current.handleUp();
+  };
+
+
   render() {
-    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd ,rowModesModel} = this.state;
+    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, top100Films } = this.state;
+    const defaultProps = {
+      options: top100Films,
+      getOptionLabel: (option) => option.title,
+    };
     return (
       <>
         <CustomHeaderGridContainer
@@ -145,7 +176,9 @@ console.log('데이터체크')
           <Grid item>
             <Grid container>
               <PostAddIcon sx={{ fontSize: 31 }} />
-              <CustomHeaderInputLabel>예산과목등록</CustomHeaderInputLabel>
+              <CustomHeaderInputLabel>예산과목등록
+                <CustomSearchButton></CustomSearchButton>
+              </CustomHeaderInputLabel>
             </Grid>
           </Grid>
           <Grid item>
@@ -163,7 +196,7 @@ console.log('데이터체크')
               <Button
                 variant="outlined"
                 onClick={() => this.getDataGridRows()}
-                style={{ marginRight: "8px"}}
+                style={{ marginRight: "8px" }}
               >
                 Grid채우기
               </Button>
@@ -191,13 +224,25 @@ console.log('데이터체크')
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <CustomSelect />
+              <CustomTextField
+                name="subCode"
+                // value={divTextField}
+                onChange={this.handleInputChange}
+                size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon onClick={this.handleClickSubCodeSearchIcon} /> 
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Grid>
           </Grid>
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목코드</CustomInputLabel>
-              <CustomTextField />
+              <CustomTextField></CustomTextField>
             </Grid>
           </Grid>
           <Grid item xs={4}>
@@ -232,6 +277,7 @@ console.log('데이터체크')
               rows={rows}
               setDetailInfo={this.setDetailInfo}
               insertAddRow={this.insertAddRow}
+              getDataGridRows={this.getDataGridRows}
             />
           </Grid>
           <Grid item xs={5}>
@@ -242,6 +288,7 @@ console.log('데이터체크')
               bgajustFg={bgajustFg}
               bottomFg={bottomFg}
               bizFg={bizFg}
+              updateDetailInfo={this.updateDetailInfo}
             />
             {/*자식컴포넌트에 state를 props로 전달 */}
           </Grid>
