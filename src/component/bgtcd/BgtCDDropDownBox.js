@@ -95,18 +95,16 @@ class BgtCDDropDownBox extends React.Component {
                     >간편검색</MenuItem>
                     <MenuItem onClick={this.selectFun}
                     >예산그룹등록</MenuItem>
-                    <MenuItem onClick={this.selectFun}
-                    >예산과목복사</MenuItem>
-                    <MenuItem onClick={this.selectFun}
-                    >예산그룹등록</MenuItem>
+                    {/* <MenuItem onClick={this.selectFun}
+                    >예산과목복사</MenuItem> */}
                     <MenuItem onClick={this.selectFun}
                     >과목분류명등록</MenuItem>
-                    <MenuItem onClick={this.selectFun}
+                    {/* <MenuItem onClick={this.selectFun}
                     >회계계정과목복사</MenuItem>
                     <MenuItem onClick={this.selectFun}
                     >예산과목엑셀업로드</MenuItem>
                     <MenuItem onClick={this.selectFun}
-                    >예산과목일괄설정</MenuItem>
+                    >예산과목일괄설정</MenuItem> */}
                    
                   </MenuList>
                 </ClickAwayListener>
