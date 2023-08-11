@@ -88,10 +88,10 @@ class PjtDialogComponent extends Component {
     await this.setState({ divRows: rows });
   };
 
-  handleClickConfirm = async () => {
+  handleClickConfirm = () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    await this.props.handleSetPjtTextField(this.state.selectedRow);
+    this.props.SetPjtTextField(this.state.selectedRow);
   };
 
   handleInputChange = async (e) => {
@@ -126,7 +126,7 @@ class PjtDialogComponent extends Component {
     const { open, data } = this.state;
 
     return (
-      <CustomShortDialog open={false}>
+      <CustomShortDialog open={open}>
         <CustomDialogTitle>
           프로젝트 검색
           <IconButton size="small" onClick={this.handleDown}>
@@ -146,6 +146,11 @@ class PjtDialogComponent extends Component {
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
+                // sx={{
+                //   "> .MuiAutocomplete-popper": {
+                //     maxHeight: "200px !important",
+                //   },
+                // }}
               >
                 <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
@@ -159,7 +164,10 @@ class PjtDialogComponent extends Component {
                       console.log(`Pressed keyCode ${e.key}`);
                     }
                   }}
-                  sx={{mr:1}}
+                  sx={{
+                    mr: 1,
+                    width: "205px !important",
+                  }}
                 />
                 <Autocomplete
                   disableClearable
@@ -173,7 +181,9 @@ class PjtDialogComponent extends Component {
                   // getOptionLabel={(option) => option.label}
                   value={this.state.useText}
                   onChange={this.handleChangeUseText}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => (
+                    <TextField {...params} sx={{ width: 105 }} />
+                  )}
                   sx={{
                     width: 105,
                     "& .MuiInputBase-root": {

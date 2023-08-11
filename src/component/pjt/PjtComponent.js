@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HelpCenterOutlinedIcon from '@mui/icons-material/HelpCenterOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography, Checkbox, ButtonGroup } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography, Checkbox, ButtonGroup, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid'; // 변경된 import
 import dayjs from 'dayjs';
 import { Component, createRef } from 'react';
@@ -79,7 +79,7 @@ class PjtComponent extends Component {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
-    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef );
+    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef);
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     PjtService.getPjtList(coCd) //카드리스트 전체조회 함수
@@ -255,6 +255,7 @@ class PjtComponent extends Component {
       .catch((error) => {
         console.error(error);
       });
+
   }
 
 
@@ -388,7 +389,9 @@ class PjtComponent extends Component {
   //헬퍼코드
   pjthelpClick = () => {
     this.pjtDialogRef.current.handleUp();
+    this.pjtDialogRef.current.setPjtKeyword(this.state.PjtdialTextField);
   };
+
   pgrhelpClick = () => {
     this.pgrDialogRef.current.handleUp();
   };
@@ -399,10 +402,68 @@ class PjtComponent extends Component {
   }
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
   handleSetPjtTextField = async (data) => {
+    console.log("넘어오는 데이터들? " , data)
     await this.setState({
       PjtdialTextField: data.pjtCd + ". " + data.pjtNm,
       pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
     });
+    console.log('값이 들어잇긴 해 ?', data);
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
+    const {
+      pjtCd,
+    } = this.state;
+    const selData = {
+      pjtCd: pjtCd,
+      coCd: coCd,
+      pjtNm: data.pjtNm,
+    }
+    PjtService.selPjtBy(selData) //카드리스트 전체조회 함수
+      .then((response) => {
+        console.log("abc", response.data);
+        const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
+        const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
+        const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
+        const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
+        const progFgList = response.data.map((item) => item.progFg); //
+        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거) 
+        const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
+        const pgrCd = response.data[0].pgrCd;
+        const pgrNm = response.data[0].pgrNm;
+        const pjtNm = response.data[0].pjtNm;
+        const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+        const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+        const progFg = response.data[0].progFg;
+        const apjtNm = response.data[0].apjtNm;
+        const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
+        const note = response.data[0].note;
+        console.log("프젝네임 어디갔누?", pjtNmList);
+        console.log("프젝코드는 어디갔누?", pjtCdList);
+        this.setState({
+          cardCount: cardCount, // state에 값을 저장
+          pjtCdList: pjtCdList,
+          pjtNmList: pjtNmList,
+          pjtPrList: pjtPrList,
+          pjtToList: pjtToList,
+          progFgList: progFgList,
+          focused: pjtCdList[0],
+          pjtCd: pjtCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtNm: pjtNm,
+          prDt: prDt,
+          toDt: toDt,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          startDt: startDt,
+          note: note,
+        })
+      }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
+      .catch((error) => {
+        // 오류 발생 시의 처리
+        console.error(error);
+        // alert("중복된 회사 또는 모두 입력해주세요");
+      });
   };
 
   handleSetPgrTextField = async (data) => {
@@ -412,31 +473,6 @@ class PjtComponent extends Component {
     });
   };
   // 검색한 내용들 나오는 곳
-  searchClick = (pjtCd) => {
-    // PjtService.getCompany(pjtCd)
-    // .then((response) => {
-    //   const pjtCdList = response.data.map((item) => item.pjtCd);
-    //   const pjtNmList = response.data.map((item) => item.pjtNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
-    //   const cardCount = response.data.length;
-
-    //   const pjtCd = response.data[0].pjtCd;
-
-    //   this.setState({
-    //     cardCount: cardCount,//??????
-    //     pjtCdList: pjtCdList,
-    //     pjtNmList: pjtNmList,
-
-    //     focused: pjtCd,
-    //     pjtCd: pjtCd,
-    //   })
-    // })
-    // .catch((error) => {
-    //   // 오류 발생 시의 처리
-    //   console.error(error);
-    //   // alert("중복된 회사 또는 모두 입력해주세요");
-    // })
-  }
-
 
   //db로 삭제 요청
   handleCardSelect = (index) => {
@@ -475,6 +511,22 @@ class PjtComponent extends Component {
       });
     }
   };
+  //디폴트 값 말고 직접 입력해서 검색할 때 필요한 친구
+  handleTextFieldChange = (e) => {
+    this.setState({ PjtdialTextField: e.target.value });
+  };
+  //코드피커 엔터처리
+  // handleEnterKey = (event) => {
+  //   if (event.key === "Enter") {
+  //     this.pjthelpClick();
+  //   }
+  // };
+
+  handleEnterKey = (event) => {
+    if (event.key === 'Enter') {
+      this.pjthelpClick();
+    }
+  };
 
   render() {
 
@@ -495,7 +547,13 @@ class PjtComponent extends Component {
         key={pjtCd}
         ref={this.cardRef}
         focused={this.state.focused === pjtCd}
-        sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === pjtCd ? '2px solid #6798FD' : '1px solid #D5D5D5', backgroundColor: this.state.focused === pjtCd ? '#E5FFFF' : 'white' }}>
+        sx={{
+          width: '100%',
+          height: 70,
+          position: 'relative',
+          border: this.state.focused === pjtCd ? '1px solid rgba(49, 98, 240, 0.9)' : '1px solid #D5D5D5',
+          backgroundColor: this.state.focused === pjtCd ? 'rgba(160, 210, 255, 0.2)' : 'white',
+        }}>
         <CardActionArea onClick={() => this.cardClick(pjtCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-3px', left: "-15px" }}>
@@ -553,11 +611,14 @@ class PjtComponent extends Component {
               <CustomTextField
                 name="PjtTextField"
                 value={this.state.PjtdialTextField}
-                placeholder="프로젝트코드 "
+                onChange={this.handleTextFieldChange} // 입력 필드 값이 변경될 때 호출되는 핸들러 함수
+                onKeyDown={this.handleEnterKey} // 엔터 키 입력 처리
+                placeholder="프로젝트코드"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <HelpCenterOutlinedIcon onClick={this.pjthelpClick} /></InputAdornment>
+                      <HelpCenterOutlinedIcon onClick={this.pjthelpClick} />
+                    </InputAdornment>
                   ),
                 }}
               />
@@ -621,14 +682,14 @@ class PjtComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay/>
+            <ListDisplay />
           </Grid>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
           <Grid
             container
-            bgcolor={"#FAFAF5"}
+            bgcolor={"#F1F1F1"}
             sx={{
               width: "25%",
               height: 540,
@@ -646,93 +707,76 @@ class PjtComponent extends Component {
                 alignItems: "center",
                 width: "100%",
                 height: 22,
-                backgroundColor: "#FAFAF5",
-                borderBottom: "1px solid #FAFAF5",
-
+                backgroundColor: "#F1F1F1",
+                borderBottom: "1px solid #F6F6F6",
               }}
             >
               <Checkbox
                 checked={this.state.selectAllChecked}
                 onChange={this.handleSelectAllChange}
-                sx={{ mb: 2 }}
               />
               <InputLabel
                 sx={{
-                  mb: 2,
+                  pt: 0.5,
                   fontWeight: "bold",
+                  fontSize: "13px",
                 }}
               >프로젝트:</InputLabel>
               <InputLabel
-                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold", mb: 2, }}
+                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold", fontSize: "13px", pt: 0.5, }}
               >
                 {cardCount}
-
               </InputLabel>
               <InputLabel
                 sx={{
-                  mb: 2,
                   fontWeight: "bold",
+                  marginRight: "0.5rem", // 간격 조정
+                  fontSize: "13px",
+                  pt: 0.5,
                 }}
-              >건</InputLabel>
+              >
+                건
+              </InputLabel>
+              <Divider
+                sx={{
+                  height: "100%", // 수평 줄의 높이를 조정
+                  backgroundColor: "red",
+                }}
+              />
             </Grid>
-            <Scrollbars
+            <Grid
+              item
               ref={this.cardListRef}
-              style={{
-                width: '95%',
-                height: 'calc(100% - 5%)',
+              sx={{
+                borderTop: "1px solid #CFCFCF",
+                pr: 2, // 우측 여백 추가
+                pl: 2,
+                width: "95%",
+                height: "calc(100% - 5%)",
+                overflowY: "auto",
+                scrollbarWidth: "thin", // 스크롤바 얇게 설정 (일부 브라우저에서만 동작할 수 있음)
+                scrollbarColor: "dark", // 스크롤바 색상 설정 (일부 브라우저에서만 동작할 수 있음)
+                "&::-webkit-scrollbar": {
+                  width: "6px", // 스크롤바 너비 설정 (웹킷 브라우저 - Chrome, Safari 등)
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "darkgray", // 스크롤바 색상 설정 (웹킷 브라우저 - Chrome, Safari 등)
+                  borderRadius: "3px", // 스크롤바 모서리 둥글기 설정 (웹킷 브라우저 - Chrome, Safari 등)
+                },
               }}
-              renderThumbVertical={({ style }) => (
-                <div
-                  style={{
-                    ...style,
-                    width: '5px', // 스크롤바의 너비를 설정
-                    backgroundColor: '#D8D8D8', // 스크롤바의 색상
-                    borderRadius: '3px', // 스크롤바의 둥근 모서리
-                  }}
-                />
-              )}
-              renderView={(props) => (
-                <div
-                  {...props}
-                  style={{
-                    ...props.style,
-                    borderRight: '1px solid #FAFAF5', // 오른쪽에 선을 추가하여 스크롤바가 오버레이 되도록 함
-                    marginRight: '-17px', // 스크롤바 너비만큼 우측으로 이동하여 스크롤바 위치 조정
-                  }}
-                />
-              )}
             >
               {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
               {cards.map((card, index) => (
-                <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1, ml: 2, mr:2}}>
+                <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1 }}>
                   {card}
                 </Grid>
               ))}
-            </Scrollbars>
-            {/* <Grid
-                item
-                ref={this.cardListRef}
-                sx={{
-                  pr: 2, // 우측 여백 추가
-                  pl: 2,
-                  width: "95%",
-                  height: "calc(100% - 5%)",
-                  overflowY: "scroll",
-                  scrollbarWidth: "thin", // 스크롤바의 너비를 얇게 조절합니다
-                  scrollbarColor: "#D8D8D8 transparent", // 스크롤바의 색상을 설정합니다
-                }}
-              >
-                {/* 각 카드를 래핑하는 Grid 컨테이너를 추가하여 아래쪽에 스페이싱을 넣습니다 */}
-            {/* {cards.map((card, index) => (
-                  <Grid key={index} item xs={12} sx={{ mb: 1, mt: 1 }}>
-                    {card}
-                  </Grid>
-                ))}
-              </Grid> */}
+            </Grid>
+
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "px", width: "100%"}}
+              sx={{ position: "relative", bottom: "px", width: "100%" }}
             >
               <Button
                 variant="extended"
@@ -763,8 +807,8 @@ class PjtComponent extends Component {
             sx={{
               width: "100%",
               maxHeight: 40,
-              borderBottom: "2px solid #000",
-              ml:1,
+              // borderBottom: "2px solid #000",
+              ml: 1,
             }}
           >
             <Grid item>
@@ -772,11 +816,12 @@ class PjtComponent extends Component {
                 sx={{
                   ml: 2,
                   mr: 2,
-                  mb: 2,
+                  mb: 1,
                   textAlign: "left",
                   color: "black",
                   fontWeight: "bold",
                   fontSize: 18,
+                  borderBottom: "2px solid #000",
                 }}
               >
                 기본등록사항
@@ -1181,13 +1226,13 @@ class PjtComponent extends Component {
         </Grid>
         <PjtDialogComponent handleSetPjtTextField={this.handleSetPjtTextField} ref={this.pjtDialogRef} />
         <PgrDialogComponent handleSetPgrTextField={this.handleSetPgrTextField} ref={this.pgrDialogRef} />
-        <div>
+        {/* <div>
           <div className={`alert-container ${successAlert ? 'show' : ''}`}>
             <Alert variant="filled" severity="success">
               삭제되었습니다
             </Alert>
           </div>
-        </div>
+        </div> */}
       </>
     );
   }

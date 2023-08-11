@@ -22,7 +22,6 @@ class BgtCDDetailInfoFormControl extends Component {
   }
   componentDidUpdate(prevProps) {
     //이전의 props 에서의 값과 비교했을때 값이 달라진다면 ?  
-    console.log('DetailFormControl의 ComponentDidUpdate');
     if (this.props.ctlFg !== prevProps.ctlFg) {
       this.setState({ ctlFg: this.props.ctlFg }, () => {
         const newDefaultValue = this.state.ctlFg;
@@ -58,7 +57,6 @@ class BgtCDDetailInfoFormControl extends Component {
   }
   changeValue = (event , child) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
     const index = child.props['dataindex'];
-    console.log("index !?" + index)
     this.setState({ defaultValue: event.target.value, dataindex: index } //,()=>{this.props.onChange(event.target.value , this.props.id)} [230720]=> 있었는데 왜 있었는지 모르겠음 걍 지움 다른 코드랑 꼬이면 다시 생각해보자..
     );
   }
