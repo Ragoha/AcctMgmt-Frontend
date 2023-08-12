@@ -227,7 +227,7 @@ class BgtICFComponent extends Component {
       console.log(response);
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.bgtCd,  
+        id: row.bgtCd,
       }));
       this.setState({ bgtCDRows: rowsWithId });
     });
@@ -439,15 +439,19 @@ class BgtICFComponent extends Component {
                 borderRight: "2px solid #EAEAEA",
                 borderBottom: "2px solid #EAEAEA",
                 "& .MuiDataGrid-row:hover": {
-                  background: "#EDAF8C",
-                },
-                "& .MuiDataGrid-row.Mui-selected": {
-                  background: "#FFC19E",
-                  fontWeight: "bold",
+                  background: "#FFD9EC",
                 },
                 "& .MuiDataGrid-row.Mui-selected:hover": {
-                  background: "#FFD8D8",
+                  background: "#FFD9EC",
                 },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  background: "#FFEBFE",
+                  fontWeight: "bold",
+                },
+                // "& .MuiDataGrid-row.Mui-selected:hover": {
+                //   background: "#FFD8D8",
+                // },
+
                 "& .style-divfg-1": { background: "#86E57F" },
                 "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
                   paddingLeft: "0px !important",
