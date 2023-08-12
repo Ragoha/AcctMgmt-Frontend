@@ -15,6 +15,7 @@ class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      divCd: "",
       bgtCd: "",
       mgtCd: "",
       gisu: "",
@@ -23,16 +24,33 @@ class DataGridComponent extends Component {
       selectedRowId: "",
       pjtCd: "",
       pjtNm: "",
+      empMgtCd: "",
+      empMgtNm: "",
     };
 
     this.pjtRef = createRef();
   }
 
   SetPjtTextField = async (data) => {
-    alert(data);
-    await this.setState({ pjtCd: data.pjtCd, pjtNm: data.pjtNm });
+    // alert(data);
+
+    const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
+    console.log(mgtCd, mgtNm);
+    console.log("시작");
+    await this.setState({
+      empMgtCd: mgtCd, // 임시 저장된 값으로 변경
+      empMgtNm: mgtNm, // 임시 저장된 값으로 변경
+    });
+
+    await this.setState({
+      mgtCd: data.pjtCd,
+      mgtNm: data.pjtNm,
+    });
+
+    console.log(this.state);
 
     console.log(this.state.rows);
+
     // console.log("asdf :" + this.state.selectedRowId);
     // await this.setState((prevState) => ({
     //   rows: {
@@ -61,7 +79,7 @@ class DataGridComponent extends Component {
 
     // Call processRowUpdate with the updated row
     const processedRow = this.processRowUpdate(updatedRow);
-    console.log(processedRow);
+    // console.log(processedRow);
   };
 
   handleRowAdd = () => {
@@ -75,32 +93,92 @@ class DataGridComponent extends Component {
 
   handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
+      event.defaultMuiPrevented = false;
     }
 
-    // this.setState((prevState) => ({
-    //   rowModesModel: {
-    //     ...prevState.rowModesModel,
-    //     [params.id]: { mode: GridRowModes.View },
-    //   },
-    // }));
+    this.setState((prevState) => ({
+      rowModesModel: {
+        ...prevState.rowModesModel,
+        [params.id]: { mode: GridRowModes.View },
+      },
+    }));
     console.log("=============");
     console.log(params.row);
   };
 
-  handleCellEditStop = (params, event) => {
+  handleCellEditStop = async (params, event) => {
+    console.log(params);
+    console.log(event)
+    // 기존 코드 추가
     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-      event.defaultMuiPrevented = true;
+      event.defaultMuiPrevented = false;
     }
 
-    // this.setState((prevState) => ({
-    //   rowModesModel: {
-    //     ...prevState.rowModesModel,
-    //     [params.id]: { mode: GridRowModes.View },
-    //   },
-    // }));
-    console.log("=============");
-    console.log(params.row);
+    // mgtCd가 아닌 경우에만 rowModesModel을 업데이트하여 view 모드로 변경
+    // if (params.field !== "mgtCd") {
+    console.log(this.state.row)
+      this.setState((prevState) => ({
+        rowModesModel: {
+          ...prevState.rowModesModel,
+          [params.id]: { mode: GridRowModes.View },
+        },
+      }));
+    // }
+
+    if (event.key === "Enter" && params.field === "mgtCd") {
+      console.log("저장");
+      console.log(params.formattedValue);
+
+      const updatedRows = this.state.rows.map((row) => {
+        if (row.id === params.id && params.field === "mgtCd") {
+          return { ...row, mgtCd: params.formattedValue };
+        }
+        return row;
+      });
+
+      await this.setState({ rows: updatedRows });
+
+      console.log(this.state.mgtCd);
+      console.log(params.pjtCd);
+      console.log(params.pjtCd);
+      console.log(params.pjtCd);
+      console.log(params.pjtCd);
+
+      const updatedRow = updatedRows.find(
+        (row) => row.id === this.state.selectedRowId
+      );
+      if (updatedRow) {
+        updatedRow.mgtCd = params.formattedValue;
+      }
+
+      // await this.setState({ rows: updatedRows });
+
+      // // Call processRowUpdate with the updated row
+      const processedRow = this.processRowUpdate(updatedRow);
+    }
+
+    console.log("======test=======");
+  };
+
+  processRowUpdate = (newRow) => {
+    console.log(newRow);
+    console.log("===============abc==================");
+    if (newRow.isNew) {
+      this.insertBgtICF(newRow);
+    } else {
+      const updatedRow = { ...newRow, isNew: false };
+
+      this.setState((prevState) => ({
+        rows: prevState.rows.map((row) =>
+          row.id === newRow.id ? updatedRow : row
+        ),
+      }));
+      this.updateBgtICF(updatedRow);
+    }
+
+    const updatedRow = { ...newRow, isNew: false };
+
+    return updatedRow;
   };
 
   handleEditClick = (id) => () => {
@@ -154,7 +232,7 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
+          mgtCd: "",
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
@@ -173,7 +251,7 @@ class DataGridComponent extends Component {
   };
 
   getBgtICFList = async (data) => {
-    await this.setState({ bgtCd: data.bgtCd });
+    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
@@ -185,13 +263,13 @@ class DataGridComponent extends Component {
         ...row,
         id: row.sq,
       }));
-
-      if (response.length !== 0) {
+      if (data.bottomFg == 0) {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          divCd: this.state.divCd,
-          gisu: this.state.gisu,
+          mgtCd: "",
+          divCd: data.divCd,
+          gisu: data.gisu,
           bottomNm: "",
           carrAm: "",
           carrAm1: 0,
@@ -212,6 +290,7 @@ class DataGridComponent extends Component {
       accessToken: this.props.accessToken,
       user: this.props.user,
       row: row,
+      divCd: this.state.divCd,
     }).then(() => {
       this.props.handleClickSerachButton();
       BgtICFService.getBgtICFList({
@@ -227,7 +306,7 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
+          mgtCd: "",
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
@@ -265,7 +344,7 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
+          mgtCd: "",
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
@@ -281,27 +360,6 @@ class DataGridComponent extends Component {
         this.setState({ rows: rowsWithId });
       });
     });
-  };
-
-  processRowUpdate = (newRow) => {
-    console.log(newRow);
-    console.log("================================================");
-    if (newRow.isNew) {
-      this.insertBgtICF(newRow);
-    } else {
-      const updatedRow = { ...newRow, isNew: false };
-
-      this.setState((prevState) => ({
-        rows: prevState.rows.map((row) =>
-          row.id === newRow.id ? updatedRow : row
-        ),
-      }));
-      this.updateBgtICF(updatedRow);
-    }
-
-    const updatedRow = { ...newRow, isNew: false };
-
-    return updatedRow;
   };
 
   handleRowModesModelChange = (newRowModesModel) => {
@@ -333,62 +391,29 @@ class DataGridComponent extends Component {
         field: "mgtCd",
         headerName: "프로젝트",
         headerAlign: "center",
-        editable: true,
-        // renderCell: (params) => {
-        //   console.log(params);
-        //   return (
-        //     <div
-        //       className="d-flex justify-content-between align-items-center"
-        //       style={{ cursor: "pointer" }}
-        //     >
-        //       {params.row.mgtCd}
-        //       <SearchIcon
-        //         onClick={async () => {
-        //           this.pjtRef.current.handleUp();
-        //           console.log("asdf");
-        //           console.log(params.row.id);
-        //           await this.setState((prevState) => ({
-        //             rowModesModel: {
-        //               ...prevState.rowModesModel,
-        //               [params.row.id]: { mode: GridRowModes.Edit },
-        //             },
-        //           }));
-        //         }}
-        //       />
-        //     </div>
-        //   );
-        // },
-        renderEditCell: (params) => {
-          const rowIndex = this.state.rows.findIndex(
-            (row) => row.id === params.row.id
-          );
-          const mgtCd = params.row.mgtCd;
+        editable: false,
+        renderCell: (params) => {
+          console.log(params);
           return (
             <div
               className="d-flex justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", width:"100%", height:"100%" }}
+              onClick={() => { this.pjtRef.current.handleUp() }}
             >
-              {this.state.rows[rowIndex].mgtCd}
-              <SearchIcon
-                className="mgt-dialog-icon"
-                sx={{
-                  position: "absolute",
-                  right: 0,
-                }}
+              {params.row.mgtCd}
+              {/* <SearchIcon
                 onClick={async () => {
                   this.pjtRef.current.handleUp();
-                  console.log(this.state.rows[rowIndex]);
-                  // const updatedRows = this.state.rows.map((row) => {
-                  //   if (row.id === params.row.id) {
-                  //     return { ...row, mgtCd: 999 }; // 클릭된 행의 mgtCd 값을 업데이트
-                  //   }
-                  //   return row;
-                  // });
-                  // await this.setState({ rows: updatedRows }); // rows 상태를 업데이트합니다.
-                  // console.log("변경후");
-                  // console.log(this.state);
+                  console.log("asdf");
+                  console.log(params.row.id);
+                  await this.setState((prevState) => ({
+                    rowModesModel: {
+                      ...prevState.rowModesModel,
+                      [params.row.id]: { mode: GridRowModes.Edit },
+                    },
+                  }));
                 }}
-              />
+              /> */}
             </div>
           );
         },
@@ -398,7 +423,7 @@ class DataGridComponent extends Component {
         field: "carrAm",
         headerName: "이월금액",
         headerAlign: "center",
-        editable: true,
+        editable: false,
         ...krAmount,
       },
       {
