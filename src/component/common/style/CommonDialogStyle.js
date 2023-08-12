@@ -4,12 +4,12 @@ import styled from "styled-components";
 
 
 export const CustomShortDialog = styled(Dialog)({
-  "& .MuiPaper-elevation": {
+  "& .MuiDialog-container .MuiDialog-paper": {
     width: 500,
     height: 600,
-    minHeight: 600
+    minHeight: 600,
   },
-})
+});
 
 export const CustomDialogTitle = styled(DialogTitle)({
   backgroundColor: "#7895CB",

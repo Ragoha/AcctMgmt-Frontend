@@ -72,7 +72,7 @@ class BgtICFComponent extends Component {
     super(props);
     this.state = {
       bgtCDRows: [],
-      divCd: "",
+      divCd: 0,
       divNm: "",
       divTextField: "",
       bgtGrCd: "",
@@ -498,6 +498,7 @@ class BgtICFComponent extends Component {
               ref={this.bgtICFRef}
               setSelectedRowId={this.setSelectedRowId}
               handleClickSerachButton={this.handleClickSerachButton}
+              divCd={this.state.divCd}
             />
           </Grid>
         </Grid>

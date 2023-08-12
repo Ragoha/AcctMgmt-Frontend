@@ -43,13 +43,18 @@ class PjtDialogComponent extends Component {
       pjtRows: [],          //열 배열넣기
       keyword: "",
       rows: rows,
-      columns: columns
+      columns: columns,
     }
   }
 
+  setPjtKeyword = (data) => {
+    this.setState({ keyword: data }, () => {
+      this.handleSearchPjt(); // 데이터를 설정한 후에 엔터 함수 실행  
+    })
+}
+
   handleUp = () => {
     this.setState({ open: true });
-
     this.handleSearchPjt();
   }
 
@@ -81,9 +86,8 @@ class PjtDialogComponent extends Component {
             pjtCd: row.pjtCd,
             pjtNm: row.pjtNm,
           }));
-          await this.setState({ pjtRows: pjtRows}, () => {
-            console.log(this.state);
-          });
+          await this.setState({ pjtRows: pjtRows });
+          this.setState({ keyword: '' });
         }
       );
   };
@@ -92,24 +96,38 @@ class PjtDialogComponent extends Component {
     if (!this.state.selectedRow.pjtCd || !this.state.selectedRow.pjtNm) {
       // 선택된 값이 없거나 빈 값인 경우
       const emptyRow = { pjtCd: "", pjtNm: "" };
-      this.setState({ selectedRow: emptyRow }); // 선택된 값을 빈 값으로 설정
+      await this.props.handleSetPjtTextField(emptyRow); // 빈 값의 데이터를 부모로 전달
+      this.setState({ selectedRow: emptyRow, keyword: '', pjtRows: [] }); // 선택된 값을 빈 값으로 설정
+      this.handleDown();
+    } else {
+      this.handleDown();
+      const selectedRow = this.state.selectedRow;
+      await this.props.handleSetPjtTextField(selectedRow); // 선택된 데이터를 부모로 전달
+      this.setState({ selectedRow: { pjtCd: "", pjtNm: "" }, keyword: '', pjtRows: [] }); // 선택된 값을 빈 값으로 설정
     }
-  
-    console.log(this.state.selectedRow);
-    this.handleDown();
-    await this.props.handleSetPjtTextField(this.state.selectedRow);
   }
-  
-  
+
+
 
   //열 클릭처리
   handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row }, () => {
-      console.log(this.state.selectedRow);
-    });
+    if (params && params.row) {
+      this.setState({ selectedRow: params.row }, () => {
+        console.log("click : ", this.state.selectedRow);
+      });
+    } else {
+      this.setState({
+        selectedRow: { pjtCd: "", pjtNm: "" },
+        pjtRows: [],  // 선택되지 않았을 때 pjtRows도 빈 값으로 초기화
+        keyword: '', // 선택되지 않았을 때 keyword도 빈 값으로 초기화
+      }, () => {
+      });
+    }
   }
+
+
   render() {
-    const { open, columns } = this.state;
+    const { open, columns, keyword} = this.state;
 
     return (
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
@@ -141,7 +159,7 @@ class PjtDialogComponent extends Component {
                 <CustomTextField
                   id="keyword"
                   name="keyword"
-                  value={this.state.keyword}
+                  value={this.state.keyword || this.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
                   onKeyDown={this.handlePressEnter}

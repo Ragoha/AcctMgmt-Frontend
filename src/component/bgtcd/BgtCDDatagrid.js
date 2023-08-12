@@ -15,28 +15,31 @@ class BgtCDDatagrid extends Component {
             ],
             rows: [],
             dataPath: '초기값그대로야~ 다시 뽑아 ~',
-
             rowModesModel: {},
-
+            bgtCd: null,
+            isNew: false,
         }
     }
-    processRowUpdate = (params, event) => {
-        console.log('========================processRowUpdate입니다========================')
-        console.log(params)
-        console.log(params.bgtNm)
-        console.log(params.bgtCd)
-        console.log(params.dataPath)
-        const data = {
-            bgtNm: params.bgtNm,
-            bgtCd: params.bgtCd,
-            dataPath: params.dataPath
-        }
-         this.props.insertAddRow(data).then(() => {
-            // this.setRowModesModel(data, GridRowModes.View);
-         })
+    //[230810] 업데이트 끝내고 isNew 값 바꿔야함
+    // changeIsNew = () => {
+    //     console.log('changeIsNew에 도착했음')
 
-        console.log('올까?')
-        console.log(params.bgtCd)
+    // }
+    processRowUpdate = (newRow) => {
+        console.log('========================processRowUpdate입니다========================')
+        const data = {
+            bgtNm: newRow.bgtNm,
+            bgtCd: newRow.bgtCd,
+            dataPath: newRow.dataPath
+        }
+        this.props.insertAddRow(data);
+        const updatedRow = { ...newRow, isNew: false };
+        this.setState((prevState) => ({
+            rows: prevState.rows.map((row) =>
+                row.divFg === newRow.divFg ? updatedRow : row
+            ),
+        }), () => console.log(this.state.rows));
+        return updatedRow;
     };
     setRowModesModel = (data, mode) => {
         // console.log(id)
@@ -48,35 +51,25 @@ class BgtCDDatagrid extends Component {
             },
         }));
     };
-    // pressEnterBtn=(params , event)=>{
-    //     //console.log(event.code);
-    //      //console.log(params)
-    //     console.log(event)
-    //     ///console.log(details)
-    //     if(event.code==="Enter"){
-    //         console.log(event.target.value)
-    //         console.log(params.field)
-    //         console.log('과연:'+event.target.row)
-    //     }
-    //     // console.log('pressEnterBtn이 실행되는가 ? 아래는 params값.')
-    //     //  console.log('여기서 걍 데이터패스일단 찍어봄'+params.row.dataPath);
-
-    // }
-
-    clickedRow = (params, event) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+    clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
         console.dir(params)
         console.log('clickedROw !' + params.row.bgtCd + 'and DataPath ' + params.row.dataPath)
+        console.log('isNew까지 체크해볼게 : ' + params.row.isNew)
         console.log("isnew ?: " + params.row.isNew);
-        const { bgtCd, dataPath } = params.row;
-        this.setState({ dataPath: dataPath }, () => console.log("state가 바뀜!!" + this.state.dataPath))
-        if (params.row.isNew !== true) {//새로 만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
-            if (bgtCd !== null && bgtCd !== undefined) {
+        const { bgtCd, dataPath, isNew, bgtNm } = params.row;
+        this.setState({ dataPath: dataPath })
+        if (isNew !== true) {//새로 만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
                 console.log(bgtCd)
                 console.log('이게 bgtCd야 : ' + bgtCd);
                 this.props.setDetailInfo(bgtCd);
-            }
-        } else if (params.row.isNew !== true) {//만약 새로 만들어진 행이라면 
-
+        } else if (isNew == true) {
+            console.log('이건 새로 만들어진 로우다');
+            this.setState({
+                bgtCd: params.row.bgtCd,
+                isNew: params.row.isNew,
+                dataPath: params.row.dataPath,
+                bgtNm: params.row.bgtNm,
+            });
         }
     }
     getDataPathFromDataGrid = () => { //DataPath를 전달.
@@ -88,19 +81,6 @@ class BgtCDDatagrid extends Component {
         this.setState({ dataPath: dataPath },
             console.log('DataPath 변경 확인 ' + this.state.dataPath + "|"));
     }
-    // handleRowEditStop = (params, event) => {
-    //     console.log('edit끝낫을때!')
-    //     console.log(params)
-    //     console.log(params.reason) //reason : "rowFocusOut" ,"enterKeyDown","tabKeyDow"
-    //     if (params.reason === "rowFocusOut" || params.reason === "enterKeyDown" || params.reason === "tabKeyDown") {
-    //         setRowModesModel({ ...rowModesModel, [params.id]: { mode: GridRowModes.View } });
-    //     }
-    //     console.log('↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑')
-    // };
-    // handleRowModesModelChange = (newRowModesModel) => {
-    //     this.setState({ rowModesModel: newRowModesModel });
-    // };
-
 
     render() {
         const { columns, rowModesModel } = this.state;
@@ -120,17 +100,11 @@ class BgtCDDatagrid extends Component {
                     getRowId={(row) => row.bgtCd}
                     headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
                     onRowClick={this.clickedRow}
-                    //onCellKeyDown ={this.pressEnterBtn}
+                    processRowUpdate={this.processRowUpdate}
+                    onProcessRowUpdateError={(error) => { }}
                     defaultGroupingExpansionDepth={7}
                     editMode='row' //row 단위로 편집 모양 잡힘
                     headerAlign="center"
-                    processRowUpdate={this.processRowUpdate}
-                    rowModesModel={rowModesModel}
-                    // onRowEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
-                    //     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-                    //       event.defaultMuiPrevented = true;
-                    //     }
-                    //   }}
                     groupingColDef={{
                         headerName: '분류명', headerAlign: 'center',
                     }}
