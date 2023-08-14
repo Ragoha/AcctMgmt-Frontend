@@ -60,32 +60,32 @@ class BgtCDADDSubDialog extends Component {
     console.log('processRowupdate');
     console.log(newRow);
 
-    // // 새로운 행이 isEditable: true 속성을 가진 마지막 행인지 확인
-    // const isLastRow = this.state.rows[this.state.rows.length - 1].editable;
+    // 새로운 행이 isEditable: true 속성을 가진 마지막 행인지 확인
+    const isLastRow = this.state.rows[this.state.rows.length - 1].editable;
 
-    // if (isLastRow) {
-    //     // 입력된 새 행을 업데이트
-    //     const updatedRow = { ...newRow, editable: false, isNew: false };
+    if (isLastRow) {
+        // 입력된 새 행을 업데이트
+        const updatedRow = { ...newRow, editable: false, isNew: false };
 
-    //     this.setState((prevState) => {
-    //         // 기존 행들을 유지하면서 마지막 빈 행을 제거하고, 새로운 행을 추가
-    //         const newRows = [...prevState.rows.slice(0, prevState.rows.length - 1), updatedRow];
-    //         return { rows: newRows };
-    //     }, () => {
-    //         const { coCd } = this.props.userInfo;
+        this.setState((prevState) => {
+            // 기존 행들을 유지하면서 마지막 빈 행을 제거하고, 새로운 행을 추가
+            const newRows = [...prevState.rows.slice(0, prevState.rows.length - 1), updatedRow];
+            return { rows: newRows };
+        }, () => {
+            const { coCd } = this.props.userInfo;
 
-    //         // 새로운 빈 행을 마지막에 추가
-    //         this.setState({
-    //             rows: [...this.state.rows, { coCd: coCd, bgtGrCd: '', editable: true }]
-    //         });
-    //     });
-    // } else {
-    //     // 기존 행이 업데이트되는 경우 (여기서는 일단 간단하게 처리하였습니다)
-    //     const updatedRow = { ...newRow, isNew: false };
-    //     this.setState((prevState) => ({
-    //         rows: prevState.rows.map((row) => row.bgtGrCd === newRow.bgtGrCd ? updatedRow : row)
-    //     }));
-    // }
+            // 새로운 빈 행을 마지막에 추가
+            this.setState({
+                rows: [...this.state.rows, { coCd: coCd, bgtGrCd: '', editable: true }]
+            });
+        });
+    } else {
+        // 기존 행이 업데이트되는 경우 (여기서는 일단 간단하게 처리하였습니다)
+        const updatedRow = { ...newRow, isNew: false };
+        this.setState((prevState) => ({
+            rows: prevState.rows.map((row) => row.bgtGrCd === newRow.bgtGrCd ? updatedRow : row)
+        }));
+    }
 
     return newRow;
 };
