@@ -29,7 +29,7 @@ class DivDialogComponent extends Component {
           {
             field: "divNm",
             headerName: "사업장명",
-            width: 286,
+            width: 270,
             headerAlign: "center",
           },
         ],
