@@ -364,7 +364,6 @@ class CoMgmtComponent extends Component {
 
   helpClick = () => {
     this.coDialogRef.current.handleUp();
-    // this.coDialogRef.current.setCoKeyword(this.state.CodialTextField);
   };
 
 
@@ -377,6 +376,7 @@ class CoMgmtComponent extends Component {
       CodialTextField: data.coCd + ". " + data.coNm,
       coCd: data.coCd  //밑에 coCd 넘겨주기
     });
+    this.searchClick(this.state.coCd); //음 왜 기존 검색어가 텍스트 필드에 없는지....?
   };
 
   searchClick = (coCd) => {
