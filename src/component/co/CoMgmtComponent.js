@@ -364,6 +364,7 @@ class CoMgmtComponent extends Component {
 
   helpClick = () => {
     this.coDialogRef.current.handleUp();
+    // this.coDialogRef.current.setCoKeyword(this.state.CodialTextField);
   };
 
 
@@ -747,6 +748,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
+                  borderTop:"2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -760,7 +762,8 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderTop:"2px solid #000",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -780,6 +783,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
+                  borderTop:"2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -793,7 +797,8 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderTop:"2px solid #000",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -824,7 +829,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -857,7 +862,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -888,7 +893,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -919,7 +924,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -997,7 +1002,6 @@ class CoMgmtComponent extends Component {
                   justifyContent: "flex-end",
                   alignItems: "center",
                   backgroundColor: "#FCFCFC",
-                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -1011,7 +1015,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "1px solid #EAEAEA",
+                  borderTop: "1px solid lightgray",
                 }}
               >
                 <CustomInputLabel
