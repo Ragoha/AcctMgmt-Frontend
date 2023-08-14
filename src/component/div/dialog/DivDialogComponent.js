@@ -122,14 +122,14 @@ class DivDialogComponent extends Component {
             alignItems="center"
             spacing={2}
           >
-            <Grid item>
+            <Grid item xs={12}>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
               >
-                <CustomInputLabel>검색</CustomInputLabel>
+                <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
                   id="keyword"
                   name="keyword"

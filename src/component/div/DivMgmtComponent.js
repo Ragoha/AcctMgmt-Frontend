@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import DomainDisabledIcon from "@mui/icons-material/DomainDisabled";
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, InputLabel, TextField, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
@@ -871,7 +871,7 @@ class DivMgmtComponent extends Component {
               width: "22%",
               height: 670,
               border: "1px solid #EAEAEA",
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "#FCFCFC",
             }}
           >
             <Grid
@@ -882,12 +882,16 @@ class DivMgmtComponent extends Component {
                 justifyContent: "left",
                 alignItems: "center",
                 width: "100%",
-                backgroundColor: "#f5f5f5",
-                borderBottom: "3px solid #EAEAEA",
+                backgroundColor: "#FCFCFC",
+                borderBottom:"2px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 사업장:</CustomInputLabel>
-              <CustomInputLabel>{cardCount}</CustomInputLabel>
+              <InputLabel sx={{
+                color: "#0054FF",
+                fontWeight: "bold",
+              }}>{cardCount}</InputLabel>
+              <CustomInputLabel>건</CustomInputLabel>
             </Grid>
 
             <Grid
@@ -911,15 +915,15 @@ class DivMgmtComponent extends Component {
               container
               sx={{ position: "relative", bottom: "60px", width: "100%" }}
             >
-              <Button
+               <Button
                 variant="extended"
                 onClick={this.addCardButton}
                 sx={{
-                  border: "1px solid",
+                  border: "1px solid #D5D5D5",
                   width: "100%",
                   height: "60px",
-                  backgroundColor: "#F6F6F6",
-                  color: "black",
+                  backgroundColor: "white",
+                  color: "#5D5D5D",
                   display: "flex",
                   justifyContent: "center",
                   "&:hover": {
@@ -927,7 +931,7 @@ class DivMgmtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon />
+                <AddIcon sx={{ mb:0.2, fontSize:'medium',color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -942,7 +946,7 @@ class DivMgmtComponent extends Component {
               </Grid>
             </Grid>
 
-            <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt:'-4px',border: "2px solid #EAEAEA" }}>
               <Grid
                 item
                 xs={2}

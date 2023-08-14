@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CompanyService from '../../../service/CompanyService';
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../../common/style/CommonDialogStyle';
-import { CustomInputLabel, CustomSearchButton, CustomTextField } from '../../common/style/CommonStyle';
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from '../../common/style/CommonStyle';
 
 const columns =[
   { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
@@ -136,14 +136,13 @@ class CoDialogComponent extends Component {
             </Grid>
           </CustomShortFormGridContainer>
           <CustomShortDataGridContainer container>
-            <DataGrid
+            <CustomDataGrid
               columns={columns}
               rows={this.state.codialRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
-              sx={{ borderTop: "3px solid black" }}
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
