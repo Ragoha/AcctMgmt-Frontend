@@ -16,7 +16,6 @@ import Swal from 'sweetalert2';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Alert from '@mui/material/Alert';
 import './styles.css'; // 스타일시트 불러오기
-import ListDisplay from '../bgticf/test';
 
 class PjtComponent extends Component {
   constructor(props) {
