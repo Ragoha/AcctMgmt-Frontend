@@ -59,11 +59,11 @@ class PgrDialogComponent extends Component {
     //엔터키 입력처리
     handlePressEnter = (e) => {
         if (e.key === "Enter") {
-            this.handleSearchPgrDial();
+            this.handleSearchPgr();
         }
     }
     //검색
-    handleSearchPgrDial = () => {
+    handleSearchPgr = () => {
         PjtService.getPgrBy(this.state.keyword)
             .then(
                 async (response) => {
@@ -79,10 +79,19 @@ class PgrDialogComponent extends Component {
     };
 
     handleClickConfirm = async () => {
-        console.log(this.state.selectedRow);
-        this.handleDown();
-        await this.props.handleSetCodialTextField(this.state.selectedRow);
+    if (!this.state.selectedRow.pgrCd || !this.state.selectedRow.pjtNm) {
+      // 선택된 값이 없거나 빈 값인 경우
+      const emptyRow = { pgrCd: "", pgrNm: "" };
+      await this.props.handleSetPjtTextField(emptyRow); // 빈 값의 데이터를 부모로 전달
+      this.setState({ selectedRow: emptyRow, keyword: '', pgrRows: [] }); // 선택된 값을 빈 값으로 설정
+      this.handleDown();
+    } else {
+      this.handleDown();
+      const selectedRow = this.state.selectedRow;
+      await this.props.handleSetPjtTextField(selectedRow); // 선택된 데이터를 부모로 전달
+      this.setState({ selectedRow: { pjtCd: "", pgrNm: "" }, keyword: '', pgrRows: [] }); // 선택된 값을 빈 값으로 설정
     }
+  }
 
     //열 클릭처리
     handleClickRow = (params) => {
@@ -133,7 +142,7 @@ class PgrDialogComponent extends Component {
                       variant="outlined"
                       sx={{ right: "-30px" }}
                     >
-                      <SearchIcon onClick={this.handleSearchPgrDial} />
+                      <SearchIcon onClick={this.handleSearchPgr} />
                     </CustomSearchButton>
                   </Grid>
                 </Grid>
