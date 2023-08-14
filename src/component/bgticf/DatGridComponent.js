@@ -1,71 +1,67 @@
 import Box from "@mui/material/Box";
 import React, { Component } from "react";
 
-import { DataGrid, GridCellEditStopReasons, GridRowEditStopReasons } from "@mui/x-data-grid";
+import { Grid } from "@mui/material";
+import { DataGrid, GridCellEditStopReasons } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import PjtDialogComponent from "./dialog/PjtDialogComponent";
-import { GridRowModes } from "@mui/x-data-grid";
-import { Button } from "@mui/base";
-import SearchIcon from "@mui/icons-material/Search";
 
 class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      divCd: "",
       bgtCd: "",
       mgtCd: "",
       gisu: "",
       rows: [],
-      rowModesModel: {},
       selectedRowId: "",
+      selectedRow: [],
       pjtCd: "",
       pjtNm: "",
     };
 
     this.pjtRef = createRef();
+    this.footerRef = createRef();
+  }
+
+  initBgtICF = () => {
+    console.log("tet");
+    console.log(this.state.rows);
+    this.footerRef.current.sumCarrAm(this.state.rows);
   }
 
   SetPjtTextField = async (data) => {
-    alert(data);
-    await this.setState({ pjtCd: data.pjtCd, pjtNm: data.pjtNm });
-
-    console.log(this.state.rows);
-    // console.log("asdf :" + this.state.selectedRowId);
-    // await this.setState((prevState) => ({
-    //   rows: {
-    //     ...prevState.rows,
-    //     [this.selectedRowId]: { mgtCd: data.pjtCd },
-    //   },
-    // }));
+    const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
 
     const updatedRows = this.state.rows.map((row) => {
       if (row.id === this.state.selectedRowId) {
-        return { ...row, mgtCd: data.pjtCd }; // 클릭된 행의 mgtCd 값을 업데이트
+        return { ...row, mgtCd: data.pjtCd, mgtNm: data.pjtNm }; // 클릭된 행의 mgtCd 값을 업데이트
       }
       return row;
     });
     await this.setState({ rows: updatedRows }); // rows 상태를 업데이트합니다.
 
-    // Update mgtCd value here
     const updatedRow = updatedRows.find(
       (row) => row.id === this.state.selectedRowId
     );
+
+    console.log(updatedRow);
     if (updatedRow) {
       updatedRow.mgtCd = data.pjtCd;
+      updatedRow.mgtNm = data.pjtNm;
     }
 
-    await this.setState({ rows: updatedRows });
+    console.log("set");
+    console.log(updatedRow);
 
-    // Call processRowUpdate with the updated row
     const processedRow = this.processRowUpdate(updatedRow);
-    console.log(processedRow);
   };
 
   handleRowAdd = () => {
-    console.log("Aaa");
     const newRows = [
       ...this.state.rows,
       { id: randomId(), name: "", age: 0, joinDate: "", role: "", isNew: true },
@@ -73,62 +69,80 @@ class DataGridComponent extends Component {
     this.setState({ rows: newRows });
   };
 
-  handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-
-    // this.setState((prevState) => ({
-    //   rowModesModel: {
-    //     ...prevState.rowModesModel,
-    //     [params.id]: { mode: GridRowModes.View },
-    //   },
-    // }));
-    console.log("=============");
-    console.log(params.row);
-  };
-
-  handleCellEditStop = (params, event) => {
+  handleCellEditStop = async (params, event) => {
+    console.log("asdf");
+    // 기존 코드 추가
     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-      event.defaultMuiPrevented = true;
+      event.defaultMuiPrevented = false;
     }
 
-    // this.setState((prevState) => ({
-    //   rowModesModel: {
-    //     ...prevState.rowModesModel,
-    //     [params.id]: { mode: GridRowModes.View },
-    //   },
-    // }));
-    console.log("=============");
-    console.log(params.row);
   };
 
-  handleEditClick = (id) => () => {
-    this.setState((prevState) => ({
-      rowModesModel: {
-        ...prevState.rowModesModel,
-        [id]: { mode: GridRowModes.Edit },
-      },
-    }));
-  };
+  processRowUpdate = async (newRow) => {
+    console.log("cell")
+    console.log(newRow)
 
-  handleSaveClick = (id) => () => {
-    this.setState((prevState) => ({
-      rowModesModel: {
-        ...prevState.rowModesModel,
-        [id]: { mode: GridRowModes.View },
-      },
-    }));
+    // const updatedRows = this.state.rows.map((row) => {
+    //   if (row.id === this.state.selectedRowId) {
+    //     return { ...row, newRow }; // 클릭된 행의 mgtCd 값을 업데이트
+    //   }
+    //   return row;
+    // });
+    // await this.setState({ rows: updatedRows });
+
+    if (newRow.isNew) {
+      if (
+        newRow.mgtCd !== "" &&
+        newRow.mgtNm !== "" &&
+        newRow.carrAm1 !== "" &&
+        newRow.carrAm2 !== "" &&
+        newRow.carrAm3 !== ""
+      ) {
+        console.log("저장");
+        console.log(newRow);
+        this.insertBgtICF(newRow);
+      }
+
+      this.setState((prevState) => ({
+        rows: prevState.rows.map((row) =>
+          row.id === newRow.id ? newRow : row
+        ),
+      }));
+
+      return newRow;
+    } else {
+      console.log("수정");
+      console.log(newRow);
+
+      const updatedRow = { ...newRow, isNew: false };
+
+      this.setState((prevState) => ({
+        rows: prevState.rows.map((row) =>
+          row.id === newRow.id ? updatedRow : row
+        ),
+      }));
+      this.updateBgtICF(updatedRow);
+
+      
+
+      
+      return updatedRow;
+    }
+
+    console.log(this.state.rows);
+    // const updatedRow = { ...newRow, isNew: false };
+
+    
   };
 
   handleGetBgtICFList() {
     BgtICFService.getBgtICFList({ accessToken: this.props.accessToken }).then(
-      (response) => {
+      async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,
           id: row.bgtCd,
         }));
-        this.setState({ rows: rowsWithId });
+        await this.setState({ rows: rowsWithId });
       }
     );
   }
@@ -154,13 +168,13 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
+          mgtCd: "",
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -173,30 +187,29 @@ class DataGridComponent extends Component {
   };
 
   getBgtICFList = async (data) => {
-    await this.setState({ bgtCd: data.bgtCd });
+    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
     }).then(async (response) => {
-      console.log(response);
-      console.log(response.length);
       const rowsWithId = response.map((row) => ({
         ...row,
         id: row.sq,
       }));
-
-      if (response.length !== 0) {
+      if (data.bottomFg == 0) {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          divCd: this.state.divCd,
-          gisu: this.state.gisu,
+          mgtNm: "",
+          mgtCd: "",
+          divCd: data.divCd,
+          gisu: data.gisu,
           bottomNm: "",
           carrAm: "",
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",  
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -204,45 +217,57 @@ class DataGridComponent extends Component {
         });
       }
       await this.setState({ rows: rowsWithId });
+      this.footerRef.current.sumCarrAm(rowsWithId);
     });
   };
 
   insertBgtICF = (row) => {
-    BgtICFService.insertBgtICF({
-      accessToken: this.props.accessToken,
-      user: this.props.user,
-      row: row,
-    }).then(() => {
-      this.props.handleClickSerachButton();
-      BgtICFService.getBgtICFList({
+    console.log("insert")
+    console.log(row);
+    if (
+      row.mgtCd !== "" &&
+      row.mgtNm !== "" &&
+      row.carrAm1 !== "" &&
+      row.carrAm2 !== "" &&
+      row.carrAm3 !== ""
+    ) {
+      BgtICFService.insertBgtICF({
         accessToken: this.props.accessToken,
-        coCd: this.props.user.coCd,
-        bgtCd: this.state.bgtCd,
-      }).then((response) => {
-        const rowsWithId = response.map((row) => ({
-          ...row,
-          id: row.sq,
-        }));
-
-        rowsWithId.push({
-          id: randomId(),
+        user: this.props.user,
+        row: row,
+        divCd: this.state.divCd,
+      }).then(() => {
+        this.props.handleClickSerachButton();
+        BgtICFService.getBgtICFList({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
-          gisu: this.state.gisu,
-          bottomNm: "",
-          carrAm: "",
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
-          remDc: "",
-          bgtTy: "",
-          modifyId: "",
-          isNew: true,
-        });
+        }).then(async (response) => {
+          const rowsWithId = response.map((row) => ({
+            ...row,
+            id: row.sq,
+          }));
 
-        this.setState({ rows: rowsWithId });
+          rowsWithId.push({
+            id: randomId(),
+            bgtCd: this.state.bgtCd,
+            mgtCd: "",
+            gisu: this.state.gisu,
+            bottomNm: "",
+            carrAm: "",
+            carrAm1: "",
+            carrAm2: "",
+            carrAm3: "",
+            remDc: "",
+            bgtTy: "",
+            modifyId: "",
+            isNew: true,
+          });
+
+          await this.setState({ rows: rowsWithId });
+        });
       });
-    });
+    }
   };
 
   updateBgtICF = (row) => {
@@ -265,13 +290,13 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
-          mgtCd: this.state.mgtCd,
+          mgtCd: "",
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
-          carrAm1: 0,
-          carrAm2: 0,
-          carrAm3: 0,
+          carrAm1: "",
+          carrAm2: "",
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -283,39 +308,20 @@ class DataGridComponent extends Component {
     });
   };
 
-  processRowUpdate = (newRow) => {
-    console.log(newRow);
-    console.log("================================================");
-    if (newRow.isNew) {
-      this.insertBgtICF(newRow);
-    } else {
-      const updatedRow = { ...newRow, isNew: false };
+  handleRowClick = async (params) => {
+    console.log("row");
+    console.log(params.row);
 
-      this.setState((prevState) => ({
-        rows: prevState.rows.map((row) =>
-          row.id === newRow.id ? updatedRow : row
-        ),
-      }));
-      this.updateBgtICF(updatedRow);
-    }
-
-    const updatedRow = { ...newRow, isNew: false };
-
-    return updatedRow;
-  };
-
-  handleRowModesModelChange = (newRowModesModel) => {
-    this.setState({ rowModesModel: newRowModesModel });
-  };
-
-  handleRowClick = (params) => {
     this.props.setSelectedRowId(params.row);
 
-    this.setState({ selectedRowId: params.row.id });
+    await this.setState({ selectedRowId: params.row.id, selectedRow: params.row });
+    console.log(this.state.selectedRowId);
+
+    console.log(this.state.selectedRow);
   };
 
   render() {
-    const { rows, rowModesModel, selectedRowId } = this.state;
+    const { rows, selectedRowId } = this.state;
 
     const currencyFormatter = new Intl.NumberFormat("ko-KR", {
       /* style: "currency", currency: "KRW", */
@@ -330,76 +336,58 @@ class DataGridComponent extends Component {
 
     const columns = [
       {
-        field: "mgtCd",
+        field: "mgtNm",
         headerName: "프로젝트",
         headerAlign: "center",
-        editable: true,
-        // renderCell: (params) => {
-        //   console.log(params);
-        //   return (
-        //     <div
-        //       className="d-flex justify-content-between align-items-center"
-        //       style={{ cursor: "pointer" }}
-        //     >
-        //       {params.row.mgtCd}
-        //       <SearchIcon
-        //         onClick={async () => {
-        //           this.pjtRef.current.handleUp();
-        //           console.log("asdf");
-        //           console.log(params.row.id);
-        //           await this.setState((prevState) => ({
-        //             rowModesModel: {
-        //               ...prevState.rowModesModel,
-        //               [params.row.id]: { mode: GridRowModes.Edit },
-        //             },
-        //           }));
-        //         }}
-        //       />
-        //     </div>
-        //   );
-        // },
-        renderEditCell: (params) => {
-          const rowIndex = this.state.rows.findIndex(
-            (row) => row.id === params.row.id
-          );
-          const mgtCd = params.row.mgtCd;
+        editable: false,
+        renderCell: (params) => {
           return (
-            <div
-              className="d-flex justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
-            >
-              {this.state.rows[rowIndex].mgtCd}
-              <SearchIcon
-                className="mgt-dialog-icon"
-                sx={{
-                  position: "absolute",
-                  right: 0,
-                }}
-                onClick={async () => {
+            <Grid
+              container
+              alignContent="center"
+              sx={{ width: "100%", height: "100%", outline: "none" }}
+              onDoubleClick={() => {
+                this.pjtRef.current.handleUp();
+              }}
+              onKeyDown={(event) => {
+                console.log(event.keyCode);
+                const allowedKeys = /[a-zA-Z0-9]/;
+                if (
+                  event.key.match(allowedKeys) &&
+                  event.keyCode >= 40 &&
+                  event.keyCode <= 90
+                ) {
                   this.pjtRef.current.handleUp();
-                  console.log(this.state.rows[rowIndex]);
-                  // const updatedRows = this.state.rows.map((row) => {
-                  //   if (row.id === params.row.id) {
-                  //     return { ...row, mgtCd: 999 }; // 클릭된 행의 mgtCd 값을 업데이트
-                  //   }
-                  //   return row;
-                  // });
-                  // await this.setState({ rows: updatedRows }); // rows 상태를 업데이트합니다.
-                  // console.log("변경후");
-                  // console.log(this.state);
-                }}
-              />
-            </div>
+                }
+              }}
+              tabIndex={0}
+            >
+              {params.row.mgtNm}
+            </Grid>
           );
         },
-        className: "mgtCd",
+        cellClassName: "mgtNm",
       },
       {
         field: "carrAm",
         headerName: "이월금액",
         headerAlign: "center",
-        editable: true,
+        editable: false,
         ...krAmount,
+        renderCell: (params) => {
+          return (
+            <Grid
+              container
+              alignContent="center"
+              justifyContent="flex-end"
+              sx={{ width: "100%", height: "100%" }}
+            >
+              {(params.row.carrAm1 + params.row.carrAm2 - params.row.carrAm3)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </Grid>
+          );
+        },
       },
       {
         field: "carrAm1",
@@ -407,6 +395,23 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: true,
         ...krAmount,
+        cellClassName: "carrAm1",
+        renderCell: (params) => {
+          return (
+            <Grid
+              container
+              alignContent="center"
+              justifyContent="flex-end"
+              sx={{ width: "100%", height: "100%" }}
+            >
+              {params.row.carrAm1 === ""
+                ? ""
+                : params.row.carrAm1
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </Grid>
+          );
+        },
       },
       {
         field: "carrAm2",
@@ -414,6 +419,23 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: true,
         ...krAmount,
+        cellClassName: "carrAm2",
+        renderCell: (params) => {
+          return (
+            <Grid
+              container
+              alignContent="center"
+              justifyContent="flex-end"
+              sx={{ width: "100%", height: "100%" }}
+            >
+              {params.row.carrAm2 === ""
+                ? ""
+                : params.row.carrAm2
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </Grid>
+          );
+        },
       },
       {
         field: "carrAm3",
@@ -421,6 +443,23 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: true,
         ...krAmount,
+        cellClassName: "carrAm3",
+        renderCell: (params) => {
+          return (
+            <Grid
+              container
+              alignContent="center"
+              justifyContent="flex-end"
+              sx={{ width: "100%", height: "100%" }}
+            >
+              {params.row.carrAm3 === ""
+                ? ""
+                : params.row.carrAm3
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </Grid>
+          );
+        },
       },
       {
         field: "remDc",
@@ -432,45 +471,28 @@ class DataGridComponent extends Component {
         field: "bgtTy",
         headerName: "입력구분",
         headerAlign: "center",
-        editable: true,
+        editable: false,
+        align: "center",
       },
       {
-        field: "insertId",
+        field: "empName",
         headerName: "작성자",
         headerAlign: "center",
-        editable: true,
+        editable: false,
+        align: "center",
       },
     ];
 
     return (
-      <Box
-        sx={{
-          height: "100%",
-          width: "100%",
-          "& .actions": {
-            color: "text.secondary",
-          },
-          "& .textPrimary": {
-            color: "text.primary",
-          },
-        }}
-      >
+      <>
         <DataGrid
           rows={rows}
           columns={columns}
-          // editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={this.handleRowModesModelChange}
-          onRowEditStop={this.handleRowEditStop}
           onCellEditStop={this.handleCellEditStop}
           showCellVerticalBorder
+          showColumnVerticalBorder
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
-          onCellClick={(e) => {
-            if (e.field === "divCd" && e.cellMode === "edit") {
-              this.pjtRef.current.handleUp();
-            }
-          }}
           components={{
             NoRowsOverlay: () => "",
           }}
@@ -479,14 +501,59 @@ class DataGridComponent extends Component {
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",
             borderBottom: "2px solid #EAEAEA",
+            "& .MuiDataGrid-cell:focus-within": {
+              outline: "none",
+              border: "1px solid #1976d2"
+            },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold",
             },
             "& .MuiDataGrid-cell--editing": {
               position: "relative",
             },
+            "& .MuiDataGrid-cell:focus": {
+              outline: "none !important",
+              border: "1px solid #1976d2 !important",
+            },
+            "& .MuiDataGrid-row:last-child": {
+              background: "#FFFCFC",
+              color: "black",
+            },
+            "& .MuiDataGrid-row:hover": {
+              background: "#F5F5F5 !important",
+            },
+
+            "& .MuiDataGrid-row.Mui-selected": {
+              background: "#EDF4FB !important",
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-row.Mui-selected .mgtNm.MuiDataGrid-cell": {
+              background: "#D9E5FF !important",
+            },
+            "& .MuiDataGrid-row.Mui-selected .carrAm1.MuiDataGrid-cell": {
+              background: "#D9E5FF !important",
+            },
+            "& .MuiDataGrid-row.Mui-selected .carrAm2.MuiDataGrid-cell": {
+              background: "#D9E5FF !important",
+            },
+            "& .MuiDataGrid-row.Mui-selected .carrAm3.MuiDataGrid-cell": {
+              background: "#D9E5FF !important",
+            },
+
+            "& .MuiDataGrid-row:last-child .mgtNm.MuiDataGrid-cell": {
+              background: "#FFEAEA",
+            },
+            "& .MuiDataGrid-row:last-child .carrAm1.MuiDataGrid-cell": {
+              background: "#FFEAEA",
+            },
+            "& .MuiDataGrid-row:last-child .carrAm2.MuiDataGrid-cell": {
+              background: "#FFEAEA",
+            },
+            "& .MuiDataGrid-row:last-child .carrAm3.MuiDataGrid-cell": {
+              background: "#FFEAEA",
+            },
           }}
-          // hideFooter
+          hideFooter
           initialState={{
             aggregation: {
               model: {
@@ -497,16 +564,16 @@ class DataGridComponent extends Component {
               },
             },
           }}
-          slots={{
-            footer: CustomFooterStatusComponent,
-          }}
-          slotProps={rows}
+        />
+        <CustomFooterStatusComponent
+          rows={this.state.rows}
+          ref={this.footerRef}
         />
         <PjtDialogComponent
           ref={this.pjtRef}
           SetPjtTextField={this.SetPjtTextField}
         />
-      </Box>
+      </>
     );
   }
 }
@@ -517,31 +584,57 @@ const mapStateToProps = (state) => ({
 });
 
 class CustomFooterStatusComponent extends Component {
-  state = {
-    carrAmTotal: 0,
+  constructor(props) {
+    super(props);
+    this.state = {
+      sumCarrAm: 0,
+      sumCarrAm1: 0,
+      sumCarrAm2: 0,
+      sumCarrAm3: 0,
+    };
+
+    // this.sumCarrAm();
+  }
+
+  sumCarrAm = (rows) => {
+    console.log("test2");
+    console.log(rows);
+    let sumCarrAm1 = 0;
+    let sumCarrAm2 = 0;
+    let sumCarrAm3 = 0;
+
+    rows.map((row) => {
+      console.log(row.carrAm1 === "" ? 0 : Number(row.carrAm1));
+      console.log(row.carrAm2 === "" ? 0 : Number(row.carrAm2));
+      console.log(row.carrAm3 === "" ? 0 : Number(row.carrAm3));
+  sumCarrAm1 += row.carrAm1 === "" ? 0 : Number(row.carrAm1);
+  sumCarrAm2 += row.carrAm2 === "" ? 0 : Number(row.carrAm2);
+  sumCarrAm3 += row.carrAm3 === "" ? 0 : Number(row.carrAm3);
+    });
+
+    console.log(sumCarrAm1);
+    console.log(sumCarrAm2);
+    console.log(sumCarrAm3);
+
+    this.setState({sumCarrAm: sumCarrAm1+sumCarrAm2-sumCarrAm3, sumCarrAm1: sumCarrAm1, sumCarrAm2: sumCarrAm2, sumCarrAm3: sumCarrAm3});
   };
 
-  // componentDidUpdate(prevProps) {
-  //   console.log(this.props.slotProps);
-  //   if (this.props.slotProps !== prevProps.slotProps) {
-      
-  //     const { slotProps } = this.props;
-  //     console.log(slotProps);
-  //     const carrAmTotal = slotProps.reduce(
-  //       (total, current) => total + (current.carrAm || 0),
-  //       0
-  //     );
-  //     this.setState({ carrAmTotal: carrAmTotal });
-  //   }
-  // }
-
   render() {
-    const { carrAmTotal } = this.state;
+    const { rows } = this.props;
     return (
-      <Box sx={{ p: 1, display: "flex" }}>Total carrAm: {carrAmTotal}</Box>
+      <Box sx={{ p: 1, display: "flex" }}>
+        {this.state.sumCarrAm.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/
+      
+        {this.state.sumCarrAm1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        /
+        {this.state.sumCarrAm2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        /
+        {this.state.sumCarrAm3.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+      </Box>
     );
   }
 }
+
 
 
 

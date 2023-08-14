@@ -40,9 +40,10 @@ const krAmount = {
 
 const BGTCD_COLUMN = [
   {
+    // flex: 1,
     field: "bgtCd",
     headerName: "예산코드",
-    width: 80,
+    width: 110,
     headerAlign: "center",
   },
   {
@@ -52,17 +53,19 @@ const BGTCD_COLUMN = [
     headerAlign: "center",
   },
   {
+    flex: 1,
     field: "bgtNm",
     headerName: "예산과목명",
-    width: 100,
+    // width: 100,
     headerAlign: "center",
-    cellClassName: "bgtNm"
+    cellClassName: "bgtNm",
   },
   {
+    flex: 1,
     field: "carrAm",
     headerName: "금액",
     headerAlign: "center",
-    width: 120,
+    // width: 120,
     ...krAmount,
   },
 ];
@@ -227,7 +230,7 @@ class BgtICFComponent extends Component {
       console.log(response);
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.bgtCd,  
+        id: row.bgtCd,
       }));
       this.setState({ bgtCDRows: rowsWithId });
     });
@@ -266,6 +269,7 @@ class BgtICFComponent extends Component {
     console.log(e.row);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
+    
     this.bgtICFRef.current.getBgtICFList(e.row);
   };
 
@@ -311,6 +315,12 @@ class BgtICFComponent extends Component {
                 name="divTextField"
                 value={divTextField}
                 onChange={this.handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    alert("Asdf");
+                  }
+
+                }}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -439,15 +449,19 @@ class BgtICFComponent extends Component {
                 borderRight: "2px solid #EAEAEA",
                 borderBottom: "2px solid #EAEAEA",
                 "& .MuiDataGrid-row:hover": {
-                  background: "#EDAF8C",
-                },
-                "& .MuiDataGrid-row.Mui-selected": {
-                  background: "#FFC19E",
-                  fontWeight: "bold",
+                  background: "#F5F5F5",
                 },
                 "& .MuiDataGrid-row.Mui-selected:hover": {
-                  background: "#FFD8D8",
+                  background: "#F5F5F5",
                 },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  backgroundColor: "#EDF4FB !important",
+                  fontWeight: "bold",
+                },
+                // "& .MuiDataGrid-row.Mui-selected:hover": {
+                //   background: "#FFD8D8",
+                // },
+
                 "& .style-divfg-1": { background: "#86E57F" },
                 "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
                   paddingLeft: "0px !important",
@@ -486,9 +500,8 @@ class BgtICFComponent extends Component {
               rows={this.state.bgtCDRows}
               onRowClick={this.handleClickBgtCDRow}
               hideFooter
-              hideFooterRowCount
-              hideFooterPagination
-              hideFooterSelectedRowCount
+              showCellVerticalBorder
+              showColumnVerticalBorder
               onEditCellChange={this.handleEditCellChange}
               getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
             />

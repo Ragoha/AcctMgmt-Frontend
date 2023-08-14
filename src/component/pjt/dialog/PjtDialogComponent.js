@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { connect } from 'react-redux';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Checkbox } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
 import PjtService from '../../../service/PjtService';
@@ -23,8 +23,7 @@ import {
 } from "../../common/style/CommonStyle";
 
 const columns = [
-  { field: 'check', headerName: '', width: 10, headerAlign: 'center' },
-  { field: 'pjtCd', headerName: '프로젝트코드', width: 180, headerAlign: 'center' },
+  { field: 'pjtCd', headerName: '프로젝트코드', width: 100, headerAlign: 'center' },
   { field: 'pjtNm', headerName: '프로젝트명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
@@ -38,20 +37,43 @@ class PjtDialogComponent extends Component {
     super(props);
     this.state = {
       open: false,
-
       selectedRow: { pjtCd: "", pjtNm: "" }, //클릭된 열의 cd와 이름 
       pjtRows: [],          //열 배열넣기
       keyword: "",
       rows: rows,
       columns: columns,
+      selectedRowIds: [], // 선택된 행 ID를 저장하는 배열
     }
   }
+
+  isSelected = (id) => this.state.selectedRowIds.includes(id);
+
+  handleRowCheckboxClick = (id) => {
+    const selectedRowIds = [...this.state.selectedRowIds];
+    if (selectedRowIds.includes(id)) {
+      const index = selectedRowIds.indexOf(id);
+      selectedRowIds.splice(index, 1);
+    } else {
+      selectedRowIds.push(id);
+    }
+    this.setState({ selectedRowIds });
+  };
+
+  handleHeaderCheckboxClick = (event) => {
+    if (event.target.checked) {
+      const selectedRowIds = this.state.rows.map((row) => row.id);
+      this.setState({ selectedRowIds });
+    } else {
+      this.setState({ selectedRowIds: [] });
+    }
+  };
+
 
   setPjtKeyword = (data) => {
     this.setState({ keyword: data }, () => {
       this.handleSearchPjt(); // 데이터를 설정한 후에 엔터 함수 실행  
     })
-}
+  }
 
   handleUp = () => {
     this.setState({ open: true });
@@ -127,7 +149,7 @@ class PjtDialogComponent extends Component {
 
 
   render() {
-    const { open, columns, keyword} = this.state;
+    const { open, columns, keyword } = this.state;
 
     return (
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
@@ -174,6 +196,7 @@ class PjtDialogComponent extends Component {
             <CustomDataGrid
               columns={columns}
               rows={this.state.pjtRows}
+              checkboxSelection 
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -193,7 +216,7 @@ class PjtDialogComponent extends Component {
         </CustomDialogActions>
       </CustomShortDialog>
     );
-  }
+  }   
 }
 const mapStateToProps = (state) => ({
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..

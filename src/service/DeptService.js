@@ -54,7 +54,8 @@ insertDept(data) {
                 deptNm: data.deptNm,
                 deptZip: data.deptZip,
                 deptAddr: data.deptAddr,
-                deptAddr1: data.deptAddr1
+                deptAddr1: data.deptAddr1,
+                insertId: data.insertId
             },{
                 headers: {
                     "access-token": data.accessToken,

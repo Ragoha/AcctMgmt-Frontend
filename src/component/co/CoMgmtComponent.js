@@ -14,7 +14,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InputAdornment from '@mui/material/InputAdornment';
 import CompanyService from '../../service/CompanyService';
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../common/style/CommonDialogStyle';
-import { CustomDataGrid, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
+import { CustomDataGrid, CustomDatePrToTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import CoDialogComponent from './dialog/CoDialogComponent';
 import { DataGrid } from '@mui/x-data-grid';
@@ -610,6 +610,20 @@ class CoMgmtComponent extends Component {
               <CustomHeaderInputLabel>회사등록</CustomHeaderInputLabel>
             </Grid>
           </Grid>
+          <Grid item>
+            {coCd ? (
+              <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
+                수 정
+              </Button>
+            ) : (
+              <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertCo}>
+                저 장
+              </Button>
+            )}
+            <Button variant="outlined" onClick={this.deleteCo}>
+              삭 제
+            </Button>
+          </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
           container
@@ -663,9 +677,8 @@ class CoMgmtComponent extends Component {
                 justifyContent: "left",
                 alignItems: "center",
                 width: "100%",
-                height: 22,
                 backgroundColor: "#f5f5f5",
-                borderBottom: "1px solid",
+                borderBottom: "3px solid #EAEAEA",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
@@ -675,8 +688,9 @@ class CoMgmtComponent extends Component {
             <Grid
               item
               sx={{
-                pl: 1.2,
-                width: "95%",
+                pl: 1,
+                pr: 1,
+                width: "100%",
                 height: "calc(100% - 5%)",
                 overflowY: "auto",
               }}
@@ -714,29 +728,12 @@ class CoMgmtComponent extends Component {
             </Grid>
           </Grid>
 
-          <Grid container direction="column" sx={{ ml: 1, height: 670 }}>
-            <Grid item></Grid>
-            <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
+          <Grid container direction="column" sx={{ ml: 2, height: 670 }}>
+            <Grid container justifyContent="space-between">
               <Grid item>
-                <CustomInputLabel sx={{ fontSize: 18, mt: 1 }}>
+                <CustomInputLabel sx={{ fontSize: 18 }}>
                   기본정보
                 </CustomInputLabel>
-              </Grid>
-              <Grid item sx={{ ml: 0.3 }}>
-                <Grid container>
-                  {coCd ? (
-                    <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
-                      수정
-                    </Button>
-                  ) : (
-                    <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertCo}>
-                      저장
-                    </Button>
-                  )}
-                  <Button variant="outlined" onClick={this.deleteCo}>
-                    삭제
-                  </Button>
-                </Grid>
               </Grid>
             </Grid>
             <Grid container sx={{ border: "2px solid #EAEAEA" }}>
@@ -744,7 +741,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -808,7 +804,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -817,9 +812,7 @@ class CoMgmtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel>
-                  종목
-                </CustomInputLabel>
+                <CustomInputLabel>종목</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -874,7 +867,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -935,22 +927,20 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 150,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "flex-start",
                   backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
-                  borderRight: '1px solid #EAEAEA'
+                  borderRight: "1px solid #EAEAEA",
                 }}
               >
-                <CustomInputLabel sx={{ mt: 1 }}>회사주소</CustomInputLabel>
+                <CustomInputLabel>회사주소</CustomInputLabel>
               </Grid>
               <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
                 <Grid
                   container
                   direction="column"
-                  spacing={1}
                   sx={{ width: "calc(100% + -24px)" }}
                 >
                   <Grid item>
@@ -962,10 +952,10 @@ class CoMgmtComponent extends Component {
                         onChange={this.handleCompany}
                         value={coZip || ""}
                         InputProps={{ readOnly: true }}
-                        sx={{ ml: 2, width: "150px" }}
+                        sx={{ mt:1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
-                        sx={{ ml: 1 }}
+                        sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                         onClick={this.addrButton}
                       >
@@ -982,11 +972,12 @@ class CoMgmtComponent extends Component {
                       InputProps={{ readOnly: true }}
                     />
                   </Grid>
-                  <Grid item >
+                  <Grid item>
                     <CustomWideTextField
                       name="coAddr1"
                       onChange={this.handleCompany}
                       value={coAddr1 || ""}
+                      sx={{mt: "0px !important"}}
                     />
                   </Grid>
                 </Grid>
@@ -995,23 +986,29 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   backgroundColor: "#FCFCFC",
                   borderBottom: "1px solid lightgray",
-                  borderRight: '1px solid #EAEAEA'
-
+                  borderRight: "1px solid #EAEAEA",
                 }}
               >
                 <CustomInputLabel sx={{ color: "black" }}>
                   회계기수
                 </CustomInputLabel>
               </Grid>
-              <Grid item xs={10} sx={{ display: "flex", alignItems: "center", borderTop: "1px solid #EAEAEA", }}>
+              <Grid
+                item
+                xs={10}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderTop: "1px solid #EAEAEA",
+                }}
+              >
                 <CustomInputLabel
-                  sx={{ ml: 2 }}
+                  sx={{ ml: 1 }}
                   name="gisu"
                   onChange={this.handleCompany}
                   value={gisu || ""}
@@ -1021,11 +1018,10 @@ class CoMgmtComponent extends Component {
                 <CustomInputLabel sx={{ textAlign: "right", mr: 1 }}>
                   기
                 </CustomInputLabel>
-                <CustomTextField
+                <CustomDatePrToTextField
                   name="dateRange"
                   disabled={true}
                   value={this.state.dateRange || ""}
-                  sx={{ width: 240, minWidth: 240 }}
                   onChange={this.handleCompany}
                   InputProps={{
                     readOnly: true,
@@ -1037,7 +1033,7 @@ class CoMgmtComponent extends Component {
                       </InputAdornment>
                     ),
                   }}
-                ></CustomTextField>
+                ></CustomDatePrToTextField>
                 <Button
                   size="medium"
                   sx={{ ml: 1 }}
@@ -1049,7 +1045,10 @@ class CoMgmtComponent extends Component {
               </Grid>
             </Grid>
           </Grid>
-          <CustomShortDialog open={open} PaperProps={{ sx: { width: 500, height: 600 } }}>
+          <CustomShortDialog
+            open={open}
+            PaperProps={{ sx: { width: 500, height: 600 } }}
+          >
             <CustomDialogTitle sx={{ fontWeight: "bold" }}>
               회계기수 등록
               <IconButton
@@ -1062,41 +1061,41 @@ class CoMgmtComponent extends Component {
             </CustomDialogTitle>
             <CustomDialogContent>
               <Grid container direction="column" alignItems="flex-end">
-                <Button sx={{ mt: 1, mb: 1,mr:2 }} variant="outlined">
+                <Button sx={{ mt: 1, mb: 1, mr: 2 }} variant="outlined">
                   삭제
                 </Button>
               </Grid>
 
               <Grid style={{ height: 350, width: "100%" }}>
-              <CustomShortDataGridContainer container>
-                <DataGrid
-                  sx={{ borderTop: "2px solid #000" }}
-                  rows={data.rows}
-                  columns={data.columns}
-                  showColumnVerticalBorder={true}
-                  showCellVerticalBorder={true} // 각 셀마다 영역주기
-                  processRowUpdate={this.processRowUpdate} //-> 이거 해봐야함
-                  onRowClick={this.handleClickRow}
-                  hideFooter
-                />
+                <CustomShortDataGridContainer container>
+                  <DataGrid
+                    sx={{ borderTop: "2px solid #000" }}
+                    rows={data.rows}
+                    columns={data.columns}
+                    showColumnVerticalBorder={true}
+                    showCellVerticalBorder={true} // 각 셀마다 영역주기
+                    processRowUpdate={this.processRowUpdate} //-> 이거 해봐야함
+                    onRowClick={this.handleClickRow}
+                    hideFooter
+                  />
                 </CustomShortDataGridContainer>
               </Grid>
             </CustomDialogContent>
             <CustomDialogActions>
-            <CustomButtonGridContainer container justifyContent="flex-end">
-              <CustomConfirmButton
-                variant="outlined"
-                onClick={() => this.insertDate(selectedRow)}
-              >
-                확인
-              </CustomConfirmButton>
+              <CustomButtonGridContainer container justifyContent="flex-end">
+                <CustomConfirmButton
+                  variant="outlined"
+                  onClick={() => this.insertDate(selectedRow)}
+                >
+                  확인
+                </CustomConfirmButton>
 
-              <Button
-                variant="outlined"
-                onClick={() => this.setState({ open: false })}
-              >
-                취소
-              </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => this.setState({ open: false })}
+                >
+                  취소
+                </Button>
               </CustomButtonGridContainer>
             </CustomDialogActions>
           </CustomShortDialog>

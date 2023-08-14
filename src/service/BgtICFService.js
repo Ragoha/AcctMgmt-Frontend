@@ -46,7 +46,7 @@ class BtgICFService {
           gisu: data.row.gisu,
           sq: data.row.sq,
           bgtCd: data.row.bgtCd,
-          divCd: data.row.divCd,
+          divCd: data.divCd,
           deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
           bgtFg: data.row.bgtFg,
@@ -57,6 +57,7 @@ class BtgICFService {
           carrAm3: data.row.carrAm3,
           empCd: data.user.empCd,
           remDc: data.row.remDc,
+          insertId: data.user.empId,
           modifyId: data.user.empId,
         },
         {

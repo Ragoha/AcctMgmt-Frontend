@@ -24,7 +24,7 @@ class ForgotPasswordDialog extends Component {
     return (
       <>
         <Link id="forgot" onClick={this.handleOpen}>
-          Forgot Password
+          비밀번호 찾기
           <SearchIcon />
         </Link>
         <Dialog open={open} onClose={this.handleOpen}>
