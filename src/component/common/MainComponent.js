@@ -35,7 +35,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100% - ${drawerWidth-1}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       // duration: theme.transitions.duration.enteringScreen,
@@ -122,7 +122,11 @@ class MainComponent extends Component {
           <CssBaseline />
 
           {/* Header */}
-          <AppBar position="fixed" open={open} sx={{ background: "#4A55A2" }}>
+          <AppBar position="fixed" open={open} sx={{
+            background: "#4A55A2",
+            right: "1px",
+            mr: "-1px",
+          }}>
             <Toolbar
               sx={{
                 pr: "24px", // keep right padding when drawer closed
@@ -178,6 +182,7 @@ class MainComponent extends Component {
                 alignItems: "center",
                 justifyContent: "flex-end",
                 px: [1],
+                background: "#7895CB"
               }}
             >
               <IconButton onClick={this.toggleDrawer}>

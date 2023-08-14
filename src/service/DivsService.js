@@ -132,6 +132,7 @@ class DivsService {
                   },
                   withCredentials: true,
                 params: {
+                    coCd: data.coCd,
                     keyword: data.keyword
                 },
             })

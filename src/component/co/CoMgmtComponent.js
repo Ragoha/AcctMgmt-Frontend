@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, Divider, IconButton, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 import { ApartmentOutlined } from "@mui/icons-material";
@@ -320,7 +320,8 @@ class CoMgmtComponent extends Component {
           }) :
           CompanyService.getCompany({
             accessToken: this.props.accessToken,
-            coCd: coCd})
+            coCd: coCd
+          })
 
             .then((response) => {
               const coCd = response.data[0].coCd;
@@ -376,12 +377,14 @@ class CoMgmtComponent extends Component {
       CodialTextField: data.coCd + ". " + data.coNm,
       coCd: data.coCd  //밑에 coCd 넘겨주기
     });
+    this.searchClick(this.state.coCd); //음 왜 기존 검색어가 텍스트 필드에 없는지....?
   };
 
   searchClick = (coCd) => {
-    CompanyService.getCompany({ 
+    CompanyService.getCompany({
       accessToken: this.props.accessToken,
-      coCd: coCd})
+      coCd: coCd
+    })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
@@ -446,20 +449,21 @@ class CoMgmtComponent extends Component {
     const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
 
     console.log(coNm)
-    CompanyService.updateCo({ 
+    CompanyService.updateCo({
       accessToken: this.props.accessToken,
-      coCd: coCd, 
-      coNm: coNm, 
-      gisu: gisu, 
-      frDt: frDt, 
-      toDt: toDt, 
-      jongmok: jongmok, 
-      businessType: businessType, 
-      coNb: coNb, 
-      ceoNm: ceoNm, 
-      coZip: coZip, 
-      coAddr: coAddr, 
-      coAddr1: coAddr1})
+      coCd: coCd,
+      coNm: coNm,
+      gisu: gisu,
+      frDt: frDt,
+      toDt: toDt,
+      jongmok: jongmok,
+      businessType: businessType,
+      coNb: coNb,
+      ceoNm: ceoNm,
+      coZip: coZip,
+      coAddr: coAddr,
+      coAddr1: coAddr1
+    })
       .then((response) => {
         console.log(response.data);
         window.confirm('업데이트 완료!');
@@ -498,9 +502,10 @@ class CoMgmtComponent extends Component {
   deleteCo = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd } = this.state;
 
-    CompanyService.deleteCo({ 
+    CompanyService.deleteCo({
       accessToken: this.props.accessToken,
-      coCd: coCd})
+      coCd: coCd
+    })
       .then((response) => {
         console.log(response.data);
         window.confirm('회사삭제 완료!');
@@ -666,7 +671,7 @@ class CoMgmtComponent extends Component {
               width: "22%",
               height: 670,
               border: "1px solid #EAEAEA",
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "#FCFCFC"
             }}
           >
             <Grid
@@ -677,21 +682,29 @@ class CoMgmtComponent extends Component {
                 justifyContent: "left",
                 alignItems: "center",
                 width: "100%",
-                backgroundColor: "#f5f5f5",
-                borderBottom: "3px solid #EAEAEA",
+                // backgroundColor: "#f5f5f5",
+                backgroundColor: "#FCFCFC",
+                // borderBottom: "3px solid #EAEAEA",
+                borderBottom: "2px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
-              <CustomInputLabel>{cardCount}</CustomInputLabel>
+              <InputLabel sx={{
+                color: "#0054FF",
+                fontWeight: "bold",
+              }}>{cardCount}</InputLabel>
+              <CustomInputLabel>건</CustomInputLabel>
             </Grid>
+            
 
             <Grid
               item
               sx={{
                 pl: 1,
                 pr: 1,
+                pb: 1,
                 width: "100%",
-                height: "calc(100% - 5%)",
+                height: "calc(100vh - 345px)",
                 overflowY: "auto",
               }}
             >
@@ -704,17 +717,17 @@ class CoMgmtComponent extends Component {
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "60px", width: "100%" }}
+              sx={{ width: "100%" }}
             >
               <Button
                 variant="extended"
                 onClick={this.addCardButton}
                 sx={{
-                  border: "1px solid",
+                  border: "1px solid #D5D5D5",
                   width: "100%",
                   height: "60px",
-                  backgroundColor: "#F6F6F6",
-                  color: "black",
+                  backgroundColor: "white",
+                  color: "#5D5D5D",
                   display: "flex",
                   justifyContent: "center",
                   "&:hover": {
@@ -722,7 +735,7 @@ class CoMgmtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon />
+                <AddIcon sx={{ mb: 0.2, fontSize: 'medium', color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -736,7 +749,7 @@ class CoMgmtComponent extends Component {
                 </CustomInputLabel>
               </Grid>
             </Grid>
-            <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: '-4px', border: "2px solid #EAEAEA" }}>
               <Grid
                 item
                 xs={2}
@@ -744,6 +757,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -757,7 +771,8 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderTop: "2px solid #000",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -777,6 +792,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -790,7 +806,8 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderTop: "2px solid #000",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -820,7 +837,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -853,7 +870,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -883,7 +900,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -914,7 +931,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderBottom: "1px solid #EAEAEA",
+                  borderBottom: "1px solid lightgray",
                 }}
               >
                 <CustomWideTextField
@@ -952,7 +969,7 @@ class CoMgmtComponent extends Component {
                         onChange={this.handleCompany}
                         value={coZip || ""}
                         InputProps={{ readOnly: true }}
-                        sx={{ mt:1, ml: 1, width: "150px" }}
+                        sx={{ mt: 1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
                         sx={{ ml: 1, mt: 1 }}
@@ -977,7 +994,7 @@ class CoMgmtComponent extends Component {
                       name="coAddr1"
                       onChange={this.handleCompany}
                       value={coAddr1 || ""}
-                      sx={{mt: "0px !important"}}
+                      sx={{ mt: "0px !important" }}
                     />
                   </Grid>
                 </Grid>
@@ -990,7 +1007,6 @@ class CoMgmtComponent extends Component {
                   justifyContent: "flex-end",
                   alignItems: "center",
                   backgroundColor: "#FCFCFC",
-                  borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -1004,7 +1020,7 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "1px solid #EAEAEA",
+                  borderTop: "1px solid lightgray",
                 }}
               >
                 <CustomInputLabel

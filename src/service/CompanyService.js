@@ -136,7 +136,7 @@ class CompanyService {
         withCredentials: true,
         params: {
           keyword: data.keyword
-        },
+        }
       })
       .then((response) => response.data);
   };
