@@ -26,13 +26,14 @@ class BgtCDADDSubDialog extends Component {
           headerName: "그룹코드",
           flex: 1,
           headerAlign: "center",
+          editable:true
         },
         {
           field: "bgtGrNm",
           headerName: "그룹명aaa",
           flex: 1,
           headerAlign: "center",
-          editable: true,
+          editable:true
         },
       ],
       rows: [],
@@ -43,12 +44,10 @@ class BgtCDADDSubDialog extends Component {
     BgtCDService.getBgtGrData(coCd)
       .then((fetchedRows) => {
         console.log("여긴 BgtCDDevFgCustom 컴포넌트 마운트");
-
         // 받아온 rows 데이터에 isEditable 속성을 false로 설정합니다.
-        const updatedRows = fetchedRows.map(row => ({ ...row, editable: false }));
-
+        const updatedRows = fetchedRows.map(row => ({ ...row, editable: false}));
         // 새로운 항목도 isEditable을 false로 설정합니다.
-        updatedRows.push({ coCd: coCd, bgtGrCd: '', isEditable: false });
+        updatedRows.push({ coCd: coCd, bgtGrCd: '', editable: true });
 
         this.setState({ rows: updatedRows });
       })
@@ -56,11 +55,40 @@ class BgtCDADDSubDialog extends Component {
         console.error("Error fetching data:", error);
       });
     this.handleUp();
-}
-processEnd=()=>{
+  }
+  processRowUpdate = (newRow) => {
+    console.log('processRowupdate');
+    console.log(newRow);
 
-}
+    // // 새로운 행이 isEditable: true 속성을 가진 마지막 행인지 확인
+    // const isLastRow = this.state.rows[this.state.rows.length - 1].editable;
 
+    // if (isLastRow) {
+    //     // 입력된 새 행을 업데이트
+    //     const updatedRow = { ...newRow, editable: false, isNew: false };
+
+    //     this.setState((prevState) => {
+    //         // 기존 행들을 유지하면서 마지막 빈 행을 제거하고, 새로운 행을 추가
+    //         const newRows = [...prevState.rows.slice(0, prevState.rows.length - 1), updatedRow];
+    //         return { rows: newRows };
+    //     }, () => {
+    //         const { coCd } = this.props.userInfo;
+
+    //         // 새로운 빈 행을 마지막에 추가
+    //         this.setState({
+    //             rows: [...this.state.rows, { coCd: coCd, bgtGrCd: '', editable: true }]
+    //         });
+    //     });
+    // } else {
+    //     // 기존 행이 업데이트되는 경우 (여기서는 일단 간단하게 처리하였습니다)
+    //     const updatedRow = { ...newRow, isNew: false };
+    //     this.setState((prevState) => ({
+    //         rows: prevState.rows.map((row) => row.bgtGrCd === newRow.bgtGrCd ? updatedRow : row)
+    //     }));
+    // }
+
+    return newRow;
+};
 
   /*default function */
   handleUp = () => {
@@ -72,8 +100,12 @@ processEnd=()=>{
   };
 
   handleClickConfirm = () => {
-    // console.log('확인버튼 ')
-    // console.log(this.state.rows)
+    console.log('확인버튼 ')
+    console.log(this.state.rows)
+    const { accessToken } = this.props;
+    const data =this.state.rows;
+    BgtCDService.insertBgtGr(data,accessToken)
+    .then(this.handleDown());
   }
 
   render() {
@@ -108,8 +140,8 @@ processEnd=()=>{
                 showColumnVerticalBorder={true}
                 showCellVerticalBorder={true} // 각 셀마다 영역주기
                 editMode="row"
-                // processRowUpdate={this.processRowUpdate}
-                // onProcessRowUpdateError={(error) => { }}
+                processRowUpdate={this.processRowUpdate}
+                onProcessRowUpdateError={(error) => { }}
                 hideFooter
               />
             </Grid>

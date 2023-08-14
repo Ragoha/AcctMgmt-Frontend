@@ -187,10 +187,9 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
                         size: "small",
                         sx: {
                           width: "150px",
-                          ml: "18px",
-                          mr: "3px",
-                          marginTop: "13px",
-                          marginBottom: "3px",
+                          ml: "8px",
+                          marginTop: "8px",
+                          marginBottom: "8px",
                         },
                         inputProps: {
                           style: {
