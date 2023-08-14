@@ -3,6 +3,7 @@ import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import CompanyService from '../../../service/CompanyService';
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../../common/style/CommonDialogStyle';
 import { CustomInputLabel, CustomSearchButton, CustomTextField } from '../../common/style/CommonStyle';
@@ -31,20 +32,15 @@ class CoDialogComponent extends Component {
     }
   }
 
+//   setCoKeyword = (data) => {
+//     this.setState({ keyword: data }, () => {
+//       this.handleSearchCoDial(); // 데이터를 설정한 후에 엔터 함수 실행  
+//     })
+// }
+
   handleUp = () => {
     this.setState({ open: true });
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
-    .then(
-      async (response) => {
-        const codialRows = response.map((row) => ({
-          id: row.coCd,
-          coCd: row.coCd,
-          coNm: row.coNm,
-        }));
-        await this.setState({ codialRows: codialRows });
-        console.log(this.state);
-      }
-    );
+    this.handleSearchCoDial();
   }
 
   handleDown = () => {
@@ -63,7 +59,7 @@ class CoDialogComponent extends Component {
     this.handleSearchCoDial();
     }
   }
-  //검색 -> 이거 지워도 되나???????????????????????????????????????????????????????????????????
+  //검색 
   handleSearchCoDial= () => {
     CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
     .then(
@@ -74,7 +70,7 @@ class CoDialogComponent extends Component {
           coNm: row.coNm,
         }));
         await this.setState({ codialRows: codialRows });
-        console.log(this.state);
+        // this.setState({ keyword: '' });
       }
     );
   };
@@ -168,4 +164,8 @@ class CoDialogComponent extends Component {
     );
   }
 }
-export default CoDialogComponent;
+
+const mapStateToProps = (state) => ({
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(CoDialogComponent);
