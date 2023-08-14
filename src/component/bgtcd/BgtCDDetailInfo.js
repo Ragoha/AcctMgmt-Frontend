@@ -50,7 +50,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     return this.state.bgtCd;
   }
   setDetailInfo = (bgtCd) => {
-    console.log('---DetailInfo.js에 있는 setDetailInfo---')
     this.setState({ bgtCd: bgtCd })
     const { accessToken } = this.props;
     BgtCDService.getDetailInfo(bgtCd, accessToken)
@@ -95,10 +94,8 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     return detailInfo;
   }
 
-
-  updateDetailInfo = () => {
-    console.log('---updateDetailInfo---')
-    const { accessToken } = this.props;
+  //[230810] 원래 updateDetailInfo였던것.
+  getDetailInfo = () => {
     const updateData = {
       ctlFg: this.ctlFgControl.state.dataindex,
       bgajustFg: this.bgajustFgControl.state.dataindex,
@@ -106,25 +103,18 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bizFg: this.bizFgControl.state.dataindex,
       bgtCd: this.state.bgtCd,
       toDt: this.state.toDt
-      
     }
-    BgtCDService.updateDetailInfo(updateData, accessToken)
-      .then(response => {
-        console.log('여긴 detailINfo야 ~' + response)
-      }).catch(error => {
-        console.error("Error fetching data:", error);
-      });
+    return updateData;
+    
   }
   /*On change Date*/
   handleChangeDatePicker = async (newValue) => {
     await this.setState({
       toDt: dayjs(newValue).format("YYYY-MM-DD")
-    },()=>console.log('시간이바뀌었을까 ?'+this.state.toDt));
-    console.log(this.state);
+    });
   };
 
   deleteRow = () => {
-    console.log('deleteRow에서this.props.prevBgtCd 찍어봄  :  ' + this.state.bgtCd)
     const data = this.state.bgtCd
     const { accessToken } = this.props;
     BgtCDService.deleteRow(data, accessToken)
@@ -240,7 +230,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
         >
           <Grid sx={{ marginTop: "50px" }}>
             <Button
-              onClick={this.updateDetailInfo}
+              onClick={this.props.updateDetailInfo}
               variant="contained"
               size="large"
               sx={{

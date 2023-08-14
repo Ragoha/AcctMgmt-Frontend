@@ -54,7 +54,8 @@ insertDept(data) {
                 deptNm: data.deptNm,
                 deptZip: data.deptZip,
                 deptAddr: data.deptAddr,
-                deptAddr1: data.deptAddr1
+                deptAddr1: data.deptAddr1,
+                insertId: data.insertId
             },{
                 headers: {
                     "access-token": data.accessToken,
@@ -90,6 +91,45 @@ deleteDept(data) {
             withCredentials: true,
             params :{deptCd:data.deptCd}
           })
+};
+
+getDivDept(data) {
+    return axios
+        .get(ACCTMGMT_API_BASE_URL + "/ozt/sdivdept2", {
+            headers: {
+                "access-token": data.accessToken,
+            },
+            withCredentials: true,
+            params :{
+                coCd: data.coCd
+            }
+        })
+};
+
+getDivCo(data) {
+    return axios
+        .get(ACCTMGMT_API_BASE_URL + "/ozt/stcocd", {
+            headers: {
+                "access-token": data.accessToken,
+            },
+            withCredentials: true,
+            params :{
+                coCd: data.coCd
+            }
+        })
+};
+
+getDivsDept(data) {
+    return axios
+        .get(ACCTMGMT_API_BASE_URL + "/ozt/stdivcd", {
+            headers: {
+                "access-token": data.accessToken,
+            },
+            withCredentials: true,
+            params :{
+                divCd: data.divCd
+            }
+        })
 };
 
 }

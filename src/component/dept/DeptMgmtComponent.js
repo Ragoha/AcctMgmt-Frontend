@@ -39,8 +39,8 @@ class DeptMgmtComponent extends Component {
             coNm: '',
             divNm: '',
             deptNm: '',
-            //insertId: '', //등록자
-            //insertDt: '', //등록일  String???
+            insertId: '', //등록자
+            insertDt: '', //등록일  String???
             //insertIp: '', //등록자 ip
             //modifyId: '', //수정자
             //modifyDt: '', //수정일
@@ -53,7 +53,7 @@ class DeptMgmtComponent extends Component {
             deptZip: '', //우편번호
             deptAddr: '', //주소
             deptAddr1: '', //상세주소
-
+            rows: [],
             coCdList: [],
             divCdList: [],
             coNmList: [],
@@ -73,71 +73,84 @@ class DeptMgmtComponent extends Component {
 
         this.setState({ coCd: coCd });
 
-        DeptService.getDept({
+        DivsService.getDivision({
             accessToken: this.props.accessToken,
             coCd: coCd
         })
-            // .then((response) => {
-            //     const divCd = response.data[0].divCd;
-
-            //     this.setState({
-            //         divCd: divCd
-            //     })
-            // DeptService.getDept({
-            //     accessToken: this.props.accessToken,
-            //     coCd: coCd
-            // })
             .then((response) => {
                 console.log(response.data)
-                const coCdList = response.data.map((item) => item.coCd);
                 const divCdList = response.data.map((item) => item.divCd);
                 const divNmList = response.data.map((item) => item.divNm);
-                const deptCdList = response.data.map((item) => item.deptCd);
-                const deptNmList = response.data.map((item) => item.deptNm);
-                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-                const coCd = response.data[0].coCd;
                 const divCd = response.data[0].divCd;
                 const divNm = response.data[0].divNm;
-                const deptCd = response.data[0].deptCd;
-                const deptNm = response.data[0].deptNm;
-                // const ceoNm = response.data[0].ceoNm;
-                const deptZip = response.data[0].deptZip;
-                const deptAddr = response.data[0].deptAddr;
-                const deptAddr1 = response.data[0].deptAddr1;
-
                 this.setState({
-                    cardCount: cardCount, // state에 값을 저장
-                    coCdList: coCdList,
                     divCdList: divCdList,
                     divNmList: divNmList,
-                    deptCdList: deptCdList,
-                    deptNmList: deptNmList,
-
-                    focused: deptCd,
-                    coCd: coCd,
                     divCd: divCd,
-                    divNm: divNm,
-                    deptCd: deptCd,
-                    deptNm: deptNm,
-                    // ceoNm: ceoNm,
-                    deptZip: deptZip,
-                    deptAddr: deptAddr,
-                    deptAddr1: deptAddr1
+                    divNm: divNm
                 })
-                CompanyService.getCompany({
+                DeptService.getDivDept({
                     accessToken: this.props.accessToken,
                     coCd: coCd
                 })
                     .then((response) => {
-                        const coNm = response.data[0].coNm;
+                        // console.log(response.data)
+                        this.setState({ rows: response.data });
+                        // console.log({ rows: response.data })
+                        const coCdList = response.data.map((item) => item.coCd);
+                        // const divCdList = response.data.map((item) => item.divCd);
+                        // const divNmList = response.data.map((item) => item.divNm);
+                        console.log(divCdList);
+                        const deptCdList = response.data.map((item) => item.deptCd);
+                        const deptNmList = response.data.map((item) => item.deptNm);
+                        this.state.rows.map((row) => {
+                            console.log(row.divCd);
+                        })
+                        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                        const coCd = response.data[0].coCd;
+                        // const divCd = response.data[0].divCd;
+                        // const divNm = response.data[0].divNm;
+                        const deptCd = response.data[0].deptCd;
+                        const deptNm = response.data[0].deptNm;
+                        // const ceoNm = response.data[0].ceoNm;
+                        const deptZip = response.data[0].deptZip;
+                        const deptAddr = response.data[0].deptAddr;
+                        const deptAddr1 = response.data[0].deptAddr1;
 
                         this.setState({
-                            coNm: coNm
+                            cardCount: cardCount, // state에 값을 저장
+                            coCdList: coCdList,
+                            // divCdList: divCdList,
+                            // divNmList: divNmList,
+                            deptCdList: deptCdList,
+                            deptNmList: deptNmList,
+
+                            focused: deptCd,
+                            coCd: coCd,
+                            divCd: divCd,
+                            divNm: divNm,
+                            deptCd: deptCd,
+                            deptNm: deptNm,
+                            // ceoNm: ceoNm,
+                            deptZip: deptZip,
+                            deptAddr: deptAddr,
+                            deptAddr1: deptAddr1
                         })
+                        CompanyService.getCompany({
+                            accessToken: this.props.accessToken,
+                            coCd: coCd
+                        })
+                            .then((response) => {
+                                const coNm = response.data[0].coNm;
+
+                                this.setState({
+                                    coNm: coNm
+                                })
+                            })
                     })
             })
-        // })
     }
 
     handleCompany = (e) => {
@@ -197,28 +210,33 @@ class DeptMgmtComponent extends Component {
         const newCardCount = this.state.cardCount + 1;
         const newDeptCdList = [...this.state.deptCdList, '0000'];
 
-        DeptService.getDept({
+        DivsService.getDivision({
             accessToken: this.props.accessToken,
             coCd: coCd
         })
             .then((response) => {
-                const divCdList = response.data.map((item) => item.divCd);
-                // const newDivCdList = [...new Set(divCdList)]
+                console.log(response.data)
+                // const divCdList = response.data.map((item) => item.divCd);
+                // const divNmList = response.data.map((item) => item.divNm);
 
-                const divCd = response.data[0].divCd;
+                // const divCd = response.data[0].divCd;
+                // const divNm = response.data[0].divNm;
 
                 this.setState({
                     cardCount: newCardCount,
                     deptCdList: newDeptCdList,
-                    divCdList: divCdList,
+                    // divCdList: divCdList,
+                    // divNmList: divNmList,
                     focused: null,
                     // coCd: coCd,
-                    divCd: divCd,
+                    // divCd: divCd,
+                    // divNm: divNm,
                     deptCd: '',
                     deptNm: '',
                     deptZip: '',
                     deptAddr: '',
-                    deptAddr1: ''
+                    deptAddr1: '',
+                    insertDt: ''
                 })
             })
     }
@@ -230,7 +248,7 @@ class DeptMgmtComponent extends Component {
         this.setState({
             coCd: coCd
         })
-        const { divCd, deptCd, deptNm, deptZip, deptAddr, deptAddr1 } = this.state;
+        const { divCd, deptCd, deptNm, deptZip, deptAddr, deptAddr1, insertId } = this.state;
         DeptService.insertDept({
             accessToken: this.props.accessToken,
             coCd: coCd,
@@ -240,6 +258,7 @@ class DeptMgmtComponent extends Component {
             deptZip: deptZip,
             deptAddr: deptAddr,
             deptAddr1: deptAddr1,
+            insertId: empId
         })
             .then((response) => {
                 console.log(response.data);
@@ -249,59 +268,82 @@ class DeptMgmtComponent extends Component {
 
                 this.setState({ coCd: coCd });
 
-                DeptService.getDept({
+                DivsService.getDivision({
                     accessToken: this.props.accessToken,
                     coCd: coCd
                 })
                     .then((response) => {
                         console.log(response.data)
-                        const coCdList = response.data.map((item) => item.coCd);
                         const divCdList = response.data.map((item) => item.divCd);
                         const divNmList = response.data.map((item) => item.divNm);
-                        const deptCdList = response.data.map((item) => item.deptCd);
-                        const deptNmList = response.data.map((item) => item.deptNm);
-                        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-                        const coCd = response.data[0].coCd;
                         const divCd = response.data[0].divCd;
                         const divNm = response.data[0].divNm;
-                        const deptCd = response.data[0].deptCd;
-                        const deptNm = response.data[0].deptNm;
-                        // const ceoNm = response.data[0].ceoNm;
-                        const deptZip = response.data[0].deptZip;
-                        const deptAddr = response.data[0].deptAddr;
-                        const deptAddr1 = response.data[0].deptAddr1;
-                        console.log(deptCdList.length)
-
                         this.setState({
-                            cardCount: cardCount, // state에 값을 저장
-                            coCdList: coCdList,
                             divCdList: divCdList,
                             divNmList: divNmList,
-                            deptCdList: deptCdList,
-                            deptNmList: deptNmList,
-
-                            focused: deptCdList.length - 1,
-                            coCd: coCd,
                             divCd: divCd,
-                            divNm: divNm,
-                            deptCd: deptCd,
-                            deptNm: deptNm,
-                            // ceoNm: ceoNm,
-                            deptZip: deptZip,
-                            deptAddr: deptAddr,
-                            deptAddr1: deptAddr1
+                            divNm: divNm
                         })
-                        CompanyService.getCompany({
+                        DeptService.getDivDept({
                             accessToken: this.props.accessToken,
                             coCd: coCd
                         })
                             .then((response) => {
-                                const coNm = response.data[0].coNm;
+                                // console.log(response.data)
+                                this.setState({ rows: response.data });
+                                // console.log({ rows: response.data })
+                                const coCdList = response.data.map((item) => item.coCd);
+                                // const divCdList = response.data.map((item) => item.divCd);
+                                // const divNmList = response.data.map((item) => item.divNm);
+                                console.log(divCdList);
+                                const deptCdList = response.data.map((item) => item.deptCd);
+                                const deptNmList = response.data.map((item) => item.deptNm);
+                                this.state.rows.map((row) => {
+                                    console.log(row.divCd);
+                                })
+                                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                                const coCd = response.data[0].coCd;
+                                // const divCd = response.data[0].divCd;
+                                // const divNm = response.data[0].divNm;
+                                const deptCd = response.data[0].deptCd;
+                                const deptNm = response.data[0].deptNm;
+                                // const ceoNm = response.data[0].ceoNm;
+                                const deptZip = response.data[0].deptZip;
+                                const deptAddr = response.data[0].deptAddr;
+                                const deptAddr1 = response.data[0].deptAddr1;
 
                                 this.setState({
-                                    coNm: coNm
+                                    cardCount: cardCount, // state에 값을 저장
+                                    coCdList: coCdList,
+                                    // divCdList: divCdList,
+                                    // divNmList: divNmList,
+                                    deptCdList: deptCdList,
+                                    deptNmList: deptNmList,
+
+                                    focused: deptCd,
+                                    coCd: coCd,
+                                    divCd: divCd,
+                                    divNm: divNm,
+                                    deptCd: deptCd,
+                                    deptNm: deptNm,
+                                    // ceoNm: ceoNm,
+                                    deptZip: deptZip,
+                                    deptAddr: deptAddr,
+                                    deptAddr1: deptAddr1
                                 })
+                                CompanyService.getCompany({
+                                    accessToken: this.props.accessToken,
+                                    coCd: coCd
+                                })
+                                    .then((response) => {
+                                        const coNm = response.data[0].coNm;
+
+                                        this.setState({
+                                            coNm: coNm
+                                        })
+                                    })
                             })
                     })
             })
@@ -327,58 +369,82 @@ class DeptMgmtComponent extends Component {
                 console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
                 this.setState({ coCd: coCd });
-                DeptService.getDept({
+                DivsService.getDivision({
                     accessToken: this.props.accessToken,
                     coCd: coCd
                 })
                     .then((response) => {
                         console.log(response.data)
-                        const coCdList = response.data.map((item) => item.coCd);
                         const divCdList = response.data.map((item) => item.divCd);
                         const divNmList = response.data.map((item) => item.divNm);
-                        const deptCdList = response.data.map((item) => item.deptCd);
-                        const deptNmList = response.data.map((item) => item.deptNm);
-                        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-                        const coCd = response.data[0].coCd;
                         const divCd = response.data[0].divCd;
                         const divNm = response.data[0].divNm;
-                        const deptCd = response.data[0].deptCd;
-                        const deptNm = response.data[0].deptNm;
-                        // const ceoNm = response.data[0].ceoNm;
-                        const deptZip = response.data[0].deptZip;
-                        const deptAddr = response.data[0].deptAddr;
-                        const deptAddr1 = response.data[0].deptAddr1;
-
                         this.setState({
-                            cardCount: cardCount, // state에 값을 저장
-                            coCdList: coCdList,
                             divCdList: divCdList,
                             divNmList: divNmList,
-                            deptCdList: deptCdList,
-                            deptNmList: deptNmList,
-
-                            focused: deptCd,
-                            coCd: coCd,
                             divCd: divCd,
-                            divNm: divNm,
-                            deptCd: deptCd,
-                            deptNm: deptNm,
-                            // ceoNm: ceoNm,
-                            deptZip: deptZip,
-                            deptAddr: deptAddr,
-                            deptAddr1: deptAddr1
+                            divNm: divNm
                         })
-                        CompanyService.getCompany({
+                        DeptService.getDivDept({
                             accessToken: this.props.accessToken,
                             coCd: coCd
                         })
                             .then((response) => {
-                                const coNm = response.data[0].coNm;
+                                // console.log(response.data)
+                                this.setState({ rows: response.data });
+                                // console.log({ rows: response.data })
+                                const coCdList = response.data.map((item) => item.coCd);
+                                // const divCdList = response.data.map((item) => item.divCd);
+                                // const divNmList = response.data.map((item) => item.divNm);
+                                console.log(divCdList);
+                                const deptCdList = response.data.map((item) => item.deptCd);
+                                const deptNmList = response.data.map((item) => item.deptNm);
+                                this.state.rows.map((row) => {
+                                    console.log(row.divCd);
+                                })
+                                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                                const coCd = response.data[0].coCd;
+                                // const divCd = response.data[0].divCd;
+                                // const divNm = response.data[0].divNm;
+                                const deptCd = response.data[0].deptCd;
+                                const deptNm = response.data[0].deptNm;
+                                // const ceoNm = response.data[0].ceoNm;
+                                const deptZip = response.data[0].deptZip;
+                                const deptAddr = response.data[0].deptAddr;
+                                const deptAddr1 = response.data[0].deptAddr1;
 
                                 this.setState({
-                                    coNm: coNm
+                                    cardCount: cardCount, // state에 값을 저장
+                                    coCdList: coCdList,
+                                    // divCdList: divCdList,
+                                    // divNmList: divNmList,
+                                    deptCdList: deptCdList,
+                                    deptNmList: deptNmList,
+
+                                    focused: deptCd,
+                                    coCd: coCd,
+                                    divCd: divCd,
+                                    divNm: divNm,
+                                    deptCd: deptCd,
+                                    deptNm: deptNm,
+                                    // ceoNm: ceoNm,
+                                    deptZip: deptZip,
+                                    deptAddr: deptAddr,
+                                    deptAddr1: deptAddr1
                                 })
+                                CompanyService.getCompany({
+                                    accessToken: this.props.accessToken,
+                                    coCd: coCd
+                                })
+                                    .then((response) => {
+                                        const coNm = response.data[0].coNm;
+
+                                        this.setState({
+                                            coNm: coNm
+                                        })
+                                    })
                             })
                     })
             }).catch((error) => {
@@ -404,58 +470,82 @@ class DeptMgmtComponent extends Component {
                 console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
                 this.setState({ coCd: coCd });
-                DeptService.getDept({
+                DivsService.getDivision({
                     accessToken: this.props.accessToken,
                     coCd: coCd
                 })
                     .then((response) => {
                         console.log(response.data)
-                        const coCdList = response.data.map((item) => item.coCd);
                         const divCdList = response.data.map((item) => item.divCd);
                         const divNmList = response.data.map((item) => item.divNm);
-                        const deptCdList = response.data.map((item) => item.deptCd);
-                        const deptNmList = response.data.map((item) => item.deptNm);
-                        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-                        const coCd = response.data[0].coCd;
                         const divCd = response.data[0].divCd;
                         const divNm = response.data[0].divNm;
-                        const deptCd = response.data[0].deptCd;
-                        const deptNm = response.data[0].deptNm;
-                        // const ceoNm = response.data[0].ceoNm;
-                        const deptZip = response.data[0].deptZip;
-                        const deptAddr = response.data[0].deptAddr;
-                        const deptAddr1 = response.data[0].deptAddr1;
-
                         this.setState({
-                            cardCount: cardCount, // state에 값을 저장
-                            coCdList: coCdList,
                             divCdList: divCdList,
                             divNmList: divNmList,
-                            deptCdList: deptCdList,
-                            deptNmList: deptNmList,
-
-                            focused: deptCd,
-                            coCd: coCd,
                             divCd: divCd,
-                            divNm: divNm,
-                            deptCd: deptCd,
-                            deptNm: deptNm,
-                            // ceoNm: ceoNm,
-                            deptZip: deptZip,
-                            deptAddr: deptAddr,
-                            deptAddr1: deptAddr1
+                            divNm: divNm
                         })
-                        CompanyService.getCompany({
+                        DeptService.getDivDept({
                             accessToken: this.props.accessToken,
                             coCd: coCd
                         })
                             .then((response) => {
-                                const coNm = response.data[0].coNm;
+                                // console.log(response.data)
+                                this.setState({ rows: response.data });
+                                // console.log({ rows: response.data })
+                                const coCdList = response.data.map((item) => item.coCd);
+                                // const divCdList = response.data.map((item) => item.divCd);
+                                // const divNmList = response.data.map((item) => item.divNm);
+                                console.log(divCdList);
+                                const deptCdList = response.data.map((item) => item.deptCd);
+                                const deptNmList = response.data.map((item) => item.deptNm);
+                                this.state.rows.map((row) => {
+                                    console.log(row.divCd);
+                                })
+                                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                                const coCd = response.data[0].coCd;
+                                // const divCd = response.data[0].divCd;
+                                // const divNm = response.data[0].divNm;
+                                const deptCd = response.data[0].deptCd;
+                                const deptNm = response.data[0].deptNm;
+                                // const ceoNm = response.data[0].ceoNm;
+                                const deptZip = response.data[0].deptZip;
+                                const deptAddr = response.data[0].deptAddr;
+                                const deptAddr1 = response.data[0].deptAddr1;
 
                                 this.setState({
-                                    coNm: coNm
+                                    cardCount: cardCount, // state에 값을 저장
+                                    coCdList: coCdList,
+                                    // divCdList: divCdList,
+                                    // divNmList: divNmList,
+                                    deptCdList: deptCdList,
+                                    deptNmList: deptNmList,
+
+                                    focused: deptCd,
+                                    coCd: coCd,
+                                    divCd: divCd,
+                                    divNm: divNm,
+                                    deptCd: deptCd,
+                                    deptNm: deptNm,
+                                    // ceoNm: ceoNm,
+                                    deptZip: deptZip,
+                                    deptAddr: deptAddr,
+                                    deptAddr1: deptAddr1
                                 })
+                                CompanyService.getCompany({
+                                    accessToken: this.props.accessToken,
+                                    coCd: coCd
+                                })
+                                    .then((response) => {
+                                        const coNm = response.data[0].coNm;
+
+                                        this.setState({
+                                            coNm: coNm
+                                        })
+                                    })
                             })
                     })
             }).catch((error) => {
@@ -466,7 +556,27 @@ class DeptMgmtComponent extends Component {
     }
 
     handleSelect = (nodeId) => {
-        if (nodeId.startsWith('dept-')) {
+        console.log(nodeId)
+        const userInfo = this.props.userInfo;
+        const { coCd, empId, empEmail } = userInfo;
+
+        this.setState({
+            coCd: coCd
+        })
+        if (nodeId.startsWith('div-')) {
+            const parts = nodeId.split('-');
+            const divCd = parseInt(parts[1]);
+
+            this.setState({
+                coCd: coCd,
+                divCd: divCd,
+                deptCd: '',
+                deptNm: '',
+                deptZip: '',
+                deptAddr: '',
+                deptAddr1: ''
+            })
+        } else if (nodeId.startsWith('dept-')) {    
             const parts = nodeId.split('-');
             const deptCd = parseInt(parts[1]);
 
@@ -474,15 +584,17 @@ class DeptMgmtComponent extends Component {
                 deptCd: deptCd
             })
             console.log(deptCd)
+            console.log(coCd)
 
             DeptService.getDepartment({
                 accessToken: this.props.accessToken,
                 deptCd: deptCd
             })
                 .then((response) => {
+                    console.log(response.data)
                     const coCdList = response.data.map((item) => item.coCd);
-                    const divCdList = response.data.map((item) => item.divCd);
-                    const divNmList = response.data.map((item) => item.divNm);
+                    // const divCdList = response.data.map((item) => item.divCd);
+                    // const divNmList = response.data.map((item) => item.divNm);
                     const deptCdList = response.data.map((item) => item.deptCd);
                     const deptNmList = response.data.map((item) => item.deptNm);
 
@@ -495,11 +607,13 @@ class DeptMgmtComponent extends Component {
                     const deptZip = response.data[0].deptZip;
                     const deptAddr = response.data[0].deptAddr;
                     const deptAddr1 = response.data[0].deptAddr1;
+                    const insertDt = response.data[0].insertDt;
+
 
                     this.setState({
                         coCdList: coCdList,
-                        divCdList: divCdList,
-                        divNmList: divNmList,
+                        // divCdList: divCdList,
+                        // divNmList: divNmList,
                         focused: deptCdList.length,
                         coCd: coCd,
                         divCd: divCd,
@@ -509,7 +623,8 @@ class DeptMgmtComponent extends Component {
                         // ceoNm: ceoNm,
                         deptZip: deptZip,
                         deptAddr: deptAddr,
-                        deptAddr1: deptAddr1
+                        deptAddr1: deptAddr1,
+                        insertDt: insertDt
 
                     })
                     CompanyService.getCompany({
@@ -528,7 +643,7 @@ class DeptMgmtComponent extends Component {
     }
 
     render() {
-        const { open, divCd, coCd, deptCd, deptNm, divNm, ceoNm, deptZip, deptAddr, deptAddr1 } = this.state;
+        const { open, divCd, coCd, deptCd, deptNm, divNm, ceoNm, deptZip, deptAddr, deptAddr1, rows, insertId, modifyId, insertDt } = this.state;
         const { coNm } = this.state;
         const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList } = this.state;
 
@@ -540,311 +655,306 @@ class DeptMgmtComponent extends Component {
         //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
         const newDivCdList = [...new Set(divCdList)]
+
         const newDeptCdList = [...new Set(deptCdList)]
+
         const trees = (
             <TreeItem nodeId={coCd.toString()} label={coNm}>
                 {newDivCdList.map((divCd, index) => (
-                    <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} label={divCd}>
-                        {newDeptCdList.map((deptCd, subIndex) => (
-                            //  dept.divCd === divCd && (
-                            <TreeItem key={`dept-${subIndex}`} nodeId={`dept-${deptCd}`} label={deptNmList[subIndex]}
-                                onClick={() => this.handleSelect(`dept-${deptCd}`)}
-                            />
-                        //  )
-                        ))}
+                    <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} label={divNmList[index]}
+                        onClick={() => this.handleSelect(`div-${divCd}`)}>
+                        {rows.map((row, subIndex) => (
+                            (row.divCd === divCd) ?
+                                <TreeItem
+                                    key={`dept-${subIndex}`}
+                                    nodeId={`dept-${row.deptCd}`}
+                                    label={row.deptNm}
+                                    onClick={() => this.handleSelect(`dept-${row.deptCd}`)}
+                                />
+                                : null
+                        )
+                        )}
                     </TreeItem>
                 ))}
             </TreeItem>
-        )
+        );
 
-        // const trees = (
-        //     <TreeItem nodeId={coCd.toString()} label={coNm}>
-        //         {newDivCdList.map((divCd, divIndex) => (
-        //             <TreeItem key={`div-${divIndex}`} nodeId={`div-${divCd}`} label={divCd}>
-        //                 {newDeptCdList.map((deptCd, deptIndex) => {
-        //                     const combinedId = `div-${divCd}-dept-${deptCd}`;
-        //                     if (deptData.find(dept => combinedId === `div-${dept.divCd}-dept-${dept.deptCd}`)) {
-        //                         return (
-        //                             <TreeItem
-        //                                 key={`dept-${deptIndex}`}
-        //                                 nodeId={`dept-${deptCd}`}
-        //                                 label={deptNmList[deptIndex]}
-        //                                 onClick={() => this.handleSelect(`dept-${deptCd}`)}
-        //                             />
-        //                         );
-        //                     } else {
-        //                         return null;
-        //                     }
-        //                 })}
-        //             </TreeItem>
-        //         ))}
-        //     </TreeItem>
-        // );
-        
-            return(
-                <>
-                    <CustomHeaderGridContainer
-                        container
-                        spacing={2}
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Grid item>
-                            <Grid container direction="row">
-                                <GroupIcon sx={{ fontSize: 31 }} />
-                                <CustomHeaderInputLabel>부서등록</CustomHeaderInputLabel>
-                            </Grid>
+        // deptCdList.map((deptCd, subIndex) => (
+        //   <TreeItem
+        //     key={`dept-${subIndex}`}
+        //     nodeId={`dept-${deptCd}`}
+        //     label={deptNmList[subIndex]}
+        //     onClick={() => this.handleSelect(`dept-${deptCd}`)}
+        //   />
+        // )
+
+        // console.log(newDivCdList)
+        // console.log(divCdList)
+        // console.log(newDeptCdList)
+        // console.log(deptCdList)
+        return (
+            <>
+                <CustomHeaderGridContainer
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    <Grid item>
+                        <Grid container direction="row">
+                            <GroupIcon sx={{ fontSize: 31 }} />
+                            <CustomHeaderInputLabel>부서등록</CustomHeaderInputLabel>
                         </Grid>
-                    </CustomHeaderGridContainer>
+                    </Grid>
+                </CustomHeaderGridContainer>
 
-                    <CustomGridContainer container direction="row" spacing={2}
-                        justifyContent="left"
-                        alignItems="center" >
+                <CustomGridContainer container direction="row" spacing={2}
+                    justifyContent="left"
+                    alignItems="center" >
 
-                        <Grid item xs={3}>
-                            <Grid container alignItems="center">
-                                <CustomInputLabel>회사</CustomInputLabel>
-                                <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="회사코드/회사명 "
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <SearchIcon onClick={this.helpClick} /></InputAdornment>
-                                        ),
-                                    }}
-                                ></CustomTextField>
-                            </Grid>
+                    <Grid item xs={3}>
+                        <Grid container alignItems="center">
+                            <CustomInputLabel>회사</CustomInputLabel>
+                            <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="회사코드/회사명 "
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <SearchIcon onClick={this.helpClick} /></InputAdornment>
+                                    ),
+                                }}
+                            ></CustomTextField>
                         </Grid>
+                    </Grid>
 
-                        <Grid item >
-                            <Grid container alignItems="center">
-                                <CustomInputLabel >부서</CustomInputLabel>
-                                <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="부서코드/부서명 "
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <SearchIcon onClick={this.helpClick} /></InputAdornment>
-                                        ),
-                                    }}
-                                ></CustomTextField>
-                            </Grid>
+                    <Grid item >
+                        <Grid container alignItems="center">
+                            <CustomInputLabel >부서</CustomInputLabel>
+                            <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="부서코드/부서명 "
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <SearchIcon onClick={this.helpClick} /></InputAdornment>
+                                    ),
+                                }}
+                            ></CustomTextField>
                         </Grid>
-                        <Button variant="outlined" onClick={() => this.searchClick(divCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
-                            <SearchIcon fontSize="medium" />
-                        </Button>
-                    </CustomGridContainer >
+                    </Grid>
+                    <Button variant="outlined" onClick={() => this.searchClick(divCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
+                        <SearchIcon fontSize="medium" />
+                    </Button>
+                </CustomGridContainer >
 
-                    <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
-                        <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
+                <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
+                    <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
 
-                            <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
-                                <CustomInputLabel sx={{ ml: 1 }}>총 부서:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
-                            </Grid>
-
-                            <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
-                                <TreeView
-                                    defaultCollapseIcon={<ExpandMoreIcon />}
-                                    defaultExpanded={['root']}
-                                    defaultExpandIcon={<ChevronRightIcon />}
-                                    sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
-                                // onNodeSelect={this.handleSelect}
-                                >
-                                    {trees}
-                                </TreeView>
-                            </Grid>
+                        <Grid item sx={{ mb: 1, display: 'flex', justifyContent: 'left', alignItems: "center", width: '100%', height: 22, backgroundColor: '#f5f5f5', borderBottom: '1px solid' }}>
+                            <CustomInputLabel sx={{ ml: 1 }}>총 부서:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
                         </Grid>
 
-                        <Grid container direction="column" sx={{ ml: 1, height: 670 }}>
-                            <Grid item></Grid>
-                            <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
-                                <Grid item>
-                                    <CustomInputLabel sx={{ fontSize: 18, mt: 1 }}>
-                                        기본정보
-                                    </CustomInputLabel>
-                                </Grid>
+                        <Grid item sx={{ pl: 1.2, width: '95%', height: 'calc(100% - 5%)', overflowY: 'auto' }}>
+                            <TreeView
+                                defaultCollapseIcon={<ExpandMoreIcon />}
+                                // defaultExpanded= {}
+                                defaultExpandIcon={<ChevronRightIcon />}
+                                sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
+                            >
+                                {trees}
+                            </TreeView>
+                        </Grid>
+                    </Grid>
 
-                                <Grid item sx={{ ml: 0.3 }}>
-                                    <Grid container>
+                    <Grid container direction="column" sx={{ ml: 1, height: 670 }}>
+                        <Grid item></Grid>
+                        <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
+                            <Grid item>
+                                <CustomInputLabel sx={{ fontSize: 18, mt: 1 }}>
+                                    기본정보
+                                </CustomInputLabel>
+                            </Grid>
 
-                                        <Button sx={{ mr: 1 }} variant="outlined" onClick={this.addTree}>
-                                            추가
+                            <Grid item sx={{ ml: 0.3 }}>
+                                <Grid container>
+
+                                    <Button sx={{ mr: 1 }} variant="outlined" onClick={this.addTree}>
+                                        추가
+                                    </Button>
+
+                                    {deptCd && insertDt? (
+                                        <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDept}>
+                                            수정
                                         </Button>
-
-                                        {coCd && deptNm ? (
-                                            <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDept}>
-                                                수정
-                                            </Button>
-                                        ) : (
-                                            <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertDept}>
-                                                저장
-                                            </Button>
-                                        )}
-                                        <Button variant="outlined" onClick={this.deleteDept}>
-                                            삭제
+                                    ) : (
+                                        <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertDept}>
+                                            저장
                                         </Button>
-                                    </Grid>
+                                    )}
+                                    <Button variant="outlined" onClick={this.deleteDept}>
+                                        삭제
+                                    </Button>
                                 </Grid>
                             </Grid>
+                        </Grid>
 
-                            <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+                        <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+                            <Grid
+                                item
+                                xs={2}
+                                sx={{
+                                    height: 50,
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center",
+                                    borderBottom: "1px solid lightgray",
+                                    borderRight: "1px solid #EAEAEA",
+                                    backgroundColor: "#FCFCFC",
+                                }}
+                            >
+                                <CustomInputLabel>회사명</CustomInputLabel>
+                            </Grid>
+
+                            <Grid item xs={4} size='small' sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                                {divCd != 0 ?
+                                    <CustomWideTextField xs={4} sx={{ ml: 2 }} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomWideTextField> //disabled={true}
+                                    :
+                                    <FormControl sx={{
+                                        ml: 2, width: 255, "& .MuiInputBase-root": {
+                                            height: 40
+                                        }
+                                    }}>
+                                        <Select name='coNm' value={coNm} onChange={this.handleCompany}>
+                                            {coNmList.map((coNm) => (
+                                                <MenuItem key={coNm} value={coNm}>
+                                                    {coNm}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                }
+                            </Grid>
+
+                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }} >
+                                <CustomInputLabel sx={{ color: 'black' }}  >사업장</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }} >
+                                <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='divCd' onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></CustomWideTextField>
+                            </Grid>
+
+                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                                <CustomInputLabel sx={{ color: 'black' }}  >부서코드</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                                <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='deptCd' onChange={this.handleCompany} value={deptCd || ''}></CustomWideTextField>
+                            </Grid>
+
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }} >
+                                <CustomInputLabel sx={{ color: 'black' }}  >부서명</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }} >
+                                <CustomWideTextField sx={{ ml: 2 }} name='deptNm' onChange={this.handleCompany} value={deptNm || ''}></CustomWideTextField>
+                            </Grid>
+
+
+                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                                <CustomInputLabel sx={{ color: 'black' }}  >종목</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                                <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
+                            </Grid>
+
+
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                                <CustomInputLabel sx={{ color: 'black' }}  >업태</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
+                                <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
+                            </Grid>
+
+
+
+                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                                <CustomInputLabel sx={{ color: 'black' }}  >대표자명</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
+                                <CustomWideTextField sx={{ ml: 2 }} name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></CustomWideTextField>
+                            </Grid>
+
+
+                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                                <CustomInputLabel sx={{ color: 'black' }}  >사업자번호</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
+                                <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
+                            </Grid>
+
+                            <Grid
+                                item
+                                xs={2}
+                                sx={{
+                                    height: 150,
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "flex-start",
+                                    backgroundColor: "#FCFCFC",
+                                    borderBottom: "1px solid lightgray",
+                                    borderRight: '1px solid #EAEAEA'
+                                }}
+                            >
+                                <CustomInputLabel sx={{ mt: 1 }}>부서주소</CustomInputLabel>
+                            </Grid>
+                            <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
                                 <Grid
-                                    item
-                                    xs={2}
-                                    sx={{
-                                        height: 50,
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        alignItems: "center",
-                                        borderBottom: "1px solid lightgray",
-                                        borderRight: "1px solid #EAEAEA",
-                                        backgroundColor: "#FCFCFC",
-                                    }}
+                                    container
+                                    direction="column"
+                                    spacing={1}
+                                    sx={{ width: "calc(100% + -24px)" }}
                                 >
-                                    <CustomInputLabel>회사명</CustomInputLabel>
-                                </Grid>
-
-                                <Grid item xs={4} size='small' sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                                    {divCd != 0 ?
-                                        <CustomWideTextField xs={4} sx={{ ml: 2 }} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomWideTextField> //disabled={true}
-                                        :
-                                        <FormControl sx={{
-                                            ml: 2, width: 255, "& .MuiInputBase-root": {
-                                                height: 40
-                                            }
-                                        }}>
-                                            <Select name='coNm' value={coNm} onChange={this.handleCompany}>
-                                                {coNmList.map((coNm) => (
-                                                    <MenuItem key={coNm} value={coNm}>
-                                                        {coNm}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    }
-                                </Grid>
-
-                                <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }} >
-                                    <CustomInputLabel sx={{ color: 'black' }}  >사업장</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }} >
-                                    <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='divCd' onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></CustomWideTextField>
-                                </Grid>
-
-                                <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                                    <CustomInputLabel sx={{ color: 'black' }}  >부서코드</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                                    <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='deptCd' onChange={this.handleCompany} value={deptCd || ''}></CustomWideTextField>
-                                </Grid>
-
-                                <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }} >
-                                    <CustomInputLabel sx={{ color: 'black' }}  >부서명</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }} >
-                                    <CustomWideTextField sx={{ ml: 2 }} name='deptNm' onChange={this.handleCompany} value={deptNm || ''}></CustomWideTextField>
-                                </Grid>
-
-
-                                <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                                    <CustomInputLabel sx={{ color: 'black' }}  >종목</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                                    <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
-                                </Grid>
-
-
-                                <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                                    <CustomInputLabel sx={{ color: 'black' }}  >업태</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
-                                    <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
-                                </Grid>
-
-
-
-                                <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                                    <CustomInputLabel sx={{ color: 'black' }}  >대표자명</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA', borderRight: '1px solid #EAEAEA' }}>
-                                    <CustomWideTextField sx={{ ml: 2 }} name='ceoNm' onChange={this.handleCompany} value={ceoNm || ''}></CustomWideTextField>
-                                </Grid>
-
-
-                                <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
-                                    <CustomInputLabel sx={{ color: 'black' }}  >사업자번호</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #EAEAEA' }}>
-                                    <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
-                                </Grid>
-
-                                <Grid
-                                    item
-                                    xs={2}
-                                    sx={{
-                                        height: 150,
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                        alignItems: "flex-start",
-                                        backgroundColor: "#FCFCFC",
-                                        borderBottom: "1px solid lightgray",
-                                        borderRight: '1px solid #EAEAEA'
-                                    }}
-                                >
-                                    <CustomInputLabel sx={{ mt: 1 }}>부서주소</CustomInputLabel>
-                                </Grid>
-                                <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        spacing={1}
-                                        sx={{ width: "calc(100% + -24px)" }}
-                                    >
-                                        <Grid item>
-                                            <Grid container direction="row">
-                                                <TextField
-                                                    size="small"
-                                                    id="deptZip"
-                                                    name="deptZip"
-                                                    onChange={this.handleCompany}
-                                                    value={deptZip || ""}
-                                                    InputProps={{ readOnly: true }}
-                                                    sx={{ ml: 2, width: "150px" }}
-                                                ></TextField>
-                                                <Button
-                                                    sx={{ ml: 1 }}
-                                                    variant="outlined"
-                                                    onClick={this.addrButton}
-                                                >
-                                                    우편번호
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item>
-                                            <CustomWideTextField
-                                                id="deptAddr"
-                                                name="deptAddr"
+                                    <Grid item>
+                                        <Grid container direction="row">
+                                            <TextField
+                                                size="small"
+                                                id="deptZip"
+                                                name="deptZip"
                                                 onChange={this.handleCompany}
-                                                value={deptAddr || ""}
+                                                value={deptZip || ""}
                                                 InputProps={{ readOnly: true }}
-                                            />
-                                        </Grid>
-                                        <Grid item >
-                                            <CustomWideTextField
-                                                name="deptAddr1"
-                                                onChange={this.handleCompany}
-                                                value={deptAddr1 || ""}
-                                            />
+                                                sx={{ ml: 2, width: "150px" }}
+                                            ></TextField>
+                                            <Button
+                                                sx={{ ml: 1 }}
+                                                variant="outlined"
+                                                onClick={this.addrButton}
+                                            >
+                                                우편번호
+                                            </Button>
                                         </Grid>
                                     </Grid>
+                                    <Grid item>
+                                        <CustomWideTextField
+                                            id="deptAddr"
+                                            name="deptAddr"
+                                            onChange={this.handleCompany}
+                                            value={deptAddr || ""}
+                                            InputProps={{ readOnly: true }}
+                                        />
+                                    </Grid>
+                                    <Grid item >
+                                        <CustomWideTextField
+                                            name="deptAddr1"
+                                            onChange={this.handleCompany}
+                                            value={deptAddr1 || ""}
+                                        />
+                                    </Grid>
                                 </Grid>
-
                             </Grid>
-                        </Grid>
-                    </Grid >
 
-                    <AddressComponent setDeptZipAddr={this.setDeptZipAddr} ref={this.addrRef} />
-                    <DivDialogComponent handleSetDivdialTextField={this.handleSetDivdialTextField} ref={this.divDialogRef} />
-                </>
-            );
+                        </Grid>
+                    </Grid>
+                </Grid >
+
+                <AddressComponent setDeptZipAddr={this.setDeptZipAddr} ref={this.addrRef} />
+                <DivDialogComponent handleSetDivdialTextField={this.handleSetDivdialTextField} ref={this.divDialogRef} />
+            </>
+        );
     }
 }
 
