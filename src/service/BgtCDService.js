@@ -2,12 +2,13 @@ import axios from "axios";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt/bgt/bgtcd";
 class BgtCDService {
     /*---select  start ---*/
-    getGridData(coCd, accessToken) { //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!)예산코드 그룹을 만들면 해당 그룹명을 조회해서 가져옴.
+    getGridData(coCd,groupcd, accessToken) { //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!)예산코드 그룹을 만들면 해당 그룹명을 조회해서 가져옴.
         console.log("BudgetReg 서비스의 getGrid Data  ::::" + coCd);
         const returnData = axios
             .get(ACCTMGMT_API_BASE_URL + "/getGridData", {
                 params: {
-                  coCd: coCd
+                  coCd: coCd,
+                  groupcd:groupcd
                 }
             }, {
                 headers: {
@@ -81,6 +82,14 @@ class BgtCDService {
         console.log('흠!')
         console.log(returnData)
         return returnData ;
+    }
+    insertBgtGr(data,accessToken){
+      const returnData =axios.put(ACCTMGMT_API_BASE_URL + "/insertBgtGr", data,{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      })
     }
     insertAddRow(data,accessToken){
       const returnData =axios.post(ACCTMGMT_API_BASE_URL + "/insertAddRow", data,{
