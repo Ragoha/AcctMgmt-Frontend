@@ -12,6 +12,7 @@ import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
 import BgtCDGroupReg from "./modal/BgtCDGroupReg";
+import BgtCDSubSearch from "./modal/BgtCDSubSearch";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +23,7 @@ class BgtCD extends Component {
     this.BgtCDGroupModal = React.createRef();
     this.BgtCDGroupReg = React.createRef();
     this.BgtCDDropDownBox = React.createRef();
+    this.BgtCDSubSearch = React.createRef();
     this.state = {
       open: false,
       rows: [],
@@ -35,7 +37,7 @@ class BgtCD extends Component {
     this.getDataGridRows();
   }
   /*상단 조건 검색바 start*/
-
+ 
   /*상단 조건 검색바 end  */
   setDetailInfo = (target) => {
     console.log('---BgtCD의 setDetailInfo 함수---')
@@ -142,6 +144,10 @@ class BgtCD extends Component {
   /* DetailInfo부분 */
 
   /* 모달창  */
+  setText=(data)=>{
+    this.setState({bgtCdSearchText:data})
+
+  }
   /*BgtCDDevFgCustomOpen*/
   BgtCDDevFgCustomOpen = () => {
     this.BgtCDDevFgCustom.current.handleUp();
@@ -155,6 +161,9 @@ class BgtCD extends Component {
   selectBgtCDDropDownBox = (openWhat) => {
     console.log('오픈왓 :' + openWhat) //BgtCDDevFgCustomOpen
     this[openWhat]();
+  }
+  handleClickBgtCdSerachIcon=()=>{
+    this.BgtCDSubSearch.current.initBgtCDDialog();
   }
 
   handleInputChange = async (e) => {
@@ -218,6 +227,7 @@ class BgtCD extends Component {
                 sx={{ ml: "16px", width: '200px' }}
                 value={defaultValue}
                 onChange={this.changeValue} 
+                
               >
                 {bgtGrList.map((item, index) => (
                   <MenuItem key={index} value={item} dataindex={index}>
@@ -229,8 +239,22 @@ class BgtCD extends Component {
           </Grid>
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>예산과목코드</CustomInputLabel>
-              <CustomTextField></CustomTextField>
+              <CustomInputLabel>예산과목검색</CustomInputLabel>
+
+              <CustomTextField
+                name="bgtCdSearchText"
+                value={this.state.bgtCdSearchText}
+                placeholder="예산과목코드.예산과목명"
+                onChange={this.handleInputChange}
+                size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                     <SearchIcon  onClick={this.handleClickBgtCdSerachIcon} /> 
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Grid>
           </Grid>
           <Grid item xs={4}>
@@ -240,12 +264,6 @@ class BgtCD extends Component {
               alignItems="center"
               justifyContent="space-between"
             >
-              <Grid item>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목명</CustomInputLabel>
-                  <CustomTextField />
-                </Grid>
-              </Grid>
               <Grid item>
                 <CustomSearchButton
                   variant="outlined"
@@ -286,6 +304,7 @@ class BgtCD extends Component {
         {/*예산그룹등록 */}
         <BgtCDGroupReg ref={this.BgtCDGroupReg} />
         {/*그룹레벨설정 */}
+        <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch}/>
       </>
     );
 
