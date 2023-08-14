@@ -196,7 +196,9 @@ class BgtCDDialogComponent extends Component {
       <>
         <Dialog
           open={open}
-          PaperProps={{ sx: { maxWidth: 1200, width: 1200, height: 840, minHeight: 840 } }}
+          PaperProps={{
+            sx: { maxWidth: 1200, width: 1200, height: 840, minHeight: 840 },
+          }}
         >
           <CustomDialogTitle>
             예산과목검색
@@ -268,7 +270,7 @@ class BgtCDDialogComponent extends Component {
                   />
                   <CustomSearchButton
                     variant="outlined"
-                    sx={{ right: "-13px" }}
+                    sx={{ right: "-9px" }}
                   >
                     <SearchIcon onClick={this.handleClickSearchIcon} />
                   </CustomSearchButton>
@@ -280,19 +282,24 @@ class BgtCDDialogComponent extends Component {
                   direction="row"
                   alignItems="center"
                   justifyContent="center"
-                  sx={{ pl: "66px" }}
+                  sx={{ pl: "51px" }}
                 >
-                  <CustomInputLabel>범위</CustomInputLabel>
+                  <CustomInputLabel sx={{ mr: "34px !important" }}>
+                    범위
+                  </CustomInputLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={rangeState}
-                        sx={{ mr: "-10px" }}
                         onClick={this.toggleRangeState}
                       />
                     }
                     label="기준일"
-                    sx={{ mr: "8px" }}
+                    sx={{
+                      "& .MuiCheckbox-root": {
+                        pr: 0,
+                      },
+                    }}
                   />
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -304,7 +311,7 @@ class BgtCDDialogComponent extends Component {
                       slotProps={{
                         textField: {
                           size: "small",
-                          sx: { width: "166px", mr: "8px" },
+                          sx: { width: "150px", mr: "16px" },
                           inputProps: {
                             sx: { height: "auto" },
                           },
@@ -316,11 +323,15 @@ class BgtCDDialogComponent extends Component {
                     control={
                       <Checkbox
                         checked={!rangeState}
-                        sx={{ mr: "-10px" }}
                         onClick={this.toggleRangeState}
                       />
                     }
                     label="전체"
+                    sx={{
+                      "& .MuiCheckbox-root": {
+                        pr: 0,
+                      },
+                    }}
                   />
                 </Grid>
               </Grid>

@@ -29,6 +29,8 @@ export const CustomBtnBgtcd = styled(Button)(({theme}) =>({
 //---------------------------------------
 
 export const CustomInputLabel = styled(InputLabel)({
+  marginTop: 8,
+  marginBottom: 8,
   color: "black",
   fontWeight: "bold",
   marginRight: 8,
@@ -39,6 +41,13 @@ export const CustomDataGrid = styled(DataGrid)({
   "& .MuiDataGrid-columnHeaderTitle": {
     fontWeight: "bold",
   },
+  "& .MuiDataGrid-columnHeader:last-child": {
+    borderRight: "none",
+  },
+  "& .MuiDataGrid-row .MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-cell--withRightBorder.MuiDataGrid-withBorderColor + .MuiDataGrid-cell":
+    {
+      borderRight: "none",
+    },
 });
 
 export const CustomTextField = styled(TextField)({
@@ -48,9 +57,29 @@ export const CustomTextField = styled(TextField)({
   },
 });
 
+export const CustomDateTextField = styled(TextField)({
+  marginTop: 8,
+  marginBottom: 8,
+  width: 140,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomDatePrToTextField = styled(TextField)({
+  marginTop: 8,
+  marginBottom: 8,
+  width: 240,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
 export const CustomWideTextField = styled(TextField)({
-  marginRight: 16,
-  marginLeft: 16,
+  marginTop: 8,
+  marginBottom: 8,
+  marginRight: 8,
+  marginLeft: 8,
   width: "100%",
   "& .MuiInputBase-root": {
     height: 40,
@@ -65,7 +94,8 @@ export const CustomSelect = styled(Select)({
 export const CustomWideSelect = styled(Select)({
   width: "100%",
   height: 40,
-  marginRight: 16,
+  marginLeft: 8,
+  marginRight: 8,
   marginTop: 8,
   marginBottom: 8,
 });

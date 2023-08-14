@@ -1,17 +1,18 @@
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, Button, Grid, InputAdornment, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, InputAdornment, Select, TextField, MenuItem } from "@mui/material";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import BgtCDService from "../../service/BgtCDService";
 import { SET_GROUPCD } from '../../store/BgtCDStore';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField } from "../common/style/CommonStyle";
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect } from "../common/style/CommonStyle";
 import BgtCDDatagrid from "./BgtCDDatagrid";
 import BgtCDDetailInfo from "./BgtCDDetailInfo";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
 import BgtCDGroupReg from "./modal/BgtCDGroupReg";
+import BgtCDSubSearch from "./modal/BgtCDSubSearch";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -22,29 +23,21 @@ class BgtCD extends Component {
     this.BgtCDGroupModal = React.createRef();
     this.BgtCDGroupReg = React.createRef();
     this.BgtCDDropDownBox = React.createRef();
+    this.BgtCDSubSearch = React.createRef();
     this.state = {
       open: false,
       rows: [],
-      //focus: null,
-      top100Films: [
-        { title: 'The Shawshank Redemption', year: 1994 },
-        { title: 'The Godfather', year: 1972 },
-        { title: 'The Godfather: Part II', year: 1974 },
-        { title: 'The Dark Knight', year: 2008 },
-        { title: '12 Angry Men', year: 1957 },
-        { title: "Schindler's List", year: 1993 },
-        { title: 'Pulp Fiction', year: 1994 },
-        {
-          title: 'The Lord of the Rings: The Return of the King',
-          year: 2003,
-        },
-        { title: 'The Good, the Bad and the Ugly', year: 1966 },],
-
+      bgtGrList: ["전체"],
+      defaultValue :'',
 
     }
   }
+  componentDidMount() {
+    this.initSubList();
+    this.getDataGridRows();
+  }
   /*상단 조건 검색바 start*/
-
+ 
   /*상단 조건 검색바 end  */
   setDetailInfo = (target) => {
     console.log('---BgtCD의 setDetailInfo 함수---')
@@ -54,12 +47,15 @@ class BgtCD extends Component {
   }
 
   /*데이터그리드 부분 start*/
-  getDataGridRows() { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+  getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+    this.setState({rows:""})
+    if(groupcd===undefined){
+      groupcd="전체"
+    }
     console.log('데이터체크')
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
-    // console.log('토큰씨 :' +  accessToken + " coCd: " +coCd)
-    BgtCDService.getGridData(coCd, accessToken)
+    BgtCDService.getGridData(coCd,groupcd, accessToken)
       .then(rows => {
         // console.log('통신성공')
         // console.dir(rows) //데이터 받았음 .
@@ -104,8 +100,6 @@ class BgtCD extends Component {
         console.error("Error fetching data:", error);
       });
 
-    // }
-
   }
 
   //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
@@ -124,8 +118,25 @@ class BgtCD extends Component {
     BgtCDService.insertAddRow(data, accessToken);
 
   }
-
-
+  initSubList = () => {
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    BgtCDService.getBgtGrData(coCd, accessToken)
+      .then((response) => {
+        const bgtGrList =  ["전체", ...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)]; 
+        this.setState({ bgtGrList });
+        this.setState({defaultValue:bgtGrList[0] })
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }
+  changeValue = (event , child) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
+    const index = child.props['dataindex'];
+    this.setState({ defaultValue: event.target.value, dataindex: index } //,()=>{this.props.onChange(event.target.value , this.props.id)} [230720]=> 있었는데 왜 있었는지 모르겠음 걍 지움 다른 코드랑 꼬이면 다시 생각해보자..
+    );
+    this.getDataGridRows(event.target.value);
+  }
   /*---로우 추가 관련된 메서드 end---*/
 
 
@@ -133,6 +144,10 @@ class BgtCD extends Component {
   /* DetailInfo부분 */
 
   /* 모달창  */
+  setText=(data)=>{
+    this.setState({bgtCdSearchText:data})
+
+  }
   /*BgtCDDevFgCustomOpen*/
   BgtCDDevFgCustomOpen = () => {
     this.BgtCDDevFgCustom.current.handleUp();
@@ -147,6 +162,9 @@ class BgtCD extends Component {
     console.log('오픈왓 :' + openWhat) //BgtCDDevFgCustomOpen
     this[openWhat]();
   }
+  handleClickBgtCdSerachIcon=()=>{
+    this.BgtCDSubSearch.current.initBgtCDDialog();
+  }
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -160,11 +178,7 @@ class BgtCD extends Component {
 
 
   render() {
-    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, top100Films } = this.state;
-    const defaultProps = {
-      options: top100Films,
-      getOptionLabel: (option) => option.title,
-    };
+    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, bgtGrList,defaultValue } = this.state;
     return (
       <>
         <CustomHeaderGridContainer
@@ -191,23 +205,8 @@ class BgtCD extends Component {
                   //border: "1px solid",
                 }}
               >
-                추 가
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => this.getDataGridRows()}
-                style={{ marginRight: "8px" }}
-              >
-                Grid채우기
-              </Button>
-              <Button
-                variant="outlined"
-                style={{ marginRight: "8px" }}
-                onClick={this.BgtCDAddSubDialogOpen}
-              >
                 예산과목추가
               </Button>
-              {/* 기능모음 드롭다운박스 */}
               <BgtCDDropDownBox
                 selectBgtCDDropDownBox={this.selectBgtCDDropDownBox}
               />
@@ -224,25 +223,38 @@ class BgtCD extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
+              <Select
+                sx={{ ml: "16px", width: '200px' }}
+                value={defaultValue}
+                onChange={this.changeValue} 
+                
+              >
+                {bgtGrList.map((item, index) => (
+                  <MenuItem key={index} value={item} dataindex={index}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center">
+              <CustomInputLabel>예산과목검색</CustomInputLabel>
+
               <CustomTextField
-                name="subCode"
-                // value={divTextField}
+                name="bgtCdSearchText"
+                value={this.state.bgtCdSearchText}
+                placeholder="예산과목코드.예산과목명"
                 onChange={this.handleInputChange}
                 size="small"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleClickSubCodeSearchIcon} /> 
+                     <SearchIcon  onClick={this.handleClickBgtCdSerachIcon} /> 
                     </InputAdornment>
                   ),
                 }}
               />
-            </Grid>
-          </Grid>
-          <Grid item xs={4}>
-            <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>예산과목코드</CustomInputLabel>
-              <CustomTextField></CustomTextField>
             </Grid>
           </Grid>
           <Grid item xs={4}>
@@ -252,12 +264,6 @@ class BgtCD extends Component {
               alignItems="center"
               justifyContent="space-between"
             >
-              <Grid item>
-                <Grid container direction="row" alignItems="center">
-                  <CustomInputLabel>예산과목명</CustomInputLabel>
-                  <CustomTextField />
-                </Grid>
-              </Grid>
               <Grid item>
                 <CustomSearchButton
                   variant="outlined"
@@ -298,6 +304,7 @@ class BgtCD extends Component {
         {/*예산그룹등록 */}
         <BgtCDGroupReg ref={this.BgtCDGroupReg} />
         {/*그룹레벨설정 */}
+        <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch}/>
       </>
     );
 

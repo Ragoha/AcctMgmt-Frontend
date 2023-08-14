@@ -2,6 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import DivsService from '../../../service/DivsService';
 
 import {
@@ -32,7 +33,7 @@ const rows = [
   { id: 3, divCd: "3", divNm: "John" },
 ]
 
-class CoDialogComponent extends Component {
+class DivDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,18 +49,7 @@ class CoDialogComponent extends Component {
 
   handleUp = () => {
     this.setState({ open: true });
-    DivsService.getDivBydivCdAnddivNm(this.state.keyword)
-      .then(
-        async (response) => {
-          const divdialRows = response.map((row) => ({
-            id: row.divCd,
-            divCd: row.divCd,
-            divNm: row.divNm,
-          }));
-          await this.setState({ divdialRows: divdialRows });
-          console.log(this.state);
-        }
-      );
+    this.handleSearchDivDial();
   }
 
   handleDown = () => {
@@ -80,7 +70,10 @@ class CoDialogComponent extends Component {
   }
   //검색
   handleSearchDivDial = () => {
-    DivsService.getDivBydivCdAnddivNm(this.state.keyword)
+    DivsService.getDivBydivCdAnddivNm({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+      keyword: this.state.keyword})
       .then(
         async (response) => {
           const divdialRows = response.map((row) => ({
@@ -129,14 +122,14 @@ class CoDialogComponent extends Component {
             alignItems="center"
             spacing={2}
           >
-            <Grid item>
+            <Grid item xs={12}>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
               >
-                <CustomInputLabel>검색</CustomInputLabel>
+                <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
                   id="keyword"
                   name="keyword"
@@ -176,4 +169,9 @@ class CoDialogComponent extends Component {
     );
   }
 }
-export default CoDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(DivDialogComponent);

@@ -6,26 +6,11 @@ import {
 } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import BgtICFService from "../../../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../../common/style/CommonStyle";
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../common/style/CommonStyle";
+import BgtCDService from "../../../service/BgtCDService";
 
-const columns = [
-  {
-    field: "bgtGrCd",
-    headerName: "예산그룹코드",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtGrNm",
-    headerName: "예산그룹명",
-    width: 270,
-    headerAlign: "center",
-  },
-];
-
-class BgtGrDialogComponent extends Component {
+class BgtCDSubSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,10 +19,32 @@ class BgtGrDialogComponent extends Component {
       bgtGrRows: [],
       keyword: "",
       rows: [],
-      columns: columns,
+      columns : [
+        { field: "bgtCd", headerName: "예산그룹코드", width: 180,  headerAlign: "center",  },
+        { field: "bgtNm", headerName: "예산그룹명", width: 286, headerAlign: "center",  },
+      ]
     };
   }
+  initBgtCDDialog=()=>{
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    BgtCDService.getBgtCDdialog(coCd,accessToken).then(
+        (response)=>{
+            this.setState({rows:response},()=>console.log(response))
+        }
+    )
+    this.handleUp();
+  }
+  handleClickRow=(params)=>{
+    const text = (params.row.bgtCd+"."+params.row.bgtNm)
+    this.setState({keyword:text},()=>console.log(this.state.keyword))
+  }
+  handleClickConfirm=()=>{
+    this.props.setText(this.state.keyword);
+    this.handleDown();
+  }
 
+  /*default*/
   handleUp = () => {
     this.setState({ open: true });
   };
@@ -46,61 +53,6 @@ class BgtGrDialogComponent extends Component {
     this.setState({ open: false });
   };
 
-  handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row });
-  };
-
-  setDivRows = async (rows) => {
-    await this.setState({ divRows: rows });
-  };
-
-  handleInputChange = async (e) => {
-    const { name, value } = e.target;
-    await this.setState({ [name]: value });
-  };
-
-  handlePressEnter = (e) => {
-    if (e.key === "Enter") {
-      this.handleSearchBgtGrIcon();
-    }
-  };
-
-  handleInitBgtGrDialog = () => {
-    BgtICFService.findBgtGrByCoCdAndKeyword({
-      keyword: this.state.keyword,
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-    }).then((response) => {
-      const bgtGrRows = response.map((row) => ({
-        id: row.bgtGrCd,
-        bgtGrCd: row.bgtGrCd,
-        bgtGrNm: row.bgtGrNm,
-      }));
-      this.setState({ bgtGrRows: bgtGrRows, keyword: "" });
-    });
-    this.handleUp();
-  };
-
-  handleSearchBgtGrIcon = () => {
-    BgtICFService.findBgtGrByCoCdAndKeyword({
-      keyword: this.state.keyword,
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-    }).then((response) => {
-      const bgtGrRows = response.map((row) => ({
-        id: row.bgtGrCd,
-        bgtGrCd: row.bgtGrCd,
-        bgtGrNm: row.bgtGrNm,
-      }));
-      this.setState({ bgtGrRows: bgtGrRows });
-    });
-    this.handleUp();
-  };
-
-  handleClickConfirm = async () => {
-    this.handleDown();
-    await this.props.handleSetBgtCDTextField(this.state.selectedRow);
-  };
 
   render() {
     const { open, columns} = this.state;
@@ -108,7 +60,7 @@ class BgtGrDialogComponent extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산그룹검색
+          예산코드검색
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -132,12 +84,12 @@ class BgtGrDialogComponent extends Component {
                   id="keyword"
                   name="keyword"
                   value={this.state.keyword}
-                  onChange={this.handleInputChange}
+                //   onChange={this.handleInputChange}
                   variant="outlined"
-                  onKeyDown={this.handlePressEnter}
+                //   onKeyDown={this.handlePressEnter}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleSearchBgtGrIcon} />
+                  <SearchIcon />
                 </CustomSearchButton>
               </Grid>
             </Grid>
@@ -145,7 +97,8 @@ class BgtGrDialogComponent extends Component {
           <CustomShortDataGridContainer container>
             <CustomDataGrid
               columns={columns}
-              rows={this.state.bgtGrRows}
+              rows={this.state.rows}
+              getRowId={(row) => row.bgtCd}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -172,9 +125,9 @@ class BgtGrDialogComponent extends Component {
 }
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {},
+  userInfo: state.user || {},
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  BgtGrDialogComponent
+  BgtCDSubSearch
 );

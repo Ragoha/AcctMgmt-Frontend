@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
+import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem, Tooltip, } from '@mui/material';
 import axios from "axios";
 import validator from 'validator';
 class SignUpComponent extends Component {
@@ -42,8 +42,8 @@ class SignUpComponent extends Component {
       errorMessage: isKoreanInput
         ? "알파벳 대소문자와 숫자만 사용 가능합니다."
         : !isIdValid
-        ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-        : "",
+          ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
+          : "",
       isIdValid: isIdValid && !isKoreanInput,
     });
   };
@@ -64,20 +64,42 @@ class SignUpComponent extends Component {
     }
   };
 
+  handleClose = () => {
+    this.setState({
+      id: "",
+      name: "",
+      password: "",
+      email: "",
+      confirmPassword: "",
+      gender: "",
+      phone: "",
+      company: "",
+      position: "",
+      isIdDuplicated: false,
+      isIdValid: false,
+      isPasswordValid: false,
+      isConfirmPasswordValid: false,
+      value: "",
+      error: false,
+      errorMessage: "",
+    });
+  };
+
+
   handleSubmit = (e) => {
     e.preventDefault();
     const { id, name, password, email, gender, phone, company, position } = this.state;
-    const signData = 
-    { 
-        coCd : company,
-        empId : id,
-        empPw: password,
-        empEmail: email,
-        empTel: phone,
-        empName: name,
-        empSx: gender,
-        empOd: position, 
-        empAuth: 'ROLL_USER',
+    const signData =
+    {
+      coCd: company,
+      empId: id,
+      empPw: password,
+      empEmail: email,
+      empTel: phone,
+      empName: name,
+      empSx: gender,
+      empOd: position,
+      empAuth: 'ROLL_USER',
     };
 
     // 폼 필드의 값이 비어있는지 확인
@@ -99,6 +121,7 @@ class SignUpComponent extends Component {
         alert("회원가입 성공", response);
         console.log(response.data);
         this.props.handleClose();
+        this.handleClose(); // 추가: 회원가입 성공 시 상태 초기화
         // 다이얼로그 창 닫기
       })
       .catch((error) => {
@@ -170,27 +193,28 @@ class SignUpComponent extends Component {
         <Grid container spacing={2} marginTop={2}>
           <Grid item xs={12}>
             <InputLabel>아이디</InputLabel>
-            <TextField
-              name="id"
-              placeholder="알파벳 대소문자와 숫자만 사용 가능"
-              variant="outlined"
-              value={id}
-              onChange={this.handleChange2}
-              onBlur={this.handleBlur}
-              disabled={error}
-              error={error}
-              helperText={errorMessage}
-              sx={{
-                width: "46%",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: isIdValid ? "success.main" : "error.main",
-                },
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-            />
-
+            <Tooltip title={errorMessage}>
+              <TextField
+                name="id"
+                placeholder="알파벳 대소문자와 숫자만 사용 가능"
+                variant="outlined"
+                value={id}
+                onChange={this.handleChange2}
+                onBlur={this.handleBlur}
+                disabled={error}
+                error={error}
+                // helperText={errorMessage}
+                sx={{
+                  width: "46%",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: isIdValid ? "success.main" : "error.main",
+                  },
+                  "& .MuiOutlinedInput-input::placeholder": {
+                    fontSize: "12px", // 원하는 폰트 크기로 설정
+                  },
+                }}
+              />
+            </Tooltip>
             <Button onClick={this.handleIdCheck} disabled={isIdDuplicated}>
               중복확인
             </Button>
@@ -214,66 +238,67 @@ class SignUpComponent extends Component {
           </Grid>
           <Grid item xs={12} sm={6}>
             <InputLabel>패스워드</InputLabel>
-            <TextField
-              variant="outlined"
-              color="secondary"
-              name="password"
-              placeholder="알파벳 대소문자, 숫자, 특수문자를 포함"
-              type="password"
-              value={password}
-              error={password && !isPasswordValid}
-              helperText={
-                password && !isPasswordValid ? (
-                  <>
-                    알파벳 대소문자, 숫자, 특수문자를 포함한
-                    <br />
-                    8글자 이상을 입력하세요
-                  </>
-                ) : (
-                  ""
-                )
-              }
-              onChange={this.handleChange}
-              onBlur={this.handleBlur}
-              sx={{
-                width: "95%",
-                whiteSpace: "pre-wrap",
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-            />
+            <Tooltip title={(
+              <div>
+                알파벳 대소문자, 숫자, 특수문자를 포함한
+                <br />
+                8글자 이상을 입력하세요
+              </div>
+            )}>
+              <TextField
+                variant="outlined"
+                color="secondary"
+                name="password"
+                placeholder="알파벳 대소문자, 숫자, 특수문자를 포함"
+                type="password"
+                value={password}
+                error={password && !isPasswordValid}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
+                sx={{
+                  width: "95%",
+                  whiteSpace: "pre-wrap",
+                  "& .MuiOutlinedInput-input::placeholder": {
+                    fontSize: "12px", // 원하는 폰트 크기로 설정
+                  },
+                }}
+              />
+            </Tooltip>
           </Grid>
           <Grid item xs={12} sm={6}>
             <InputLabel>패스워드 확인</InputLabel>
-            <TextField
-              variant="outlined"
-              color={
-                confirmPassword
-                  ? password === confirmPassword
-                    ? "success"
-                    : "error"
-                  : "secondary"
-              }
-              name="confirmPassword"
-              placeholder="한번 더 입력하세요"
-              type="password"
-              value={confirmPassword}
-              onChange={this.handleChange}
-              onBlur={this.handleBlur}
-              sx={{
-                width: "95%",
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-              error={confirmPassword && password !== confirmPassword}
-              helperText={
-                confirmPassword && password !== confirmPassword
+            <Tooltip title={(
+              <div>
+                {confirmPassword !== "" && (password !== confirmPassword
                   ? "비밀번호가 일치하지 않습니다."
-                  : ""
-              }
-            />
+                  : "비밀번호가 일치합니다.")
+                }
+              </div>
+            )}>
+              <TextField
+                variant="outlined"
+                color={
+                  confirmPassword
+                    ? password === confirmPassword
+                      ? "success"
+                      : "error"
+                    : "secondary"
+                }
+                name="confirmPassword"
+                placeholder="한번 더 입력하세요"
+                type="password"
+                value={confirmPassword}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
+                sx={{
+                  width: "95%",
+                  "& .MuiOutlinedInput-input::placeholder": {
+                    fontSize: "12px", // 원하는 폰트 크기로 설정
+                  },
+                }}
+                error={confirmPassword && password !== confirmPassword}
+              />
+            </Tooltip>
           </Grid>
           <Grid item xs={12} sm={6}>
             <InputLabel>이메일</InputLabel>
@@ -357,27 +382,18 @@ class SignUpComponent extends Component {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
-            <Button
-              onClick={this.handleSubmit}
-              variant="contained"
-              color="primary"
-            >
-              Sign Up
-            </Button>
-          </Grid>
+          {/* <Grid item xs={12}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                onClick={this.handleSubmit}
+                variant="contained"
+                color="primary"
+              >
+                Sign Up
+              </Button>
+            </div>
+          </Grid> */}
         </Grid>
-        {/* 주소 검색 다이얼로그 */}
-        {/* <Dialog open={isAddressDialogOpen} onClose={this.handleCloseAddressDialog}>
-          <DialogTitle>주소 검색</DialogTitle>
-          <DialogContent> */}
-        {/* 주소 검색 내용 */}
-        {/* <iframe src="/address-search" frameBorder="0" width="100%" height="400px" />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCloseAddressDialog} color="primary">Close</Button>
-          </DialogActions>
-        </Dialog> */}
       </form>
     );
   }

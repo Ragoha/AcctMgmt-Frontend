@@ -29,7 +29,7 @@ class DivDialogComponent extends Component {
           {
             field: "divNm",
             headerName: "사업장명",
-            width: 286,
+            width: 270,
             headerAlign: "center",
           },
         ],
@@ -38,20 +38,19 @@ class DivDialogComponent extends Component {
   }
 
   initDivDialog = () => {
-    this.setState({keyword : "", divRows: []})
     BgtICFService.findDivByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
-    }).then(async (response) => {
+    }).then((response) => {
       const divRows = response.map((row) => ({
         id: row.divCd,
         divCd: row.divCd,
         divNm: row.divNm,
       }));
-      await this.setState({ divRows: divRows });
-    });
-
-    this.handleUp();
+      this.setState({ divRows: divRows, keyword: "" });
+    }).then(() => {
+        this.handleUp();  
+      });
   }
 
   handleUp = () => {

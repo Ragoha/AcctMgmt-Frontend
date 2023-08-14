@@ -41,7 +41,7 @@ class PjtDialogComponent extends Component {
           {
             field: "pjtNm",
             headerName: "프로젝트명",
-            width: 286,
+            width: 270,
             headerAlign: "center",
           },
         ],

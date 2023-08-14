@@ -54,7 +54,8 @@ insertDept(data) {
                 deptNm: data.deptNm,
                 deptZip: data.deptZip,
                 deptAddr: data.deptAddr,
-                deptAddr1: data.deptAddr1
+                deptAddr1: data.deptAddr1,
+                insertId: data.insertId
             },{
                 headers: {
                     "access-token": data.accessToken,
@@ -130,6 +131,21 @@ getDivsDept(data) {
             }
         })
 };
+
+getDeptBydeptCdAnddeptNm(data) {
+    return axios
+        .get(ACCTMGMT_API_BASE_URL + "/ozt/dept/search", {
+            headers: {
+                "access-token": data.accessToken,
+              },
+              withCredentials: true,
+            params: {
+                coCd: data.coCd,
+                keyword: data.keyword
+            },
+        })
+        .then((response) => response.data);
+}
 
 }
 export default new DeptService();
