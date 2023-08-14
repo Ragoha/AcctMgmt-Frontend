@@ -67,7 +67,6 @@ class BgtCDDevFgCustom extends Component {
         row.divFg === newRow.divFg ? updatedRow : row
       ),
     }), () => console.log(this.state.rows));
-    console.log('↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑');
     return updatedRow;
   };
   updateBgtCDTerm = () => {
