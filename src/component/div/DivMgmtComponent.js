@@ -812,15 +812,15 @@ class DivMgmtComponent extends Component {
 
             {coCd && divCd ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDivs}>
-                수정
+                수 정
               </Button>
             ) : (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertDivs}>
-                저장
+                저 장
               </Button>
             )}
             <Button variant="outlined" onClick={this.deleteDivs}>
-              삭제
+              삭 제
             </Button>
           </Grid>
         </CustomHeaderGridContainer>
@@ -849,7 +849,7 @@ class DivMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Button
+          {/* <Button
             variant="outlined"
             onClick={() => this.searchClick(divCd)}
             style={{
@@ -861,7 +861,7 @@ class DivMgmtComponent extends Component {
             }}
           >
             <SearchIcon fontSize="medium" />
-          </Button>
+          </Button> */}
         </CustomGridContainer>
 
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -877,8 +877,6 @@ class DivMgmtComponent extends Component {
             <Grid
               item
               sx={{
-                pt: 1,
-                pb: 1,
                 mb: 1,
                 display: "flex",
                 justifyContent: "left",
@@ -949,7 +947,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1008,7 +1005,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1080,7 +1076,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1149,7 +1144,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1184,7 +1178,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1219,7 +1212,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1253,7 +1245,6 @@ class DivMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 150,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "flex-start",
@@ -1267,7 +1258,6 @@ class DivMgmtComponent extends Component {
                 <Grid
                   container
                   direction="column"
-                  spacing={1}
                   sx={{ width: "calc(100% + -24px)" }}
                 >
                   <Grid item>
@@ -1279,10 +1269,10 @@ class DivMgmtComponent extends Component {
                         onChange={this.handleCompany}
                         value={divZip || ""}
                         InputProps={{ readOnly: true }}
-                        sx={{ ml: 2, width: "150px" }}
+                        sx={{ mt:1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
-                        sx={{ ml: 1 }}
+                        sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                         onClick={this.addrButton}
                       >
@@ -1304,6 +1294,7 @@ class DivMgmtComponent extends Component {
                       name="divAddr1"
                       onChange={this.handleCompany}
                       value={divAddr1 || ""}
+                      sx={{mt: "0px !important"}}
                     />
                   </Grid>
                 </Grid>
