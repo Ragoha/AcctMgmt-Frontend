@@ -8,7 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
 import ListIcon from '@mui/icons-material/List';
-import { Button, TextField } from '@mui/material';
+import { Button, InputLabel, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 import FormControl from '@mui/material/FormControl';
@@ -762,7 +762,7 @@ class DeptMgmtComponent extends Component {
                 </CustomGridContainer >
 
                 <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
-                    <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
+                    <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: "#FCFCFC" }}>
 
                         <Grid item sx={{
                             mb: 1,
@@ -770,10 +770,15 @@ class DeptMgmtComponent extends Component {
                             justifyContent: "left",
                             alignItems: "center",
                             width: "100%",
-                            backgroundColor: "#f5f5f5",
-                            borderBottom: "3px solid #EAEAEA",
+                            backgroundColor: "#FCFCFC",
+                            borderBottom: "2px solid #000",
                         }}>
-                            <CustomInputLabel sx={{ ml: 1 }}>총 부서:</CustomInputLabel><CustomInputLabel >{cardCount}</CustomInputLabel>
+                            <CustomInputLabel sx={{ ml: 1 }}>총 부서:</CustomInputLabel>
+                            <InputLabel sx={{
+                                color: "#0054FF",
+                                fontWeight: "bold",
+                            }}>{cardCount}</InputLabel>
+                            <CustomInputLabel>건</CustomInputLabel>
                         </Grid>
 
                         <Grid item sx={{
@@ -803,7 +808,7 @@ class DeptMgmtComponent extends Component {
                             </Grid>
                         </Grid>
 
-                        <Grid container sx={{ border: "2px solid #EAEAEA" }}>
+                        <Grid container sx={{ mt:'-4px',border: "2px solid #EAEAEA" }}>
                             <Grid
                                 item
                                 xs={2}
@@ -922,7 +927,7 @@ class DeptMgmtComponent extends Component {
                                     justifyContent: "flex-end",
                                     alignItems: "flex-start",
                                     backgroundColor: "#FCFCFC",
-                                    
+
                                     borderRight: '1px solid #EAEAEA'
                                 }}
                             >
@@ -943,7 +948,7 @@ class DeptMgmtComponent extends Component {
                                                 onChange={this.handleCompany}
                                                 value={deptZip || ""}
                                                 InputProps={{ readOnly: true }}
-                                                sx={{ mt:1, ml: 1, width: "150px" }}
+                                                sx={{ mt: 1, ml: 1, width: "150px" }}
                                             ></TextField>
                                             <Button
                                                 sx={{ ml: 1, mt: 1 }}
@@ -968,7 +973,7 @@ class DeptMgmtComponent extends Component {
                                             name="deptAddr1"
                                             onChange={this.handleCompany}
                                             value={deptAddr1 || ""}
-                                            sx={{mt: "0px !important"}}
+                                            sx={{ mt: "0px !important" }}
                                         />
                                     </Grid>
                                 </Grid>
