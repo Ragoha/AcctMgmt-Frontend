@@ -367,6 +367,7 @@ class DataGridComponent extends Component {
           );
         },
         cellClassName: "mgtNm",
+        flex: 1,
       },
       {
         field: "carrAm",
@@ -388,6 +389,7 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm1",
@@ -412,6 +414,7 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm2",
@@ -436,6 +439,7 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm3",
@@ -460,12 +464,14 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "remDc",
         headerName: "적요",
         headerAlign: "center",
         editable: true,
+        flex: 1,
       },
       {
         field: "bgtTy",
@@ -473,6 +479,7 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: false,
         align: "center",
+        flex: 1,
       },
       {
         field: "empName",
@@ -480,6 +487,7 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: false,
         align: "center",
+        flex: 1,
       },
     ];
 
@@ -622,14 +630,80 @@ class CustomFooterStatusComponent extends Component {
   render() {
     const { rows } = this.props;
     return (
-      <Box sx={{ p: 1, display: "flex" }}>
-        {this.state.sumCarrAm.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/
-      
-        {this.state.sumCarrAm1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        /
-        {this.state.sumCarrAm2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        /
-        {this.state.sumCarrAm3.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+      <Box container>
+        <DataGrid
+          showCellVerticalBorder
+          hideFooter
+          rows={[
+            {
+              id: 0,
+              sumCarrAm: this.state.sumCarrAm
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm1: this.state.sumCarrAm1
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm2: this.state.sumCarrAm2
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm3: this.state.sumCarrAm3
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+          ]}
+          columns={[
+            {
+              field: "",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm",
+              headerName: "이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm1",
+              headerName: "사고이월금액",
+              align: "right",
+              flex: 1,
+            },
+            ,
+            {
+              field: "sumCarrAm2",
+              headerName: "명시이월금액",
+              align: "right",
+              flex: 1,
+            },
+            ,
+            {
+              field: "sumCarrAm3",
+              headerName: "예비이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "",
+              flex: 1,
+            },
+            {
+              field: "",
+              flex: 1,
+            },
+            {
+              field: "",
+              flex: 1,
+            },
+          ]}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              display: "none",
+            },
+            "& .MuiDataGrid-row": {
+              background: "#F6FFCC",
+            },
+          }}
+        />
       </Box>
     );
   }

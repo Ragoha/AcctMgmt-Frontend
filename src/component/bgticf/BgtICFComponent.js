@@ -26,7 +26,6 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import { borderBottom } from "@mui/system";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -319,7 +318,6 @@ class BgtICFComponent extends Component {
                   if (e.key == "Enter") {
                     alert("Asdf");
                   }
-
                 }}
                 size="small"
                 InputProps={{
@@ -434,77 +432,78 @@ class BgtICFComponent extends Component {
             {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2} sx={{ height: "calc(100vh - 280px)" }}>
+        <Grid container spacing={2} sx={{}}>
           <Grid item xs={3}>
-            <DataGrid
+              <DataGrid
               sx={{
-                "& .MuiDataGrid-columnHeaderTitle": {
-                  fontWeight: "bold",
-                },
-                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                  outline: "none !important",
-                },
-                borderTop: "3px solid black",
-                borderLeft: "2px solid #EAEAEA",
-                borderRight: "2px solid #EAEAEA",
-                borderBottom: "2px solid #EAEAEA",
-                "& .MuiDataGrid-row:hover": {
-                  background: "#F5F5F5",
-                },
-                "& .MuiDataGrid-row.Mui-selected:hover": {
-                  background: "#F5F5F5",
-                },
-                "& .MuiDataGrid-row.Mui-selected": {
-                  backgroundColor: "#EDF4FB !important",
-                  fontWeight: "bold",
-                },
-                // "& .MuiDataGrid-row.Mui-selected:hover": {
-                //   background: "#FFD8D8",
-                // },
+                  height: "calc(100vh - 292px)",
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                    fontWeight: "bold",
+                  },
+                  "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                    outline: "none !important",
+                  },
+                  borderTop: "3px solid black",
+                  borderLeft: "2px solid #EAEAEA",
+                  borderRight: "2px solid #EAEAEA",
+                  borderBottom: "2px solid #EAEAEA",
+                  "& .MuiDataGrid-row:hover": {
+                    background: "#F5F5F5",
+                  },
+                  "& .MuiDataGrid-row.Mui-selected:hover": {
+                    background: "#F5F5F5",
+                  },
+                  "& .MuiDataGrid-row.Mui-selected": {
+                    backgroundColor: "#EDF4FB !important",
+                    fontWeight: "bold",
+                  },
+                  // "& .MuiDataGrid-row.Mui-selected:hover": {
+                  //   background: "#FFD8D8",
+                  // },
 
-                "& .style-divfg-1": { background: "#86E57F" },
-                "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "0px !important",
-                },
-                "& .style-divfg-2": { background: "#AAFFA3" },
-                "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "8px !important",
-                },
-                "& .style-divfg-3": { background: "#CEFFC7" },
-                "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "16px !important",
-                },
-                "& .style-divfg-4": { background: "#F2FFEB" },
-                "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "24px !important",
-                },
-                "& .style-divfg-5": { background: "#FFFFFF" },
-                "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "32px !important",
-                },
-                "& .style-divfg-6": { background: "#FFFFFF" },
-                "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "40px !important",
-                },
-                "& .style-divfg-7": { background: "#FFFFFF" },
-                "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "48px !important",
-                },
-                "& .style-divfg-8": { background: "#FFFFFF" },
-                "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
-                  paddingLeft: "56px !important",
-                },
-              }}
-              columns={BGTCD_COLUMN}
-              // editMode="cell"
-              rows={this.state.bgtCDRows}
-              onRowClick={this.handleClickBgtCDRow}
-              hideFooter
-              showCellVerticalBorder
-              showColumnVerticalBorder
-              onEditCellChange={this.handleEditCellChange}
-              getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
-            />
+                  "& .style-divfg-1": { background: "#86E57F" },
+                  "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "0px !important",
+                  },
+                  "& .style-divfg-2": { background: "#AAFFA3" },
+                  "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "8px !important",
+                  },
+                  "& .style-divfg-3": { background: "#CEFFC7" },
+                  "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "16px !important",
+                  },
+                  "& .style-divfg-4": { background: "#F2FFEB" },
+                  "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "24px !important",
+                  },
+                  "& .style-divfg-5": { background: "#FFFFFF" },
+                  "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "32px !important",
+                  },
+                  "& .style-divfg-6": { background: "#FFFFFF" },
+                  "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "40px !important",
+                  },
+                  "& .style-divfg-7": { background: "#FFFFFF" },
+                  "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "48px !important",
+                  },
+                  "& .style-divfg-8": { background: "#FFFFFF" },
+                  "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
+                    paddingLeft: "56px !important",
+                  },
+                }}
+                columns={BGTCD_COLUMN}
+                // editMode="cell"
+                rows={this.state.bgtCDRows}
+                onRowClick={this.handleClickBgtCDRow}
+                hideFooter
+                showCellVerticalBorder
+                showColumnVerticalBorder
+                onEditCellChange={this.handleEditCellChange}
+                getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
+              />
           </Grid>
           <Grid item xs={9}>
             <DataGridComponent
