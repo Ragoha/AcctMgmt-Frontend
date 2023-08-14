@@ -672,8 +672,6 @@ class CoMgmtComponent extends Component {
             <Grid
               item
               sx={{
-                pt: 1,
-                pb: 1,
                 mb: 1,
                 display: "flex",
                 justifyContent: "left",

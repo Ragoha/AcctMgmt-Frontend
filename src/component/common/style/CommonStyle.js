@@ -44,8 +44,8 @@ export const CustomDataGrid = styled(DataGrid)({
 });
 
 export const CustomTextField = styled(TextField)({
-  marginTop: 8,
-  marginBottom: 8,
+  // marginTop: 8,
+  // marginBottom: 8,
   width: 255,
   "& .MuiInputBase-root": {
     height: 40,
