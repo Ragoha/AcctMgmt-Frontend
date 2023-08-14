@@ -130,13 +130,9 @@ class CompanyService {
   getCoBycoCdAndcoNm(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/co/search", {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
         params: {
           keyword: data.keyword
-        },
+        }
       })
       .then((response) => response.data);
   };
