@@ -61,7 +61,10 @@ class CoDialogComponent extends Component {
   }
   //검색 
   handleSearchCoDial= () => {
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
+    CompanyService.getCoBycoCdAndcoNm({
+      accessToken: this.props.accessToken,
+      keyword: this.state.keyword,
+     })
     .then(
       async (response) => {
         const codialRows = response.map((row) => ({
@@ -166,6 +169,7 @@ class CoDialogComponent extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
 });
 export default connect(mapStateToProps, null, null, { forwardRef: true })(CoDialogComponent);

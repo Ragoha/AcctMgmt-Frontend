@@ -21,12 +21,12 @@ import DeptService from '../../service/DeptService';
 import DivsService from '../../service/DivsService';
 import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
-import DivDialogComponent from './dialog/DeptDialogComponent';
+import DeptDialogComponent from './dialog/DeptDialogComponent';
 
 class DeptMgmtComponent extends Component {
     constructor(props) {
         super(props);
-        this.divDialogRef = React.createRef();
+        this.deptDialogRef = React.createRef();
         this.addrRef = React.createRef();
         this.state = {
             open: false,
@@ -173,7 +173,7 @@ class DeptMgmtComponent extends Component {
 
 
     helpClick = () => {
-        this.divDialogRef.current.handleUp();
+        this.deptDialogRef.current.handleUp();
     };
 
 
@@ -181,10 +181,10 @@ class DeptMgmtComponent extends Component {
         this.dialogRef.current.handleDown();
     }
 
-    handleSetDivdialTextField = async (data) => {
+    handleSetDeptdialTextField = async (data) => {
         await this.setState({
-            DivdialTextField: data.divCd + ". " + data.divNm,
-            divCd: data.divCd  //밑에 coCd 넘겨주기
+            DeptdialTextField: data.deptCd + ". " + data.deptNm,
+            deptCd: data.deptCd  //밑에 coCd 넘겨주기
         });
     };
 
@@ -655,7 +655,6 @@ class DeptMgmtComponent extends Component {
         //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
         const newDivCdList = [...new Set(divCdList)]
-
         const newDeptCdList = [...new Set(deptCdList)]
 
         const trees = (
@@ -708,20 +707,20 @@ class DeptMgmtComponent extends Component {
                     </Grid>
                     <Grid item >
                         <Button sx={{ mr: 1 }} variant="outlined" onClick={this.addTree}>
-                            추가
+                            추 가
                         </Button>
 
                         {deptCd && insertDt ? (
                             <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDept}>
-                                수정
+                                수 정
                             </Button>
                         ) : (
                             <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertDept}>
-                                저장
+                                저 장
                             </Button>
                         )}
                         <Button variant="outlined" onClick={this.deleteDept}>
-                            삭제
+                            삭 제
                         </Button>
                     </Grid>
                 </CustomHeaderGridContainer>
@@ -757,17 +756,15 @@ class DeptMgmtComponent extends Component {
                             ></CustomTextField>
                         </Grid>
                     </Grid>
-                    <Button variant="outlined" onClick={() => this.searchClick(deptCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
+                    {/* <Button variant="outlined" onClick={() => this.searchClick(deptCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
                         <SearchIcon fontSize="medium" />
-                    </Button>
+                    </Button> */}
                 </CustomGridContainer >
 
                 <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
                     <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: '#f5f5f5' }}>
 
                         <Grid item sx={{
-                            pt: 1,
-                            pb: 1,
                             mb: 1,
                             display: "flex",
                             justifyContent: "left",
@@ -811,7 +808,6 @@ class DeptMgmtComponent extends Component {
                                 item
                                 xs={2}
                                 sx={{
-                                    height: 50,
                                     display: "flex",
                                     justifyContent: "flex-end",
                                     alignItems: "center",
@@ -851,7 +847,6 @@ class DeptMgmtComponent extends Component {
                             </Grid>
 
                             <Grid item xs={2} sx={{
-                                height: 50,
                                 display: "flex",
                                 justifyContent: "flex-end",
                                 alignItems: "center",
@@ -872,7 +867,7 @@ class DeptMgmtComponent extends Component {
                                 <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='divCd' onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></CustomWideTextField>
                             </Grid>
 
-                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                                 <CustomInputLabel sx={{ color: 'black' }}  >부서코드</CustomInputLabel>
                             </Grid>
                             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: "1px solid lightgray", borderRight: '1px solid #EAEAEA' }}>
@@ -887,7 +882,7 @@ class DeptMgmtComponent extends Component {
                             </Grid>
 
 
-                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                            {/* <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                                 <CustomInputLabel sx={{ color: 'black' }}  >종목</CustomInputLabel>
                             </Grid>
                             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: "1px solid lightgray", borderRight: '1px solid #EAEAEA' }}>
@@ -904,7 +899,7 @@ class DeptMgmtComponent extends Component {
 
 
 
-                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                                 <CustomInputLabel sx={{ color: 'black' }}  >대표자명</CustomInputLabel>
                             </Grid>
                             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: "1px solid lightgray", borderRight: '1px solid #EAEAEA' }}>
@@ -912,18 +907,17 @@ class DeptMgmtComponent extends Component {
                             </Grid>
 
 
-                            <Grid item xs={2} sx={{ height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
+                            <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
                                 <CustomInputLabel sx={{ color: 'black' }}  >사업자번호</CustomInputLabel>
                             </Grid>
                             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: "1px solid lightgray" }}>
                                 <CustomWideTextField sx={{ ml: 2 }} onChange={this.handleCompany} ></CustomWideTextField>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid
                                 item
                                 xs={2}
                                 sx={{
-                                    height: 150,
                                     display: "flex",
                                     justifyContent: "flex-end",
                                     alignItems: "flex-start",
@@ -938,7 +932,6 @@ class DeptMgmtComponent extends Component {
                                 <Grid
                                     container
                                     direction="column"
-                                    spacing={1}
                                     sx={{ width: "calc(100% + -24px)" }}
                                 >
                                     <Grid item>
@@ -950,10 +943,10 @@ class DeptMgmtComponent extends Component {
                                                 onChange={this.handleCompany}
                                                 value={deptZip || ""}
                                                 InputProps={{ readOnly: true }}
-                                                sx={{ ml: 2, width: "150px" }}
+                                                sx={{ mt:1, ml: 1, width: "150px" }}
                                             ></TextField>
                                             <Button
-                                                sx={{ ml: 1 }}
+                                                sx={{ ml: 1, mt: 1 }}
                                                 variant="outlined"
                                                 onClick={this.addrButton}
                                             >
@@ -975,6 +968,7 @@ class DeptMgmtComponent extends Component {
                                             name="deptAddr1"
                                             onChange={this.handleCompany}
                                             value={deptAddr1 || ""}
+                                            sx={{mt: "0px !important"}}
                                         />
                                     </Grid>
                                 </Grid>
@@ -985,7 +979,7 @@ class DeptMgmtComponent extends Component {
                 </Grid >
 
                 <AddressComponent setDeptZipAddr={this.setDeptZipAddr} ref={this.addrRef} />
-                <DivDialogComponent handleSetDivdialTextField={this.handleSetDivdialTextField} ref={this.divDialogRef} />
+                <DeptDialogComponent handleSetDeptdialTextField={this.handleSetDeptdialTextField} ref={this.deptDialogRef} />
             </>
         );
     }
