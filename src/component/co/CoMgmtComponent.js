@@ -14,7 +14,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InputAdornment from '@mui/material/InputAdornment';
 import CompanyService from '../../service/CompanyService';
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../common/style/CommonDialogStyle';
-import { CustomDataGrid, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
+import { CustomDataGrid, CustomDatePrToTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import CoDialogComponent from './dialog/CoDialogComponent';
 import { DataGrid } from '@mui/x-data-grid';
@@ -613,15 +613,15 @@ class CoMgmtComponent extends Component {
           <Grid item>
             {coCd ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
-                수정
+                수 정
               </Button>
             ) : (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertCo}>
-                저장
+                저 장
               </Button>
             )}
             <Button variant="outlined" onClick={this.deleteCo}>
-              삭제
+              삭 제
             </Button>
           </Grid>
         </CustomHeaderGridContainer>
@@ -672,8 +672,6 @@ class CoMgmtComponent extends Component {
             <Grid
               item
               sx={{
-                pt: 1,
-                pb: 1,
                 mb: 1,
                 display: "flex",
                 justifyContent: "left",
@@ -743,7 +741,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -807,7 +804,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -871,7 +867,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -932,7 +927,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 150,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "flex-start",
@@ -941,13 +935,12 @@ class CoMgmtComponent extends Component {
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
-                <CustomInputLabel sx={{ mt: 1 }}>회사주소</CustomInputLabel>
+                <CustomInputLabel>회사주소</CustomInputLabel>
               </Grid>
               <Grid item xs={10} sx={{ display: "flex", alignItems: "center" }}>
                 <Grid
                   container
                   direction="column"
-                  spacing={1}
                   sx={{ width: "calc(100% + -24px)" }}
                 >
                   <Grid item>
@@ -959,10 +952,10 @@ class CoMgmtComponent extends Component {
                         onChange={this.handleCompany}
                         value={coZip || ""}
                         InputProps={{ readOnly: true }}
-                        sx={{ ml: 2, width: "150px" }}
+                        sx={{ mt:1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
-                        sx={{ ml: 1 }}
+                        sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                         onClick={this.addrButton}
                       >
@@ -984,6 +977,7 @@ class CoMgmtComponent extends Component {
                       name="coAddr1"
                       onChange={this.handleCompany}
                       value={coAddr1 || ""}
+                      sx={{mt: "0px !important"}}
                     />
                   </Grid>
                 </Grid>
@@ -992,7 +986,6 @@ class CoMgmtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1015,7 +1008,7 @@ class CoMgmtComponent extends Component {
                 }}
               >
                 <CustomInputLabel
-                  sx={{ ml: 2 }}
+                  sx={{ ml: 1 }}
                   name="gisu"
                   onChange={this.handleCompany}
                   value={gisu || ""}
@@ -1025,11 +1018,10 @@ class CoMgmtComponent extends Component {
                 <CustomInputLabel sx={{ textAlign: "right", mr: 1 }}>
                   기
                 </CustomInputLabel>
-                <CustomTextField
+                <CustomDatePrToTextField
                   name="dateRange"
                   disabled={true}
                   value={this.state.dateRange || ""}
-                  sx={{ width: 240, minWidth: 240 }}
                   onChange={this.handleCompany}
                   InputProps={{
                     readOnly: true,
@@ -1041,7 +1033,7 @@ class CoMgmtComponent extends Component {
                       </InputAdornment>
                     ),
                   }}
-                ></CustomTextField>
+                ></CustomDatePrToTextField>
                 <Button
                   size="medium"
                   sx={{ ml: 1 }}

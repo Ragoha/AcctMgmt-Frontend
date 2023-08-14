@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import PjtService from '../../service/PjtService';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
+import { CustomDateTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect, CustomWideTextField } from '../common/style/CommonStyle';
 import PjtDialogComponent from './dialog/PjtDialogComponent';
 import PgrDialogComponent from './dialog/PgrDialogComponent';
 import { MenuItem, Select } from '@mui/material';
@@ -587,16 +587,32 @@ class PjtComponent extends Component {
           </Grid>
           <Grid item container justifyContent="flex-end" xs={4}>
             <ButtonGroup>
-              <Button variant="outlined">프로젝트그룹추가</Button>
-              {isPjtCdEditable ? (<Button variant="outlined" onClick={this.handleSave}>저장 </Button>
+              <Button variant="outlined" sx={{ mr: 1 }}>
+                프로젝트그룹추가
+              </Button>
+              {isPjtCdEditable ? (
+                <Button
+                  variant="outlined"
+                  onClick={this.handleSave}
+                  sx={{ mr: 1 }}
+                >
+                  저 장
+                </Button>
               ) : (
-                <Button variant="outlined" onClick={this.handleFix}> 수정</Button>
+                <Button
+                  variant="outlined"
+                  onClick={this.handleFix}
+                  sx={{ mr: 1 }}
+                >
+                  수 정
+                </Button>
               )}
-              <Button variant="outlined" onClick={this.handleDel}> 삭제 </Button>
+              <Button variant="outlined" onClick={this.handleDel}>
+                삭 제
+              </Button>
             </ButtonGroup>
           </Grid>
         </CustomHeaderGridContainer>
-
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         <CustomGridContainer
           container
@@ -626,12 +642,8 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel sx={{ pt: 1 }}>프로젝트구분</CustomInputLabel>
-              <Select
-                sx={{
-                  width: "255px",
-                  height: "40px",
-                }}
+              <CustomInputLabel>프로젝트구분</CustomInputLabel>
+              <CustomSelect
                 name="selectedProgFg"
                 value={this.state.selectedProgFg}
                 onChange={this.handleProgFgChange2}
@@ -641,25 +653,37 @@ class PjtComponent extends Component {
                     {option}
                   </MenuItem>
                 ))}
-              </Select>
+              </CustomSelect>
             </Grid>
           </Grid>
 
           <Grid item xs={4}>
-            <Grid container direction="row">
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
               <CustomInputLabel>프로젝트분류</CustomInputLabel>
               <CustomTextField
-                sx={{ mt: -1 }}
                 name="PgrTextField"
                 value={this.state.PgrdialTextField}
                 placeholder="프로젝트그룹코드 "
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <HelpCenterOutlinedIcon onClick={this.pgrhelpClick} /></InputAdornment>
+                      <HelpCenterOutlinedIcon onClick={this.pgrhelpClick} />
+                    </InputAdornment>
                   ),
                 }}
-              ></CustomTextField>
+              />
+              <CustomSearchButton
+                variant="outlined"
+                onClick={this.handleClickSerachButton}
+                sx={{ marginLeft: "auto" }}
+              >
+                <SearchIcon />
+              </CustomSearchButton>
             </Grid>
           </Grid>
 
@@ -672,15 +696,12 @@ class PjtComponent extends Component {
                 value={this.state.dateRange || ""}
                 onChange={this.handlePjt}
                 sx={{
-                  mt: -1,
                   "& input": {
                     height: "9px",
                   },
                 }}
               ></CustomTextField>
             </Grid>
-          </Grid>
-          <Grid item xs={4}>
           </Grid>
         </CustomGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
@@ -719,9 +740,17 @@ class PjtComponent extends Component {
                   fontWeight: "bold",
                   fontSize: "13px",
                 }}
-              >프로젝트:</InputLabel>
+              >
+                프로젝트:
+              </InputLabel>
               <InputLabel
-                sx={{ ml: 0.5, color: "#0054FF", fontWeight: "bold", fontSize: "13px", pt: 0.5, }}
+                sx={{
+                  ml: 0.5,
+                  color: "#0054FF",
+                  fontWeight: "bold",
+                  fontSize: "13px",
+                  pt: 0.5,
+                }}
               >
                 {cardCount}
               </InputLabel>
@@ -770,7 +799,6 @@ class PjtComponent extends Component {
                 </Grid>
               ))}
             </Grid>
-
 
             <Grid
               container
@@ -831,7 +859,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -840,15 +867,12 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트코드
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트코드</CustomInputLabel>
               </Grid>
               <Grid
                 item
                 xs={4}
                 sx={{
-
                   display: "flex",
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
@@ -861,7 +885,9 @@ class PjtComponent extends Component {
                   sx={{
                     ml: 2,
                     width: "93%",
-                    backgroundColor: this.state.isPjtCdEditable ? '#FFEAEA' : 'white', // 배경색 설정
+                    backgroundColor: this.state.isPjtCdEditable
+                      ? "#FFEAEA"
+                      : "white", // 배경색 설정
                   }}
                   name="pjtCd"
                   onChange={this.handlePjt}
@@ -873,7 +899,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -882,9 +907,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트구분
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트구분</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -897,12 +920,8 @@ class PjtComponent extends Component {
                 }}
                 onChange={this.handlePjt}
               >
-                <Select
+                <CustomWideSelect
                   sx={{
-                    ml: 2,
-                    mt: 0.3,
-                    width: "405px",
-                    height: "40px",
                     backgroundColor: "#FFEAEA",
                   }}
                   name="selectedProgFg"
@@ -914,13 +933,12 @@ class PjtComponent extends Component {
                       {option}
                     </MenuItem>
                   ))}
-                </Select>
+                </CustomWideSelect>
               </Grid>
               <Grid
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -929,9 +947,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트명
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트명</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -956,7 +972,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -965,9 +980,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트약칭
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트약칭</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -992,7 +1005,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1001,9 +1013,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel>
-                  프로젝트분류
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트분류</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -1027,7 +1037,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1036,9 +1045,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  사용권한설정
-                </CustomInputLabel>
+                <CustomInputLabel>사용권한설정</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -1063,7 +1070,6 @@ class PjtComponent extends Component {
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1072,9 +1078,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트기간
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트기간</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -1084,34 +1088,36 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
+                  lineHeight: "55px",
                 }}
               >
-                <Grid item xs={5} >
-                  <CustomWideTextField
+                <Grid
+                  container
+                  direction="row"
+                  alignContent="center"
+                  sx={{ ml: 1 }}
+                >
+                  <CustomDateTextField
                     type="date"
                     name="prDt"
                     value={dayjs(prDt).format("YYYY-MM-DD")}
                     onChange={this.handlePjt}
-                  ></CustomWideTextField>
-                </Grid>
-                <Grid item xs={1} sx={{ pl: 4.1 }}>
+                    sx={{ mr: 1 }}
+                  />
                   ~
-                </Grid>
-                <Grid item xs={5} sx={{ ml: 0.7 }}>
-                  <CustomWideTextField
+                  <CustomDateTextField
                     type="date"
                     name="toDt"
                     value={dayjs(toDt).format("YYYY-MM-DD")}
                     onChange={this.handlePjt}
-                  ></CustomWideTextField>
+                    sx={{ ml: 1 }}
+                  />
                 </Grid>
               </Grid>
-
               <Grid
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1120,9 +1126,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >
-                  프로젝트시작일
-                </CustomInputLabel>
+                <CustomInputLabel>프로젝트시작일</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -1135,27 +1139,19 @@ class PjtComponent extends Component {
                   width: "100%",
                 }}
               >
-                <CustomWideTextField
+                <CustomDateTextField
                   type="date"
                   name="startDt"
                   value={dayjs(startDt).format("YYYY-MM-DD")}
                   onChange={this.handlePjt}
-                  sx={{
-                    ml: 2,
-                    width: "100%",
-                    mr: 2,
-                    "& input": {
-                      height: "9px",
-                    },
-                  }}
-                ></CustomWideTextField>
+                  sx={{ ml: 1 }}
+                />
               </Grid>
 
               <Grid
                 item
                 xs={2}
                 sx={{
-                  height: 50,
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1164,7 +1160,7 @@ class PjtComponent extends Component {
                   backgroundColor: "#FCFCFC",
                 }}
               >
-                <CustomInputLabel >비고</CustomInputLabel>
+                <CustomInputLabel>비고</CustomInputLabel>
               </Grid>
               <Grid
                 item
@@ -1180,7 +1176,7 @@ class PjtComponent extends Component {
                   size="small"
                   sx={{ ml: 2, width: "80%" }}
                   name="note"
-                  value={note || ''}
+                  value={note || ""}
                   onChange={this.handlePjt}
                   placeholder="프로젝트 관련 비고 입력"
                 />
@@ -1188,42 +1184,54 @@ class PjtComponent extends Component {
             </Grid>
           </Grid>
           {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
-        </Grid > {/*  전체화면 닫는 곳*/}
+        </Grid>{" "}
+        {/*  전체화면 닫는 곳*/}
         <Grid
           container
           sx={{
-            position: 'fixed', // 네비게이션 바를 고정 위치로 설정합니다.
+            position: "fixed", // 네비게이션 바를 고정 위치로 설정합니다.
             bottom: 0, // 아래쪽에 위치합니다.
             zIndex: 100, // 다른 요소 위에 나타나도록 z-index를 설정합니다.
-            width: '100%',
-            padding: '10px 0',
-            borderTop: '1px solid #ccc',
-            backgroundColor: 'white',
-            transition: 'bottom 0.3s', // 슬라이드 효과를 위한 transition을 추가합니다.
+            width: "100%",
+            padding: "10px 0",
+            borderTop: "1px solid #ccc",
+            backgroundColor: "white",
+            transition: "bottom 0.3s", // 슬라이드 효과를 위한 transition을 추가합니다.
           }}
           justifyContent="space-between"
         >
           <Grid item xs={5}>
             {this.state.selectedCount > 0 && (
               <InputLabel>
-                선택됨:<span style={{ color: 'red', fontWeight: 'bold' }}>&nbsp;{this.state.selectedCount}</span>
+                선택됨:
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  &nbsp;{this.state.selectedCount}
+                </span>
                 건
               </InputLabel>
             )}
           </Grid>
-          <Grid item xs={6} align="right" style={{ position: 'relative', right: "300px" }}>
+          <Grid
+            item
+            xs={6}
+            align="right"
+            style={{ position: "relative", right: "300px" }}
+          >
             {this.state.selectedCount > 0 && (
-              <Button
-                variant="outlined"
-                onClick={this.handleDeleteSelected}
-              >
+              <Button variant="outlined" onClick={this.handleDeleteSelected}>
                 삭제
               </Button>
             )}
           </Grid>
         </Grid>
-        <PjtDialogComponent handleSetPjtTextField={this.handleSetPjtTextField} ref={this.pjtDialogRef} />
-        <PgrDialogComponent handleSetPgrTextField={this.handleSetPgrTextField} ref={this.pgrDialogRef} />
+        <PjtDialogComponent
+          handleSetPjtTextField={this.handleSetPjtTextField}
+          ref={this.pjtDialogRef}
+        />
+        <PgrDialogComponent
+          handleSetPgrTextField={this.handleSetPgrTextField}
+          ref={this.pgrDialogRef}
+        />
         {/* <div>
           <div className={`alert-container ${successAlert ? 'show' : ''}`}>
             <Alert variant="filled" severity="success">
