@@ -44,9 +44,25 @@ export const CustomDataGrid = styled(DataGrid)({
 });
 
 export const CustomTextField = styled(TextField)({
-  // marginTop: 8,
-  // marginBottom: 8,
   width: 255,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomDateTextField = styled(TextField)({
+  marginTop: 8,
+  marginBottom: 8,
+  width: 140,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomDatePrToTextField = styled(TextField)({
+  marginTop: 8,
+  marginBottom: 8,
+  width: 240,
   "& .MuiInputBase-root": {
     height: 40,
   },
