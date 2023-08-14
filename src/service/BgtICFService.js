@@ -57,6 +57,7 @@ class BtgICFService {
           carrAm3: data.row.carrAm3,
           empCd: data.user.empCd,
           remDc: data.row.remDc,
+          insertId: data.user.empId,
           modifyId: data.user.empId,
         },
         {
