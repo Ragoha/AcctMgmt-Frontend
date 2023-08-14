@@ -130,6 +130,21 @@ class BgtCDService {
       }).then((response)=>response.data)
       return returnData;
     }
+    getBgtCDdialog(coCd,accessToken){
+      console.log('11111겟비지티시디다이알로그 서비스')
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getBgtCDdialog",{
+        params:{
+          coCd:coCd
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      }).then((response)=>response.data)
+      console.log('222겟비지티시디다이알로그 서비스')
+      return returnData;
+    }
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData
@@ -154,6 +169,22 @@ class BgtCDService {
             },
             withCredentials: true,
           }).then((response)=>response.data)
+    }
+    deleteBgtGr(data,accessToken){
+      console.log('딜리트 bgtGr임')
+      console.log(data)
+      return axios.delete(ACCTMGMT_API_BASE_URL+"/deleteBgtGr" ,{
+        params:{
+          coCd : data.coCd,
+          bgtGrCd:data.bgtGrCd
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      })
+
     }
     /*---delete end ---*/
 }
