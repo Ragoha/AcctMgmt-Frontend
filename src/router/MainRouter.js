@@ -19,7 +19,7 @@ class MainRouter extends Component {
       <Routes>
         <Route path="acctmgmt/*" element={<MainComponent />}>
           {/* Only show routes if user has ROLE_ADMIN */}
-          {/* {user.role === "ROLE_ADMIN" ? ( */}
+          {!(user.role === "") ? (
             <>
               <Route path="ozt/co" element={<CoMgmtComponent />} />
               <Route path="ozt/div" element={<DivMgmtComponent />} />
@@ -29,10 +29,10 @@ class MainRouter extends Component {
               <Route path="syscfg" element={<ConfigComponent />} />
               <Route path="pjt" element={<PjtComponent />} />
             </>
-          {/* ) : ( */}
+          ) : (
             // Redirect to the "/" page if user doesn't have ROLE_ADMIN
-            {/* <Route path="" element={<Navigate to="/" />} /> */}
-          {/* )} */}
+            <Route path="" element={<Navigate to="/" />} />
+          )}
         </Route>
       </Routes>
     );
