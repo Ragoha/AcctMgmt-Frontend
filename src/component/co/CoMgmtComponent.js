@@ -35,7 +35,7 @@ class CoMgmtComponent extends Component {
       frDt: new Date(), // 기수 시작일 날짜 객체
       toDt: new Date(), // 기수 종료일 날짜 객체
       //insertId: '', //등록자
-      //insertDt: '', //등록일  String???
+      insertDt: '', //등록일  String???
       //insertIp: '', //등록자 ip
       //modifyId: '', //수정자
       //modifyDt: '', //수정일
@@ -54,6 +54,8 @@ class CoMgmtComponent extends Component {
       CodialTextField: '',
       dateRange: '',
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
+      // inputValue: '',
+      originCd: 0,
 
       data: {
         columns: [
@@ -83,7 +85,7 @@ class CoMgmtComponent extends Component {
     // {coCd && empId?
     CompanyService.getCoList({
       accessToken: this.props.accessToken,
-      coCd: coCd
+      // coCd: coCd
     })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
@@ -103,6 +105,7 @@ class CoMgmtComponent extends Component {
         const coZip = response.data[0].coZip;
         const coAddr = response.data[0].coAddr;
         const coAddr1 = response.data[0].coAddr1;
+        const insertDt = response.data[0].insertDt;
 
         this.setState({
           cardCount: cardCount, // state에 값을 저장
@@ -112,6 +115,7 @@ class CoMgmtComponent extends Component {
 
           focused: coCd,
           coCd: coCd,
+          originCd: coCd,
           coNm: coNm,
           gisu: gisu,
           frDt: frDt,
@@ -123,7 +127,8 @@ class CoMgmtComponent extends Component {
           ceoNm: ceoNm,
           coZip: coZip,
           coAddr: coAddr,
-          coAddr1: coAddr1
+          coAddr1: coAddr1,
+          insertDt: insertDt
         })
       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
@@ -196,6 +201,13 @@ class CoMgmtComponent extends Component {
     }
   }
 
+  handleCdChange = (e) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, ''); ///[^0-9]*$/ 둘 다 되는건가?
+    this.setState({ 
+      isChanged: true,
+      [e.target.name]: numericValue });
+  };
+
   addCardButton = () => {
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
     if (this.state.coCdList.includes('0000')) {
@@ -221,16 +233,18 @@ class CoMgmtComponent extends Component {
         ceoNm: '',
         coZip: '',
         coAddr: '',
-        coAddr1: ''
+        coAddr1: '',
+        insertDt: ''
       })
     }
   }//여기에 모든 state값 초기화 하면 됨 !!!!!
 
   insertCo = () => {
-    const { coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
 
     CompanyService.insertCo({
       accessToken: this.props.accessToken,
+      coCd: coCd,
       coNm: coNm,
       gisu: gisu,
       frDt: frDt,
@@ -316,7 +330,8 @@ class CoMgmtComponent extends Component {
             ceoNm: '',
             coZip: '',
             coAddr: '',
-            coAddr1: ''
+            coAddr1: '',
+            insertDt: ''
           }) :
           CompanyService.getCompany({
             accessToken: this.props.accessToken,
@@ -336,9 +351,11 @@ class CoMgmtComponent extends Component {
               const coZip = response.data[0].coZip;
               const coAddr = response.data[0].coAddr;
               const coAddr1 = response.data[0].coAddr1;
+              const insertDt = response.data[0].insertDt;
 
               this.setState({
                 coCd: coCd,
+                originCd: coCd,
                 coNm: coNm,
                 gisu: gisu,
                 frDt: frDt,
@@ -350,7 +367,8 @@ class CoMgmtComponent extends Component {
                 ceoNm: ceoNm,
                 coZip: coZip,
                 coAddr: coAddr,
-                coAddr1: coAddr1
+                coAddr1: coAddr1,
+                insertDt: insertDt
               })
               console.log(frDt, toDt)
             })
@@ -558,6 +576,22 @@ class CoMgmtComponent extends Component {
     });
   }
 
+  handleBlur =(e) =>{
+    const {coCd , originCd} = this.state;
+    // this.setState({
+    //   originCd: coCd
+    // })
+    const newCoCd = parseInt(e.target.value)
+    const{coCdList} = this.state;
+  
+      coCdList.includes(newCoCd) ? 
+      this.setState({
+         coCd:''
+     }) :( this.setState({
+      coCd:coCd}))
+     
+  }
+
   // processRowUpdate = (updatedRow) => {
   //   // Update the rows state with the modified row
   //   this.setState((prevState) => ({
@@ -568,7 +602,7 @@ class CoMgmtComponent extends Component {
   // };
 
   render() {
-    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt } = this.state;
+    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt, insertDt } = this.state;
     const { selectedRow } = this.state;
     const { data } = this.state;
     const { cardCount, coCdList, coNmList, ceoNmList } = this.state;
@@ -615,7 +649,7 @@ class CoMgmtComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            {coCd ? (
+            {insertDt ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
                 수 정
               </Button>
@@ -778,9 +812,10 @@ class CoMgmtComponent extends Component {
                 <CustomWideTextField
                   sx={{ backgroundColor: "#FFEAEA" }}
                   name="coCd"
-                  onChange={this.handleCompany}
+                  onChange={this.handleCdChange}
+                  // onChange={this.handleCompany}
+                  onBlur={this.handleBlur}
                   value={coCd || ""}
-                  InputProps={{ readOnly: true }}
                 ></CustomWideTextField>
               </Grid>
 
