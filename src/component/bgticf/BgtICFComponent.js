@@ -507,6 +507,9 @@ class BgtICFComponent extends Component {
               showColumnVerticalBorder
               onEditCellChange={this.handleEditCellChange}
               getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
+              components={{
+                NoRowsOverlay: () => "",
+              }}
             />
           </Grid>
           <Grid item xs={9}>
