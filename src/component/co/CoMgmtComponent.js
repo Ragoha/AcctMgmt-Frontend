@@ -148,7 +148,6 @@ class CoMgmtComponent extends Component {
           coAddr1: coAddr1,
           insertDt: insertDt
         })
-        });
       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
         // 오류 발생 시의 처리
