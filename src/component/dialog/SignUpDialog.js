@@ -1,9 +1,10 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Link } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Link } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { Component } from 'react';
 import SignUpComponent from '../user/SignUpComponent';
+import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogTitle } from '../common/style/CommonDialogStyle';
 
 class SignUpDialog extends Component {
   constructor(props) {
@@ -34,26 +35,41 @@ class SignUpDialog extends Component {
           회원가입
           <CheckIcon />
         </Link>
-        <Dialog open={open} onClose={this.handleClose} PaperProps={{ sx: { width: 700 } }}>
-          <DialogTitle bgcolor={'#4A55A2'} color={'white'} marginBottom={'15'} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Dialog
+          open={open}
+          onClose={this.handleClose}
+          PaperProps={{ sx: { width: 700 } }}
+        >
+          <CustomDialogTitle>
             회원가입
-            <IconButton onClick={this.handleClose} color="inherit">
-              <CloseIcon />
+            <IconButton size="small" onClick={this.handleClose}>
+              <CustomCloseIcon />
             </IconButton>
-          </DialogTitle>
+          </CustomDialogTitle>
           <DialogContent>
             <SignUpComponent
               ref={this.signUpComponentRef} // ref 할당
               handleClose={this.handleClose}
             />
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'flex-end' }}>
-            {/* SignUpComponent의 handleSubmit 호출 */}
-            <Button onClick={(e) => this.signUpComponentRef.current.handleSubmit(e)} color="primary">
-              가입
-            </Button>
-            <Button onClick={this.handleClose} color="primary">닫기</Button>
-          </DialogActions>
+          <CustomDialogActions>
+            <Grid
+              container
+              justifyContent="center"
+              sx={{mb: 2 }}
+            >
+              <CustomConfirmButton
+                variant="outlined"
+                onClick={(e) => this.signUpComponentRef.current.handleSubmit(e)}
+              >
+                가입
+              </CustomConfirmButton>
+
+              <Button variant="outlined" onClick={this.handleClose}>
+                닫기
+              </Button>
+            </Grid>
+          </CustomDialogActions>
         </Dialog>
       </>
     );
