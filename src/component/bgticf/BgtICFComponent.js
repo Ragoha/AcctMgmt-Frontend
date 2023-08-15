@@ -44,7 +44,7 @@ const BGTCD_COLUMN = [
     // flex: 1,
     field: "bgtCd",
     headerName: "예산코드",
-    width: 110,
+    width: 100,
     headerAlign: "center",
   },
   {
@@ -301,7 +301,6 @@ class BgtICFComponent extends Component {
             <Button variant="outlined" onClick={this.handleRowDelete}>
               삭 제
             </Button>
-            <SnackBarComponent />
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -434,6 +433,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             {/* <ListDisplay/> */}
+            <SnackBarComponent />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>

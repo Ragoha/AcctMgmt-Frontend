@@ -10,6 +10,7 @@ import DivMgmtComponent from "../component/div/DivMgmtComponent";
 import DeptMgmtComponent from "../component/dept/DeptMgmtComponent";
 import ConfigComponent from "../component/syscfg/ConfigComponent";
 import PjtComponent from "../component/pjt/PjtComponent";
+import { connect } from "react-redux";
 
 class MainRouter extends Component {
   render() {
@@ -19,7 +20,7 @@ class MainRouter extends Component {
       <Routes>
         <Route path="acctmgmt/*" element={<MainComponent />}>
           {/* Only show routes if user has ROLE_ADMIN */}
-          {!(user.role === "") ? (
+          {(this.props.user.empAuth === "ROLE_ADMIN") ? (
             <>
               <Route path="ozt/co" element={<CoMgmtComponent />} />
               <Route path="ozt/div" element={<DivMgmtComponent />} />
@@ -39,4 +40,10 @@ class MainRouter extends Component {
   }
 }
 
-export default MainRouter;
+const mapStateToProps = (state) => ({
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null)(MainRouter);
+
+

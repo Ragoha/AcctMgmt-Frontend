@@ -223,8 +223,7 @@ class BgtCD extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <Select
-                sx={{ ml: "16px", width: '200px' }}
+              <CustomSelect
                 value={defaultValue}
                 onChange={this.changeValue} 
                 
@@ -234,7 +233,7 @@ class BgtCD extends Component {
                     {item}
                   </MenuItem>
                 ))}
-              </Select>
+              </CustomSelect>
             </Grid>
           </Grid>
           <Grid item xs={4}>

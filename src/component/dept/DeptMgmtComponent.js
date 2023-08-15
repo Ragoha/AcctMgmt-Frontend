@@ -94,8 +94,11 @@ class DeptMgmtComponent extends Component {
                     accessToken: this.props.accessToken,
                     coCd: coCd
                 })
-                    .then((response) => {
-                        // console.log(response.data)
+                  .then((response) => {
+                    console.log("여기");
+                    console.log(response);
+                        console.log(response.data);
+                    
                         this.setState({ rows: response.data });
                         // console.log({ rows: response.data })
                         const coCdList = response.data.map((item) => item.coCd);
