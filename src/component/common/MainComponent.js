@@ -201,7 +201,6 @@ class MainComponent extends Component {
           <Box
             sx={{
               pt: 10,
-              pb: 2,
               pl: open ? 32 : 9,
               pr: 2,
               transition: "padding 0.4s",

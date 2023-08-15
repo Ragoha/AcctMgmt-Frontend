@@ -10,7 +10,7 @@ import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField }
 
 const columns =[
   { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 271, headerAlign: 'center' }
+  { field: 'coNm', headerName: '회사명', width: 267, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
