@@ -24,7 +24,7 @@ import {
 
 const columns = [
   { field: 'pjtCd', headerName: '프로젝트코드', width: 180, headerAlign: 'center' },
-  { field: 'pjtNm', headerName: '프로젝트명', width: 286, headerAlign: 'center' }
+  { field: 'pjtNm', headerName: '프로젝트명', width: 200, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, pjtCd: "1", pjtNm: "John" },

@@ -399,7 +399,7 @@ class PjtComponent extends Component {
   handleSetPjtTextField = async (data) => {
     console.log("넘어오는 데이터들? " , data)
     await this.setState({
-      PjtdialTextField: data.pjtCd ,//+ ". " + data.pjtNm
+      PjtdialTextField : data.pjtCd && data.pjtNm ? data.pjtCd + ". " + data.pjtNm : "",
       pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
     });
     console.log('값이 들어잇긴 해 ?', data);
@@ -582,7 +582,6 @@ class PjtComponent extends Component {
             <CustomHeaderInputLabel>프로젝트 등록</CustomHeaderInputLabel>
           </Grid>
           <Grid item container justifyContent="flex-end" xs={4}>
-          <ButtonGroup>
               <Button variant="outlined" sx={{ mr: 1 }}>
                 프로젝트그룹추가
               </Button>
@@ -606,7 +605,6 @@ class PjtComponent extends Component {
               <Button variant="outlined" onClick={this.handleDel}>
                 삭 제
               </Button>
-            </ButtonGroup>
           </Grid>
         </CustomHeaderGridContainer>
         {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
@@ -621,7 +619,7 @@ class PjtComponent extends Component {
               <CustomInputLabel sx={{ ml: 4 }}>프로젝트</CustomInputLabel>
               <CustomTextField
                 name="PjtTextField"
-                value={this.state.PjtdialTextField}
+                value={this.state.PjtdialTextField} // 빈 값일 때 빈 문자열 할당
                 onChange={this.handleTextFieldChange} // 입력 필드 값이 변경될 때 호출되는 핸들러 함수
                 onKeyDown={this.handleEnterKey} // 엔터 키 입력 처리
                 placeholder="프로젝트코드"
@@ -714,25 +712,27 @@ class PjtComponent extends Component {
             <Grid
               item
               sx={{
+                pt : 4.2,
                 // pb: 1,
                 // mt: 2,
-                // mb: 1,
+                mb: 1,
                 display: "flex",
                 justifyContent: "left",
                 alignItems: "center",
                 width: "100%",
                 height: 22,
                 backgroundColor: "#F1F1F1",
-                borderBottom: "1px solid #F6F6F6",
+                borderBottom: "2px solid black",
               }}
             >
               <Checkbox
                 checked={this.state.selectAllChecked}
                 onChange={this.handleSelectAllChange}
+                sx={{pb: 4.5}}
               />
               <InputLabel
                 sx={{
-                  pt: 0.5,
+                  pb: 2.5,
                   fontWeight: "bold",
                   fontSize: "13px",
                 }}
@@ -745,35 +745,29 @@ class PjtComponent extends Component {
                   color: "#0054FF",
                   fontWeight: "bold",
                   fontSize: "13px",
-                  pt: 0.5,
+                  pb: 2.5,
                 }}
               >
                 {cardCount}
               </InputLabel>
               <InputLabel
                 sx={{
+                  pb: 2.5,
                   fontWeight: "bold",
                   marginRight: "0.5rem", // 간격 조정
                   fontSize: "13px",
-                  pt: 0.5,
                 }}
               >
                 건
               </InputLabel>
-              <Divider
-                sx={{
-                  height: "100%", // 수평 줄의 높이를 조정
-                  backgroundColor: "red",
-                }}
-              />
             </Grid>
             <Grid
               item
               ref={this.cardListRef}
               sx={{
-                borderTop: "1px solid #CFCFCF",
                 pr: 2, // 우측 여백 추가
                 pl: 2,
+                pb: 1,
                 width: "95%",
                 height: "calc(100% - 5%)",
                 overflowY: "auto",
@@ -798,7 +792,7 @@ class PjtComponent extends Component {
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "px", width: "100%" }}
+              sx={{ position: "relative", bottom: "15px", width: "100%" }}
             >
               <Button
                 variant="extended"
@@ -843,7 +837,6 @@ class PjtComponent extends Component {
                   color: "black",
                   fontWeight: "bold",
                   fontSize: 18,
-                  borderBottom: "2px solid #000",
                 }}
               >
                 기본등록사항
@@ -859,8 +852,9 @@ class PjtComponent extends Component {
                   justifyContent: "flex-end",
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
+                  borderTop: "2px solid black",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트코드</CustomInputLabel>
@@ -872,6 +866,7 @@ class PjtComponent extends Component {
                   display: "flex",
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
+                  borderTop: "2px solid black",
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
@@ -879,6 +874,7 @@ class PjtComponent extends Component {
                   disabled={!this.state.isPjtCdEditable}
                   size="small"
                   sx={{
+                    
                     ml: 2,
                     width: "93%",
                     backgroundColor: this.state.isPjtCdEditable
@@ -899,8 +895,9 @@ class PjtComponent extends Component {
                   justifyContent: "flex-end",
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
+                  borderTop: "2px solid black",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트구분</CustomInputLabel>
@@ -913,6 +910,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
+                  borderTop: "2px solid black",
                 }}
                 onChange={this.handlePjt}
               >
@@ -940,7 +938,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트명</CustomInputLabel>
@@ -973,7 +971,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트약칭</CustomInputLabel>
@@ -1006,7 +1004,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트분류</CustomInputLabel>
@@ -1038,7 +1036,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>사용권한설정</CustomInputLabel>
@@ -1071,7 +1069,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트기간</CustomInputLabel>
@@ -1119,7 +1117,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>프로젝트시작일</CustomInputLabel>
@@ -1140,7 +1138,7 @@ class PjtComponent extends Component {
                   name="startDt"
                   value={dayjs(startDt).format("YYYY-MM-DD")}
                   onChange={this.handlePjt}
-                  sx={{ ml: 1 }}
+                  sx={{ ml: 1, }}
                 />
               </Grid>
 
@@ -1153,7 +1151,7 @@ class PjtComponent extends Component {
                   alignItems: "center",
                   borderBottom: "1px solid #D8D8D8",
                   borderRight: "1px solid #EAEAEA",
-                  backgroundColor: "#FCFCFC",
+                  backgroundColor: "#F1F1F1",
                 }}
               >
                 <CustomInputLabel>비고</CustomInputLabel>
