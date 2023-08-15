@@ -525,11 +525,12 @@ class DivMgmtComponent extends Component {
       DivdialTextField: data.divCd + ". " + data.divNm,
       divCd: data.divCd  //밑에 coCd 넘겨주기
     });
+    this.searchClick(data.divCd);
   };
 
 
   searchClick = (divCd) => {
-    DivsService.getDivision({
+    DivsService.getDiv({
       accessToken: this.props.accessToken,
       divCd: divCd
     })
@@ -548,9 +549,9 @@ class DivMgmtComponent extends Component {
         const businessType = response.data[0].businessType;
         const coNb = response.data[0].coNb;
         const ceoNm = response.data[0].ceoNm;
-        const coZip = response.data[0].coZip;
-        const coAddr = response.data[0].coAddr;
-        const coAddr1 = response.data[0].coAddr1;
+        const divZip = response.data[0].divZip;
+        const divAddr = response.data[0].divAddr;
+        const divAddr1 = response.data[0].divAddr1;
 
         this.setState({
           cardCount: cardCount,//??????
@@ -568,10 +569,9 @@ class DivMgmtComponent extends Component {
           businessType: businessType,
           coNb: coNb,
           ceoNm: ceoNm,
-          coZip: coZip,
-          coAddr: coAddr,
-          coAddr1: coAddr1,
-          CodialTextField: ''
+          divZip: divZip,
+          divAddr: divAddr,
+          divAddr1: divAddr1
         })
       })
       .catch((error) => {
@@ -983,8 +983,8 @@ class DivMgmtComponent extends Component {
                 ) : (
                   <FormControl
                     sx={{
-                      ml: 2,
-                      width: 255,
+                      ml: 1,
+                      width: '96.5%',
                       "& .MuiInputBase-root": {
                         height: 40,
                       },

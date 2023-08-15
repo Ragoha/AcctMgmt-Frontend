@@ -186,7 +186,60 @@ class DeptMgmtComponent extends Component {
             DeptdialTextField: data.deptCd + ". " + data.deptNm,
             deptCd: data.deptCd  //밑에 coCd 넘겨주기
         });
+        this.searchClick(data.deptCd);
     };
+
+    searchClick = (deptCd) => {
+        DeptService.getDepartment({
+          accessToken: this.props.accessToken,
+          deptCd: deptCd
+        })
+          .then((response) => {
+            // const coCdList = response.data.map((item) => item.coCd);
+            const divCdList = response.data.map((item) => item.divCd);
+            // const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
+            // const divNmList = response.data.map((item) => item.divNm);
+            const deptCdList = response.data.map((item) => item.deptCd);
+            const deptNmList = response.data.map((item) => item.deptNm);
+            const cardCount = response.data.length;
+    
+            // const coCd = response.data[0].coCd;
+            // const coNm = response.data[0].coNm;
+            const divCd = response.data[0].divCd;
+            const divNm = response.data[0].divNm;
+            const deptCd = response.data[0].deptCd;
+            const deptNm = response.data[0].deptNm;
+            const deptZip = response.data[0].deptZip;
+            const deptAddr = response.data[0].deptAddr;
+            const deptAddr1 = response.data[0].deptAddr1;
+    
+            this.setState({
+              cardCount: cardCount,//??????
+            //   coCdList: coCdList,
+            //   coNmList: coNmList,  // 하고나서 coNm 불러오는 것도 해야함!!
+            //   divCdList: divCdList,
+            //   divNmList: divNmList,
+              deptCdList:deptCdList,
+              deptNmList:deptNmList,
+    
+            //   focused: coCd,
+            //   coCd: coCd,
+            //   coNm: coNm,
+              divCd: divCd,
+              divNm: divNm,
+              deptCd: deptCd,
+              deptNm:deptNm,
+              deptZip: deptZip,
+              deptAddr: deptAddr,
+              deptAddr1: deptAddr1
+            })
+          })
+          .catch((error) => {
+            // 오류 발생 시의 처리
+            console.error(error);
+            // alert("중복된 회사 또는 모두 입력해주세요");
+          })
+      }
 
     setDeptZipAddr = (data) => {
         this.setState({ deptZip: data.deptZip });
@@ -658,7 +711,7 @@ class DeptMgmtComponent extends Component {
         const newDeptCdList = [...new Set(deptCdList)]
 
         const trees = (
-            <TreeItem nodeId={coCd.toString()} label={coNm}>
+            <TreeItem nodeId={`co-${coCd}`} label={coNm}>
                 {newDivCdList.map((divCd, index) => (
                     <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} label={divNmList[index]}
                         onClick={() => this.handleSelect(`div-${divCd}`)}>
