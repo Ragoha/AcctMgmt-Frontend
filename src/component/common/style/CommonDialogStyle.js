@@ -18,7 +18,6 @@ export const CustomDialogTitle = styled(DialogTitle)({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  height: 60,
   padding: 16,
 });
 
