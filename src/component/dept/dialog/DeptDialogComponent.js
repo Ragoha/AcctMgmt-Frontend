@@ -66,7 +66,7 @@ class DeptDialogComponent extends Component {
   //엔터키 입력처리
   handlePressEnter = (e) => {
     if (e.key === "Enter") {
-      this.handleSearchCoDial();
+      this.handleSearchDeptDial();
     }
   }
   //검색
@@ -93,6 +93,7 @@ class DeptDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetDeptdialTextField(this.state.selectedRow);
+    this.setState({ keyword: "" });
   }
 
   //열 클릭처리

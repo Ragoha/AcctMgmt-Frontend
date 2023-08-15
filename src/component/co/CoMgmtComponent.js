@@ -377,7 +377,7 @@ class CoMgmtComponent extends Component {
       CodialTextField: data.coCd + ". " + data.coNm,
       coCd: data.coCd  //밑에 coCd 넘겨주기
     });
-    this.searchClick(this.state.coCd); //음 왜 기존 검색어가 텍스트 필드에 없는지....?
+    this.searchClick(data.coCd);
   };
 
   searchClick = (coCd) => {
@@ -421,8 +421,7 @@ class CoMgmtComponent extends Component {
           ceoNm: ceoNm,
           coZip: coZip,
           coAddr: coAddr,
-          coAddr1: coAddr1,
-          CodialTextField: ''
+          coAddr1: coAddr1
         })
       })
       .catch((error) => {

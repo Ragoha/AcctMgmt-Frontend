@@ -73,7 +73,6 @@ class CoDialogComponent extends Component {
           coNm: row.coNm,
         }));
         await this.setState({ codialRows: codialRows });
-        // this.setState({ keyword: '' });
       }
     );
   };
@@ -82,6 +81,7 @@ class CoDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetCodialTextField(this.state.selectedRow);
+    this.setState({ keyword: "" });
   }
 
   //열 클릭처리
