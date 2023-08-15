@@ -47,6 +47,7 @@ class DivsService {
                 },
                 withCredentials: true,
                 params: {
+                    coCd:data.coCd,
                     divCd:data.divCd
                 }
             }
