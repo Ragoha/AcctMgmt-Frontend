@@ -27,7 +27,7 @@ class BgtCD extends Component {
     this.state = {
       open: false,
       rows: [],
-      bgtGrList: ["전체"],
+      bgtGrList: [],
       defaultValue :'',
 
     }
@@ -40,18 +40,16 @@ class BgtCD extends Component {
  
   /*상단 조건 검색바 end  */
   setDetailInfo = (target) => {
-    console.log('---BgtCD의 setDetailInfo 함수---')
     console.log(target)
     this.BgtCDDetailInfo.current.setDetailInfo(target);
-    console.log('---BgtCD의 setDetailInfo 함수 끝임 ㅇㅇㅇㅇㅇ')
   }
 
   /*데이터그리드 부분 start*/
   getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
     this.setState({rows:""})
-    if(groupcd===undefined){
-      groupcd="전체"
-    }
+    // if(groupcd===undefined){
+    //   groupcd="전체"
+    // }
     console.log('데이터체크')
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
@@ -123,7 +121,7 @@ class BgtCD extends Component {
     const { accessToken } = this.props;
     BgtCDService.getBgtGrData(coCd, accessToken)
       .then((response) => {
-        const bgtGrList =  ["전체", ...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)]; 
+        const bgtGrList =  [...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)]; 
         this.setState({ bgtGrList });
         this.setState({defaultValue:bgtGrList[0] })
       })
@@ -166,15 +164,32 @@ class BgtCD extends Component {
     this.BgtCDSubSearch.current.initBgtCDDialog();
   }
 
-  handleInputChange = async (e) => {
-    const { name, value } = e.target;
-    await this.setState({ [name]: value });
-    console.log(this.state);
-  };
 
   handleClickSubCodeSearchIcon = () => {
     this.BgtCDAddSubDialog.current.handleUp();
   };
+  
+  handleInputChange = async (event) => {
+    console.log('handleInputChange')
+    const { name, value } = event.target;
+    await this.setState({ [name]: value },()=>console.log('검색키워드 : ' + this.state.bgtCdSearchText));
+  };
+  handleKeyDown=(params)=>{
+    console.log('handleKeyDown에서...')
+    console.log(params)
+    const { coCd } = this.props.userInfo;
+    const keyword = this.state.bgtCdSearchText;
+    console.log('keyword? : ' + keyword)
+    const data ={
+      coCd:coCd,
+      keyword:keyword,
+    }
+    if(params.code==="Enter"){
+
+          this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
+      
+    }
+  }
 
 
   render() {
@@ -246,6 +261,7 @@ class BgtCD extends Component {
                 value={this.state.bgtCdSearchText}
                 placeholder="예산과목코드.예산과목명"
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDown}
                 size="small"
                 InputProps={{
                   endAdornment: (
