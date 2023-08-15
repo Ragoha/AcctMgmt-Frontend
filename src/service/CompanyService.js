@@ -30,6 +30,7 @@ class CompanyService {
   insertCo(data) {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
+        coCd: data.coCd,
         coNm: data.coNm,
         gisu: data.gisu,
         frDt: data.frDt,

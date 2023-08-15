@@ -57,6 +57,13 @@ export const CustomTextField = styled(TextField)({
   },
 });
 
+export const CustomMediumTextField = styled(TextField)({
+  width: 400,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
 export const CustomDateTextField = styled(TextField)({
   marginTop: 8,
   marginBottom: 8,

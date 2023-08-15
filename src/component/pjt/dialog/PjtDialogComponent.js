@@ -23,8 +23,8 @@ import {
 } from "../../common/style/CommonStyle";
 
 const columns = [
-  { field: 'pjtCd', headerName: '프로젝트코드', width: 100, headerAlign: 'center' },
-  { field: 'pjtNm', headerName: '프로젝트명', width: 286, headerAlign: 'center' }
+  { field: 'pjtCd', headerName: '프로젝트코드', width: 180, headerAlign: 'center' },
+  { field: 'pjtNm', headerName: '프로젝트명', width: 200, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, pjtCd: "1", pjtNm: "John" },
@@ -43,20 +43,22 @@ class PjtDialogComponent extends Component {
       rows: rows,
       columns: columns,
       selectedRowIds: [], // 선택된 행 ID를 저장하는 배열
+      selectedRows: [], // 선택된 행을 추적하는 배열 추가
     }
   }
 
   isSelected = (id) => this.state.selectedRowIds.includes(id);
 
   handleRowCheckboxClick = (id) => {
-    const selectedRowIds = [...this.state.selectedRowIds];
-    if (selectedRowIds.includes(id)) {
-      const index = selectedRowIds.indexOf(id);
-      selectedRowIds.splice(index, 1);
+    const { selectedRows } = this.state; // 이미 선택된 행 배열
+
+    if (selectedRows.includes(id)) {
+      const updatedRows = selectedRows.filter((rowId) => rowId !== id);
+      this.setState({ selectedRows: updatedRows });
     } else {
-      selectedRowIds.push(id);
+      const updatedRows = [...selectedRows, id];
+      this.setState({ selectedRows: updatedRows });
     }
-    this.setState({ selectedRowIds });
   };
 
   handleHeaderCheckboxClick = (event) => {
@@ -127,7 +129,9 @@ class PjtDialogComponent extends Component {
       await this.props.handleSetPjtTextField(selectedRow); // 선택된 데이터를 부모로 전달
       this.setState({ selectedRow: { pjtCd: "", pjtNm: "" }, keyword: '', pjtRows: [] }); // 선택된 값을 빈 값으로 설정
     }
-  }
+    // 선택된 행 데이터를 추적하는 배열 초기화
+    this.setState({ selectedRows: [] });
+  };
 
 
 
@@ -196,11 +200,14 @@ class PjtDialogComponent extends Component {
             <CustomDataGrid
               columns={columns}
               rows={this.state.pjtRows}
-              checkboxSelection 
+              checkboxSelection
               showColumnVerticalBorder={true}
-              showCellVerticalBorder={true} // 각 셀마다 영역주기
+              showCellVerticalBorder={true}
               onRowClick={this.handleClickRow}
               hideFooter
+              onSelectionModelChange={(newSelection) => {
+                this.handleRowCheckboxClick(newSelection);
+              }}
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
@@ -216,7 +223,7 @@ class PjtDialogComponent extends Component {
         </CustomDialogActions>
       </CustomShortDialog>
     );
-  }   
+  }
 }
 const mapStateToProps = (state) => ({
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..

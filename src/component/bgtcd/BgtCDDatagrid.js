@@ -91,34 +91,40 @@ class BgtCDDatagrid extends Component {
         }));
 
         return (
-            <Box style={{ height: 800, borderTop: "3px solid black" }} >
-                <DataGridPro
-                    treeData
-                    getTreeDataPath={(row) => row.dataPath.split(',')}
-                    rows={rows}
-                    columns={editableColumns}
-                    getRowId={(row) => row.bgtCd}
-                    headerStyle={{ backgroundColor: 'lightgray', fontWeight: 'bold' }}
-                    onRowClick={this.clickedRow}
-                    processRowUpdate={this.processRowUpdate}
-                    onProcessRowUpdateError={(error) => { }}
-                    defaultGroupingExpansionDepth={7}
-                    editMode='row' //row 단위로 편집 모양 잡힘
-                    headerAlign="center"
-                    groupingColDef={{
-                        headerName: '분류명', headerAlign: 'center',
-                    }}
-                    InputProps={{
-                        style: {
-                            font: 15
-                        }
-                    }}
-                    components={{
-                        Footer: () => null
-                    }}
-                />
-            </Box>
-        )
+          <Box
+            style={{
+              height: "calc(100vh - 256px)",
+              borderTop: "3px solid black",
+            }}
+          >
+            <DataGridPro
+              treeData
+              getTreeDataPath={(row) => row.dataPath.split(",")}
+              rows={rows}
+              columns={editableColumns}
+              getRowId={(row) => row.bgtCd}
+              headerStyle={{ backgroundColor: "lightgray", fontWeight: "bold" }}
+              onRowClick={this.clickedRow}
+              processRowUpdate={this.processRowUpdate}
+              onProcessRowUpdateError={(error) => {}}
+              defaultGroupingExpansionDepth={7}
+              editMode="row" //row 단위로 편집 모양 잡힘
+              headerAlign="center"
+              groupingColDef={{
+                headerName: "분류명",
+                headerAlign: "center",
+              }}
+              InputProps={{
+                style: {
+                  font: 15,
+                },
+              }}
+              components={{
+                Footer: () => null,
+              }}
+            />
+          </Box>
+        );
     }
 };
 const mapStateToProps = (state) => ({

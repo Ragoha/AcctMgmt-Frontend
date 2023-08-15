@@ -10,7 +10,7 @@ import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField }
 
 const columns =[
   { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 271, headerAlign: 'center' }
+  { field: 'coNm', headerName: '회사명', width: 267, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
@@ -73,7 +73,6 @@ class CoDialogComponent extends Component {
           coNm: row.coNm,
         }));
         await this.setState({ codialRows: codialRows });
-        // this.setState({ keyword: '' });
       }
     );
   };
@@ -82,6 +81,7 @@ class CoDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetCodialTextField(this.state.selectedRow);
+    this.setState({ keyword: "" });
   }
 
   //열 클릭처리
