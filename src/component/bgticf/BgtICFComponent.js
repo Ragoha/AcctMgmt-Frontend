@@ -26,7 +26,8 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import { borderBottom } from "@mui/system";
+import SnackBarComponentWrapper from "../common/SnackBarComponent";
+import SnackBarComponent from "../common/SnackBarComponent";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -208,8 +209,6 @@ class BgtICFComponent extends Component {
   };
 
   handleSetBgtCDTextField = (data) => {
-    console.log(data);
-
     this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm, bgtCd: data.bgtCd, bgtNm: data.bgtNm });
   };
 
@@ -220,12 +219,15 @@ class BgtICFComponent extends Component {
       coCd: this.props.user.coCd,
       divCd: this.state.divCd,
       divNm: this.state.divNm,
+      divText: this.state.divTextField,
       gisu: this.state.gisuText,
       bgtGrCd: this.state.bgtGrCd,
       bgtGrNm: this.state.bgtGrNm,
+      bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
-      bgtNm: this.state.bgtNm
+      bgtNm: this.state.bgtNm,
+      bgtText: this.state.bgtCDTextField
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -299,6 +301,7 @@ class BgtICFComponent extends Component {
             <Button variant="outlined" onClick={this.handleRowDelete}>
               삭 제
             </Button>
+            <SnackBarComponent />
           </Grid>
         </CustomHeaderGridContainer>
         <CustomGridContainer
@@ -319,7 +322,6 @@ class BgtICFComponent extends Component {
                   if (e.key == "Enter") {
                     alert("Asdf");
                   }
-
                 }}
                 size="small"
                 InputProps={{
@@ -434,10 +436,11 @@ class BgtICFComponent extends Component {
             {/* <ListDisplay/> */}
           </Grid>
         </CustomGridContainer>
-        <Grid container spacing={2} sx={{ height: "calc(100vh - 280px)" }}>
+        <Grid container spacing={2} sx={{}}>
           <Grid item xs={3}>
             <DataGrid
               sx={{
+                height: "calc(100vh - 292px)",
                 "& .MuiDataGrid-columnHeaderTitle": {
                   fontWeight: "bold",
                 },

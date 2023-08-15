@@ -2,6 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import DivsService from '../../../service/DivsService';
 
 import {
@@ -21,25 +22,26 @@ import {
   CustomSearchButton,
   CustomTextField,
 } from "../../common/style/CommonStyle";
+import DeptService from '../../../service/DeptService';
 
 const columns = [
-  { field: 'divCd', headerName: '사업장코드', width: 180, headerAlign: 'center' },
-  { field: 'divNm', headerName: '사업장명', width: 286, headerAlign: 'center' }
+  { field: 'deptCd', headerName: '부서코드', width: 180, headerAlign: 'center' },
+  { field: 'deptNm', headerName: '부서명', width: 286, headerAlign: 'center' }
 ]
 const rows = [
-  { id: 1, divCd: "1", divNm: "John" },
-  { id: 2, divCd: "2", divNm: "John" },
-  { id: 3, divCd: "3", divNm: "John" },
+  { id: 1, deptCd: "1", deptNm: "John" },
+  { id: 2, deptCd: "2", deptNm: "John" },
+  { id: 3, deptCd: "3", deptNm: "John" },
 ]
 
-class CoDialogComponent extends Component {
+class DeptDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
 
-      selectedRow: { divCd: "", divNm: "" }, //클릭된 열의 cd와 이름 
-      divdialRows: [],          //열 배열넣기
+      selectedRow: { deptCd: "", deptNm: "" }, //클릭된 열의 cd와 이름 
+      deptdialRows: [],          //열 배열넣기
       keyword: "",
       rows: rows,
       columns: columns
@@ -48,18 +50,7 @@ class CoDialogComponent extends Component {
 
   handleUp = () => {
     this.setState({ open: true });
-    DivsService.getDivBydivCdAnddivNm(this.state.keyword)
-      .then(
-        async (response) => {
-          const divdialRows = response.map((row) => ({
-            id: row.divCd,
-            divCd: row.divCd,
-            divNm: row.divNm,
-          }));
-          await this.setState({ divdialRows: divdialRows });
-          console.log(this.state);
-        }
-      );
+    this.handleSearchDeptDial();
   }
 
   handleDown = () => {
@@ -75,20 +66,24 @@ class CoDialogComponent extends Component {
   //엔터키 입력처리
   handlePressEnter = (e) => {
     if (e.key === "Enter") {
-      this.handleSearchCoDial();
+      this.handleSearchDeptDial();
     }
   }
   //검색
-  handleSearchDivDial = () => {
-    DivsService.getDivBydivCdAnddivNm(this.state.keyword)
+  handleSearchDeptDial = () => {
+    DeptService.getDeptBydeptCdAnddeptNm({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+      keyword: this.state.keyword
+    })
       .then(
         async (response) => {
-          const divdialRows = response.map((row) => ({
-            id: row.divCd,
-            divCd: row.divCd,
-            divNm: row.divNm,
+          const deptdialRows = response.map((row) => ({
+            id: row.deptCd,
+            deptCd: row.deptCd,
+            deptNm: row.deptNm,
           }));
-          await this.setState({ divdialRows: divdialRows });
+          await this.setState({ deptdialRows: deptdialRows });
           console.log(this.state);
         }
       );
@@ -97,7 +92,8 @@ class CoDialogComponent extends Component {
   handleClickConfirm = async () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    await this.props.handleSetDivdialTextField(this.state.selectedRow);
+    await this.props.handleSetDeptdialTextField(this.state.selectedRow);
+    this.setState({ keyword: "" });
   }
 
   //열 클릭처리
@@ -129,14 +125,14 @@ class CoDialogComponent extends Component {
             alignItems="center"
             spacing={2}
           >
-            <Grid item>
+            <Grid item xs={12}>
               <Grid
                 container
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
               >
-                <CustomInputLabel>검색</CustomInputLabel>
+                <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
                   id="keyword"
                   name="keyword"
@@ -146,7 +142,7 @@ class CoDialogComponent extends Component {
                   onKeyDown={this.handlePressEnter}
                 />
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleSearchDivDial} />
+                  <SearchIcon onClick={this.handleSearchDeptDial} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
@@ -154,7 +150,7 @@ class CoDialogComponent extends Component {
           <CustomShortDataGridContainer container>
             <CustomDataGrid
               columns={columns}
-              rows={this.state.divdialRows}
+              rows={this.state.deptdialRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -182,4 +178,9 @@ class CoDialogComponent extends Component {
     );
   }
 }
-export default CoDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(DeptDialogComponent);

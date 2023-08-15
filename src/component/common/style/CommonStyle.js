@@ -41,10 +41,24 @@ export const CustomDataGrid = styled(DataGrid)({
   "& .MuiDataGrid-columnHeaderTitle": {
     fontWeight: "bold",
   },
+  "& .MuiDataGrid-columnHeader:last-child": {
+    borderRight: "none",
+  },
+  "& .MuiDataGrid-row .MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-cell--withRightBorder.MuiDataGrid-withBorderColor + .MuiDataGrid-cell":
+    {
+      borderRight: "none",
+    },
 });
 
 export const CustomTextField = styled(TextField)({
   width: 255,
+  "& .MuiInputBase-root": {
+    height: 40,
+  },
+});
+
+export const CustomMediumTextField = styled(TextField)({
+  width: 400,
   "& .MuiInputBase-root": {
     height: 40,
   },

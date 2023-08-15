@@ -3,13 +3,14 @@ import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import CompanyService from '../../../service/CompanyService';
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../../common/style/CommonDialogStyle';
-import { CustomInputLabel, CustomSearchButton, CustomTextField } from '../../common/style/CommonStyle';
+import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from '../../common/style/CommonStyle';
 
 const columns =[
   { field: 'coCd', headerName: '회사코드', width: 180, headerAlign: 'center' },
-  { field: 'coNm', headerName: '회사명', width: 286, headerAlign: 'center' }
+  { field: 'coNm', headerName: '회사명', width: 271, headerAlign: 'center' }
 ]
 const rows = [
   { id: 1, coCd: "1", coNm: "John" },
@@ -31,20 +32,15 @@ class CoDialogComponent extends Component {
     }
   }
 
+//   setCoKeyword = (data) => {
+//     this.setState({ keyword: data }, () => {
+//       this.handleSearchCoDial(); // 데이터를 설정한 후에 엔터 함수 실행  
+//     })
+// }
+
   handleUp = () => {
     this.setState({ open: true });
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
-    .then(
-      async (response) => {
-        const codialRows = response.map((row) => ({
-          id: row.coCd,
-          coCd: row.coCd,
-          coNm: row.coNm,
-        }));
-        await this.setState({ codialRows: codialRows });
-        console.log(this.state);
-      }
-    );
+    this.handleSearchCoDial();
   }
 
   handleDown = () => {
@@ -63,9 +59,12 @@ class CoDialogComponent extends Component {
     this.handleSearchCoDial();
     }
   }
-  //검색 -> 이거 지워도 되나???????????????????????????????????????????????????????????????????
+  //검색 
   handleSearchCoDial= () => {
-    CompanyService.getCoBycoCdAndcoNm(this.state.keyword)
+    CompanyService.getCoBycoCdAndcoNm({
+      accessToken: this.props.accessToken,
+      keyword: this.state.keyword,
+     })
     .then(
       async (response) => {
         const codialRows = response.map((row) => ({
@@ -74,7 +73,6 @@ class CoDialogComponent extends Component {
           coNm: row.coNm,
         }));
         await this.setState({ codialRows: codialRows });
-        console.log(this.state);
       }
     );
   };
@@ -83,6 +81,7 @@ class CoDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetCodialTextField(this.state.selectedRow);
+    this.setState({ keyword: "" });
   }
 
   //열 클릭처리
@@ -137,14 +136,13 @@ class CoDialogComponent extends Component {
             </Grid>
           </CustomShortFormGridContainer>
           <CustomShortDataGridContainer container>
-            <DataGrid
+            <CustomDataGrid
               columns={columns}
               rows={this.state.codialRows}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
-              sx={{ borderTop: "3px solid black" }}
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
@@ -168,4 +166,9 @@ class CoDialogComponent extends Component {
     );
   }
 }
-export default CoDialogComponent;
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+export default connect(mapStateToProps, null, null, { forwardRef: true })(CoDialogComponent);

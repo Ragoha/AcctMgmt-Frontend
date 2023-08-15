@@ -23,7 +23,7 @@ const columns = [
   {
     field: "bgtGrNm",
     headerName: "예산그룹명",
-    width: 286,
+    width: 270,
     headerAlign: "center",
   },
 ];

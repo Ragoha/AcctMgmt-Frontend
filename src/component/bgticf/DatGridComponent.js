@@ -367,6 +367,7 @@ class DataGridComponent extends Component {
           );
         },
         cellClassName: "mgtNm",
+        flex: 1,
       },
       {
         field: "carrAm",
@@ -382,12 +383,17 @@ class DataGridComponent extends Component {
               justifyContent="flex-end"
               sx={{ width: "100%", height: "100%" }}
             >
-              {(params.row.carrAm1 + params.row.carrAm2 - params.row.carrAm3)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              {params.row.carrAm1 === "" &&
+              params.row.carrAm2 === "" &&
+              params.row.carrAm3 === ""
+                ? ""
+                : (params.row.carrAm1 + params.row.carrAm2 - params.row.carrAm3)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm1",
@@ -412,6 +418,7 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm2",
@@ -436,6 +443,7 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "carrAm3",
@@ -460,12 +468,14 @@ class DataGridComponent extends Component {
             </Grid>
           );
         },
+        flex: 1,
       },
       {
         field: "remDc",
         headerName: "적요",
         headerAlign: "center",
         editable: true,
+        flex: 1,
       },
       {
         field: "bgtTy",
@@ -473,6 +483,7 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: false,
         align: "center",
+        flex: 1,
       },
       {
         field: "empName",
@@ -480,6 +491,7 @@ class DataGridComponent extends Component {
         headerAlign: "center",
         editable: false,
         align: "center",
+        flex: 1,
       },
     ];
 
@@ -497,6 +509,7 @@ class DataGridComponent extends Component {
             NoRowsOverlay: () => "",
           }}
           sx={{
+            height: "calc(100vh - 362px)",
             borderTop: "3px solid black",
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",
@@ -597,24 +610,16 @@ class CustomFooterStatusComponent extends Component {
   }
 
   sumCarrAm = (rows) => {
-    console.log("test2");
-    console.log(rows);
+
     let sumCarrAm1 = 0;
     let sumCarrAm2 = 0;
     let sumCarrAm3 = 0;
 
     rows.map((row) => {
-      console.log(row.carrAm1 === "" ? 0 : Number(row.carrAm1));
-      console.log(row.carrAm2 === "" ? 0 : Number(row.carrAm2));
-      console.log(row.carrAm3 === "" ? 0 : Number(row.carrAm3));
-  sumCarrAm1 += row.carrAm1 === "" ? 0 : Number(row.carrAm1);
-  sumCarrAm2 += row.carrAm2 === "" ? 0 : Number(row.carrAm2);
-  sumCarrAm3 += row.carrAm3 === "" ? 0 : Number(row.carrAm3);
+      sumCarrAm1 += row.carrAm1 === "" ? 0 : Number(row.carrAm1);
+      sumCarrAm2 += row.carrAm2 === "" ? 0 : Number(row.carrAm2);
+      sumCarrAm3 += row.carrAm3 === "" ? 0 : Number(row.carrAm3);
     });
-
-    console.log(sumCarrAm1);
-    console.log(sumCarrAm2);
-    console.log(sumCarrAm3);
 
     this.setState({sumCarrAm: sumCarrAm1+sumCarrAm2-sumCarrAm3, sumCarrAm1: sumCarrAm1, sumCarrAm2: sumCarrAm2, sumCarrAm3: sumCarrAm3});
   };
@@ -622,14 +627,78 @@ class CustomFooterStatusComponent extends Component {
   render() {
     const { rows } = this.props;
     return (
-      <Box sx={{ p: 1, display: "flex" }}>
-        {this.state.sumCarrAm.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/
-      
-        {this.state.sumCarrAm1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        /
-        {this.state.sumCarrAm2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        /
-        {this.state.sumCarrAm3.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+      <Box container sx={{ mt: 2 }}>
+        <DataGrid
+          showCellVerticalBorder
+          hideFooter
+          rows={[
+            {
+              id: "unique-row-key", // 행에 고유한 키 추가
+              sumCarrAm: this.state.sumCarrAm
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm1: this.state.sumCarrAm1
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm2: this.state.sumCarrAm2
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              sumCarrAm3: this.state.sumCarrAm3
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+          ]}
+          columns={[
+            {
+              field: "unique-column-key1",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm",
+              headerName: "이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm1",
+              headerName: "사고이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm2",
+              headerName: "명시이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "sumCarrAm3",
+              headerName: "예비이월금액",
+              align: "right",
+              flex: 1,
+            },
+            {
+              field: "unique-column-key2",
+              flex: 1,
+            },
+            {
+              field: "",
+              flex: 1,
+            },
+            {
+              field: "",
+              flex: 1,
+            },
+          ]}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              display: "none",
+            },
+            "& .MuiDataGrid-row": {
+              background: "#F6FFCC",
+            },
+          }}
+        />
       </Box>
     );
   }

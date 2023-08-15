@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 
 import BgtCD from "../component/bgtcd/BgtCD";
@@ -13,20 +13,29 @@ import PjtComponent from "../component/pjt/PjtComponent";
 
 class MainRouter extends Component {
   render() {
+    const user = ""; // Assume you have a function to get user info
+
     return (
       <Routes>
         <Route path="acctmgmt/*" element={<MainComponent />}>
-          <Route path="ozt/co" element={<CoMgmtComponent />} />
-          <Route path="ozt/div" element={<DivMgmtComponent />} />
-          <Route path="ozt/dept" element={<DeptMgmtComponent />} />
-          <Route path="bgt/bgtcd" element={<BgtCD />} />
-          <Route path="bgt/bgticf" element={<BgtICFComponent />} />
-          <Route path="syscfg" element={<ConfigComponent />} />
-          <Route path="pjt" element={<PjtComponent />} />
+          {/* Only show routes if user has ROLE_ADMIN */}
+          {/* {user.role === "ROLE_ADMIN" ? ( */}
+            <>
+              <Route path="ozt/co" element={<CoMgmtComponent />} />
+              <Route path="ozt/div" element={<DivMgmtComponent />} />
+              <Route path="ozt/dept" element={<DeptMgmtComponent />} />
+              <Route path="bgt/bgtcd" element={<BgtCD />} />
+              <Route path="bgt/bgticf" element={<BgtICFComponent />} />
+              <Route path="syscfg" element={<ConfigComponent />} />
+              <Route path="pjt" element={<PjtComponent />} />
+            </>
+          {/* ) : ( */}
+            // Redirect to the "/" page if user doesn't have ROLE_ADMIN
+            {/* <Route path="" element={<Navigate to="/" />} /> */}
+          {/* )} */}
         </Route>
       </Routes>
     );
-  
   }
 }
 
