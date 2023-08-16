@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import { ApartmentOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -8,34 +9,18 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  Divider,
-  IconButton,
   InputLabel,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-
-import { ApartmentOutlined } from "@mui/icons-material";
-import Dialog from "@mui/material/Dialog";
 import dayjs from "dayjs";
+import InputMask from "react-input-mask";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InputAdornment from "@mui/material/InputAdornment";
 import CompanyService from "../../service/CompanyService";
 import {
-  CustomButtonGridContainer,
-  CustomCloseIcon,
-  CustomConfirmButton,
-  CustomDialogActions,
-  CustomDialogContent,
-  CustomDialogTitle,
-  CustomShortDataGridContainer,
-  CustomShortDialog,
-  CustomShortFormGridContainer,
-} from "../common/style/CommonDialogStyle";
-import {
-  CustomDataGrid,
   CustomDatePrToTextField,
   CustomGridContainer,
   CustomHeaderGridContainer,
@@ -43,11 +28,10 @@ import {
   CustomInputLabel,
   CustomSearchButton,
   CustomTextField,
-  CustomWideTextField,
+  CustomWideTextField
 } from "../common/style/CommonStyle";
 import AddressComponent from "./dialog/AddressComponent";
 import CoDialogComponent from "./dialog/CoDialogComponent";
-import { DataGrid } from "@mui/x-data-grid";
 import GisuDialogComponent from "./dialog/GisuDialogComponent";
 
 class CoMgmtComponent extends Component {
@@ -85,11 +69,9 @@ class CoMgmtComponent extends Component {
       ceoNmList: [],
       CodialTextField: "",
       dateRange: "",
-      isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
+      // isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
       // inputValue: '',
-      originCd: 0,
-
-      
+      isCoCdEditable: false,
     };
   }
 
@@ -146,7 +128,8 @@ class CoMgmtComponent extends Component {
           coZip: coZip,
           coAddr: coAddr,
           coAddr1: coAddr1,
-          insertDt: insertDt
+          insertDt: insertDt,
+          CodialTextField: ''
         })
       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
@@ -210,19 +193,18 @@ class CoMgmtComponent extends Component {
     // console.log(e.target.id);
     {
       this.setState({
-        isChanged: true,
+        // isChanged: true,
         [e.target.name]: e.target.value,
       });
-
-      // console.log(this.state);
     }
   };
 
   handleCdChange = (e) => {
     const numericValue = e.target.value.replace(/[^0-9]/g, ''); ///[^0-9]*$/ 둘 다 되는건가?
-    this.setState({ 
-      isChanged: true,
-      [e.target.name]: numericValue });
+    this.setState({
+      // isChanged: true,
+      [e.target.name]: numericValue
+    });
   };
 
   addCardButton = () => {
@@ -251,7 +233,8 @@ class CoMgmtComponent extends Component {
         coZip: '',
         coAddr: '',
         coAddr1: '',
-        insertDt: ''
+        insertDt: '',
+        isCoCdEditable: true
       })
     }
   }; //여기에 모든 state값 초기화 하면 됨 !!!!!
@@ -300,7 +283,7 @@ class CoMgmtComponent extends Component {
           coZip: "",
           coAddr: "",
           coAddr1: "",
-          isChanged: false,
+          // isChanged: false
         });
         // window.location.reload();
         // window.location.href="/acctmgmt/ozt/co";
@@ -328,9 +311,9 @@ class CoMgmtComponent extends Component {
     console.log(coCd);
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
-    if (this.state.isChanged) {
-      alert("수정중인 내용이 있습니다.");
-    } else {
+    // if (this.state.isChanged) {
+    //   alert("수정중인 내용이 있습니다.");
+    // } else {
       this.setState({ focused: coCd });
       {
         coCd == '0000' ?
@@ -388,13 +371,13 @@ class CoMgmtComponent extends Component {
                 insertDt: insertDt
               })
               console.log(frDt, toDt)
-              })
-              .catch((error) => {
-                // 오류 발생 시의 처리
-                console.error(error);
-                // alert("중복된 회사 또는 모두 입력해주세요");
-              });
-      }
+            })
+            .catch((error) => {
+              // 오류 발생 시의 처리
+              console.error(error);
+              // alert("중복된 회사 또는 모두 입력해주세요");
+            });
+      // }
     }
   };
 
@@ -513,31 +496,31 @@ class CoMgmtComponent extends Component {
       .then((response) => {
         console.log(response.data);
         window.confirm("업데이트 완료!");
-        const coCdList = response.data.map((item) => item.coCd);
-        const coNmList = response.data.map((item) => item.coNm);
-        const ceoNmList = response.data.map((item) => item.ceoNm);
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          coCdList: coCdList,
-          coNmList: coNmList,
-          ceoNmList: ceoNmList,
-          focused: coCd,
-          coCd: coCd,
-          coNm: coNm,
-          gisu: gisu,
-          frDt: frDt,
-          toDt: toDt,
-          jongmok: jongmok,
-          businessType: businessType,
-          coNb: coNb,
-          ceoNm: ceoNm,
-          coZip: coZip,
-          coAddr: coAddr,
-          coAddr1: coAddr1,
-          isChanged: false,
-        });
-      })
+        this.componentDidMount()
+        // const coCdList = response.data.map((item) => item.coCd);
+        // const coNmList = response.data.map((item) => item.coNm);
+        // const ceoNmList = response.data.map((item) => item.ceoNm);
+        // const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+        // this.setState({
+        //   cardCount: cardCount, // state에 값을 저장
+        //   coCdList: coCdList,
+        //   coNmList: coNmList,
+        //   ceoNmList: ceoNmList,
+        //   focused: coCd,
+        //   coCd: coCd,
+        //   coNm: coNm,
+        //   gisu: gisu,
+        //   frDt: frDt,
+        //   toDt: toDt,
+        //   jongmok: jongmok,
+        //   businessType: businessType,
+        //   coNb: coNb,
+        //   ceoNm: ceoNm,
+        //   coZip: coZip,
+        //   coAddr: coAddr,
+        //   coAddr1: coAddr1,
+        //   // isChanged: false,
+        })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
@@ -548,7 +531,11 @@ class CoMgmtComponent extends Component {
   deleteCo = () => {
     //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd } = this.state;
-
+    const cardCount = this.state;
+    if(coCd === ''){
+      window.confirm("회사삭제 완료!");
+      this.componentDidMount();
+    }else{
     CompanyService.deleteCo({
       accessToken: this.props.accessToken,
       coCd: coCd,
@@ -577,6 +564,7 @@ class CoMgmtComponent extends Component {
           coZip: "",
           coAddr: "",
           coAddr1: "",
+          CodialTextField: ""
         });
       })
       // window.location.href="/acctmgmt/ozt/co";
@@ -585,7 +573,21 @@ class CoMgmtComponent extends Component {
         console.error(error);
         alert("회사삭제 실패..");
       });
+    }
   };
+
+  setGisuInfo = async (data) => {
+    await this.setState({
+      selectedRow: {
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+      }
+    })
+
+    this.insertDate(this.state.selectedRow);
+    
+  }
 
   insertDate = (selectedRow) => {
     this.setState({
@@ -609,20 +611,25 @@ class CoMgmtComponent extends Component {
     });
   };
 
-  handleBlur =(e) =>{
-    const {coCd , originCd} = this.state;
+  handleBlur = (e) => {
+    const { coCd, originCd } = this.state;
     // this.setState({
     //   originCd: coCd
     // })
     const newCoCd = parseInt(e.target.value)
-    const{coCdList} = this.state;
-  
-      coCdList.includes(newCoCd) ? 
+    const { coCdList } = this.state;
+
+    coCdList.includes(newCoCd) ?
       this.setState({
-         coCd:''
-     }) :( this.setState({
-      coCd:coCd}))
-     
+        coCd: ''             //이거 경고창 띄우기로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      }) : (this.setState({
+        coCd: coCd
+      }))
+
+  }
+
+  reClick =() =>{
+    this.componentDidMount();
   }
 
   // processRowUpdate = (updatedRow) => {
@@ -667,17 +674,17 @@ class CoMgmtComponent extends Component {
         }}
       >
         <CardActionArea onClick={() => this.cardClick(coCd)}>
-          <CardContent sx={{ height: 90 }}>
+          <CardContent sx={{  height: 90 }}>
             <Typography
               sx={{ fontSize: 14 }}
               gutterBottom
-              style={{ position: "relative", top: "-10px", left: "-10px" }}
+              style={{ position: "absolute", top: "3px", left: "5px" }}
             >
               {coCdList[index]}
             </Typography>
             <Typography
               sx={{ fontSize: 10 }}
-              style={{ position: "relative", left: "190px", bottom: "33px" }}
+              style={{ position: "absolute", left: "232px", bottom: "68px" }}
             >
               {ceoNmList[index]}
             </Typography>
@@ -685,7 +692,7 @@ class CoMgmtComponent extends Component {
             <Typography
               sx={{ fontSize: 14 }}
               variant="h3"
-              style={{ position: "relative", bottom: "15px", left: "-9px" }}
+              style={{ position: "absolute", bottom: "30px", left: "5px" }}
             >
               {coNmList[index]}
             </Typography>
@@ -747,13 +754,19 @@ class CoMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Grid item>
-            {/* <CustomSearchButton
+          <Grid item >
+            <CustomSearchButton
               variant="outlined"
-              onClick={() => this.searchClick(coCd)}
-            >
+              onClick={this.reClick}
+              style={{
+                padding: "0px",
+                minWidth: "5px",
+                position: "relative",
+                top: "10px",
+                left: "1015px",
+              }}>
               <SearchIcon fontSize="medium" />
-            </CustomSearchButton> */}
+            </CustomSearchButton>
           </Grid>
         </CustomGridContainer>
 
@@ -870,6 +883,7 @@ class CoMgmtComponent extends Component {
                 }}
               >
                 <CustomWideTextField
+                  disabled={!this.state.isCoCdEditable}
                   sx={{ backgroundColor: "#FFEAEA" }}
                   name="coCd"
                   onChange={this.handleCdChange}
@@ -1032,7 +1046,14 @@ class CoMgmtComponent extends Component {
                   name="coNb"
                   onChange={this.handleCompany}
                   value={coNb || ""}
-                ></CustomWideTextField>
+                  InputProps={{
+                    inputComponent: InputMask,
+                    inputProps: {
+                      mask: "999-99-99999",
+                      maskChar: "0"
+                    }
+                  }}>
+                </CustomWideTextField>
               </Grid>
               <Grid
                 item
@@ -1162,7 +1183,11 @@ class CoMgmtComponent extends Component {
           handleSetCodialTextField={this.handleSetCodialTextField}
           ref={this.coDialogRef}
         />
-        <GisuDialogComponent ref={this.gisuRef} />
+        <GisuDialogComponent
+          ref={this.gisuRef}
+          coCd={this.state.coCd}
+          setGisuInfo={this.setGisuInfo}
+        />
       </>
     );
   }

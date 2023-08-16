@@ -51,8 +51,8 @@ class SignUpComponent extends Component {
       errorMessage: isKoreanInput
         ? "알파벳 대소문자와 숫자만 사용 가능합니다."
         : !isIdValid
-        ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-        : "",
+          ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
+          : "",
       isIdValid: isIdValid && !isKoreanInput,
     });
   };
@@ -106,7 +106,7 @@ class SignUpComponent extends Component {
       empTel: phone,
       empName: name,
       empOd: position,
-      empAuth: "ROLL_USER",
+      empAuth: "ROLE_USER",
     };
 
     // 폼 필드의 값이 비어있는지 확인
@@ -162,6 +162,7 @@ class SignUpComponent extends Component {
         this.setState({
           isIdDuplicated: false,
           errorMessage: "중복된 아이디 입니다.",
+          isIdValid:false,
         });
       });
   };
@@ -200,35 +201,36 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>아이디</CustomInputLabel>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomInputLabel>
+                    아이디
+                  </CustomInputLabel>
+                  <span style={{ marginLeft: '8px', fontSize: '10px', color: isIdValid ? 'green' : 'red' }}>
+                    {errorMessage}
+                  </span>
+                </div>
               </Grid>
               <Grid item xs={9}>
                 <Grid container direction="row" alignItems="center">
-                  <Tooltip title={errorMessage}>
-                    <CustomMediumTextField
-                      name="id"
-                      // placeholder="알파벳 대소문자와 숫자만 사용 가능"
-                      placeholder="아이디 입력(6 ~ 20자)"
-                      variant="outlined"
-                      value={id}
-                      onChange={this.handleChange2}
-                      onBlur={this.handleBlur}
-                      disabled={error}
-                      error={error}
-                      // helperText={errorMessage}
-                      sx={{
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: isIdValid
-                            ? "success.main"
-                            : "error.main",
-                        },
-                        "& .MuiOutlinedInput-input::placeholder": {
-                          fontSize: "12px", // 원하는 폰트 크기로 설정
-                        },
-                      }}
-                    />
-                  </Tooltip>
-
+                  <CustomMediumTextField
+                    name="id"
+                    placeholder="아이디 입력(6 ~ 20자)"
+                    variant="outlined"
+                    value={id}
+                    onChange={this.handleChange2}
+                    onBlur={this.handleBlur}
+                    disabled={error}
+                    error={error}
+                    // helperText={errorMessage}
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: isIdValid ? "success.main" : "error.main",
+                      },
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
                   <InputLabel
                     sx={{
                       ml: 1,
@@ -248,37 +250,45 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>패스워드</CustomInputLabel>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomInputLabel>
+                    패스워드
+                  </CustomInputLabel>
+                  {password && !isPasswordValid && (
+                    <span style={{ marginLeft: '8px', fontSize: '10px', color: isPasswordValid ? 'green' : 'red' }}>
+                      {this.state.isPasswordValid ? '사용 가능한 패스워드 입니다.' : '알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!'}
+                    </span>
+                  )}
+                </div>
               </Grid>
               <Grid item xs={9}>
-                <Tooltip
-                  title={
-                    <div>
-                      알파벳 대소문자, 숫자, 특수문자를 포함한
-                      <br />
-                      8글자 이상을 입력하세요
-                    </div>
-                  }
-                >
+                <Grid container direction="row" alignItems="center">
                   <CustomMediumTextField
                     variant="outlined"
                     color="secondary"
                     name="password"
                     placeholder="비밀번호 입력(문자, 숫자, 특수문자 포함 8~20자)"
-                    // placeholder="알파벳 대소문자, 숫자, 특수문자를 포함"
                     type="password"
                     value={password}
                     error={password && !isPasswordValid}
                     onChange={this.handleChange}
                     onBlur={this.handleBlur}
                     sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: isPasswordValid ? "success.main" : "error.main",
+                      },
                       whiteSpace: "pre-wrap",
                       "& .MuiOutlinedInput-input::placeholder": {
-                        fontSize: "12px", // 원하는 폰트 크기로 설정
+                        fontSize: "12px",
                       },
                     }}
                   />
-                </Tooltip>
+                  {/* {password && !isPasswordValid && (
+                    <span style={{ marginLeft: '8px', fontSize: '10px', color: 'red' }}>
+                      알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요
+                    </span>
+                  )} */}
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

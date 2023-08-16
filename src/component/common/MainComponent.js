@@ -14,13 +14,14 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
 import React, { Component } from "react";
 import Scrollbars from "react-custom-scrollbars";
-import { connect } from 'react-redux';
-import { Outlet } from "react-router-dom";
-import Cookie from '../../storage/Cookie';
+import { connect } from "react-redux";
+import { Outlet, useNavigate } from "react-router-dom";
+import Cookie from "../../storage/Cookie";
 import { DELETE_TOKEN } from "../../store/Auth";
-import { DEL_USER } from '../../store/User';
-import {DEL_CONFIG} from "../../store/Config";
+import { DEL_USER } from "../../store/User";
+import { DEL_CONFIG } from "../../store/Config";
 import MainListItems from "./MainListItems";
+import UserInfo from "./UserInfo";
 
 const drawerWidth = 240;
 
@@ -35,7 +36,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth-1}px)`,
+    width: `calc(100% - ${drawerWidth - 1}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       // duration: theme.transitions.duration.enteringScreen,
@@ -81,9 +82,9 @@ class MainComponent extends Component {
     this.state = {
       open: true,
       drawerOpen: true,
+      isHovered: false,
     };
   }
-
 
   logout = () => {
     // const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
@@ -99,9 +100,9 @@ class MainComponent extends Component {
     Cookie.removeCookieToken();
     console.log("삭제 후 설정정보 : " + config);
     this.props.delConfig(config);
-    window.location.href = "/";
+    this.props.navigate("/");
     // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
-    // });  
+    // });
   };
 
   toggleDrawer = () => {
@@ -110,9 +111,23 @@ class MainComponent extends Component {
       drawerOpen: !prevState.drawerOpen,
     }));
   };
+  handleMouseEnter = () => {
+    this.setState({
+      isHovered: true,
+    });
+  };
 
+  handleMouseLeave = () => {
+    // 1초 후에 호버효과가 사라지도록 설정
+    setTimeout(() => {
+      this.setState({
+        isHovered: false,
+      });
+    }, 10);
+  };
   render() {
     const { open } = this.state;
+    const isHovered = this.state.isHovered; // 이 부분 추가
 
     return (
       <ThemeProvider theme={defaultTheme}>
@@ -122,11 +137,15 @@ class MainComponent extends Component {
           <CssBaseline />
 
           {/* Header */}
-          <AppBar position="fixed" open={open} sx={{
-            background: "#4A55A2",
-            right: "1px",
-            mr: "-1px",
-          }}>
+          <AppBar
+            position="fixed"
+            open={open}
+            sx={{
+              background: "#4A55A2",
+              right: "1px",
+              mr: "-1px",
+            }}
+          >
             <Toolbar
               sx={{
                 pr: "24px", // keep right padding when drawer closed
@@ -156,14 +175,30 @@ class MainComponent extends Component {
                 DOUZONE
                 {/* <img src="/img/logo.png"></img> */}
               </Typography>
-              <IconButton color="inherit">
+              <IconButton
+                color="inherit"
+                onMouseEnter={this.handleMouseEnter}
+                sx={{
+                  position: "relative", // IconButton에 위치 설정 추가
+                }}
+              >
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
-                <div style={{ marginLeft: "15px" }}>
-                  <a onClick={this.logout}>LogOut</a>
-                </div>
+                {isHovered && (
+                  <div
+                    style={{ mt: "10px" }}
+                    onMouseLeave={this.handleMouseLeave}
+                  >
+                    <UserInfo />
+                  </div>
+                )}
               </IconButton>
+              <div style={{ marginLeft: "15px" }}>
+                <a onClick={this.logout} style={{ cursor: "pointer" }}>
+                  LogOut
+                </a>
+              </div>
             </Toolbar>
           </AppBar>
 
@@ -182,7 +217,7 @@ class MainComponent extends Component {
                 alignItems: "center",
                 justifyContent: "flex-end",
                 px: [1],
-                background: "#7895CB"
+                background: "#7895CB",
               }}
             >
               <IconButton onClick={this.toggleDrawer}>
@@ -230,4 +265,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainComponent);
+function withNavigation(Component) {
+  return (props) => <Component {...props} navigate={useNavigate()} />;
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withNavigation(MainComponent));

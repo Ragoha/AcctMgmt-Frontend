@@ -70,7 +70,7 @@ class BgtCDDetailInfoFormControl extends Component {
         <Grid item md={8} sx={{ display: 'flex', alignItems: 'center'}}>
           <CustomWideSelect
             value={defaultValue}
-            onChange={this.changeValue} //어쩌면 menuItem에 있는 menuItemValue를 그냥 select의 value에 넣어도 되는게 아니였을까
+            onChange={this.changeValue} 
           >
             {" "}
             {menuItemValues.map((menuItemValue, index) => (
