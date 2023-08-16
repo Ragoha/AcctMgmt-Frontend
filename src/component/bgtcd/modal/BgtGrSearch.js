@@ -10,49 +10,44 @@ import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, Custom
 import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../common/style/CommonStyle";
 import BgtCDService from "../../../service/BgtCDService";
 
-class BgtCDSubSearch extends Component {
+class BgtGrSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      open: true,
       selectedRow: { bgtGrCd: "", bgtGrNm: "" },
       bgtGrRows: [],
       keyword: "",
       rows: [],
       columns : [
-        { field: "bgtCd", headerName: "예산그룹코드", width: 180,  headerAlign: "center",  },
-        { field: "bgtNm", headerName: "예산그룹명", width: 286, headerAlign: "center",  },
+        { field: "bgtGrCd", headerName: "예산그룹코드", width: 180,  headerAlign: "center",  },
+        { field: "bgtGrNm", headerName: "예산그룹명", width: 286, headerAlign: "center",  },
       ]
     };
   }
-  initBgtCDDialog=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
+  componentDidMount(){
+    this.initBgtGrSearch();
+  }
+  initBgtGrSearch=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
-    BgtCDService.getBgtCDdialog(coCd,accessToken).then(
+    BgtCDService.getinitBgtGrSearch(coCd,accessToken).then(
         (response)=>{
             this.setState({rows:response})
         })
     this.handleUp();
   }
-  getBgtCdLikeSearchDataToRows=(data)=>{ //다이얼로그를 조건으로 검색하고 enter로 열었을때 초기 세팅 
-    const{accessToken} = this.props;
-    BgtCDService.getBgtCdLikeSearch(data,accessToken).then((response)=>{
-      this.setState({rows:response},()=>console.log(response));
-    })
-    this.setState({keyword:data.keyword})
-    this.handleUp();
-  }
-
-
+  /* */
   handleClickRow=(params)=>{
-    const text = (params.row.bgtCd+"."+params.row.bgtNm)
+    const text = (params.row.bgtGrCd+"."+params.row.bgtGrNm)
     this.setState({keyword:text},()=>console.log(this.state.keyword))
   }
   handleClickConfirm=()=>{
-    this.props.setText(this.state.keyword);
+    this.props.setBgtGrCdText(this.state.keyword);
     this.handleDown();
   }
-  
+
+ 
   /*default*/
   handleUp = () => {
     this.setState({ open: true });
@@ -69,7 +64,7 @@ class BgtCDSubSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산코드검색
+          예산그룹조회
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -107,7 +102,7 @@ class BgtCDSubSearch extends Component {
             <CustomDataGrid
               columns={columns}
               rows={this.state.rows}
-              getRowId={(row) => row.bgtCd}
+              getRowId={(row) => row.bgtGrCd}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
@@ -138,5 +133,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  BgtCDSubSearch
+  BgtGrSearch
 );

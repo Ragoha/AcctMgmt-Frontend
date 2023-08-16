@@ -28,7 +28,7 @@ class MainRouter extends Component {
 
     return (
       <Routes>
-        {this.props.user.empAuth === "ROLE_ADMIN" ? (
+        {this.props.user.empAuth !== "ROLE_ADMIN" ? (
           <Route path="acctmgmt/*" element={<MainComponent />}>
             {defaultRoutes}
           </Route>
