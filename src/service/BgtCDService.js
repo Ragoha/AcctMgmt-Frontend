@@ -2,7 +2,25 @@ import axios from "axios";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt/bgt/bgtcd";
 class BgtCDService {
     /*---select  start ---*/
-    getGridData(coCd,groupcd, accessToken) { //(★임시로 데이터 테스트 용으로 만든것, 반드시 수정해야함!!!)예산코드 그룹을 만들면 해당 그룹명을 조회해서 가져옴.
+    //coCd, bgtCdSearchText,groupCd, accessToken
+    getSearchData(coCd, gisu, bgtCdSearchText, groupCd, accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getSearchData",{
+        params:{
+          coCd : coCd,
+          gisu : gisu,
+          groupCd : groupCd,
+          keyword : bgtCdSearchText,
+        }
+      }, {
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      })
+      return returnData;
+    }
+
+    getGridData(coCd,groupcd, accessToken) { 
         console.log("BudgetReg 서비스의 getGrid Data  ::::" + coCd);
         const returnData = axios
             .get(ACCTMGMT_API_BASE_URL + "/getGridData", {
@@ -160,14 +178,49 @@ class BgtCDService {
       return returnData;
     }
     getinitGisuList(coCd,accessToken){
-      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getinitGisuList",coCd,{
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getinitGisuList",{
+        params:{
+          coCd: coCd
+        }
+      },{
         headers: {
           "access-token": accessToken,
         },
         withCredentials: true,
       }).then((response)=>response.data)
+      console.log('기수데이터 ?')
+      console.log(returnData)
       return returnData;
     }
+    getBgtGrSearch(data,accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getBgtGrSearch" ,{
+        params:{
+          coCd:data.coCd,
+          keyword:data.keyword,
+        }},{
+          headers: {
+            "access-token": accessToken,
+          },
+          withCredentials: true,
+        }).then((response)=> response.data);
+
+      return returnData;
+    }
+    getinitBgtGrSearch(coCd, accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getinitBgtGrSearch",{
+        params:{
+          coCd:coCd,
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true, 
+      }).then((response)=>response.data)
+
+      return returnData;
+    }
+
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData
