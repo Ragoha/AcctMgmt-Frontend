@@ -26,6 +26,8 @@ import DataGridComponent from "./DatGridComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import SnackBarComponentWrapper from "../common/SnackBarComponent";
+import SnackBarComponent from "../common/SnackBarComponent";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -42,7 +44,7 @@ const BGTCD_COLUMN = [
     // flex: 1,
     field: "bgtCd",
     headerName: "예산코드",
-    width: 110,
+    width: 100,
     headerAlign: "center",
   },
   {
@@ -76,7 +78,7 @@ class BgtICFComponent extends Component {
       bgtCDRows: [],
       divCd: 0,
       divNm: "",
-      divTextField: "",
+      divTextField: this.props.user.divCd+". "+this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
       bgtGrTextField: "",
@@ -207,8 +209,6 @@ class BgtICFComponent extends Component {
   };
 
   handleSetBgtCDTextField = (data) => {
-    console.log(data);
-
     this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm, bgtCd: data.bgtCd, bgtNm: data.bgtNm });
   };
 
@@ -219,12 +219,15 @@ class BgtICFComponent extends Component {
       coCd: this.props.user.coCd,
       divCd: this.state.divCd,
       divNm: this.state.divNm,
+      divText: this.state.divTextField,
       gisu: this.state.gisuText,
       bgtGrCd: this.state.bgtGrCd,
       bgtGrNm: this.state.bgtGrNm,
+      bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
-      bgtNm: this.state.bgtNm
+      bgtNm: this.state.bgtNm,
+      bgtText: this.state.bgtCDTextField
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -430,80 +433,84 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             {/* <ListDisplay/> */}
+            <SnackBarComponent />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>
           <Grid item xs={3}>
-              <DataGrid
+            <DataGrid
               sx={{
-                  height: "calc(100vh - 292px)",
-                  "& .MuiDataGrid-columnHeaderTitle": {
-                    fontWeight: "bold",
-                  },
-                  "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                    outline: "none !important",
-                  },
-                  borderTop: "3px solid black",
-                  borderLeft: "2px solid #EAEAEA",
-                  borderRight: "2px solid #EAEAEA",
-                  borderBottom: "2px solid #EAEAEA",
-                  "& .MuiDataGrid-row:hover": {
-                    background: "#F5F5F5",
-                  },
-                  "& .MuiDataGrid-row.Mui-selected:hover": {
-                    background: "#F5F5F5",
-                  },
-                  "& .MuiDataGrid-row.Mui-selected": {
-                    backgroundColor: "#EDF4FB !important",
-                    fontWeight: "bold",
-                  },
-                  // "& .MuiDataGrid-row.Mui-selected:hover": {
-                  //   background: "#FFD8D8",
-                  // },
+                height: "calc(100vh - 292px)",
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
+                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                  outline: "none !important",
+                },
+                borderTop: "3px solid black",
+                borderLeft: "2px solid #EAEAEA",
+                borderRight: "2px solid #EAEAEA",
+                borderBottom: "2px solid #EAEAEA",
+                "& .MuiDataGrid-row:hover": {
+                  background: "#F5F5F5",
+                },
+                "& .MuiDataGrid-row.Mui-selected:hover": {
+                  background: "#F5F5F5",
+                },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  backgroundColor: "#EDF4FB !important",
+                  fontWeight: "bold",
+                },
+                // "& .MuiDataGrid-row.Mui-selected:hover": {
+                //   background: "#FFD8D8",
+                // },
 
-                  "& .style-divfg-1": { background: "#86E57F" },
-                  "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "0px !important",
-                  },
-                  "& .style-divfg-2": { background: "#AAFFA3" },
-                  "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "8px !important",
-                  },
-                  "& .style-divfg-3": { background: "#CEFFC7" },
-                  "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "16px !important",
-                  },
-                  "& .style-divfg-4": { background: "#F2FFEB" },
-                  "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "24px !important",
-                  },
-                  "& .style-divfg-5": { background: "#FFFFFF" },
-                  "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "32px !important",
-                  },
-                  "& .style-divfg-6": { background: "#FFFFFF" },
-                  "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "40px !important",
-                  },
-                  "& .style-divfg-7": { background: "#FFFFFF" },
-                  "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "48px !important",
-                  },
-                  "& .style-divfg-8": { background: "#FFFFFF" },
-                  "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
-                    paddingLeft: "56px !important",
-                  },
-                }}
-                columns={BGTCD_COLUMN}
-                // editMode="cell"
-                rows={this.state.bgtCDRows}
-                onRowClick={this.handleClickBgtCDRow}
-                hideFooter
-                showCellVerticalBorder
-                showColumnVerticalBorder
-                onEditCellChange={this.handleEditCellChange}
-                getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
-              />
+                "& .style-divfg-1": { background: "#86E57F" },
+                "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "0px !important",
+                },
+                "& .style-divfg-2": { background: "#AAFFA3" },
+                "& .style-divfg-2 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "8px !important",
+                },
+                "& .style-divfg-3": { background: "#CEFFC7" },
+                "& .style-divfg-3 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "16px !important",
+                },
+                "& .style-divfg-4": { background: "#F2FFEB" },
+                "& .style-divfg-4 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "24px !important",
+                },
+                "& .style-divfg-5": { background: "#FFFFFF" },
+                "& .style-divfg-5 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "32px !important",
+                },
+                "& .style-divfg-6": { background: "#FFFFFF" },
+                "& .style-divfg-6 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "40px !important",
+                },
+                "& .style-divfg-7": { background: "#FFFFFF" },
+                "& .style-divfg-7 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "48px !important",
+                },
+                "& .style-divfg-8": { background: "#FFFFFF" },
+                "& .style-divfg-8 .bgtNm .MuiDataGrid-cellContent": {
+                  paddingLeft: "56px !important",
+                },
+              }}
+              columns={BGTCD_COLUMN}
+              // editMode="cell"
+              rows={this.state.bgtCDRows}
+              onRowClick={this.handleClickBgtCDRow}
+              hideFooter
+              showCellVerticalBorder
+              showColumnVerticalBorder
+              onEditCellChange={this.handleEditCellChange}
+              getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
+              components={{
+                NoRowsOverlay: () => "",
+              }}
+            />
           </Grid>
           <Grid item xs={9}>
             <DataGridComponent

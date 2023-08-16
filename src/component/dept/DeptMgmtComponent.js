@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import BusinessIcon from '@mui/icons-material/Business';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import GroupIcon from "@mui/icons-material/Group";
 import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
+
 import ListIcon from '@mui/icons-material/List';
 import { Button, InputLabel, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -61,7 +63,8 @@ class DeptMgmtComponent extends Component {
             deptCdList: [],
             deptNmList: [],
             CodialTextField: '',
-            isChanged: false
+            isChanged: false,
+            isDeptCdEditable: false
         }
     }
 
@@ -95,7 +98,10 @@ class DeptMgmtComponent extends Component {
                     coCd: coCd
                 })
                     .then((response) => {
-                        // console.log(response.data)
+                        console.log("여기");
+                        console.log(response);
+                        console.log(response.data);
+
                         this.setState({ rows: response.data });
                         // console.log({ rows: response.data })
                         const coCdList = response.data.map((item) => item.coCd);
@@ -136,7 +142,8 @@ class DeptMgmtComponent extends Component {
                             // ceoNm: ceoNm,
                             deptZip: deptZip,
                             deptAddr: deptAddr,
-                            deptAddr1: deptAddr1
+                            deptAddr1: deptAddr1,
+                            DeptdialTextField: ''
                         })
                         CompanyService.getCompany({
                             accessToken: this.props.accessToken,
@@ -162,6 +169,27 @@ class DeptMgmtComponent extends Component {
         // console.log(this.state);
     }
 
+    handleCdChange = (e) => {
+        const numericValue = e.target.value.replace(/[^0-9]/g, ''); ///[^0-9]*$/ 둘 다 되는건가?
+        this.setState({
+            // isChanged: true,
+            [e.target.name]: numericValue
+        });
+    };
+
+    handleBlur = (e) => {
+        const { deptCd } = this.state;
+        const newDeptCd = parseInt(e.target.value)
+        const { deptCdList } = this.state;
+
+        deptCdList.includes(newDeptCd) ?
+            this.setState({
+                deptCd: ''
+            }) : (this.setState({
+                deptCd: deptCd
+            }))
+
+    }
 
     addrButton = () => {
         this.addrRef.current.handleUp();
@@ -186,7 +214,60 @@ class DeptMgmtComponent extends Component {
             DeptdialTextField: data.deptCd + ". " + data.deptNm,
             deptCd: data.deptCd  //밑에 coCd 넘겨주기
         });
+        this.searchClick(data.deptCd);
     };
+
+    searchClick = (deptCd) => {
+        DeptService.getDepartment({
+            accessToken: this.props.accessToken,
+            deptCd: deptCd
+        })
+            .then((response) => {
+                // const coCdList = response.data.map((item) => item.coCd);
+                const divCdList = response.data.map((item) => item.divCd);
+                // const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
+                // const divNmList = response.data.map((item) => item.divNm);
+                const deptCdList = response.data.map((item) => item.deptCd);
+                const deptNmList = response.data.map((item) => item.deptNm);
+                const cardCount = response.data.length;
+
+                // const coCd = response.data[0].coCd;
+                // const coNm = response.data[0].coNm;
+                const divCd = response.data[0].divCd;
+                const divNm = response.data[0].divNm;
+                const deptCd = response.data[0].deptCd;
+                const deptNm = response.data[0].deptNm;
+                const deptZip = response.data[0].deptZip;
+                const deptAddr = response.data[0].deptAddr;
+                const deptAddr1 = response.data[0].deptAddr1;
+
+                this.setState({
+                    cardCount: cardCount,//??????
+                    //   coCdList: coCdList,
+                    //   coNmList: coNmList,  // 하고나서 coNm 불러오는 것도 해야함!!
+                    //   divCdList: divCdList,
+                    //   divNmList: divNmList,
+                    deptCdList: deptCdList,
+                    deptNmList: deptNmList,
+
+                    //   focused: coCd,
+                    //   coCd: coCd,
+                    //   coNm: coNm,
+                    divCd: divCd,
+                    divNm: divNm,
+                    deptCd: deptCd,
+                    deptNm: deptNm,
+                    deptZip: deptZip,
+                    deptAddr: deptAddr,
+                    deptAddr1: deptAddr1
+                })
+            })
+            .catch((error) => {
+                // 오류 발생 시의 처리
+                console.error(error);
+                // alert("중복된 회사 또는 모두 입력해주세요");
+            })
+    }
 
     setDeptZipAddr = (data) => {
         this.setState({ deptZip: data.deptZip });
@@ -236,7 +317,8 @@ class DeptMgmtComponent extends Component {
                     deptZip: '',
                     deptAddr: '',
                     deptAddr1: '',
-                    insertDt: ''
+                    insertDt: '',
+                    isDeptCdEditable: true
                 })
             })
     }
@@ -331,7 +413,8 @@ class DeptMgmtComponent extends Component {
                                     // ceoNm: ceoNm,
                                     deptZip: deptZip,
                                     deptAddr: deptAddr,
-                                    deptAddr1: deptAddr1
+                                    deptAddr1: deptAddr1,
+                                    isDeptCdEditable: false
                                 })
                                 CompanyService.getCompany({
                                     accessToken: this.props.accessToken,
@@ -456,103 +539,112 @@ class DeptMgmtComponent extends Component {
 
     deleteDept = () => {
         const { deptCd } = this.state;
+        if (deptCd === '') {
+            window.confirm("부서삭제 완료!");
+            this.componentDidMount();
+        } else {
+            DeptService.deleteDept({
+                accessToken: this.props.accessToken,
+                deptCd: deptCd
+            })
+                .then((response) => {
+                    console.log(response.data);
+                    window.confirm('부서삭제 완료!');
 
-        DeptService.deleteDept({
-            accessToken: this.props.accessToken,
-            deptCd: deptCd
-        })
-            .then((response) => {
-                console.log(response.data);
-                window.confirm('부서삭제 완료!');
+                    const userInfo = this.props.userInfo;
+                    const { coCd, empId, empEmail } = userInfo;
+                    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-                const userInfo = this.props.userInfo;
-                const { coCd, empId, empEmail } = userInfo;
-                console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
-                this.setState({ coCd: coCd });
-                DivsService.getDivision({
-                    accessToken: this.props.accessToken,
-                    coCd: coCd
-                })
-                    .then((response) => {
-                        console.log(response.data)
-                        const divCdList = response.data.map((item) => item.divCd);
-                        const divNmList = response.data.map((item) => item.divNm);
-
-                        const divCd = response.data[0].divCd;
-                        const divNm = response.data[0].divNm;
-                        this.setState({
-                            divCdList: divCdList,
-                            divNmList: divNmList,
-                            divCd: divCd,
-                            divNm: divNm
-                        })
-                        DeptService.getDivDept({
-                            accessToken: this.props.accessToken,
-                            coCd: coCd
-                        })
-                            .then((response) => {
-                                // console.log(response.data)
-                                this.setState({ rows: response.data });
-                                // console.log({ rows: response.data })
-                                const coCdList = response.data.map((item) => item.coCd);
-                                // const divCdList = response.data.map((item) => item.divCd);
-                                // const divNmList = response.data.map((item) => item.divNm);
-                                console.log(divCdList);
-                                const deptCdList = response.data.map((item) => item.deptCd);
-                                const deptNmList = response.data.map((item) => item.deptNm);
-                                this.state.rows.map((row) => {
-                                    console.log(row.divCd);
-                                })
-                                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-                                const coCd = response.data[0].coCd;
-                                // const divCd = response.data[0].divCd;
-                                // const divNm = response.data[0].divNm;
-                                const deptCd = response.data[0].deptCd;
-                                const deptNm = response.data[0].deptNm;
-                                // const ceoNm = response.data[0].ceoNm;
-                                const deptZip = response.data[0].deptZip;
-                                const deptAddr = response.data[0].deptAddr;
-                                const deptAddr1 = response.data[0].deptAddr1;
-
-                                this.setState({
-                                    cardCount: cardCount, // state에 값을 저장
-                                    coCdList: coCdList,
-                                    // divCdList: divCdList,
-                                    // divNmList: divNmList,
-                                    deptCdList: deptCdList,
-                                    deptNmList: deptNmList,
-
-                                    focused: deptCd,
-                                    coCd: coCd,
-                                    divCd: divCd,
-                                    divNm: divNm,
-                                    deptCd: deptCd,
-                                    deptNm: deptNm,
-                                    // ceoNm: ceoNm,
-                                    deptZip: deptZip,
-                                    deptAddr: deptAddr,
-                                    deptAddr1: deptAddr1
-                                })
-                                CompanyService.getCompany({
-                                    accessToken: this.props.accessToken,
-                                    coCd: coCd
-                                })
-                                    .then((response) => {
-                                        const coNm = response.data[0].coNm;
-
-                                        this.setState({
-                                            coNm: coNm
-                                        })
-                                    })
-                            })
+                    this.setState({ coCd: coCd });
+                    DivsService.getDivision({
+                        accessToken: this.props.accessToken,
+                        coCd: coCd
                     })
-            }).catch((error) => {
-                // 오류 발생 시의 처리
-                console.error(error);
-                alert("부서삭제 실패..");
-            });
+                        .then((response) => {
+                            console.log(response.data)
+                            const divCdList = response.data.map((item) => item.divCd);
+                            const divNmList = response.data.map((item) => item.divNm);
+
+                            const divCd = response.data[0].divCd;
+                            const divNm = response.data[0].divNm;
+                            this.setState({
+                                divCdList: divCdList,
+                                divNmList: divNmList,
+                                divCd: divCd,
+                                divNm: divNm
+                            })
+                            DeptService.getDivDept({
+                                accessToken: this.props.accessToken,
+                                coCd: coCd
+                            })
+                                .then((response) => {
+                                    // console.log(response.data)
+                                    this.setState({ rows: response.data });
+                                    // console.log({ rows: response.data })
+                                    const coCdList = response.data.map((item) => item.coCd);
+                                    // const divCdList = response.data.map((item) => item.divCd);
+                                    // const divNmList = response.data.map((item) => item.divNm);
+                                    console.log(divCdList);
+                                    const deptCdList = response.data.map((item) => item.deptCd);
+                                    const deptNmList = response.data.map((item) => item.deptNm);
+                                    this.state.rows.map((row) => {
+                                        console.log(row.divCd);
+                                    })
+                                    const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                                    const coCd = response.data[0].coCd;
+                                    // const divCd = response.data[0].divCd;
+                                    // const divNm = response.data[0].divNm;
+                                    const deptCd = response.data[0].deptCd;
+                                    const deptNm = response.data[0].deptNm;
+                                    // const ceoNm = response.data[0].ceoNm;
+                                    const deptZip = response.data[0].deptZip;
+                                    const deptAddr = response.data[0].deptAddr;
+                                    const deptAddr1 = response.data[0].deptAddr1;
+
+                                    this.setState({
+                                        cardCount: cardCount, // state에 값을 저장
+                                        coCdList: coCdList,
+                                        // divCdList: divCdList,
+                                        // divNmList: divNmList,
+                                        deptCdList: deptCdList,
+                                        deptNmList: deptNmList,
+
+                                        focused: deptCd,
+                                        coCd: coCd,
+                                        divCd: divCd,
+                                        divNm: divNm,
+                                        deptCd: deptCd,
+                                        deptNm: deptNm,
+                                        // ceoNm: ceoNm,
+                                        deptZip: deptZip,
+                                        deptAddr: deptAddr,
+                                        deptAddr1: deptAddr1,
+                                        DeptdialTextField:''
+                                    })
+                                    CompanyService.getCompany({
+                                        accessToken: this.props.accessToken,
+                                        coCd: coCd
+                                    })
+                                        .then((response) => {
+                                            const coNm = response.data[0].coNm;
+
+                                            this.setState({
+                                                coNm: coNm
+                                            })
+                                        })
+                                })
+                        })
+                }).catch((error) => {
+                    // 오류 발생 시의 처리
+                    console.error(error);
+                    alert("부서삭제 실패..");
+                });
+        }
+    }
+
+    reClick = () => {
+        this.componentDidMount();
     }
 
     handleSelect = (nodeId) => {
@@ -574,7 +666,8 @@ class DeptMgmtComponent extends Component {
                 deptNm: '',
                 deptZip: '',
                 deptAddr: '',
-                deptAddr1: ''
+                deptAddr1: '',
+                isDeptCdEditable: true
             })
         } else if (nodeId.startsWith('dept-')) {
             const parts = nodeId.split('-');
@@ -624,7 +717,8 @@ class DeptMgmtComponent extends Component {
                         deptZip: deptZip,
                         deptAddr: deptAddr,
                         deptAddr1: deptAddr1,
-                        insertDt: insertDt
+                        insertDt: insertDt,
+                        isDeptCdEditable: false
 
                     })
                     CompanyService.getCompany({
@@ -658,24 +752,24 @@ class DeptMgmtComponent extends Component {
         const newDeptCdList = [...new Set(deptCdList)]
 
         const trees = (
-            <TreeItem nodeId={coCd.toString()} label={coNm}>
+            <TreeItem  nodeId={`co-${coCd}`} label={coCd+'. '+coNm}>
                 {newDivCdList.map((divCd, index) => (
-                    <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} label={divNmList[index]}
+                    <TreeItem  key={`div-${index}`} nodeId={`div-${divCd}`} labelIcon={BusinessIcon}  label={divCd+'. '+divNmList[index]}
                         onClick={() => this.handleSelect(`div-${divCd}`)}>
                         {rows.map((row, subIndex) => (
                             (row.divCd === divCd) ?
-                                <TreeItem
+                                <TreeItem 
                                     key={`dept-${subIndex}`}
                                     nodeId={`dept-${row.deptCd}`}
-                                    label={row.deptNm}
+                                    label={row.deptCd+'. '+row.deptNm}
                                     onClick={() => this.handleSelect(`dept-${row.deptCd}`)}
                                 />
                                 : null
                         )
                         )}
-                    </TreeItem>
+                    </TreeItem >
                 ))}
-            </TreeItem>
+            </TreeItem >
         );
 
         // deptCdList.map((deptCd, subIndex) => (
@@ -710,7 +804,7 @@ class DeptMgmtComponent extends Component {
                             추 가
                         </Button>
 
-                        {deptCd && insertDt ? (
+                        {insertDt ? (
                             <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDept}>
                                 수 정
                             </Button>
@@ -756,9 +850,9 @@ class DeptMgmtComponent extends Component {
                             ></CustomTextField>
                         </Grid>
                     </Grid>
-                    {/* <Button variant="outlined" onClick={() => this.searchClick(deptCd)} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
+                    <Button variant="outlined" onClick={this.reClick} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
                         <SearchIcon fontSize="medium" />
-                    </Button> */}
+                    </Button>
                 </CustomGridContainer >
 
                 <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
@@ -790,7 +884,6 @@ class DeptMgmtComponent extends Component {
                         }}>
                             <TreeView
                                 defaultCollapseIcon={<ExpandMoreIcon />}
-                                // defaultExpanded= {}
                                 defaultExpandIcon={<ChevronRightIcon />}
                                 sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
                             >
@@ -808,7 +901,7 @@ class DeptMgmtComponent extends Component {
                             </Grid>
                         </Grid>
 
-                        <Grid container sx={{ mt:'-4px',border: "2px solid #EAEAEA" }}>
+                        <Grid container sx={{ mt: '-4px', border: "2px solid #EAEAEA" }}>
                             <Grid
                                 item
                                 xs={2}
@@ -876,7 +969,7 @@ class DeptMgmtComponent extends Component {
                                 <CustomInputLabel sx={{ color: 'black' }}  >부서코드</CustomInputLabel>
                             </Grid>
                             <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', borderBottom: "1px solid lightgray", borderRight: '1px solid #EAEAEA' }}>
-                                <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='deptCd' onChange={this.handleCompany} value={deptCd || ''}></CustomWideTextField>
+                                <CustomWideTextField disabled={!this.state.isDeptCdEditable} sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='deptCd' onChange={this.handleCdChange} onBlur={this.handleBlur} value={deptCd || ''}></CustomWideTextField>
                             </Grid>
 
                             <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }} >

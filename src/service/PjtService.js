@@ -68,4 +68,6 @@ class PjtService {
       .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", selData)
   }
 }
+
+
 export default new PjtService();

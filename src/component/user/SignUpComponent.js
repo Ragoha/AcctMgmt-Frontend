@@ -1,7 +1,16 @@
-import React, { Component } from 'react';
-import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem, Tooltip, } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tooltip,
+} from "@mui/material";
 import axios from "axios";
-import validator from 'validator';
+import React, { Component } from "react";
+import validator from "validator";
+import { CustomInputLabel, CustomMediumTextField } from "../common/style/CommonStyle";
 class SignUpComponent extends Component {
   constructor(props) {
     super(props);
@@ -85,21 +94,19 @@ class SignUpComponent extends Component {
     });
   };
 
-
   handleSubmit = (e) => {
     e.preventDefault();
-    const { id, name, password, email, gender, phone, company, position } = this.state;
-    const signData =
-    {
+    const { id, name, password, email, gender, phone, company, position } =
+      this.state;
+    const signData = {
       coCd: company,
       empId: id,
       empPw: password,
       empEmail: email,
       empTel: phone,
       empName: name,
-      empSx: gender,
       empOd: position,
-      empAuth: 'ROLL_USER',
+      empAuth: "ROLE_USER",
     };
 
     // 폼 필드의 값이 비어있는지 확인
@@ -146,7 +153,7 @@ class SignUpComponent extends Component {
         // 아이디 중복일 때 처리 로직
         alert("사용가능한 아이디 입니다.", response);
         console.error(response);
-        this.setState({ isIdDuplicated: true, });
+        this.setState({ isIdDuplicated: true });
       })
       .catch((error) => {
         // 아이디 중복 없을 때 처리 로직
@@ -154,10 +161,10 @@ class SignUpComponent extends Component {
         console.log(error.data);
         this.setState({
           isIdDuplicated: false,
-          errorMessage: '중복된 아이디 입니다.',
+          errorMessage: "중복된 아이디 입니다.",
+          isIdValid:false,
         });
-      })
-
+      });
   };
 
   validatePassword = (password) => {
@@ -190,197 +197,269 @@ class SignUpComponent extends Component {
     const isPasswordValid = this.validatePassword(password);
     return (
       <form onSubmit={this.handleSubmit}>
-        <Grid container spacing={2} marginTop={2}>
+        <Grid container direction="column" spacing={1} sx={{ mt: 1 }}>
           <Grid item xs={12}>
-            <InputLabel>아이디</InputLabel>
-            <Tooltip title={errorMessage}>
-              <TextField
-                name="id"
-                placeholder="알파벳 대소문자와 숫자만 사용 가능"
-                variant="outlined"
-                value={id}
-                onChange={this.handleChange2}
-                onBlur={this.handleBlur}
-                disabled={error}
-                error={error}
-                // helperText={errorMessage}
-                sx={{
-                  width: "46%",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: isIdValid ? "success.main" : "error.main",
-                  },
-                  "& .MuiOutlinedInput-input::placeholder": {
-                    fontSize: "12px", // 원하는 폰트 크기로 설정
-                  },
-                }}
-              />
-            </Tooltip>
-            <Button onClick={this.handleIdCheck} disabled={isIdDuplicated}>
-              중복확인
-            </Button>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomInputLabel>
+                    아이디
+                  </CustomInputLabel>
+                  <span style={{ marginLeft: '8px', fontSize: '10px', color: isIdValid ? 'green' : 'red' }}>
+                    {errorMessage}
+                  </span>
+                </div>
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container direction="row" alignItems="center">
+                  <CustomMediumTextField
+                    name="id"
+                    placeholder="아이디 입력(6 ~ 20자)"
+                    variant="outlined"
+                    value={id}
+                    onChange={this.handleChange2}
+                    onBlur={this.handleBlur}
+                    disabled={error}
+                    error={error}
+                    // helperText={errorMessage}
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: isIdValid ? "success.main" : "error.main",
+                      },
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                  <InputLabel
+                    sx={{
+                      ml: 1,
+                      color: "#1976D2",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
+                    onClick={this.handleIdCheck}
+                    disabled={isIdDuplicated}
+                  >
+                    중복확인
+                  </InputLabel>
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
-            <InputLabel>이름</InputLabel>
-            <TextField
-              name="name"
-              placeholder="이름을 입력하세요"
-              variant="outlined"
-              color="secondary"
-              value={name}
-              onChange={this.handleChange}
-              sx={{
-                width: "46%",
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-            />
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <CustomInputLabel>
+                    패스워드
+                  </CustomInputLabel>
+                  {password && !isPasswordValid && (
+                    <span style={{ marginLeft: '8px', fontSize: '10px', color: isPasswordValid ? 'green' : 'red' }}>
+                      {this.state.isPasswordValid ? '사용 가능한 패스워드 입니다.' : '알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!'}
+                    </span>
+                  )}
+                </div>
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container direction="row" alignItems="center">
+                  <CustomMediumTextField
+                    variant="outlined"
+                    color="secondary"
+                    name="password"
+                    placeholder="비밀번호 입력(문자, 숫자, 특수문자 포함 8~20자)"
+                    type="password"
+                    value={password}
+                    error={password && !isPasswordValid}
+                    onChange={this.handleChange}
+                    onBlur={this.handleBlur}
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: isPasswordValid ? "success.main" : "error.main",
+                      },
+                      whiteSpace: "pre-wrap",
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        fontSize: "12px",
+                      },
+                    }}
+                  />
+                  {/* {password && !isPasswordValid && (
+                    <span style={{ marginLeft: '8px', fontSize: '10px', color: 'red' }}>
+                      알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요
+                    </span>
+                  )} */}
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>패스워드</InputLabel>
-            <Tooltip title={(
-              <div>
-                알파벳 대소문자, 숫자, 특수문자를 포함한
-                <br />
-                8글자 이상을 입력하세요
-              </div>
-            )}>
-              <TextField
-                variant="outlined"
-                color="secondary"
-                name="password"
-                placeholder="알파벳 대소문자, 숫자, 특수문자를 포함"
-                type="password"
-                value={password}
-                error={password && !isPasswordValid}
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-                sx={{
-                  width: "95%",
-                  whiteSpace: "pre-wrap",
-                  "& .MuiOutlinedInput-input::placeholder": {
-                    fontSize: "12px", // 원하는 폰트 크기로 설정
-                  },
-                }}
-              />
-            </Tooltip>
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>패스워드 확인</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <Tooltip
+                  title={
+                    <div>
+                      {confirmPassword !== "" &&
+                        (password !== confirmPassword
+                          ? "비밀번호가 일치하지 않습니다."
+                          : "비밀번호가 일치합니다.")}
+                    </div>
+                  }
+                >
+                  <CustomMediumTextField
+                    variant="outlined"
+                    color={
+                      confirmPassword
+                        ? password === confirmPassword
+                          ? "success"
+                          : "error"
+                        : "secondary"
+                    }
+                    name="confirmPassword"
+                    placeholder="패스워드 재입력"
+                    // placeholder="한번 더 입력하세요"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={this.handleChange}
+                    onBlur={this.handleBlur}
+                    sx={{
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        fontSize: "12px", // 원하는 폰트 크기로 설정
+                      },
+                    }}
+                    error={confirmPassword && password !== confirmPassword}
+                  />
+                </Tooltip>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>패스워드 확인</InputLabel>
-            <Tooltip title={(
-              <div>
-                {confirmPassword !== "" && (password !== confirmPassword
-                  ? "비밀번호가 일치하지 않습니다."
-                  : "비밀번호가 일치합니다.")
-                }
-              </div>
-            )}>
-              <TextField
-                variant="outlined"
-                color={
-                  confirmPassword
-                    ? password === confirmPassword
-                      ? "success"
-                      : "error"
-                    : "secondary"
-                }
-                name="confirmPassword"
-                placeholder="한번 더 입력하세요"
-                type="password"
-                value={confirmPassword}
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-                sx={{
-                  width: "95%",
-                  "& .MuiOutlinedInput-input::placeholder": {
-                    fontSize: "12px", // 원하는 폰트 크기로 설정
-                  },
-                }}
-                error={confirmPassword && password !== confirmPassword}
-              />
-            </Tooltip>
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>이름</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <CustomMediumTextField
+                  name="name"
+                  placeholder="이름을 입력해주세요"
+                  variant="outlined"
+                  color="secondary"
+                  value={name}
+                  onChange={this.handleChange}
+                  sx={{
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>이메일</InputLabel>
-            <TextField
-              variant="outlined"
-              color="secondary"
-              name="email"
-              placeholder="exaple@example.com"
-              type="email"
-              value={email}
-              onChange={this.handleChange}
-              sx={{
-                width: "95%",
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-            />
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>이메일</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <CustomMediumTextField
+                  variant="outlined"
+                  color="secondary"
+                  name="email"
+                  placeholder="이메일을 입력해주세요"
+                  type="email"
+                  value={email}
+                  onChange={this.handleChange}
+                  sx={{
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>성별</InputLabel>
-            <FormControl sx={{ width: "95%" }}>
-              <Select
-                variant="outlined"
-                color="secondary"
-                name="gender"
-                // value='male'
-                onChange={this.handleChange}
-              >
-                <MenuItem value="male">남자</MenuItem>
-                <MenuItem value="female">여자</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>휴대전화</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container></Grid>
+                <CustomMediumTextField
+                  variant="outlined"
+                  color="secondary"
+                  name="phone"
+                  placeholder="휴대폰 번호 입력('-' 제외 11자리 입력)"
+                  value={phone}
+                  onChange={this.handleChange}
+                  sx={{
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>휴대전화</InputLabel>
-            <TextField
-              variant="outlined"
-              color="secondary"
-              name="phone"
-              placeholder="01012341234"
-              value={phone}
-              onChange={this.handleChange}
-              sx={{
-                width: "95%",
-                "& .MuiOutlinedInput-input::placeholder": {
-                  fontSize: "12px", // 원하는 폰트 크기로 설정
-                },
-              }}
-            />
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>회사</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <Grid container direction="row" alignItems="center">
+                  <CustomMediumTextField
+                    variant="outlined"
+                    color="secondary"
+                    name="company"
+                    placeholder="회사명을 입력해주세요"
+                    value={company}
+                    onChange={this.handleChange}
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        fontSize: "12px", // 원하는 폰트 크기로 설정
+                      },
+                    }}
+                  />
+                  <InputLabel
+                    sx={{
+                      ml: 1,
+                      color: "#1976D2",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                    }}
+                    onClick={this.handleAddressSearch}
+                  >
+                    회사 검색
+                  </InputLabel>
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <InputLabel>회사</InputLabel>
-            <TextField
-              variant="outlined"
-              color="secondary"
-              name="company"
-              placeholder="dz00"
-              value={company}
-              onChange={this.handleChange}
-              fullWidth
-            />
-            <Button onClick={this.handleAddressSearch}>회사 검색</Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <InputLabel>직책</InputLabel>
-            <FormControl sx={{ width: "95%" }}>
-              <Select
-                variant="outlined"
-                color="secondary"
-                name="position"
-                // value={'사원'}
-                onChange={this.handleChange}
-              >
-                <MenuItem value="사원">사원</MenuItem>
-                <MenuItem value="주임">주임</MenuItem>
-                <MenuItem value="과장">과장</MenuItem>
-                <MenuItem value="팀장">팀장</MenuItem>
-                <MenuItem value="부장">부장</MenuItem>
-              </Select>
-            </FormControl>
+          <Grid item xs={12}>
+            <Grid container direction="column" sx={{ pl: 6 }}>
+              <Grid item xs={3}>
+                <CustomInputLabel>직책</CustomInputLabel>
+              </Grid>
+              <Grid item xs={9}>
+                <CustomMediumTextField
+                  variant="outlined"
+                  color="secondary"
+                  name="position"
+                  placeholder="직책을 입력해주세요"
+                  onChange={this.handleChange}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
           {/* <Grid item xs={12}>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

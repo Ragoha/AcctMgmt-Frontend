@@ -1,76 +1,78 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, Divider, IconButton, InputLabel, TextField, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import { ApartmentOutlined } from "@mui/icons-material";
-import Dialog from '@mui/material/Dialog';
-import dayjs from 'dayjs';
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  InputLabel,
+  TextField,
+  Typography
+} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import dayjs from "dayjs";
+import InputMask from "react-input-mask";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import InputAdornment from '@mui/material/InputAdornment';
-import CompanyService from '../../service/CompanyService';
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from '../common/style/CommonDialogStyle';
-import { CustomDataGrid, CustomDatePrToTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
-import AddressComponent from './dialog/AddressComponent';
-import CoDialogComponent from './dialog/CoDialogComponent';
-import { DataGrid } from '@mui/x-data-grid';
+import InputAdornment from "@mui/material/InputAdornment";
+import CompanyService from "../../service/CompanyService";
+import {
+  CustomDatePrToTextField,
+  CustomGridContainer,
+  CustomHeaderGridContainer,
+  CustomHeaderInputLabel,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+  CustomWideTextField
+} from "../common/style/CommonStyle";
+import AddressComponent from "./dialog/AddressComponent";
+import CoDialogComponent from "./dialog/CoDialogComponent";
+import GisuDialogComponent from "./dialog/GisuDialogComponent";
 
 class CoMgmtComponent extends Component {
   constructor(props) {
     super(props);
     this.coDialogRef = React.createRef();
     this.addrRef = React.createRef();
+    this.gisuRef = React.createRef();
     this.state = {
       open: false,
       focused: null,
       cards: [],
       cardCount: 0,
       coCd: 0,
-      coNm: '',
+      coNm: "",
       gisu: 0,
       frDt: new Date(), // 기수 시작일 날짜 객체
       toDt: new Date(), // 기수 종료일 날짜 객체
       //insertId: '', //등록자
-      //insertDt: '', //등록일  String???
+      insertDt: '', //등록일  String???
       //insertIp: '', //등록자 ip
       //modifyId: '', //수정자
       //modifyDt: '', //수정일
       //modifyIp: '', //수정 ip
-      selectedRow: { gisu: '', frDt: '', toDt: '' },
-      jongmok: '', //종목
-      businessType: '', //업태
-      coNb: '', //사업자번호
-      ceoNm: '', //대표자명
-      coZip: '', //우편번호
-      coAddr: '', //주소
-      coAddr1: '', //상세주소
+      selectedRow: { gisu: "", frDt: "", toDt: "" },
+      jongmok: "", //종목
+      businessType: "", //업태
+      coNb: "", //사업자번호
+      ceoNm: "", //대표자명
+      coZip: "", //우편번호
+      coAddr: "", //주소
+      coAddr1: "", //상세주소
       coCdList: [],
       coNmList: [],
       ceoNmList: [],
-      CodialTextField: '',
-      dateRange: '',
-      isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
-
-      data: {
-        columns: [
-          { field: 'gisu', headerName: '기수', editable: true, width: 90, headerAlign: 'center' },
-          { field: 'frDt', headerName: '시작일', type: 'date', editable: true, width: 188.2, headerAlign: 'center' },
-          { field: 'toDt', headerName: '종료일', type: 'date', editable: true, width: 188.2, headerAlign: 'center' },
-        ],
-        rows: [
-          { id: 1, 'gisu': '', 'frDt': '', 'toDt': '' },
-          // { id: 2, 'name': randomTraderName(), 'startDate': randomCreatedDate(),'endDate': randomCreatedDate() },
-          // { id: 3, 'name': randomTraderName(), 'startDate': randomCreatedDate(),'endDate': randomCreatedDate() },
-          // { id: 4, 'name': randomTraderName(), 'startDate': randomCreatedDate(),'endDate': randomCreatedDate() },
-          // { id: 5, 'name': randomTraderName(), 'startDate': randomCreatedDate(),'endDate': randomCreatedDate() }
-          // Add more rows here...
-        ]
-      }
-    }
+      CodialTextField: "",
+      dateRange: "",
+      // isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
+      // inputValue: '',
+      isCoCdEditable: false,
+    };
   }
 
   componentDidMount() {
@@ -83,7 +85,7 @@ class CoMgmtComponent extends Component {
     // {coCd && empId?
     CompanyService.getCoList({
       accessToken: this.props.accessToken,
-      coCd: coCd
+      // coCd: coCd
     })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
@@ -94,8 +96,8 @@ class CoMgmtComponent extends Component {
         const coCd = response.data[0].coCd;
         const coNm = response.data[0].coNm;
         const gisu = response.data[0].gisu;
-        const frDt = dayjs(response.data[0].frDt).format('YYYY-MM-DD');
-        const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+        const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
+        const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
         const jongmok = response.data[0].jongmok;
         const businessType = response.data[0].businessType;
         const coNb = response.data[0].coNb;
@@ -103,6 +105,7 @@ class CoMgmtComponent extends Component {
         const coZip = response.data[0].coZip;
         const coAddr = response.data[0].coAddr;
         const coAddr1 = response.data[0].coAddr1;
+        const insertDt = response.data[0].insertDt;
 
         this.setState({
           cardCount: cardCount, // state에 값을 저장
@@ -112,18 +115,21 @@ class CoMgmtComponent extends Component {
 
           focused: coCd,
           coCd: coCd,
+          originCd: coCd,
           coNm: coNm,
           gisu: gisu,
           frDt: frDt,
           toDt: toDt,
-          dateRange: frDt + ' ~ ' + toDt,
+          dateRange: frDt + " ~ " + toDt,
           jongmok: jongmok,
           businessType: businessType,
           coNb: coNb,
           ceoNm: ceoNm,
           coZip: coZip,
           coAddr: coAddr,
-          coAddr1: coAddr1
+          coAddr1: coAddr1,
+          insertDt: insertDt,
+          CodialTextField: ''
         })
       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
@@ -132,7 +138,7 @@ class CoMgmtComponent extends Component {
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    // :    
+    // :
     // CompanyService.getCoList()
     //       .then((response) => {
     //         const coCdList = response.data.map((item) => item.coCd);
@@ -183,26 +189,31 @@ class CoMgmtComponent extends Component {
     // }
   }
 
-
   handleCompany = (e) => {
     // console.log(e.target.id);
     {
       this.setState({
-        isChanged: true,
-        [e.target.name]: e.target.value
-      })
-
-      // console.log(this.state);
+        // isChanged: true,
+        [e.target.name]: e.target.value,
+      });
     }
-  }
+  };
+
+  handleCdChange = (e) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, ''); ///[^0-9]*$/ 둘 다 되는건가?
+    this.setState({
+      // isChanged: true,
+      [e.target.name]: numericValue
+    });
+  };
 
   addCardButton = () => {
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
-    if (this.state.coCdList.includes('0000')) {
+    if (this.state.coCdList.includes("0000")) {
       alert("미등록 회사가 존재합니다.");
     } else {
       const newCardCount = this.state.cardCount + 1;
-      const newCoCdList = [...this.state.coCdList, '0000'];
+      const newCoCdList = [...this.state.coCdList, "0000"];
       // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
       this.setState({
         cardCount: newCardCount,
@@ -221,16 +232,19 @@ class CoMgmtComponent extends Component {
         ceoNm: '',
         coZip: '',
         coAddr: '',
-        coAddr1: ''
+        coAddr1: '',
+        insertDt: '',
+        isCoCdEditable: true
       })
     }
-  }//여기에 모든 state값 초기화 하면 됨 !!!!!
+  }; //여기에 모든 state값 초기화 하면 됨 !!!!!
 
   insertCo = () => {
-    const { coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
 
     CompanyService.insertCo({
       accessToken: this.props.accessToken,
+      coCd: coCd,
       coNm: coNm,
       gisu: gisu,
       frDt: frDt,
@@ -241,12 +255,12 @@ class CoMgmtComponent extends Component {
       ceoNm: ceoNm,
       coZip: coZip,
       coAddr: coAddr,
-      coAddr1: coAddr1
+      coAddr1: coAddr1,
     })
 
       .then((response) => {
         console.log(response.data);
-        window.confirm('회사등록 완료!');
+        window.confirm("회사등록 완료!");
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
@@ -256,20 +270,20 @@ class CoMgmtComponent extends Component {
           coCdList: coCdList,
           coNmList: coNmList,
           focused: coCdList[cardCount - 1],
-          coCd: '',
-          coNm: '',
-          gisu: '',
-          frDt: '',
-          toDt: '',
-          dateRange: '',
-          jongmok: '',
-          businessType: '',
-          coNb: '',
-          ceoNm: '',
-          coZip: '',
-          coAddr: '',
-          coAddr1: '',
-          isChanged: false
+          coCd: "",
+          coNm: "",
+          gisu: "",
+          frDt: "",
+          toDt: "",
+          dateRange: "",
+          jongmok: "",
+          businessType: "",
+          coNb: "",
+          ceoNm: "",
+          coZip: "",
+          coAddr: "",
+          coAddr1: "",
+          // isChanged: false
         });
         // window.location.reload();
         // window.location.href="/acctmgmt/ozt/co";
@@ -279,7 +293,7 @@ class CoMgmtComponent extends Component {
         console.error(error);
         alert("회사등록 실패ㅠ");
       });
-  }
+  };
 
   addrButton = () => {
     this.addrRef.current.handleUp();
@@ -287,20 +301,20 @@ class CoMgmtComponent extends Component {
     //  this.setState({ coAddr: this.addrRef.current.value.coAddr });
 
     // console.log(this.addrRef.current.value.coZip, this.addrRef.current.value.coAddr);
-  }
+  };
 
   closeAddrDialog = () => {
     this.addrRef.current.handleDown();
-  }
+  };
 
   cardClick = (coCd) => {
     console.log(coCd);
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
-    if (this.state.isChanged) {
-      alert('수정중인 내용이 있습니다.');
-    } else {
-      this.setState({ focused: coCd })
+    // if (this.state.isChanged) {
+    //   alert("수정중인 내용이 있습니다.");
+    // } else {
+      this.setState({ focused: coCd });
       {
         coCd == '0000' ?
           this.setState({
@@ -316,7 +330,8 @@ class CoMgmtComponent extends Component {
             ceoNm: '',
             coZip: '',
             coAddr: '',
-            coAddr1: ''
+            coAddr1: '',
+            insertDt: ''
           }) :
           CompanyService.getCompany({
             accessToken: this.props.accessToken,
@@ -336,9 +351,11 @@ class CoMgmtComponent extends Component {
               const coZip = response.data[0].coZip;
               const coAddr = response.data[0].coAddr;
               const coAddr1 = response.data[0].coAddr1;
+              const insertDt = response.data[0].insertDt;
 
               this.setState({
                 coCd: coCd,
+                originCd: coCd,
                 coNm: coNm,
                 gisu: gisu,
                 frDt: frDt,
@@ -350,7 +367,8 @@ class CoMgmtComponent extends Component {
                 ceoNm: ceoNm,
                 coZip: coZip,
                 coAddr: coAddr,
-                coAddr1: coAddr1
+                coAddr1: coAddr1,
+                insertDt: insertDt
               })
               console.log(frDt, toDt)
             })
@@ -358,32 +376,31 @@ class CoMgmtComponent extends Component {
               // 오류 발생 시의 처리
               console.error(error);
               // alert("중복된 회사 또는 모두 입력해주세요");
-            })
-      }
+            });
+      // }
     }
-  }
+  };
 
   helpClick = () => {
     this.coDialogRef.current.handleUp();
   };
 
-
   closeDialog = () => {
     this.dialogRef.current.handleDown();
-  }
+  };
 
   handleSetCodialTextField = async (data) => {
     await this.setState({
       CodialTextField: data.coCd + ". " + data.coNm,
-      coCd: data.coCd  //밑에 coCd 넘겨주기
+      coCd: data.coCd, //밑에 coCd 넘겨주기
     });
-    this.searchClick(this.state.coCd); //음 왜 기존 검색어가 텍스트 필드에 없는지....?
+    this.searchClick(data.coCd);
   };
 
   searchClick = (coCd) => {
     CompanyService.getCompany({
       accessToken: this.props.accessToken,
-      coCd: coCd
+      coCd: coCd,
     })
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
@@ -393,8 +410,8 @@ class CoMgmtComponent extends Component {
         const coCd = response.data[0].coCd;
         const coNm = response.data[0].coNm;
         const gisu = response.data[0].gisu;
-        const frDt = dayjs(response.data[0].frDt).format('YYYY-MM-DD');
-        const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+        const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
+        const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
         const jongmok = response.data[0].jongmok;
         const businessType = response.data[0].businessType;
         const coNb = response.data[0].coNb;
@@ -404,7 +421,7 @@ class CoMgmtComponent extends Component {
         const coAddr1 = response.data[0].coAddr1;
 
         this.setState({
-          cardCount: cardCount,//??????
+          cardCount: cardCount, //??????
           coCdList: coCdList,
           coNmList: coNmList,
 
@@ -414,7 +431,7 @@ class CoMgmtComponent extends Component {
           gisu: gisu,
           frDt: frDt,
           toDt: toDt,
-          dateRange: frDt + ' ~ ' + toDt,
+          dateRange: frDt + " ~ " + toDt,
           jongmok: jongmok,
           businessType: businessType,
           coNb: coNb,
@@ -422,15 +439,14 @@ class CoMgmtComponent extends Component {
           coZip: coZip,
           coAddr: coAddr,
           coAddr1: coAddr1,
-          CodialTextField: ''
-        })
+        });
       })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
         // alert("중복된 회사 또는 모두 입력해주세요");
-      })
-  }
+      });
+  };
 
   // searchName =(e)=>{
   //   this.setState({CodialTextField : e.target.value});
@@ -439,16 +455,29 @@ class CoMgmtComponent extends Component {
   setCoZipAddr = (data) => {
     this.setState({ coZip: data.coZip });
     this.setState({ coAddr: data.coAddr });
-  }
+  };
 
   handleGisu = () => {
-    this.setState({ open: true });
-  }
+    this.gisuRef.current.handleUp();
+  };
 
   updateCo = () => {
-    const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
+    const {
+      coCd,
+      coNm,
+      gisu,
+      frDt,
+      toDt,
+      jongmok,
+      businessType,
+      coNb,
+      ceoNm,
+      coZip,
+      coAddr,
+      coAddr1,
+    } = this.state;
 
-    console.log(coNm)
+    console.log(coNm);
     CompanyService.updateCo({
       accessToken: this.props.accessToken,
       coCd: coCd,
@@ -462,53 +491,58 @@ class CoMgmtComponent extends Component {
       ceoNm: ceoNm,
       coZip: coZip,
       coAddr: coAddr,
-      coAddr1: coAddr1
+      coAddr1: coAddr1,
     })
       .then((response) => {
         console.log(response.data);
-        window.confirm('업데이트 완료!');
-        const coCdList = response.data.map((item) => item.coCd);
-        const coNmList = response.data.map((item) => item.coNm);
-        const ceoNmList = response.data.map((item) => item.ceoNm);
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          coCdList: coCdList,
-          coNmList: coNmList,
-          ceoNmList: ceoNmList,
-          focused: coCd,
-          coCd: coCd,
-          coNm: coNm,
-          gisu: gisu,
-          frDt: frDt,
-          toDt: toDt,
-          jongmok: jongmok,
-          businessType: businessType,
-          coNb: coNb,
-          ceoNm: ceoNm,
-          coZip: coZip,
-          coAddr: coAddr,
-          coAddr1: coAddr1,
-          isChanged: false
+        window.confirm("업데이트 완료!");
+        this.componentDidMount()
+        // const coCdList = response.data.map((item) => item.coCd);
+        // const coNmList = response.data.map((item) => item.coNm);
+        // const ceoNmList = response.data.map((item) => item.ceoNm);
+        // const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+        // this.setState({
+        //   cardCount: cardCount, // state에 값을 저장
+        //   coCdList: coCdList,
+        //   coNmList: coNmList,
+        //   ceoNmList: ceoNmList,
+        //   focused: coCd,
+        //   coCd: coCd,
+        //   coNm: coNm,
+        //   gisu: gisu,
+        //   frDt: frDt,
+        //   toDt: toDt,
+        //   jongmok: jongmok,
+        //   businessType: businessType,
+        //   coNb: coNb,
+        //   ceoNm: ceoNm,
+        //   coZip: coZip,
+        //   coAddr: coAddr,
+        //   coAddr1: coAddr1,
+        //   // isChanged: false,
         })
-      })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
         alert("업데이트 실패..");
       });
-  }
+  };
 
-  deleteCo = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
+  deleteCo = () => {
+    //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd } = this.state;
-
+    const cardCount = this.state;
+    if(coCd === ''){
+      window.confirm("회사삭제 완료!");
+      this.componentDidMount();
+    }else{
     CompanyService.deleteCo({
       accessToken: this.props.accessToken,
-      coCd: coCd
+      coCd: coCd,
     })
       .then((response) => {
         console.log(response.data);
-        window.confirm('회사삭제 완료!');
+        window.confirm("회사삭제 완료!");
         const coCdList = response.data.map((item) => item.coCd);
         const coNmList = response.data.map((item) => item.coNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
@@ -517,20 +551,21 @@ class CoMgmtComponent extends Component {
           coCdList: coCdList,
           coNmList: coNmList,
           focused: coCdList[0],
-          coCd: '',
-          coNm: '',
-          gisu: '',
-          frDt: '',
-          toDt: '',
-          dateRange: '',
-          jongmok: '',
-          businessType: '',
-          coNb: '',
-          ceoNm: '',
-          coZip: '',
-          coAddr: '',
-          coAddr1: ''
-        })
+          coCd: "",
+          coNm: "",
+          gisu: "",
+          frDt: "",
+          toDt: "",
+          dateRange: "",
+          jongmok: "",
+          businessType: "",
+          coNb: "",
+          ceoNm: "",
+          coZip: "",
+          coAddr: "",
+          coAddr1: "",
+          CodialTextField: ""
+        });
       })
       // window.location.href="/acctmgmt/ozt/co";
       .catch((error) => {
@@ -538,25 +573,63 @@ class CoMgmtComponent extends Component {
         console.error(error);
         alert("회사삭제 실패..");
       });
+    }
+  };
+
+  setGisuInfo = async (data) => {
+    await this.setState({
+      selectedRow: {
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+      }
+    })
+
+    this.insertDate(this.state.selectedRow);
+    
   }
 
   insertDate = (selectedRow) => {
     this.setState({
-      dateRange: dayjs(selectedRow.frDt).format('YYYY-MM-DD') + " ~ " + dayjs(selectedRow.toDt).format('YYYY-MM-DD'),
+      dateRange:
+        dayjs(selectedRow.frDt).format("YYYY-MM-DD") +
+        " ~ " +
+        dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
       gisu: selectedRow.gisu,
 
-      frDt: dayjs(selectedRow.frDt).format('YYYY-MM-DD'),
-      toDt: dayjs(selectedRow.toDt).format('YYYY-MM-DD'),
-      open: false
-    })
+      frDt: dayjs(selectedRow.frDt).format("YYYY-MM-DD"),
+      toDt: dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
+      open: false,
+    });
     console.log(selectedRow);
-  }
+  };
 
   //열 클릭 시, 값 콘솔에 적용
   handleClickRow = (params) => {
     this.setState({ selectedRow: params.row }, () => {
       console.log(this.state.selectedRow);
     });
+  };
+
+  handleBlur = (e) => {
+    const { coCd, originCd } = this.state;
+    // this.setState({
+    //   originCd: coCd
+    // })
+    const newCoCd = parseInt(e.target.value)
+    const { coCdList } = this.state;
+
+    coCdList.includes(newCoCd) ?
+      this.setState({
+        coCd: ''             //이거 경고창 띄우기로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      }) : (this.setState({
+        coCd: coCd
+      }))
+
+  }
+
+  reClick =() =>{
+    this.componentDidMount();
   }
 
   // processRowUpdate = (updatedRow) => {
@@ -569,31 +642,58 @@ class CoMgmtComponent extends Component {
   // };
 
   render() {
-    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt } = this.state;
+
+    const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt, insertDt } = this.state;
     const { selectedRow } = this.state;
     const { data } = this.state;
     const { cardCount, coCdList, coNmList, ceoNmList } = this.state;
 
-
     const currentDate = new Date();
 
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
-    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    const formattedDate = `${currentDate.getFullYear()}-${(
+      currentDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
-
     const cards = coCdList.map((coCd, index) => (
-      <Card key={coCd} focused={this.state.focused === coCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === coCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === coCd ? '#E5FFFF' : 'white' }}>
+      <Card
+        key={coCd}
+        focused={this.state.focused === coCd}
+        sx={{
+          width: "100%",
+          height: 70,
+          position: "relative",
+          border:
+            this.state.focused === coCd
+              ? "2px solid #6798FD"
+              : "1px solid #000",
+          backgroundColor: this.state.focused === coCd ? "#E5FFFF" : "white",
+        }}
+      >
         <CardActionArea onClick={() => this.cardClick(coCd)}>
-          <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
+          <CardContent sx={{  height: 90 }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              gutterBottom
+              style={{ position: "absolute", top: "3px", left: "5px" }}
+            >
               {coCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "190px", bottom: '33px' }} >
+            <Typography
+              sx={{ fontSize: 10 }}
+              style={{ position: "absolute", left: "232px", bottom: "68px" }}
+            >
               {ceoNmList[index]}
             </Typography>
 
-            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: 'relative', bottom: "15px", left: "-9px" }}>
+            <Typography
+              sx={{ fontSize: 14 }}
+              variant="h3"
+              style={{ position: "absolute", bottom: "30px", left: "5px" }}
+            >
               {coNmList[index]}
             </Typography>
           </CardContent>
@@ -616,7 +716,7 @@ class CoMgmtComponent extends Component {
             </Grid>
           </Grid>
           <Grid item>
-            {coCd ? (
+            {insertDt ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
                 수 정
               </Button>
@@ -654,13 +754,19 @@ class CoMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          <Grid item>
-            {/* <CustomSearchButton
+          <Grid item >
+            <CustomSearchButton
               variant="outlined"
-              onClick={() => this.searchClick(coCd)}
-            >
+              onClick={this.reClick}
+              style={{
+                padding: "0px",
+                minWidth: "5px",
+                position: "relative",
+                top: "10px",
+                left: "1015px",
+              }}>
               <SearchIcon fontSize="medium" />
-            </CustomSearchButton> */}
+            </CustomSearchButton>
           </Grid>
         </CustomGridContainer>
 
@@ -671,7 +777,7 @@ class CoMgmtComponent extends Component {
               width: "22%",
               height: 670,
               border: "1px solid #EAEAEA",
-              backgroundColor: "#FCFCFC"
+              backgroundColor: "#FCFCFC",
             }}
           >
             <Grid
@@ -689,13 +795,16 @@ class CoMgmtComponent extends Component {
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
-              <InputLabel sx={{
-                color: "#0054FF",
-                fontWeight: "bold",
-              }}>{cardCount}</InputLabel>
+              <InputLabel
+                sx={{
+                  color: "#0054FF",
+                  fontWeight: "bold",
+                }}
+              >
+                {cardCount}
+              </InputLabel>
               <CustomInputLabel>건</CustomInputLabel>
             </Grid>
-            
 
             <Grid
               item
@@ -715,10 +824,7 @@ class CoMgmtComponent extends Component {
               ))}
             </Grid>
 
-            <Grid
-              container
-              sx={{ width: "100%" }}
-            >
+            <Grid container sx={{ width: "100%" }}>
               <Button
                 variant="extended"
                 onClick={this.addCardButton}
@@ -735,7 +841,7 @@ class CoMgmtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon sx={{ mb: 0.2, fontSize: 'medium', color: "blue" }} />
+                <AddIcon sx={{ mb: 0.2, fontSize: "medium", color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -749,7 +855,7 @@ class CoMgmtComponent extends Component {
                 </CustomInputLabel>
               </Grid>
             </Grid>
-            <Grid container sx={{ mt: '-4px', border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA" }}>
               <Grid
                 item
                 xs={2}
@@ -777,11 +883,13 @@ class CoMgmtComponent extends Component {
                 }}
               >
                 <CustomWideTextField
+                  disabled={!this.state.isCoCdEditable}
                   sx={{ backgroundColor: "#FFEAEA" }}
                   name="coCd"
-                  onChange={this.handleCompany}
+                  onChange={this.handleCdChange}
+                  // onChange={this.handleCompany}
+                  onBlur={this.handleBlur}
                   value={coCd || ""}
-                  InputProps={{ readOnly: true }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -938,7 +1046,14 @@ class CoMgmtComponent extends Component {
                   name="coNb"
                   onChange={this.handleCompany}
                   value={coNb || ""}
-                ></CustomWideTextField>
+                  InputProps={{
+                    inputComponent: InputMask,
+                    inputProps: {
+                      mask: "999-99-99999",
+                      maskChar: "0"
+                    }
+                  }}>
+                </CustomWideTextField>
               </Grid>
               <Grid
                 item
@@ -1061,60 +1176,6 @@ class CoMgmtComponent extends Component {
               </Grid>
             </Grid>
           </Grid>
-          <CustomShortDialog
-            open={open}
-            PaperProps={{ sx: { width: 500, height: 600 } }}
-          >
-            <CustomDialogTitle sx={{ fontWeight: "bold" }}>
-              회계기수 등록
-              <IconButton
-                size="small"
-                sx={{ ml: 36 }}
-                onClick={() => this.setState({ open: false })}
-              >
-                <CustomCloseIcon />
-              </IconButton>
-            </CustomDialogTitle>
-            <CustomDialogContent>
-              <Grid container direction="column" alignItems="flex-end">
-                <Button sx={{ mt: 1, mb: 1, mr: 2 }} variant="outlined">
-                  삭제
-                </Button>
-              </Grid>
-
-              <Grid style={{ height: 350, width: "100%" }}>
-                <CustomShortDataGridContainer container>
-                  <DataGrid
-                    sx={{ borderTop: "2px solid #000" }}
-                    rows={data.rows}
-                    columns={data.columns}
-                    showColumnVerticalBorder={true}
-                    showCellVerticalBorder={true} // 각 셀마다 영역주기
-                    processRowUpdate={this.processRowUpdate} //-> 이거 해봐야함
-                    onRowClick={this.handleClickRow}
-                    hideFooter
-                  />
-                </CustomShortDataGridContainer>
-              </Grid>
-            </CustomDialogContent>
-            <CustomDialogActions>
-              <CustomButtonGridContainer container justifyContent="flex-end">
-                <CustomConfirmButton
-                  variant="outlined"
-                  onClick={() => this.insertDate(selectedRow)}
-                >
-                  확인
-                </CustomConfirmButton>
-
-                <Button
-                  variant="outlined"
-                  onClick={() => this.setState({ open: false })}
-                >
-                  취소
-                </Button>
-              </CustomButtonGridContainer>
-            </CustomDialogActions>
-          </CustomShortDialog>
         </Grid>
 
         <AddressComponent setCoZipAddr={this.setCoZipAddr} ref={this.addrRef} />
@@ -1122,13 +1183,20 @@ class CoMgmtComponent extends Component {
           handleSetCodialTextField={this.handleSetCodialTextField}
           ref={this.coDialogRef}
         />
+        <GisuDialogComponent
+          ref={this.gisuRef}
+          coCd={this.state.coCd}
+          setGisuInfo={this.setGisuInfo}
+        />
       </>
     );
   }
 }
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
-  userInfo: state.user || {} //  userInfo 정보 매핑해주기..
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
 
-export default connect(mapStateToProps, null, null, { forwardRef: true })(CoMgmtComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  CoMgmtComponent
+);

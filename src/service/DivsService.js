@@ -47,6 +47,7 @@ class DivsService {
                 },
                 withCredentials: true,
                 params: {
+                    coCd:data.coCd,
                     divCd:data.divCd
                 }
             }
@@ -71,6 +72,7 @@ class DivsService {
         return axios
             .post(ACCTMGMT_API_BASE_URL + "/ozt/idiv", {
                 coCd: data.coCd,
+                divCd: data.divCd,
                 divNm: data.divNm,
                 ceoNm: data.ceoNm,
                 jongmok: data.jongmok,
