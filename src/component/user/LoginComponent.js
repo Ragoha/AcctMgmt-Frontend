@@ -82,11 +82,11 @@ class LoginComponent extends Component {
             console.log('로그인 : Config Data: ', response.data);
             // 받아온 데이터를 가공하여 userData 객체에 설정
             this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
+            window.location.href = "/acctmgmt/bgt";
           })
           .catch((error) => {
             console.error(error);
           });
-        window.location.href = "/acctmgmt/bgt";
       })
       .catch((error) => {
         alert("아이디 또는 비밀번호가 다릅니다.", error);

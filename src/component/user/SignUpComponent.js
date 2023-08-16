@@ -106,7 +106,7 @@ class SignUpComponent extends Component {
       empTel: phone,
       empName: name,
       empOd: position,
-      empAuth: "ROLL_USER",
+      empAuth: "ROLE_USER",
     };
 
     // 폼 필드의 값이 비어있는지 확인
