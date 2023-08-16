@@ -9,6 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import InputMask from "react-input-mask";
 
 import InputAdornment from '@mui/material/InputAdornment';
 import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
@@ -52,7 +53,8 @@ class DivMgmtComponent extends Component {
       coNmList: [],
       divNmList: [],
       CodialTextField: '',
-      isChanged: false
+      isChanged: false,
+      isDivCdEditable: false
     }
   }
 
@@ -101,7 +103,8 @@ class DivMgmtComponent extends Component {
           toNb: toNb,
           divZip: divZip,
           divAddr: divAddr,
-          divAddr1: divAddr1
+          divAddr1: divAddr1,
+          DivdialTextField: ''
         })
         CompanyService.getCompany({
           accessToken: this.props.accessToken,
@@ -189,6 +192,28 @@ class DivMgmtComponent extends Component {
     // console.log(this.state);
   }
 
+  handleCdChange = (e) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, ''); ///[^0-9]*$/ 둘 다 되는건가?
+    this.setState({
+      // isChanged: true,
+      [e.target.name]: numericValue
+    });
+  };
+
+  handleBlur = (e) => {
+    const { divCd } = this.state;
+    const newDivCd = parseInt(e.target.value)
+    const { divCdList } = this.state;
+
+    divCdList.includes(newDivCd) ?
+      this.setState({
+        divCd: ''
+      }) : (this.setState({
+        divCd: divCd
+      }))
+
+  }
+
   addCardButton = () => {
     console.log(this.state.cardCount);
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
@@ -227,7 +252,8 @@ class DivMgmtComponent extends Component {
             toNb: '',
             divZip: '',
             divAddr: '',
-            divAddr1: ''
+            divAddr1: '',
+            isDivCdEditable: true
           })
         }).catch((error) => {
           // 오류 발생 시의 처리
@@ -310,10 +336,11 @@ class DivMgmtComponent extends Component {
           coCd: coCd
         })
 
-        const { divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, insertId } = this.state;
+        const { divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, insertId } = this.state;
         return DivsService.insertDivs({
           accessToken: this.props.accessToken,
           coCd: coCd,
+          divCd: divCd,
           divNm: divNm,
           ceoNm: ceoNm,
           jongmok: jongmok,
@@ -373,7 +400,8 @@ class DivMgmtComponent extends Component {
                   divZip: divZip,
                   divAddr: divAddr,
                   divAddr1: divAddr1,
-                  insertId: insertId
+                  insertId: insertId,
+                  isDivCdEditable: false
                 })
                 CompanyService.getCompany({
                   accessToken: this.props.accessToken,
@@ -464,7 +492,9 @@ class DivMgmtComponent extends Component {
           toNb: '',
           divZip: '',
           divAddr: '',
-          divAddr1: ''
+          divAddr1: '',
+          insertDt: '',
+          isDivCdEditable: true
         }) :
         
         DivsService.getDiv({
@@ -485,6 +515,7 @@ class DivMgmtComponent extends Component {
             const divZip = response.data[0].divZip;
             const divAddr = response.data[0].divAddr;
             const divAddr1 = response.data[0].divAddr1;
+            const insertDt = response.data[0].insertDt;
 
             this.setState({
               coCd: coCd,
@@ -497,7 +528,9 @@ class DivMgmtComponent extends Component {
               toNb: toNb,
               divZip: divZip,
               divAddr: divAddr,
-              divAddr1: divAddr1
+              divAddr1: divAddr1,
+              insertDt:  insertDt,
+              isDivCdEditable: false
             })
             CompanyService.getCompany({
               accessToken: this.props.accessToken,
@@ -693,7 +726,10 @@ class DivMgmtComponent extends Component {
 
   deleteDivs = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { divCd } = this.state;
-
+    if(divCd === ''){
+      window.confirm("사업장삭제 완료!");
+      this.componentDidMount();
+    }else{
     DivsService.deleteDivs({
       accessToken: this.props.accessToken,
       divCd: divCd
@@ -745,7 +781,8 @@ class DivMgmtComponent extends Component {
               toNb: toNb,
               divZip: divZip,
               divAddr: divAddr,
-              divAddr1: divAddr1
+              divAddr1: divAddr1,
+              DivdialTextField:''
             })
             CompanyService.getCompany({
               accessToken: this.props.accessToken,
@@ -764,6 +801,7 @@ class DivMgmtComponent extends Component {
         console.error(error);
         alert("업데이트 실패..");
       });
+    }
   }
 
   handleChange = (e) => {
@@ -772,8 +810,12 @@ class DivMgmtComponent extends Component {
     })
   }
 
+  reClick = () => {
+    this.componentDidMount();
+  }
+
   render() {
-    const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1, modifyId } = this.state;
+    const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1, modifyId, insertDt } = this.state;
     const { coNm } = this.state;
     const { cardCount, divCdList, divNmList, coCdList, coNmList } = this.state;
 
@@ -788,16 +830,16 @@ class DivMgmtComponent extends Component {
       <Card key={divCd} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === divCd ? '#E5FFFF' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(divCd)}>
           <CardContent sx={{ height: 90 }}>
-            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: 'relative', top: '-10px', left: "-10px" }}>
+            <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: "absolute", top: "3px", left: "5px" }}>
               {divCdList[index]}
             </Typography>
-            <Typography sx={{ fontSize: 10 }} style={{ position: 'relative', left: "180px", bottom: '33px' }} >
+            <Typography sx={{ fontSize: 10 }} style={{ position: "absolute", left: "200px", bottom: "68px" }} >
               {formattedDate}
             </Typography>
             {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
               {index + 1}
             </Typography> */}
-            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: 'relative', bottom: "15px", left: "-9px" }}>
+            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: "absolute", bottom: "30px", left: "5px" }}>
               {divNmList[index]}
             </Typography>
           </CardContent>
@@ -825,7 +867,7 @@ class DivMgmtComponent extends Component {
               회사정보불러오기
             </Button>
 
-            {coCd && divCd ? (
+            {insertDt ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateDivs}>
                 수 정
               </Button>
@@ -864,9 +906,9 @@ class DivMgmtComponent extends Component {
               ></CustomTextField>
             </Grid>
           </Grid>
-          {/* <Button
+          <Button
             variant="outlined"
-            onClick={() => this.searchClick(divCd)}
+            onClick={this.reClick}
             style={{
               padding: "0px",
               minWidth: "5px",
@@ -876,7 +918,7 @@ class DivMgmtComponent extends Component {
             }}
           >
             <SearchIcon fontSize="medium" />
-          </Button> */}
+          </Button>
         </CustomGridContainer>
 
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -1049,11 +1091,13 @@ class DivMgmtComponent extends Component {
                 }}
               >
                 <CustomWideTextField
+                  disabled={!this.state.isDivCdEditable}
                   sx={{ ml: 2, backgroundColor: "#FFEAEA" }}
                   name="divCd"
-                  onChange={this.handleCompany}
+                  onChange={this.handleCdChange}
+                  // onChange={this.handleCompany}
+                  onBlur={this.handleBlur}
                   value={divCd || ""}
-                  InputProps={{ readOnly: true }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1224,6 +1268,13 @@ class DivMgmtComponent extends Component {
                   sx={{ ml: 2 }}
                   onChange={this.handleCompany}
                   value={divNb || ""}
+                  InputProps={{
+                    inputComponent: InputMask,
+                    inputProps: {
+                      mask: "999-99-99999",
+                      maskChar: "0"
+                    }
+                  }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1240,7 +1291,7 @@ class DivMgmtComponent extends Component {
                 }}
               >
                 <CustomInputLabel sx={{ color: "black" }}>
-                  세무서번호
+                  법인번호
                 </CustomInputLabel>
               </Grid>
               <Grid
@@ -1257,6 +1308,13 @@ class DivMgmtComponent extends Component {
                   sx={{ ml: 2 }}
                   onChange={this.handleCompany}
                   value={toNb || ""}
+                  InputProps={{
+                    inputComponent: InputMask,
+                    inputProps: {
+                      mask: "999999-9999999",
+                      maskChar: "0"
+                    }
+                  }}
                 ></CustomWideTextField>
               </Grid>
 
