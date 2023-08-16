@@ -440,6 +440,12 @@ class DivMgmtComponent extends Component {
   }
 
   cardClick = (divCd) => {
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd })
+
     console.log(divCd);
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
@@ -460,8 +466,10 @@ class DivMgmtComponent extends Component {
           divAddr: '',
           divAddr1: ''
         }) :
+        
         DivsService.getDiv({
           accessToken: this.props.accessToken,
+          coCd: coCd,
           divCd: divCd
         })
 
@@ -525,13 +533,20 @@ class DivMgmtComponent extends Component {
       DivdialTextField: data.divCd + ". " + data.divNm,
       divCd: data.divCd  //밑에 coCd 넘겨주기
     });
-    this.searchClick(data.divCd);
-  };
+    this.searchClick(data.divCd);    //여기에서 coCd같이 보내야함...
+  }; 
 
 
   searchClick = (divCd) => {
-    DivsService.getDiv({
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd })
+
+    DivsService.getDiv({       
       accessToken: this.props.accessToken,
+      coCd: coCd,
       divCd: divCd
     })
       .then((response) => {

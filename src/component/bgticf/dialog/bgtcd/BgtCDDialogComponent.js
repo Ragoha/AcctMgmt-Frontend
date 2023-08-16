@@ -338,7 +338,7 @@ class BgtCDDialogComponent extends Component {
             </CustomLargeFormGridContainer>
             <CustomLargeDataGridContainer container>
               <CustomDataGrid
-                checkboxSelection
+                // checkboxSelection
                 columns={columns}
                 rows={this.state.bgtCDRows}
                 showColumnVerticalBorder={true}

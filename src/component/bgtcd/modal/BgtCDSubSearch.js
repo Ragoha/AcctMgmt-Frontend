@@ -25,16 +25,25 @@ class BgtCDSubSearch extends Component {
       ]
     };
   }
-  initBgtCDDialog=()=>{
+  initBgtCDDialog=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
     BgtCDService.getBgtCDdialog(coCd,accessToken).then(
         (response)=>{
             this.setState({rows:response},()=>console.log(response))
-        }
-    )
+        })
     this.handleUp();
   }
+  getBgtCdLikeSearchDataToRows=(data)=>{ //다이얼로그를 조건으로 검색하고 enter로 열었을때 초기 세팅 
+    const{accessToken} = this.props;
+    BgtCDService.getBgtCdLikeSearch(data,accessToken).then((response)=>{
+      this.setState({rows:response},()=>console.log(response));
+    })
+    this.setState({keyword:data.keyword})
+    this.handleUp();
+  }
+
+
   handleClickRow=(params)=>{
     const text = (params.row.bgtCd+"."+params.row.bgtNm)
     this.setState({keyword:text},()=>console.log(this.state.keyword))
@@ -43,7 +52,7 @@ class BgtCDSubSearch extends Component {
     this.props.setText(this.state.keyword);
     this.handleDown();
   }
-
+  
   /*default*/
   handleUp = () => {
     this.setState({ open: true });

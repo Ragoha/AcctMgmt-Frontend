@@ -145,6 +145,20 @@ class BgtCDService {
       console.log('222겟비지티시디다이알로그 서비스')
       return returnData;
     }
+    getBgtCdLikeSearch(data, accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getBgtCdLikeSearch",{
+        params:{
+          coCd : data.coCd,
+          keyword : data.keyword
+        }
+      },{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      }).then((response)=>response.data)
+      return returnData;
+    }
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData
