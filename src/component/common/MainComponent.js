@@ -19,8 +19,10 @@ import { Outlet } from "react-router-dom";
 import Cookie from '../../storage/Cookie';
 import { DELETE_TOKEN } from "../../store/Auth";
 import { DEL_USER } from '../../store/User';
-import {DEL_CONFIG} from "../../store/Config";
+import { DEL_CONFIG } from "../../store/Config";
 import MainListItems from "./MainListItems";
+import UserInfo from './UserInfo';
+
 
 const drawerWidth = 240;
 
@@ -35,7 +37,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth-1}px)`,
+    width: `calc(100% - ${drawerWidth - 1}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       // duration: theme.transitions.duration.enteringScreen,
@@ -81,6 +83,7 @@ class MainComponent extends Component {
     this.state = {
       open: true,
       drawerOpen: true,
+      isHovered: false,
     };
   }
 
@@ -110,9 +113,23 @@ class MainComponent extends Component {
       drawerOpen: !prevState.drawerOpen,
     }));
   };
+  handleMouseEnter = () => {
+    this.setState({
+      isHovered: true,
+    });
+  };
 
+  handleMouseLeave = () => {
+    // 1초 후에 호버효과가 사라지도록 설정
+    setTimeout(() => {
+      this.setState({
+        isHovered: false,
+      });
+    }, 10);
+  };
   render() {
     const { open } = this.state;
+    const isHovered = this.state.isHovered; // 이 부분 추가
 
     return (
       <ThemeProvider theme={defaultTheme}>
@@ -156,14 +173,28 @@ class MainComponent extends Component {
                 DOUZONE
                 {/* <img src="/img/logo.png"></img> */}
               </Typography>
-              <IconButton color="inherit">
+              <IconButton
+                color="inherit"
+                onMouseEnter={this.handleMouseEnter}
+                sx={{
+                  position: "relative", // IconButton에 위치 설정 추가
+                }}
+              >
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
-                <div style={{ marginLeft: "15px" }}>
-                  <a onClick={this.logout}>LogOut</a>
-                </div>
+                {isHovered && (
+                  <div style={{ mt: "10px" }}
+                  onMouseLeave={this.handleMouseLeave}
+                  >
+                    <UserInfo/>
+                    
+                  </div>
+                )}
               </IconButton>
+              <div style={{ marginLeft: "15px" }}>
+                <a onClick={this.logout} style={{ cursor: 'pointer' }}>LogOut</a>
+              </div>
             </Toolbar>
           </AppBar>
 
