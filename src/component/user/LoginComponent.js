@@ -1,31 +1,32 @@
-import React, { Component } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import axios from "axios";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
+import Cookie from '../../storage/Cookie';
+import { SET_TOKEN } from '../../store/Auth';
+import { SET_CONFIG } from '../../store/Config';
+import { SET_USER } from '../../store/User';
 import ForgotPasswordDialog from '../dialog/ForgotPasswordDialog';
 import SignUpDialog from '../dialog/SignUpDialog';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import { CSSTransition } from 'react-transition-group';
 import Image4 from './back4.jpg';
-import { connect } from 'react-redux';
-import { SET_TOKEN } from '../../store/Auth';
-import { SET_USER } from '../../store/User';
-import { SET_CONFIG } from '../../store/Config';
-import Typography from '@mui/material/Typography';
-import Cookie from '../../storage/Cookie';
-import axios from "axios";
 
 class LoginComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: '',
-      password: '',
+      id: "",
+      password: "",
       isIconOpen: false,
       showForm: false,
     };
@@ -56,13 +57,14 @@ class LoginComponent extends Component {
     const loginData = { empId: id, empPw: password };
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
-    axios.post(ACCTMGMT_API_BASE_URL + '/login', loginData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    axios
+      .post(ACCTMGMT_API_BASE_URL + "/login", loginData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
-        alert("로그인 성공", response);
+        console.log(response);
         const jwtToken = response.data.refreshToken;
         Cookie.setRefreshToken(jwtToken);
 
@@ -77,17 +79,18 @@ class LoginComponent extends Component {
         console.log(accToken);
         console.log("가자 : " + acwte);
         console.log("리덕스에 있는 유저 정보 : " + USER);
-        axios.get(ACCTMGMT_API_BASE_URL + '/api/configdate/' + response.data.coCd)
+        axios
+          .get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + response.data.coCd)
           .then((response) => {
-            console.log('로그인 : Config Data: ', response.data);
+            console.log("로그인 : Config Data: ", response.data);
             // 받아온 데이터를 가공하여 userData 객체에 설정
             this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
-            window.location.href = "/acctmgmt/bgt";
+            // this.props.history.push("/acctmgmt/bgt");
+            this.props.navigate("/acctmgmt/bgt");
           })
           .catch((error) => {
             console.error(error);
           });
-        
       })
       .catch((error) => {
         alert("아이디 또는 비밀번호가 다릅니다.", error);
@@ -98,45 +101,45 @@ class LoginComponent extends Component {
     const { showForm, id, password, isIconOpen } = this.state;
 
     return (
-      <Box component="div" sx={{ display: 'flex', height: '100vh' }}>
+      <Box component="div" sx={{ display: "flex", height: "100vh" }}>
         <Box
           sx={{
-            width: '90%',
+            width: "90%",
             backgroundImage: `url(${Image4})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
           }}
         />
         <Box
           sx={{
-            width: '40%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            '@media (max-width: 768px)': {
-              width: '100%',
+            width: "40%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            "@media (max-width: 768px)": {
+              width: "100%",
             },
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#7895CB' }}>
+          <Avatar sx={{ m: 1, bgcolor: "#7895CB" }}>
             {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
           </Avatar>
           <Box
             sx={{
-              mb: '40px',
-              bgcolor: '#4A55A2',
-              width: '70%',
-              height: '10vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              borderRadius: '25px',
-              '@media (max-width: 768px)': {
-                width: '90%',
+              mb: "40px",
+              bgcolor: "#4A55A2",
+              width: "70%",
+              height: "10vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "white",
+              borderRadius: "25px",
+              "@media (max-width: 768px)": {
+                width: "90%",
               },
             }}
           >
@@ -151,7 +154,7 @@ class LoginComponent extends Component {
                 variant="h5"
                 style={{
                   fontFamily: '"Montserrat", sans-serif',
-                  fontSize: '4vh',
+                  fontSize: "4vh",
                 }}
               >
                 DOUZONE
@@ -167,19 +170,19 @@ class LoginComponent extends Component {
             <form onSubmit={this.handleFormSubmit}>
               <Box
                 sx={{
-                  mt: '4vh',
-                  width: '30vh',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  '@media (max-width: 768px)': {
-                    width: '100%',
+                  mt: "4vh",
+                  width: "30vh",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  "@media (max-width: 768px)": {
+                    width: "100%",
                   },
                 }}
               >
                 <TextField
-                  InputProps={{ style: { borderRadius: '8px', color: 'blue' } }}
+                  InputProps={{ style: { borderRadius: "8px", color: "blue" } }}
                   margin="normal"
                   label="ID"
                   required
@@ -190,11 +193,11 @@ class LoginComponent extends Component {
                   value={id}
                   onChange={this.handleInputChange}
                   sx={{
-                    mb: '2vh',
+                    mb: "2vh",
                   }}
                 />
                 <TextField
-                  InputProps={{ style: { borderRadius: '8px' } }}
+                  InputProps={{ style: { borderRadius: "8px" } }}
                   label="Password"
                   type="password"
                   required
@@ -204,14 +207,14 @@ class LoginComponent extends Component {
                   value={password}
                   onChange={this.handleInputChange}
                   sx={{
-                    mb: '2vh',
+                    mb: "2vh",
                   }}
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" />}
                   label="아이디 저장"
                   sx={{
-                    mb: '2vh',
+                    mb: "2vh",
                   }}
                 />
                 <Button
@@ -221,11 +224,11 @@ class LoginComponent extends Component {
                   onMouseEnter={this.handleMouseEnter}
                   onMouseLeave={this.handleMouseLeave}
                   sx={{
-                    mt: '5vh',
-                    mb: '3vh',
-                    bgcolor: '#7895CB',
-                    color: '#FFFFFF',
-                    '&:hover': { bgcolor: '#4A55A2', cursor: 'pointer' },
+                    mt: "5vh",
+                    mb: "3vh",
+                    bgcolor: "#7895CB",
+                    color: "#FFFFFF",
+                    "&:hover": { bgcolor: "#4A55A2", cursor: "pointer" },
                     fontFamily: '"Lilita One", cursive',
                   }}
                 >
@@ -233,10 +236,10 @@ class LoginComponent extends Component {
                   Sign in
                 </Button>
                 <Grid container>
-                  <Grid item xs sx={{ '&:hover': { cursor: 'pointer' } }}>
+                  <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
                     <ForgotPasswordDialog />
                   </Grid>
-                  <Grid item sx={{ '&:hover': { cursor: 'pointer' } }}>
+                  <Grid item sx={{ "&:hover": { cursor: "pointer" } }}>
                     <SignUpDialog />
                   </Grid>
                 </Grid>
@@ -249,6 +252,10 @@ class LoginComponent extends Component {
   }
 }
 
+function withNavigation(Component) {
+  return (props) => <Component {...props} navigate={useNavigate()} />;
+}
+
 // 리덕스 액션 매핑
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -259,4 +266,5 @@ const mapDispatchToProps = (dispatch) => {
 
 };
 
-export default connect(null, mapDispatchToProps)(LoginComponent);
+
+export default connect(null, mapDispatchToProps)(withNavigation(LoginComponent));

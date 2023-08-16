@@ -587,6 +587,19 @@ class CoMgmtComponent extends Component {
       });
   };
 
+  setGisuInfo = async (data) => {
+    await this.setState({
+      selectedRow: {
+        gisu: data.gisu,
+        frDt: data.frDt,
+        toDt: data.toDt,
+      }
+    })
+
+    this.insertDate(this.state.selectedRow);
+    
+  }
+
   insertDate = (selectedRow) => {
     this.setState({
       dateRange:
@@ -1162,7 +1175,11 @@ class CoMgmtComponent extends Component {
           handleSetCodialTextField={this.handleSetCodialTextField}
           ref={this.coDialogRef}
         />
-        <GisuDialogComponent ref={this.gisuRef} />
+        <GisuDialogComponent
+          ref={this.gisuRef}
+          coCd={this.state.coCd}
+          setGisuInfo={this.setGisuInfo}
+        />
       </>
     );
   }

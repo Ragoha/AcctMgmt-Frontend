@@ -78,7 +78,7 @@ class BgtICFComponent extends Component {
       bgtCDRows: [],
       divCd: 0,
       divNm: "",
-      divTextField: "",
+      divTextField: this.props.user.divCd+". "+this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
       bgtGrTextField: "",
