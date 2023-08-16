@@ -28,7 +28,8 @@ class BgtCD extends Component {
       open: false,
       rows: [],
       bgtGrList: [],
-      defaultValue :'',
+      gisuList: [],
+      defaultValue: '',
 
     }
   }
@@ -37,7 +38,7 @@ class BgtCD extends Component {
     this.getDataGridRows();
   }
   /*상단 조건 검색바 start*/
- 
+
   /*상단 조건 검색바 end  */
   setDetailInfo = (target) => {
     console.log(target)
@@ -46,14 +47,14 @@ class BgtCD extends Component {
 
   /*데이터그리드 부분 start*/
   getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-    this.setState({rows:""})
+    this.setState({ rows: "" })
     // if(groupcd===undefined){
     //   groupcd="전체"
     // }
     console.log('데이터체크')
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
-    BgtCDService.getGridData(coCd,groupcd, accessToken)
+    BgtCDService.getGridData(coCd, groupcd, accessToken)
       .then(rows => {
         // console.log('통신성공')
         // console.dir(rows) //데이터 받았음 .
@@ -121,29 +122,43 @@ class BgtCD extends Component {
     const { accessToken } = this.props;
     BgtCDService.getBgtGrData(coCd, accessToken)
       .then((response) => {
-        const bgtGrList =  [...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)]; 
+        const bgtGrList = [...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)];
         this.setState({ bgtGrList });
-        this.setState({defaultValue:bgtGrList[0] })
+        this.setState({ defaultValue: bgtGrList[0] })
       })
       .catch(error => {
         console.error("Error fetching data:", error);
       });
   }
-  changeValue = (event , child) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
+  changeValue = (event, child) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
     const index = child.props['dataindex'];
     this.setState({ defaultValue: event.target.value, dataindex: index } //,()=>{this.props.onChange(event.target.value , this.props.id)} [230720]=> 있었는데 왜 있었는지 모르겠음 걍 지움 다른 코드랑 꼬이면 다시 생각해보자..
     );
     this.getDataGridRows(event.target.value);
   }
   /*---로우 추가 관련된 메서드 end---*/
+  /*--기수 start --*/
+  initGisuList = () => {
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    BgtCDService.getinitGisuList(coCd, accessToken).then((response) => {
+      this.setState({ gisuList: response })
+    });
+  }
+  changeGisuValue = (event, child) => {
+    const index = child.props['dataindex'];
+    this.setState({ gisuDefaultValue: event.target.value, dataindex: index }
+    );
+  }
+  /*--기수 end --*/
 
 
   /*  데이터 그리드 부분 end */
   /* DetailInfo부분 */
 
   /* 모달창  */
-  setText=(data)=>{
-    this.setState({bgtCdSearchText:data})
+  setText = (data) => {
+    this.setState({ bgtCdSearchText: data })
 
   }
   /*BgtCDDevFgCustomOpen*/
@@ -160,7 +175,7 @@ class BgtCD extends Component {
     console.log('오픈왓 :' + openWhat) //BgtCDDevFgCustomOpen
     this[openWhat]();
   }
-  handleClickBgtCdSerachIcon=()=>{
+  handleClickBgtCdSerachIcon = () => {
     this.BgtCDSubSearch.current.initBgtCDDialog();
   }
 
@@ -168,32 +183,31 @@ class BgtCD extends Component {
   handleClickSubCodeSearchIcon = () => {
     this.BgtCDAddSubDialog.current.handleUp();
   };
-  
+
   handleInputChange = async (event) => {
     console.log('handleInputChange')
     const { name, value } = event.target;
-    await this.setState({ [name]: value },()=>console.log('검색키워드 : ' + this.state.bgtCdSearchText));
+    await this.setState({ [name]: value }, () => console.log('검색키워드 : ' + this.state.bgtCdSearchText));
   };
-  handleKeyDown=(params)=>{
+  handleKeyDown = (params) => {
     console.log('handleKeyDown에서...')
     console.log(params)
     const { coCd } = this.props.userInfo;
     const keyword = this.state.bgtCdSearchText;
     console.log('keyword? : ' + keyword)
-    const data ={
-      coCd:coCd,
-      keyword:keyword,
+    const data = {
+      coCd: coCd,
+      keyword: keyword,
     }
-    if(params.code==="Enter"){
+    if (params.code === "Enter") {
 
-          this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
-      
+      this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
     }
   }
 
 
   render() {
-    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, bgtGrList,defaultValue } = this.state;
+    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, bgtGrList, gisuList, gisuDefaultValue, defaultValue } = this.state;
     return (
       <>
         <CustomHeaderGridContainer
@@ -235,13 +249,28 @@ class BgtCD extends Component {
           alignItems="center"
           spacing={2}
         >
-          <Grid item xs={4}>
+          <Grid item xs={3}>
+          <Grid container direction="row" alignItems="center">
+            <CustomInputLabel>기수</CustomInputLabel>
+            <Select
+              sx={{width:"80px"}}
+              value={gisuDefaultValue}
+              onChange={this.changeGisuValue}
+            >
+              {gisuList.map((item, index) => (
+                <MenuItem key={index} value={item} dataindex={index}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+            </Grid>
+          </Grid>
+          <Grid item xs={3}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
               <CustomSelect
                 value={defaultValue}
-                onChange={this.changeValue} 
-                
+                onChange={this.changeValue}
               >
                 {bgtGrList.map((item, index) => (
                   <MenuItem key={index} value={item} dataindex={index}>
@@ -251,7 +280,7 @@ class BgtCD extends Component {
               </CustomSelect>
             </Grid>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목검색</CustomInputLabel>
 
@@ -265,14 +294,14 @@ class BgtCD extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                     <SearchIcon  onClick={this.handleClickBgtCdSerachIcon} /> 
+                      <SearchIcon onClick={this.handleClickBgtCdSerachIcon} />
                     </InputAdornment>
                   ),
                 }}
               />
             </Grid>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Grid
               container
               direction="row"
@@ -319,7 +348,7 @@ class BgtCD extends Component {
         {/*예산그룹등록 */}
         <BgtCDGroupReg ref={this.BgtCDGroupReg} />
         {/*그룹레벨설정 */}
-        <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch}/>
+        <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch} />
       </>
     );
 

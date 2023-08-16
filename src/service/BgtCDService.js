@@ -159,6 +159,15 @@ class BgtCDService {
       }).then((response)=>response.data)
       return returnData;
     }
+    getinitGisuList(coCd,accessToken){
+      const returnData = axios.get(ACCTMGMT_API_BASE_URL+"/getinitGisuList",coCd,{
+        headers: {
+          "access-token": accessToken,
+        },
+        withCredentials: true,
+      }).then((response)=>response.data)
+      return returnData;
+    }
     /*---select  end  ---*/
     /*---update  start---*/
     updateDetailInfo(updateData,accessToken) { //json 형태의 key value 값    //updateData
