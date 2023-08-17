@@ -1,17 +1,25 @@
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  Grid,
-  IconButton
-} from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
 import {
-  CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton,
-  CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer
+  CustomButtonGridContainer,
+  CustomCloseIcon,
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomShortDataGridContainer,
+  CustomShortDialog,
+  CustomShortFormGridContainer,
 } from "../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField, } from "../../common/style/CommonStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../common/style/CommonStyle";
 
 const columns = [
   {
@@ -72,9 +80,28 @@ class BgtGrDialogComponent extends Component {
     }
   };
 
-  initBgtGrDialog = () => {
+  setBgtGrDialog = (keyword) => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+      keyword: keyword,
+    })
+      .then(async (response) => {
+        const bgtGrRows = response.map((row) => ({
+          id: row.bgtGrCd,
+          bgtGrCd: row.bgtGrCd,
+          bgtGrNm: row.bgtGrNm,
+        }));
 
-    this.setState({ keyword: "", bgtGrRows :[]});
+        this.setState({ bgtGrRows: bgtGrRows, keyword: keyword });
+      })
+      .then(() => {
+        this.handleUp();
+      });
+  };
+
+  initBgtGrDialog = () => {
+    this.setState({ keyword: "", bgtGrRows: [] });
 
     BgtICFService.findBgtGrByCoCdAndKeyword({
       coCd: this.props.user.coCd,
@@ -114,7 +141,7 @@ class BgtGrDialogComponent extends Component {
   };
 
   render() {
-    const { open, columns} = this.state;
+    const { open, columns } = this.state;
 
     return (
       <CustomShortDialog open={open}>
@@ -161,6 +188,7 @@ class BgtGrDialogComponent extends Component {
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
+              checkboxSelection
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
@@ -187,4 +215,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (BgtGrDialogComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  BgtGrDialogComponent
+);
