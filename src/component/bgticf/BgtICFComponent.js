@@ -434,7 +434,7 @@ class BgtICFComponent extends Component {
               <CustomInputLabel>예산과목</CustomInputLabel>
               <CustomTextField
                 name="bgtCd"
-                value={bgtCDTextField}
+                value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
                 InputProps={{
                   endAdornment: (
@@ -476,9 +476,6 @@ class BgtICFComponent extends Component {
                   backgroundColor: "#EDF4FB !important",
                   fontWeight: "bold",
                 },
-                // "& .MuiDataGrid-row.Mui-selected:hover": {
-                //   background: "#FFD8D8",
-                // },
 
                 "& .style-divfg-1": { background: "#86E57F" },
                 "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {

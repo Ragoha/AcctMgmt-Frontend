@@ -83,7 +83,7 @@ class BgtCDDialogComponent extends Component {
     this.setState({ keyword: "", rangeState: true });
     this.handleClickSearchIcon();
     this.handleUp();
-  }
+  };
 
   handleUp = () => {
     this.setState({ open: true });
@@ -162,7 +162,7 @@ class BgtCDDialogComponent extends Component {
         bgtGrNm: row.bgtGrNm,
         bgtCd: row.bgtCd,
         bgtNm: row.bgtNm,
-        hBgtNm: row.dataPath
+        hBgtNm: row.dataPath,
       }));
       this.setState({ bgtCDRows: bgtCDRows });
 
@@ -183,14 +183,19 @@ class BgtCDDialogComponent extends Component {
     console.log(this.state);
   };
 
+  handleKeyDownBgtGrTextField = (e) => {
+    if (e.key == "Enter") {
+      this.childBgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtGrTextField: "", bgtGrCd: "" });
+    }
+  };
+
   render() {
-    const {
-      open,
-      columns,
-      rangeState,
-      bgtGrTextField,
-      rangeTextField,
-    } = this.state;
+    const { open, columns, rangeState, bgtGrTextField, rangeTextField } =
+      this.state;
 
     return (
       <>
@@ -239,8 +244,8 @@ class BgtCDDialogComponent extends Component {
                     name="bgtGrTextField"
                     value={bgtGrTextField}
                     onChange={this.handleInputChange}
+                    onKeyDown={this.handleKeyDownBgtGrTextField}
                     variant="outlined"
-                    onKeyDown={this.handlePressEnter}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -266,12 +271,8 @@ class BgtCDDialogComponent extends Component {
                     value={this.state.keyword}
                     onChange={this.handleInputChange}
                     variant="outlined"
-                    onKeyDown={this.handlePressEnter}
                   />
-                  <CustomSearchButton
-                    variant="outlined"
-                    sx={{ right: "-9px" }}
-                  >
+                  <CustomSearchButton variant="outlined" sx={{ right: "-9px" }}>
                     <SearchIcon onClick={this.handleClickSearchIcon} />
                   </CustomSearchButton>
                 </Grid>
