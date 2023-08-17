@@ -810,7 +810,7 @@ class CoMgmtComponent extends Component {
           <Grid item>
             {insertDt ? (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.updateCo}>
-                수 정
+                저 장
               </Button>
             ) : (
               <Button sx={{ mr: 1 }} variant="outlined" onClick={this.insertCo}>

@@ -89,7 +89,7 @@ class GisuDialogComponent extends Component {
   initGisu = () => {
     GisuService.findGisuByCoCd({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
     }).then((response) => {
       const gisuRows = response.map((row) => ({
         id: randomId(),
@@ -111,7 +111,7 @@ class GisuDialogComponent extends Component {
   insertGisu = (data) => {
     GisuService.insertGisu({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
       gisu: data
     }).then(() => {
       this.initGisu();
@@ -133,7 +133,7 @@ class GisuDialogComponent extends Component {
     console.log(this.state.selectedRow.gisu);
     GisuService.deleteGisu({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
       gisu: this.state.selectedRow.gisu,
     }).then(() => {
       this.initGisu();
