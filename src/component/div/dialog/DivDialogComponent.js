@@ -52,6 +52,12 @@ class DivDialogComponent extends Component {
     this.handleSearchDivDial();
   }
 
+  setDivKeyword = (data) => {
+    this.setState({ keyword: data }, () => {
+      this.handleSearchDivDial(); // 데이터를 설정한 후에 엔터 함수 실행  
+    })
+  }
+
   handleDown = () => {
     this.setState({ open: false });
   }
