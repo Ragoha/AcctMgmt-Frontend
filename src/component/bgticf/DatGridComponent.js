@@ -621,13 +621,13 @@ class CustomFooterStatusComponent extends Component {
       sumCarrAm3 += row.carrAm3 === "" ? 0 : Number(row.carrAm3);
     });
 
-    this.setState({sumCarrAm: sumCarrAm1+sumCarrAm2-sumCarrAm3, sumCarrAm1: sumCarrAm1, sumCarrAm2: sumCarrAm2, sumCarrAm3: sumCarrAm3});
+    this.setState({sumCarrAm: sumCarrAm1+sumCarrAm2+sumCarrAm3, sumCarrAm1: sumCarrAm1, sumCarrAm2: sumCarrAm2, sumCarrAm3: sumCarrAm3});
   };
 
   render() {
     const { rows } = this.props;
     return (
-      <Box container sx={{ mt: 2 }}>
+      <Box container sx={{ mt: 2, height: 120, border: "none" }}>
         <DataGrid
           showCellVerticalBorder
           hideFooter

@@ -150,6 +150,7 @@ class BgtGrDialogComponent extends Component {
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
+              checkboxSelection
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>

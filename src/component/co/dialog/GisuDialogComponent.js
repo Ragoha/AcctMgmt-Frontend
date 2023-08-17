@@ -89,7 +89,7 @@ class GisuDialogComponent extends Component {
   initGisu = () => {
     GisuService.findGisuByCoCd({
       accessToken: this.props.accessToken,
-      coCd: this.props.coCd,
+      coCd: this.props.user.coCd,
     }).then((response) => {
       const gisuRows = response.map((row) => ({
         id: randomId(),
@@ -111,7 +111,7 @@ class GisuDialogComponent extends Component {
   insertGisu = (data) => {
     GisuService.insertGisu({
       accessToken: this.props.accessToken,
-      coCd: this.props.coCd,
+      coCd: this.props.user.coCd,
       gisu: data
     }).then(() => {
       this.initGisu();
@@ -119,13 +119,14 @@ class GisuDialogComponent extends Component {
   }
 
   updateGisu = (data) => {
-    GisuService.updateGisu({
-      accessToken: this.props.accessToken,
-      coCd: this.props.coCd,
-      gisu: data
-    }).then(() => {
-      this.initGisu();
-    });
+    console.log(data);
+    // GisuService.updateGisu({
+    //   accessToken: this.props.accessToken,
+    //   coCd: this.props.user.coCd,
+    //   gisu: data,
+    // }).then(() => {
+    //   this.initGisu();
+    // });
   }
 
   handleClickDelete = () => {
@@ -238,14 +239,14 @@ class GisuDialogComponent extends Component {
             <CustomConfirmButton
               variant="outlined"
               onClick={this.handleDown}>
-              확인
+              확 인
             </CustomConfirmButton>
 
             <Button
               variant="outlined"
               onClick={() => this.setState({ open: false })}
             >
-              취소
+              취 소
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>

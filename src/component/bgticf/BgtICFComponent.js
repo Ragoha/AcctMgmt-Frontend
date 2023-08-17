@@ -5,7 +5,7 @@ import {
   Button,
   Grid,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -78,7 +78,7 @@ class BgtICFComponent extends Component {
       bgtCDRows: [],
       divCd: 0,
       divNm: "",
-      divTextField: this.props.user.divCd+". "+this.props.user.divNm,
+      divTextField: this.props.user.divCd + ". " + this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
       bgtGrTextField: "",
@@ -98,7 +98,7 @@ class BgtICFComponent extends Component {
       selectedRowId: "",
       selectedRowSq: "",
       isNew: false,
-      innerHeight: window.innerHeight
+      innerHeight: window.innerHeight,
     };
 
     this.bgtICFRef = createRef();
@@ -118,7 +118,7 @@ class BgtICFComponent extends Component {
   handleRowDelete = () => {
     this.bgtICFRef.current.handleDeleteClick({
       bgtCd: this.state.selectedRowId,
-      sq: this.state.selectedRowSq
+      sq: this.state.selectedRowSq,
     })();
   };
 
@@ -143,7 +143,7 @@ class BgtICFComponent extends Component {
   handleChangeGrFgText = (event, newValue) => {
     console.log(newValue);
     this.setState({ grFg: newValue.value, grFgText: newValue.label });
-  }
+  };
 
   handleAddRow = () => {
     const { bgtDTO } = this.state;
@@ -209,11 +209,14 @@ class BgtICFComponent extends Component {
   };
 
   handleSetBgtCDTextField = (data) => {
-    this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm, bgtCd: data.bgtCd, bgtNm: data.bgtNm });
+    this.setState({
+      bgtCDTextField: data.bgtCd + ". " + data.bgtNm,
+      bgtCd: data.bgtCd,
+      bgtNm: data.bgtNm,
+    });
   };
 
   handleClickSerachButton = () => {
-
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
@@ -227,7 +230,7 @@ class BgtICFComponent extends Component {
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
       bgtNm: this.state.bgtNm,
-      bgtText: this.state.bgtCDTextField
+      bgtText: this.state.bgtCDTextField,
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -271,14 +274,29 @@ class BgtICFComponent extends Component {
     console.log(e.row);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
-    
+
     this.bgtICFRef.current.getBgtICFList(e.row);
   };
 
-  test = () => {
-    alert("Asdf");
-    this.bgtICFRef.current.updateBgtICF();
-  }
+  handleKeyDownDivTextField = (e) => {
+    if (e.key == "Enter") {
+      this.divRef.current.setDivDialog(this.state.divTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ divTextField: "", divCd: "" });
+    }
+  };
+
+  handleKeyDownBgtGrTextField = (e) => {
+    if (e.key == "Enter") {
+      this.bgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtGrTextField: "", bgtGrCd: "" });
+    }
+  };
 
   render() {
     const { divTextField, bgtCDTextField } = this.state;
@@ -317,11 +335,7 @@ class BgtICFComponent extends Component {
                 name="divTextField"
                 value={divTextField}
                 onChange={this.handleInputChange}
-                onKeyDown={(e) => {
-                  if (e.key == "Enter") {
-                    alert("Asdf");
-                  }
-                }}
+                onKeyDown={this.handleKeyDownDivTextField}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -377,6 +391,7 @@ class BgtICFComponent extends Component {
                 name="bgtGrTextField"
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDownBgtGrTextField}
                 size="small"
                 InputProps={{
                   endAdornment: (
