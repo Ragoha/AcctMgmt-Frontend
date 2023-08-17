@@ -67,6 +67,10 @@ class PjtService {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", selData)
   }
+
+  duplication(coCd, Pjt) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/duplication/" + coCd, Pjt);
+  }
 }
 
 
