@@ -177,6 +177,7 @@ class DataGridComponent extends Component {
         });
 
         this.setState({ rows: rowsWithId });
+        this.footerRef.current.sumCarrAm(rowsWithId);
       });
     });
   };
@@ -306,8 +307,6 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = async (params) => {
-    console.log("row");
-    console.log(params.row);
 
     this.props.setSelectedRowId(params.row);
 
@@ -315,24 +314,11 @@ class DataGridComponent extends Component {
       selectedRowId: params.row.id,
       selectedRow: params.row,
     });
-    console.log(this.state.selectedRowId);
 
-    console.log(this.state.selectedRow);
   };
 
   render() {
     const { rows, selectedRowId } = this.state;
-
-    const currencyFormatter = new Intl.NumberFormat("ko-KR", {
-      /* style: "currency", currency: "KRW", */
-    });
-
-    const krAmount = {
-      type: "number",
-      width: 130,
-      valueFormatter: ({ value }) => currencyFormatter.format(value),
-      cellClassName: "font-tabular-nums",
-    };
 
     const columns = [
       {
@@ -625,13 +611,15 @@ class CustomFooterStatusComponent extends Component {
   };
 
   render() {
-
     return (
-      <Box container sx={{
-        mt: 2,
-        // height: 120,
-        border: "none"
-      }}>
+      <Box
+        container
+        sx={{
+          mt: 2,
+          // height: 120,
+          border: "none",
+        }}
+      >
         <DataGrid
           showCellVerticalBorder
           hideFooter
