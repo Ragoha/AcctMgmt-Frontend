@@ -14,6 +14,7 @@ class User {
         empAuth: "", //권한
         empCd: "", //사원코드
         divCd: "", //사업장코드
+        divNm: "", //사업장이름
         deptOd: "", //부서코드
       },
       reducers: {
@@ -23,6 +24,7 @@ class User {
           state.empId = action.payload.empId;
           state.empEmail = action.payload.empEmail;
           state.divCd = action.payload.divCd;
+          state.divNm = action.payload.divNm;
           state.deptOd = action.payload.deptOd;
           state.empName = action.payload.empName;
           state.empSx = action.payload.empSxt;

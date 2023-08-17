@@ -17,7 +17,7 @@ class DivDialogComponent extends Component {
       open: false,
       selectedRow: { divCd: "", divNm: "" },
       divRows: [],
-      keyword:"",
+      keyword: "",
       data: {
         columns: [
           {
@@ -41,17 +41,39 @@ class DivDialogComponent extends Component {
     BgtICFService.findDivByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
-    }).then((response) => {
-      const divRows = response.map((row) => ({
-        id: row.divCd,
-        divCd: row.divCd,
-        divNm: row.divNm,
-      }));
-      this.setState({ divRows: divRows, keyword: "" });
-    }).then(() => {
-        this.handleUp();  
+    })
+      .then((response) => {
+        const divRows = response.map((row) => ({
+          id: row.divCd,
+          divCd: row.divCd,
+          divNm: row.divNm,
+        }));
+        this.setState({ divRows: divRows, keyword: "" });
+      })
+      .then(() => {
+        this.handleUp();
       });
-  }
+  };
+
+  setDivDialog = (keyword) => {
+
+    BgtICFService.findDivByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+      keyword: keyword
+    })
+      .then((response) => {
+        const divRows = response.map((row) => ({
+          id: row.divCd,
+          divCd: row.divCd,
+          divNm: row.divNm,
+        }));
+        this.setState({ divRows: divRows, keyword: keyword});
+      })
+      .then(() => {
+        this.handleUp();
+      });
+  };
 
   handleUp = () => {
     this.setState({ open: true });
@@ -67,17 +89,17 @@ class DivDialogComponent extends Component {
       console.log(this.state.selectedRow);
     });
     // console.log(this.state);
-  }
+  };
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
-  }
+  };
 
   handleClickConfirm = async () => {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetDivTextField(this.state.selectedRow);
-  }
+  };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -99,7 +121,7 @@ class DivDialogComponent extends Component {
       await this.setState({ divRows: divRows });
       console.log(this.state);
     });
-  }
+  };
 
   render() {
     const { open, data } = this.state;

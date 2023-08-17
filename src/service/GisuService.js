@@ -18,7 +18,6 @@ class GisuService {
         withCredentials: true,
       })
       .then((response) => response.data);
-    this.props.navigator("/");
   }
 
   insertGisu(data) {
