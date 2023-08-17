@@ -298,6 +298,16 @@ class BgtICFComponent extends Component {
     }
   };
 
+  handleKeyDownBgtCDTextField = (e) => {
+    if (e.key == "Enter") {
+      this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtCDTextField: "", bgtCd: "" });
+    }
+  }
+
   render() {
     const { divTextField, bgtCDTextField } = this.state;
 
@@ -433,9 +443,10 @@ class BgtICFComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
               <CustomTextField
-                name="bgtCd"
+                name="bgtCDTextField"
                 value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDownBgtCDTextField}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -448,7 +459,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             {/* <ListDisplay/> */}
-            <SnackBarComponent />
+            <SnackBarComponent severity="success" message="저장되었습니다." />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>

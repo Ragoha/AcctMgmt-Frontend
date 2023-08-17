@@ -8,6 +8,7 @@ import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import PjtDialogComponent from "./dialog/PjtDialogComponent";
+import SnackBarComponent from "../common/SnackBarComponent";
 
 class DataGridComponent extends Component {
   constructor(props) {
@@ -20,12 +21,14 @@ class DataGridComponent extends Component {
       rows: [],
       selectedRowId: "",
       selectedRow: [],
+      selectedRows: [],
       pjtCd: "",
       pjtNm: "",
     };
 
     this.pjtRef = createRef();
     this.footerRef = createRef();
+    this.snackBarRef = createRef();
   }
 
   initBgtICF = () => {
@@ -262,6 +265,7 @@ class DataGridComponent extends Component {
 
           this.setState({ rows: rowsWithId });
           this.footerRef.current.sumCarrAm(rowsWithId);
+          this.snackBarRef.current.handleUp("sucess", "저장되었습니다.");
         });
       });
     }
@@ -307,14 +311,12 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = async (params) => {
-
     this.props.setSelectedRowId(params.row);
 
     await this.setState({
       selectedRowId: params.row.id,
       selectedRow: params.row,
     });
-
   };
 
   render() {
@@ -372,8 +374,18 @@ class DataGridComponent extends Component {
               params.row.carrAm2 === "" &&
               params.row.carrAm3 === ""
                 ? ""
-                : (params.row.carrAm1 + params.row.carrAm2 + params.row.carrAm3)
-                    .toString()
+                : (
+                    (params.row.carrAm1 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm1)) +
+                    (params.row.carrAm2 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm2)) +
+                    (params.row.carrAm3 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm3))
+                  )
+                    .toLocaleString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Grid>
           );
@@ -485,6 +497,12 @@ class DataGridComponent extends Component {
           onCellEditStop={this.handleCellEditStop}
           showCellVerticalBorder
           showColumnVerticalBorder
+          checkboxSelection
+          onRowSelectionModelChange={async (newRowSelectionModel) => {
+            console.log(newRowSelectionModel)
+            await this.setState({ selectedRows: newRowSelectionModel });
+            console.log(this.state.selectedRows)
+          }}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{
@@ -568,6 +586,8 @@ class DataGridComponent extends Component {
           ref={this.pjtRef}
           SetPjtTextField={this.SetPjtTextField}
         />
+
+        <SnackBarComponent ref={this.snackBarRef} />
       </>
     );
   }
@@ -623,9 +643,11 @@ class CustomFooterStatusComponent extends Component {
         <DataGrid
           showCellVerticalBorder
           hideFooter
+          getRowId={(row) => row.id}
           rows={[
             {
-              id: "unique-row-key", // 행에 고유한 키 추가
+              id: 0,
+              text: "합계",
               sumCarrAm: this.state.sumCarrAm
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -642,7 +664,7 @@ class CustomFooterStatusComponent extends Component {
           ]}
           columns={[
             {
-              field: "unique-column-key1",
+              field: "text",
               flex: 1,
             },
             {
@@ -670,15 +692,15 @@ class CustomFooterStatusComponent extends Component {
               flex: 1,
             },
             {
-              field: "unique-column-key2",
+              field: "emp1",
               flex: 1,
             },
             {
-              field: "",
+              field: "emp2",
               flex: 1,
             },
             {
-              field: "",
+              field: "emp3",
               flex: 1,
             },
           ]}
@@ -688,6 +710,10 @@ class CustomFooterStatusComponent extends Component {
             },
             "& .MuiDataGrid-row": {
               background: "#F6FFCC",
+            },
+
+            "& .MuiDataGrid-cellContent:first-child": {
+              float: "right",
             },
           }}
         />
