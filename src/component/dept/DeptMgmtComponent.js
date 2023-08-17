@@ -1021,7 +1021,7 @@ class DeptMgmtComponent extends Component {
                                 borderRight: "1px solid #EAEAEA",
                             }}>
                                 {divCd != 0 ?
-                                    <CustomWideTextField xs={4} sx={{ ml: 2 }} value={coCd + ' . ' + coNm} InputProps={{ readOnly: true }}></CustomWideTextField> //disabled={true}
+                                    <CustomWideTextField xs={4} sx={{ ml: 2 }} value={coCd + '. ' + coNm} InputProps={{ readOnly: true }}></CustomWideTextField> //disabled={true}
                                     :
                                     <FormControl sx={{
                                         ml: 2, width: 255, "& .MuiInputBase-root": {

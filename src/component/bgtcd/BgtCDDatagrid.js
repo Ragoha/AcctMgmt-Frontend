@@ -108,6 +108,7 @@ class BgtCDDatagrid extends Component {
               processRowUpdate={this.processRowUpdate}
               onProcessRowUpdateError={(error) => {}}
               defaultGroupingExpansionDepth={7}
+              getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
               editMode="row" //row 단위로 편집 모양 잡힘
               headerAlign="center"
               groupingColDef={{
@@ -121,6 +122,30 @@ class BgtCDDatagrid extends Component {
               }}
               components={{
                 Footer: () => null,
+              }}
+              sx={{
+                "& .MuiDataGrid-row:hover": {
+                  background: "#F5F5F5",
+                },
+                "& .MuiDataGrid-row.Mui-selected:hover": {
+                  background: "#F5F5F5",
+                },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  backgroundColor: "#EDF4FB !important",
+                  fontWeight: "bold",
+                },
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
+                "& .style-divfg-undefined": { background: "#74D36D" },
+                "& .style-divfg-1": { background: "#86E57F" },
+                "& .style-divfg-2": { background: "#AAFFA3" },
+                "& .style-divfg-3": { background: "#CEFFC7" },
+                "& .style-divfg-4": { background: "#F2FFEB" },
+                "& .style-divfg-5": { background: "#FFFFFF" },
+                "& .style-divfg-6": { background: "#FFFFFF" },
+                "& .style-divfg-7": { background: "#FFFFFF" },
+                "& .style-divfg-8": { background: "#FFFFFF" },
               }}
             />
           </Box>

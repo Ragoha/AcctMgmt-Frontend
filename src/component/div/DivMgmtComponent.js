@@ -1120,7 +1120,7 @@ class DivMgmtComponent extends Component {
                   <CustomWideTextField
                     xs={4}
                     sx={{ ml: 2 }}
-                    value={coCd + " . " + coNm}
+                    value={coCd + ". " + coNm}
                     InputProps={{ readOnly: true }}
                   ></CustomWideTextField> //disabled={true}
                 ) : (
