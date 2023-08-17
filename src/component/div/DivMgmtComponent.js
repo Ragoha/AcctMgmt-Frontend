@@ -119,6 +119,7 @@ class DivMgmtComponent extends Component {
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
     this.setState({ coCd: coCd })
+
     DivsService.getDivision({
       accessToken: this.props.accessToken,
       coCd: coCd
@@ -178,8 +179,10 @@ class DivMgmtComponent extends Component {
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
+        this.showCommonToast('warning', '등록된 사업장이 없습니다.');
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
+    // }
 
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     // DivsService.getDivsList({
@@ -236,9 +239,6 @@ class DivMgmtComponent extends Component {
     //     // alert("중복된 회사 또는 모두 입력해주세요");
     //   });
   }
-
-
-
 
   handleCompany = (e) => {
     // console.log(e.target.id);
@@ -797,24 +797,37 @@ class DivMgmtComponent extends Component {
   }
 
   deleteDivs = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
-    const { divCd } = this.state;
+    const { divCd} = this.state;
+    let { cardCount } = this.state;
     if (divCd === '') {
       this.showCommonToast("success", "삭제되었습니다.");
       this.componentDidMount();
-    } else {
+    }else{
       DivsService.deleteDivs({
         accessToken: this.props.accessToken,
         divCd: divCd
       })
         .then((response) => {
-          console.log(response.data);
+          console.log(response.data);  
           this.showCommonToast("success", "삭제되었습니다.");
 
           const userInfo = this.props.userInfo;
           const { coCd, empId, empEmail } = userInfo;
           console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-          this.setState({ coCd: coCd });
+          this.setState({ coCd: coCd});
+          CompanyService.getCompany({
+            accessToken: this.props.accessToken,
+            coCd: coCd
+          })
+            .then((response) => {
+              const coNm = response.data[0].coNm;
+
+              this.setState({
+                coNm: coNm
+              })
+            })
+  
           DivsService.getDivision({
             accessToken: this.props.accessToken,
             coCd: coCd
@@ -856,17 +869,6 @@ class DivMgmtComponent extends Component {
                 divAddr1: divAddr1,
                 DivdialTextField: ''
               })
-              CompanyService.getCompany({
-                accessToken: this.props.accessToken,
-                coCd: coCd
-              })
-                .then((response) => {
-                  const coNm = response.data[0].coNm;
-
-                  this.setState({
-                    coNm: coNm
-                  })
-                })
             })
         }).catch((error) => {
           // 오류 발생 시의 처리
