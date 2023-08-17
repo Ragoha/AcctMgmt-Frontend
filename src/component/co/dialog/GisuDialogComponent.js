@@ -83,12 +83,13 @@ class GisuDialogComponent extends Component {
 
   handleDown = () => {
     this.setState({ open: false });
+    this.props.setGisuInfo(this.state.selectedRow);
   };
 
   initGisu = () => {
     GisuService.findGisuByCoCd({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
     }).then((response) => {
       const gisuRows = response.map((row) => ({
         id: randomId(),
@@ -108,22 +109,31 @@ class GisuDialogComponent extends Component {
   };
 
   insertGisu = (data) => {
-    GisuService.insertGisu(data).then(() => {
+    GisuService.insertGisu({
+      accessToken: this.props.accessToken,
+      coCd: this.props.coCd,
+      gisu: data
+    }).then(() => {
       this.initGisu();
     });
   }
 
   updateGisu = (data) => {
-    GisuService.updateGisu(data).then(() => {
-       this.initGisu();
-    })
+    console.log(data);
+    // GisuService.updateGisu({
+    //   accessToken: this.props.accessToken,
+    //   coCd: this.props.user.coCd,
+    //   gisu: data,
+    // }).then(() => {
+    //   this.initGisu();
+    // });
   }
 
   handleClickDelete = () => {
     console.log(this.state.selectedRow.gisu);
     GisuService.deleteGisu({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
       gisu: this.state.selectedRow.gisu,
     }).then(() => {
       this.initGisu();
@@ -140,7 +150,7 @@ class GisuDialogComponent extends Component {
     });
   };
 
-  processRowUpdate = async (newRow) => {
+  processRowUpdate = (newRow) => {
     console.log(newRow);
 
     if (newRow.isNew) {
@@ -228,16 +238,15 @@ class GisuDialogComponent extends Component {
           <CustomButtonGridContainer container justifyContent="flex-end">
             <CustomConfirmButton
               variant="outlined"
-              // onClick={() => this.insertDate(selectedRow)}
-            >
-              확인
+              onClick={this.handleDown}>
+              확 인
             </CustomConfirmButton>
 
             <Button
               variant="outlined"
               onClick={() => this.setState({ open: false })}
             >
-              취소
+              취 소
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>

@@ -54,6 +54,26 @@ class BgtGrDialogComponent extends Component {
     await this.setState({ divRows: rows });
   };
 
+  setBgtGrDialog = (keyword) => {
+    BgtICFService.findBgtGrByCoCdAndKeyword({
+      coCd: this.props.user.coCd,
+      accessToken: this.props.accessToken,
+      keyword: keyword,
+    })
+      .then(async (response) => {
+        const bgtGrRows = response.map((row) => ({
+          id: row.bgtGrCd,
+          bgtGrCd: row.bgtGrCd,
+          bgtGrNm: row.bgtGrNm,
+        }));
+
+        this.setState({ bgtGrRows: bgtGrRows, keyword: keyword });
+      })
+      .then(() => {
+        this.handleUp();
+      });
+  };
+
   handleInputChange = async (e) => {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
@@ -103,7 +123,7 @@ class BgtGrDialogComponent extends Component {
   };
 
   render() {
-    const { open, columns} = this.state;
+    const { open, columns } = this.state;
 
     return (
       <CustomShortDialog open={open}>
@@ -150,6 +170,7 @@ class BgtGrDialogComponent extends Component {
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
+              checkboxSelection
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
