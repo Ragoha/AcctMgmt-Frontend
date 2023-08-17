@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Alert from '@mui/material/Alert';
 import './styles.css'; // 스타일시트 불러오기
+import CustomSwal from '../common/CustomSwal.js';
 
 class PjtComponent extends Component {
   constructor(props) {
@@ -54,62 +55,9 @@ class PjtComponent extends Component {
       selectAllChecked: false,//체크박스 전체 영향
       successAlert: false,//성공 알럿
       selectedProgFg: "전체",
+      dup: true, //프젝코드 중복유무
     }
   }
-  //icon = success, error, warning, info, question | title : "알럿창에 띄울 멘트" | timer:안넣으면 1500이 기본 값
-  //ex)this.showCommonToast(Success, "성공", 1300);
-  showCommonToast = (icon, title, timer) => {
-    const commonToast = Swal.mixin({
-      toast: true,
-      position: 'center-center',
-      showConfirmButton: false,
-      timer: timer ? timer : 1500,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-      }
-    });
-
-    commonToast.fire({
-      icon: icon,
-      title: title
-    });
-  }
-  //icon = success, error, warning, info, question | title : "알럿창에 띄울 제목" | text:알럿창에 띄울 멘트
-  showCommonSwal = (title, text, icon) => {
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: icon,
-      color: '#716add',
-      background: '#FCFCFC', // 원하는 배경색으로 설정
-      customClass: {
-        container: 'custom-swal-container',
-        popup: 'custom-swal-popup',
-      },
-    });
-  }
-
-  showCommonSwalYn = (title, text, icon, yesButtonText, callback) => {
-    Swal.fire({
-      title: title,
-      text: text,
-      icon: icon,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: yesButtonText
-    }).then((result) => {
-      if (result.isConfirmed) {
-        callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
-      }
-      else {
-        callback(false); // 취소 버튼을 눌렀을 때 콜백 함수를 호출하고 false를 전달
-      }
-    });
-  }
-
   //드롭리스트 부분 프로젝트구분에서
   handleProgFgChange = (e) => {
     const { name, value } = e.target;
@@ -174,6 +122,7 @@ class PjtComponent extends Component {
           apjtNm: apjtNm,
           startDt: startDt,
           note: note,
+          dup: true
         })
       }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
@@ -221,7 +170,7 @@ class PjtComponent extends Component {
         .then((response) => {
           // 수정 완료 시 변경 감지 변수(isChanged)를 초기화하고 알림창 띄우기
           // alert("수정되었습니다.");
-          this.showCommonToast("success", "수정되었습니다.");
+          CustomSwal.showCommonToast("success", "수정되었습니다.");
           this.componentDidMount();
           this.setState({ isChanged: false });
         })
@@ -229,7 +178,7 @@ class PjtComponent extends Component {
           // 오류 발생 시의 처리
           console.error(error);
           // alert("수정에 실패하였습니다.");
-          this.showCommonToast("warning", "수정에 실패하였습니다.");
+          CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
           this.setState({ isChanged: false });
         });
 
@@ -237,7 +186,7 @@ class PjtComponent extends Component {
     } else {
       // 수정된 내용이 없는 경우 알림창 띄우기
       // alert("수정된 내용이 없습니다.");
-      this.showCommonToast("info", "수정된 내용이 없습니다.");
+      CustomSwal.showCommonToast("info", "수정된 내용이 없습니다.");
     }
   };
 
@@ -255,12 +204,12 @@ class PjtComponent extends Component {
       };
       const impValues = { pjtCd, pjtNm, progFg };
       if (Object.values(impValues).some((value) => value === "")) {
-        this.showCommonToast("warning", "필수 값을 입력하세요");
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요");
         return;
       }
       console.log("넌 뭔값이야?", Pjt);
       //showCommonSwalYn = (title, text, icon, yesButtonText)
-      this.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
+      CustomSwal.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
         if (confirmed) {
           // confirmed가 true인 경우에만 저장 로직을 실행
           PjtService.insertPjt(coCd, Pjt)
@@ -268,91 +217,136 @@ class PjtComponent extends Component {
               if (response.status === 200) {
                 this.setState({ isChanged: false });
                 this.componentDidMount();
-                this.showCommonToast("success", "저장되었습니다.");
+                CustomSwal.showCommonToast("success", "저장되었습니다.");
               }
             })
             .catch((error) => {
               if (error.response && error.response.status === 400) {
-                this.showCommonToast('warning', '중복된 코드입니다.');
+                CustomSwal.showCommonToast('warning', '중복된 코드입니다.');
               }
               console.error(error);
             });
         }
         else {
-          this.showCommonToast('warning', '저장이 취소되었습니다.');
+          CustomSwal.showCommonToast('warning', '저장이 취소되었습니다.');
         }
       });
     }
     else {
-      this.showCommonToast("info", "저장할 내용이 없습니다.");
+      CustomSwal.showCommonToast("info", "저장할 내용이 없습니다.");
     }
   };
 
-
-  handleDel = (e) => {
+  duplication = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     const {
-      pjtCd,
+      pjtCd
     } = this.state;
+    const Pjt = {
+      pjtCd
+    };
+    PjtService.duplication(coCd, Pjt)
+      .then((response) => {
+        if (response.status === 200) {
+          // CustomSwal.showCommonToast('success', '사용 가능한 코드입니다');
+          this.setState({
+            dup: true,
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          CustomSwal.showCommonToast('warning', '중복된 코드입니다', '1000', 'bottom');
+          this.setState({
+            dup: false,
+            pjtCd: '000',
+          });
+        }
+        console.error(error);
+      });
+  };
+
+
+  handleDel = () => {
+    const userInfo = this.props.userInfo;
+    const { coCd } = userInfo;
+    const { pjtCd, cardCount } = this.state;
+
+    console.log("이거 실행되나요2??", );
+    if (pjtCd === "") {
+      // "000"으로 입력된 카드는 화면에서만 생성된 것이므로 화면에서 삭제만 처리
+      this.setState((prevState) => ({
+        cardCount: cardCount - 1, // 카드 개수 줄이기
+        selectAllChecked: false,
+        isChanged: false,
+        pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd),
+      }));
+      console.log("이거 실행되나요??" , this.pjtCdList);
+      return;
+    }
+
     const Pjt = {
       coCd: coCd,
       pjtCd: pjtCd,
     };
-    PjtService.deletePjt(Pjt)
-      .then((response) => {
-        this.setState(
-          {
-            selectAllChecked: false,
-            isPjtCdEditable: false,
-            isChanged: false,
-          },
-          () => {
-            this.showCommonToast("success", "삭제되었습니다.");
-            // 상태를 업데이트한 후에 리렌더링이 발생합니다.
-            this.componentDidMount();
-          }
-        );
-      })
-      .catch((error) => {
-        this.showCommonToast("error", "삭제실패");
-        console.error(error);
-      });
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+      if (confirmed) {
+        PjtService.deletePjt(Pjt)
+          .then((response) => {
+            CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+            this.setState((prevState) => ({
+              cardCount: cardCount - 1, // 카드 개수 줄이기
+              selectAllChecked: false,
+              isChanged: false,
+              pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd), // 수정된 부분
+            }));
+          })
+          .catch((error) => {
+            CustomSwal.showCommonToast("error", "삭제실패");
+            console.error(error);
+          });
+      }
+      else {
+        CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
+      }
+    });
   }
-
-
-
 
   //체크박스들 삭제 처리
   handleDeleteSelected = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    const { selectedCards, pjtCdList } = this.state;
-
+    const { selectedCards, pjtCdList, cardCount } = this.state;
     if (selectedCards.length === 0) {
       return;
     }
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+      if (confirmed) {
+        selectedCards.forEach((index) => {
+          const pjtToDelete = pjtCdList[index];
+          const Pjt = {
+            coCd: coCd,
+            pjtCd: pjtToDelete,
+          };
+          PjtService.deletePjt(Pjt);
+        });
+        CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
 
-    // 선택된 카드들의 정보를 가져와서 삭제 쿼리 실행
-    selectedCards.forEach((index) => {
-      const pjtToDelete = pjtCdList[index];
-      const Pjt = {
-        coCd: coCd,
-        pjtCd: pjtToDelete,
-      };
-      PjtService.deletePjt(Pjt)
+        this.setState((prevState) => ({
+          cardCount: cardCount - selectedCards.length,
+          selectedCards: [],
+          selectedCount: 0,
+          selectAllChecked: false,
+          isChanged: false,
+          pjtCdList: prevState.pjtCdList.filter((pjtCd, index) => !selectedCards.includes(index)),
+        }));
+      } else {
+        CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
+      }
     });
-    this.showCommonToast("success", "삭제되었습니다.");
-    // 선택된 카드들 삭제 후 상태 업데이트
-    this.setState((prevState) => ({
-      selectedCards: [],
-      selectedCount: 0,
-      selectAllChecked: false,
-      isChanged: false,
-      pjtCdList: prevState.pjtCdList.filter((pjtCd, index) => !selectedCards.includes(index)),
-    }));
-    this.componentDidMount();
   };
+
 
 
   handlePjt = (e) => {
@@ -363,13 +357,16 @@ class PjtComponent extends Component {
     } else {
       this.setState({ [name]: value }); // 이전 값과 같은 경우 isChanged를 유지
     }
+    this.setState({
+      dup: true,
+    });
   };
   //카드 리스트 생성
   addCardButton = () => {
 
     //0000을 갖고있는 카드가 생기면 생성되지 않도록 막은 조건
     if (this.state.pjtCdList.includes('000')) {
-      this.showCommonToast('warning', '미등록 프로젝트가 존재합니다.');
+      CustomSwal.showCommonToast('warning', '미등록 프로젝트가 존재합니다.');
       // alert("");
     } else {
       const newCardCount = this.state.cardCount + 1;
@@ -404,14 +401,13 @@ class PjtComponent extends Component {
   // 저장 버튼 누르면 텍스트 필드 갑 읽어와서 저장 해주는 친구들
 
   //카드를 클릭하면 우측에 데이터 랜더링 함수
-  cardClick = (pjtCd) => {
+  cardClick = (pjtCd, index) => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     console.log(pjtCd);
-
     if (this.state.isChanged) {
       // alert('변경된 내용이 저장되지 않았습니다.');
-      this.showCommonToast("warning", "변경된 내용이 저장되지 않았습니다.");
+      CustomSwal.showCommonToast("warning", "변경된 내용이 저장되지 않았습니다.");
     } else {
       this.setState({ focused: pjtCd });
 
@@ -594,7 +590,7 @@ class PjtComponent extends Component {
   render() {
 
     const { pjtCd, progFg, pgrNm, pgrCd, pjtNm, prDt, toDt, apjtNm, startDt, note, pjtRole, isPjtCdEditable } = this.state;
-    const { successAlert, showAlert } = this.state;
+    const { successAlert, showAlert, dup } = this.state;
 
     const { cardCount, pjtCdList, pjtNmList, pjtPrList, pjtToList, progFgList, selectedProgFg, progFgOptions, searchProgFgOptions } = this.state;
     const { value } = this.state;
@@ -951,7 +947,8 @@ class PjtComponent extends Component {
                   }}
                   name="pjtCd"
                   onChange={this.handlePjt}
-                  value={pjtCd || ""}
+                  onBlur={this.duplication}
+                  value={dup ? pjtCd : " "}
                 />
               </Grid>
 
