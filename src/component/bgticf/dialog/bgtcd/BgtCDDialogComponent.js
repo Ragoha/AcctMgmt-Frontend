@@ -9,7 +9,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { randomId } from "@mui/x-data-grid-generator";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -18,8 +18,21 @@ import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../service/BgtICFService";
-import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer } from "../../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../common/style/CommonStyle";
+import {
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomLargeButtonGridContainer,
+  CustomLargeDataGridContainer,
+  CustomLargeFormGridContainer,
+} from "../../../common/style/CommonDialogStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../../common/style/CommonStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
 const columns = [
@@ -78,6 +91,27 @@ class BgtCDDialogComponent extends Component {
 
     this.childBgtGrRef = createRef();
   }
+
+  setBgtCDDialog = (keyword) => {
+    console.log(keyword);
+    BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
+      user: this.props.user,
+      accessToken: this.props.accessToken,
+      keyword: keyword,
+    }).then((response) => {
+      const bgtCDRows = response.map((row) => ({
+        id: randomId(),
+        gisu: row.gisu,
+        bgtGrNm: row.bgtGrNm,
+        bgtCd: row.bgtCd,
+        bgtNm: row.bgtNm,
+        hBgtNm: row.dataPath,
+      }));
+      this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
+      this.handleUp();
+      console.log(this.state);
+    });
+  };
 
   initBgtCDDialog = () => {
     this.setState({ keyword: "", rangeState: true });
@@ -165,8 +199,6 @@ class BgtCDDialogComponent extends Component {
         hBgtNm: row.dataPath,
       }));
       this.setState({ bgtCDRows: bgtCDRows });
-
-      console.log(this.state);
     });
   };
 
@@ -382,4 +414,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, { forwardRef: true })(BgtCDDialogComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  BgtCDDialogComponent
+);

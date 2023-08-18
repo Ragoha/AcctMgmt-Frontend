@@ -1,5 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, Grid, IconButton } from "@mui/material";
+import { Button, Checkbox, Grid, IconButton } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
@@ -21,20 +21,7 @@ import {
   CustomTextField,
 } from "../../common/style/CommonStyle";
 
-const columns = [
-  {
-    field: "bgtGrCd",
-    headerName: "예산그룹코드",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtGrNm",
-    headerName: "예산그룹명",
-    width: 270,
-    headerAlign: "center",
-  },
-];
+
 
 class BgtGrDialogComponent extends Component {
   constructor(props) {
@@ -45,7 +32,7 @@ class BgtGrDialogComponent extends Component {
       bgtGrRows: [],
       keyword: "",
       rows: [],
-      columns: columns,
+      selectedRows: [],
     };
   }
 
@@ -137,11 +124,68 @@ class BgtGrDialogComponent extends Component {
   handleClickConfirm = async () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    await this.props.handleSetBgtGrTextField(this.state.selectedRow);
+    if (this.state.selectedRows.length == 0) {
+      await this.props.handleSetBgtGrTextField(this.state.selectedRow);
+    } else {
+      await this.props.handleSetBgtGrTextField(this.state.selectedRows);
+    }
   };
 
   render() {
-    const { open, columns } = this.state;
+    const { open } = this.state;
+
+    const columns = [
+      {
+        field: "confirmed",
+        width: 65,
+        headerName: "",
+        menu: false,
+        disableColumnMenu: true,
+        sortable: false,
+        filterable: false,
+        hideable: false,
+        renderHeader: (params) => <Checkbox />,
+        renderCell: (params) => (
+          <Checkbox
+            onChange={async () => {
+              // console.log(params);
+              const newSelectedRow = {
+                bgtGrCd: params.row.bgtGrCd,
+                bgtGrNm: params.row.bgtGrNm,
+              };
+
+              const isSelected = this.state.selectedRows.some(
+                (row) => row.bgtGrCd === newSelectedRow.bgtGrCd
+              );
+
+              if (isSelected) {
+                const updatedSelectedRows = this.state.selectedRows.filter(
+                  (row) => row.bgtGrCd !== newSelectedRow.bgtGrCd
+                );
+                await this.setState({ selectedRows: updatedSelectedRows });
+              } else {
+                await this.setState((prevState) => ({
+                  selectedRows: [...prevState.selectedRows, newSelectedRow],
+                }));
+              }
+              console.log(this.state.selectedRows)
+            }}
+          />
+        ),
+      },
+      {
+        field: "bgtGrCd",
+        headerName: "예산그룹코드",
+        flex: 1,
+        headerAlign: "center",
+      },
+      {
+        field: "bgtGrNm",
+        headerName: "예산그룹명",
+        flex: 1,
+        headerAlign: "center",
+      },
+    ];
 
     return (
       <CustomShortDialog open={open}>
@@ -188,7 +232,6 @@ class BgtGrDialogComponent extends Component {
               showCellVerticalBorder={true} // 각 셀마다 영역주기
               onRowClick={this.handleClickRow}
               hideFooter
-              checkboxSelection
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
