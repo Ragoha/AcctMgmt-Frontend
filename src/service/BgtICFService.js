@@ -121,6 +121,7 @@ class BtgICFService {
           coCd: data.coCd,
           bgtCd: data.bgtCd,
           sq: data.sq,
+          sqList: data.sqList
         },
         headers: {
           "access-token": data.accessToken,

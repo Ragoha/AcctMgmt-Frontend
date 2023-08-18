@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import React, { Component } from "react";
 
-import { Grid } from "@mui/material";
+import { Checkbox, Grid } from "@mui/material";
 import { DataGrid, GridCellEditStopReasons } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { createRef } from "react";
@@ -145,12 +145,20 @@ class DataGridComponent extends Component {
     );
   }
 
-  handleDeleteClick = (data) => () => {
+  handleDeleteClick = (data) => {
+    console.log("================")
+    console.log(data);
+
+    const sqList = data.sqList.map((sq) => sq.sq).join(",");
+
+    console.log(sqList)
+
     BgtICFService.deleteBgtICF({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: data.bgtCd,
       sq: data.sq,
+      sqList: sqList,
     }).then(() => {
       this.props.handleClickSerachButton();
       BgtICFService.getBgtICFList({
@@ -323,6 +331,54 @@ class DataGridComponent extends Component {
     const { rows, selectedRowId } = this.state;
 
     const columns = [
+      {
+        field: "confirmed",
+        width: 65,
+        headerName: "",
+        menu: false,
+        disableColumnMenu: true,
+        sortable: false,
+        filterable: false,
+        hideable: false,
+        renderHeader: (params) => (
+          <Checkbox
+          // checked={this.state.selectedRows.length === this.props.rows.length}
+          // indeterminate={
+          //   this.state.selectedRows.length > 0 &&
+          //   this.state.selectedRows.length < this.props.rows.length
+          // }
+          // onChange={(event) => this.handleHeaderCheckboxChange(event)}
+          />
+        ),
+        renderCell: (params) => (
+          <Checkbox
+            onChange={async () => {
+              // console.log(params);
+              const newSelectedRow = {
+                sq: params.row.sq
+              };
+
+              const isSelected = this.state.selectedRows.some(
+                (row) =>
+                  row.sq === newSelectedRow.sq
+              );
+
+              if (isSelected) {
+                const updatedSelectedRows = this.state.selectedRows.filter(
+                  (row) =>
+                    row.sq !== newSelectedRow.sq
+                );
+                await this.setState({ selectedRows: updatedSelectedRows });
+              } else {
+                await this.setState((prevState) => ({
+                  selectedRows: [...prevState.selectedRows, newSelectedRow],
+                }));
+              }
+              this.props.setSelectedRows(this.state.selectedRows);
+            }}
+          />
+        ),
+      },
       {
         field: "mgtNm",
         headerName: "프로젝트",
@@ -497,12 +553,12 @@ class DataGridComponent extends Component {
           onCellEditStop={this.handleCellEditStop}
           showCellVerticalBorder
           showColumnVerticalBorder
-          checkboxSelection
-          onRowSelectionModelChange={async (newRowSelectionModel) => {
-            console.log(newRowSelectionModel)
-            await this.setState({ selectedRows: newRowSelectionModel });
-            console.log(this.state.selectedRows)
-          }}
+          // checkboxSelection
+          // onRowSelectionModelChange={async (newRowSelectionModel) => {
+          //   console.log(newRowSelectionModel);
+          //   await this.setState({ selectedRows: newRowSelectionModel });
+          //   console.log(this.state.selectedRows);
+          // }}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{
@@ -528,10 +584,10 @@ class DataGridComponent extends Component {
               outline: "none !important",
               border: "1px solid #1976d2 !important",
             },
-            "& .MuiDataGrid-row:last-child": {
-              background: "#FFFCFC",
-              color: "black",
-            },
+            "& .MuiDataGrid-row.MuiDataGrid-row--lastVisible:last-child .MuiCheckbox-root":
+              {
+                display: "none",
+              },
             "& .MuiDataGrid-row:hover": {
               background: "#F5F5F5 !important",
             },

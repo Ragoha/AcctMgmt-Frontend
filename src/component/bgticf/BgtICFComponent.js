@@ -97,6 +97,7 @@ class BgtICFComponent extends Component {
       divRows: [],
       selectedRowId: "",
       selectedRowSq: "",
+      selectedRows: [],
       isNew: false,
       innerHeight: window.innerHeight,
     };
@@ -116,11 +117,18 @@ class BgtICFComponent extends Component {
   };
 
   handleRowDelete = () => {
+    console.log("Asf")
     this.bgtICFRef.current.handleDeleteClick({
       bgtCd: this.state.selectedRowId,
       sq: this.state.selectedRowSq,
-    })();
+      sqList: this.state.selectedRows
+    });
   };
+
+  setSelectedRows = async (selectedRows) => {
+    await this.setState({ selectedRows: selectedRows });
+    console.log(this.state.selectedRows);
+  }
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -540,6 +548,7 @@ class BgtICFComponent extends Component {
               ref={this.bgtICFRef}
               setSelectedRowId={this.setSelectedRowId}
               handleClickSerachButton={this.handleClickSerachButton}
+              setSelectedRows={this.setSelectedRows}
               divCd={this.state.divCd}
             />
           </Grid>
