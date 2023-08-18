@@ -16,12 +16,12 @@ import React, { Component } from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { connect } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-import Cookie from "../../storage/Cookie";
 import { DELETE_TOKEN } from "../../store/Auth";
 import { DEL_USER } from "../../store/User";
 import { DEL_CONFIG } from "../../store/Config";
 import MainListItems from "./MainListItems";
 import UserInfo from "./UserInfo";
+import { CustomTextField } from "./style/CommonStyle";
 
 const drawerWidth = 240;
 
@@ -82,28 +82,9 @@ class MainComponent extends Component {
     this.state = {
       open: true,
       drawerOpen: true,
-      isHovered: false,
+      isOnOff: false,
     };
   }
-
-  logout = () => {
-    // const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
-    const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
-    const userInfo = this.props.userInfo;
-    const config = this.props.configData;
-    console.log("불러온 엑세스 토큰 : " + accessToken);
-    this.props.delAccessToken(accessToken);
-    console.log("삭제 후 엑세스 토큰 : " + accessToken);
-    console.log("불러온 유저정보 : " + userInfo.coCd);
-    this.props.delUserInfo(userInfo);
-    console.log("삭제 후 유저정보 : " + userInfo.coCd);
-    Cookie.removeCookieToken();
-    console.log("삭제 후 설정정보 : " + config);
-    this.props.delConfig(config);
-    this.props.navigate("/");
-    // axios.post(ACCTMGMT_API_BASE_URL + '/logouta', {
-    // });
-  };
 
   toggleDrawer = () => {
     this.setState((prevState) => ({
@@ -111,23 +92,21 @@ class MainComponent extends Component {
       drawerOpen: !prevState.drawerOpen,
     }));
   };
-  handleMouseEnter = () => {
-    this.setState({
-      isHovered: true,
-    });
+
+  handleUserInfoClick = () => {
+    this.setState((prevState) => ({
+      isOnOff: !prevState.isOnOff,
+    }));
   };
 
-  handleMouseLeave = () => {
-    // 1초 후에 호버효과가 사라지도록 설정
-    setTimeout(() => {
-      this.setState({
-        isHovered: false,
-      });
-    }, 10);
+  handleUserInfoClose = () => {
+    this.setState({
+      isOnOff: false,
+    });
   };
   render() {
     const { open } = this.state;
-    const isHovered = this.state.isHovered; // 이 부분 추가
+    const isOnOff = this.state.isOnOff; // 이 부분 추가
 
     return (
       <ThemeProvider theme={defaultTheme}>
@@ -177,28 +156,24 @@ class MainComponent extends Component {
               </Typography>
               <IconButton
                 color="inherit"
-                onMouseEnter={this.handleMouseEnter}
+                onClick={isOnOff ? this.handleUserInfoClose : this.handleUserInfoClick}
                 sx={{
                   position: "relative", // IconButton에 위치 설정 추가
+                  right:"30px",
                 }}
               >
                 <Badge badgeContent={4} color="secondary">
                   <AccountCircle />
                 </Badge>
-                {isHovered && (
-                  <div
-                    style={{ mt: "10px" }}
-                    onMouseLeave={this.handleMouseLeave}
-                  >
-                    <UserInfo />
-                  </div>
-                )}
               </IconButton>
-              <div style={{ marginLeft: "15px" }}>
-                <a onClick={this.logout} style={{ cursor: "pointer" }}>
-                  LogOut
-                </a>
-              </div>
+              {isOnOff && (
+                <div
+                  style={{ mt: "10px" }}
+                >
+                  <UserInfo />
+                </div>
+              )}
+              <CustomTextField sx={{border : "1px solid white"}}></CustomTextField>
             </Toolbar>
           </AppBar>
 

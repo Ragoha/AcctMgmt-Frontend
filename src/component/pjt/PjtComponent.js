@@ -2,21 +2,17 @@ import AddIcon from '@mui/icons-material/Add';
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HelpCenterOutlinedIcon from '@mui/icons-material/HelpCenterOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActionArea, CardContent, InputAdornment, InputLabel, TextField, Typography, Checkbox, ButtonGroup, Divider } from '@mui/material';
+import { Button, Card, CardActionArea, CardContent, Checkbox, InputAdornment, InputLabel, MenuItem, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid'; // 변경된 import
 import dayjs from 'dayjs';
 import { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import PjtService from '../../service/PjtService';
-import { CustomDateTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect, CustomWideTextField } from '../common/style/CommonStyle';
-import PjtDialogComponent from './dialog/PjtDialogComponent';
-import PgrDialogComponent from './dialog/PgrDialogComponent';
-import { MenuItem, Select } from '@mui/material';
-import Swal from 'sweetalert2';
-import { Scrollbars } from 'react-custom-scrollbars';
-import Alert from '@mui/material/Alert';
-import './styles.css'; // 스타일시트 불러오기
 import CustomSwal from '../common/CustomSwal.js';
+import { CustomDateTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect, CustomWideTextField } from '../common/style/CommonStyle';
+import PgrDialogComponent from './dialog/PgrDialogComponent';
+import PjtDialogComponent from './dialog/PjtDialogComponent';
+import './styles.css'; // 스타일시트 불러오기
 
 class PjtComponent extends Component {
   constructor(props) {
@@ -47,6 +43,7 @@ class PjtComponent extends Component {
       apjtNm: "",
       startDt: new Date(),
       note: "",
+      insertDT: new Date(),
       progFgOptions: ['0.완료', '1.진행중', '9.미사용'],
       searchProgFgOptions: ['전체', '완료', '진행중', '미사용'],
       isPjtCdEditable: false, // 추가 버튼을 클릭하면 프로젝트코드 텍스트 필드 활성화 여부
@@ -56,6 +53,9 @@ class PjtComponent extends Component {
       successAlert: false,//성공 알럿
       selectedProgFg: "전체",
       dup: true, //프젝코드 중복유무
+      isToChanged: false,
+      isPrChanged: false,
+      isStartChanged: false,
     }
   }
   //드롭리스트 부분 프로젝트구분에서
@@ -80,7 +80,10 @@ class PjtComponent extends Component {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
-    console.log("너 이녀석 뭘 갖고오고 있는게냐", this.pjtDialogRef);
+    this.renderData();
+  }
+
+  renderData = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     PjtService.getPjtList(coCd) //카드리스트 전체조회 함수
@@ -131,64 +134,87 @@ class PjtComponent extends Component {
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
   }
-
   //추가, 수정, 텍스트 필드애들을 변화 감지해서 값 넣어주기
   //수정 시 값 변화를 인식
   handleFix = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
+    let Pjt = {};
     // isChanged가 true인 경우만 수정 사항이 있다고 간주하고 저장 로직을 실행
     if (this.state.isChanged) {
       // 저장 로직 실행
       const {
-        pjtCd,
-        pgrCd,
-        pgrNm,
-        pjtNm,
-        prDt,
-        toDt,
-        progFg,
-        apjtNm,
-        startDt,
-        note,
+        pjtCd, pgrCd, pgrNm, pjtNm, prDt, toDt, progFg,
+        apjtNm, startDt, note,
       } = this.state;
-      const Pjt = {
-        coCd: coCd,
-        pgrCd: pgrCd,
-        pgrNm: pgrNm,
-        pjtCd: pjtCd,
-        pjtNm: pjtNm,
-        prDt: prDt,
-        toDt: toDt,
-        progFg: progFg,
-        apjtNm: apjtNm,
-        startDt: startDt,
-        note: note,
-      };
-      console.log("넌 뭔값이야?", Pjt);
+      // 변경된 필드만 JSON 객체에 추가
+      const changedFields = {};
+
+      if (this.state.isPrChanged) {
+        changedFields.prDt = prDt;
+      }
+      if (this.state.isPrChanged) {
+        changedFields.toDt = toDt;
+      }
+      console.log("읽어온 값 :", prDt);
+      if (prDt != 'Invalid Date') {
+        Pjt = {
+          coCd: coCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtCd: pjtCd,
+          pjtNm: pjtNm,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          note: note,
+          prDt: prDt,
+          toDt: toDt,
+          startDt: startDt,
+        }
+      }
+      else {
+        Pjt = {
+          coCd: coCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtCd: pjtCd,
+          pjtNm: pjtNm,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          note: note,
+          startDt: startDt,
+        }
+      }
+
+      console.log("변경된 값:", Pjt);
+      console.log("시작날 짜 뭐 들어감?:", startDt);
+
       PjtService.updatePjt(coCd, Pjt)
         .then((response) => {
           // 수정 완료 시 변경 감지 변수(isChanged)를 초기화하고 알림창 띄우기
-          // alert("수정되었습니다.");
           CustomSwal.showCommonToast("success", "수정되었습니다.");
-          this.componentDidMount();
-          this.setState({ isChanged: false });
+          this.renderData();
+          this.setState((prevState) => ({
+            isChanged: false,
+            isPrChanged: false,
+          }));
         })
         .catch((error) => {
           // 오류 발생 시의 처리
           console.error(error);
           // alert("수정에 실패하였습니다.");
           CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
-          this.setState({ isChanged: false });
+          this.setState({
+            isChanged: false, isPrChanged: false,
+          });
         });
-
-      // 수정 완료 시 변경 감지 변수(isChanged)를 초기화하고 알림창 띄우기
     } else {
       // 수정된 내용이 없는 경우 알림창 띄우기
       // alert("수정된 내용이 없습니다.");
       CustomSwal.showCommonToast("info", "수정된 내용이 없습니다.");
     }
   };
+
 
   handleSave = () => {
     const userInfo = this.props.userInfo;
@@ -215,8 +241,8 @@ class PjtComponent extends Component {
           PjtService.insertPjt(coCd, Pjt)
             .then((response) => {
               if (response.status === 200) {
-                this.setState({ isChanged: false });
-                this.componentDidMount();
+                this.setState({ isChanged: false, isPjtCdEditable: false, });
+                this.renderData();
                 CustomSwal.showCommonToast("success", "저장되었습니다.");
               }
             })
@@ -273,44 +299,40 @@ class PjtComponent extends Component {
     const { coCd } = userInfo;
     const { pjtCd, cardCount } = this.state;
 
-    console.log("이거 실행되나요2??", );
-    if (pjtCd === "") {
-      // "000"으로 입력된 카드는 화면에서만 생성된 것이므로 화면에서 삭제만 처리
-      this.setState((prevState) => ({
-        cardCount: cardCount - 1, // 카드 개수 줄이기
-        selectAllChecked: false,
-        isChanged: false,
-        pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd),
-      }));
-      console.log("이거 실행되나요??" , this.pjtCdList);
-      return;
-    }
+    console.log("이거 실행되나요2??", cardCount);
 
     const Pjt = {
       coCd: coCd,
       pjtCd: pjtCd,
     };
-    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
-      if (confirmed) {
-        PjtService.deletePjt(Pjt)
-          .then((response) => {
-            CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
-            this.setState((prevState) => ({
-              cardCount: cardCount - 1, // 카드 개수 줄이기
-              selectAllChecked: false,
-              isChanged: false,
-              pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd), // 수정된 부분
-            }));
-          })
-          .catch((error) => {
-            CustomSwal.showCommonToast("error", "삭제실패");
-            console.error(error);
-          });
-      }
-      else {
-        CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
-      }
-    });
+    if (cardCount > 0) {
+      CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+        if (confirmed) {
+          PjtService.deletePjt(Pjt)
+            .then((response) => {
+              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+              this.renderData();
+              this.setState((prevState) => ({
+                cardCount: cardCount - 1, // 카드 개수 줄이기
+                selectAllChecked: false,
+                isChanged: false,
+                pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd || pjtCd === ""),
+              }));
+            })
+            .catch((error) => {
+              CustomSwal.showCommonToast("error", "삭제실패");
+              console.error(error);
+            });
+        }
+        else {
+          CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
+        }
+      });
+    }
+    else {
+      CustomSwal.showCommonToast('warning', '삭제할 데이터가 없습니다.');
+    }
+
   }
 
   //체크박스들 삭제 처리
@@ -350,14 +372,33 @@ class PjtComponent extends Component {
 
 
   handlePjt = (e) => {
-    const { name, value } = e.target;
-    // 입력된 값과 이전 값이 다르면 isChanged를 true로 설정
-    if (this.state[name] !== value) {
-      this.setState({ [name]: value, isChanged: true });
-    } else {
-      this.setState({ [name]: value }); // 이전 값과 같은 경우 isChanged를 유지
-    }
+    // const { name, value } = e.target;
+    // // 입력된 값과 이전 값이 다르면 isChanged를 true로 설정
+    // if (this.state[name] !== value) {
+    //   this.setState({ [name]: value, isChanged: true });
+    // } else {
+    //   this.setState({ [name]: value }); // 이전 값과 같은 경우 isChanged를 유지
+    // }
+
     this.setState({
+      [e.target.name]: e.target.value,
+      isChanged: true,
+      dup: true,
+    });
+  };
+
+  handlePr = (e) => {
+    // const { name, value } = e.target;
+    // // 입력된 값과 이전 값이 다르면 isChanged를 true로 설정
+    // if (this.state[name] !== value) {
+    //   this.setState({ [name]: value, isPrChanged: true, isChanged: true });
+    // } else {
+    //   this.setState({ [name]: value }); // 이전 값과 같은 경우 isChanged를 유지
+    // }
+    this.setState({
+      [e.target.name]: e.target.value,
+      isChanged: true,
+      isPrChanged: true,
       dup: true,
     });
   };
@@ -414,7 +455,7 @@ class PjtComponent extends Component {
       if (pjtCd === '000') {
         this.setState({
           isPjtCdEditable: true,
-          pjtCd: "", pgrCd: 0, pgrNm: "", pjtNm: "",
+          pjtCd: "", pgrCd: "", pgrNm: "", pjtNm: "",
           prDt: "", toDt: "", progFg: "", apjtNm: "",
           startDt: "", note: ""
         });
@@ -462,6 +503,7 @@ class PjtComponent extends Component {
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
   handleSetPjtTextField = async (data) => {
     console.log("넘어오는 데이터들? ", data)
+    this.setState({ pjtTextFieldData: data })
     await this.setState({
       PjtdialTextField: data.pjtCd && data.pjtNm ? data.pjtCd + ". " + data.pjtNm : "",
       pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
@@ -586,6 +628,30 @@ class PjtComponent extends Component {
       this.pjthelpClick();
     }
   };
+
+  handleClickSerachButton = (e) => {
+
+    const { selectedProgFg, PgrdialTextField, dateRange, pjtTextFieldData } = this.state;
+    if (pjtTextFieldData != null) {
+      console.log("pjtCd: ", pjtTextFieldData.pjtCd);
+      
+      const data = {
+        pjtCd: pjtTextFieldData.pjtCd,
+        progFg: selectedProgFg,
+        // pgrCd: PgrdialTextField,
+        prDt: dateRange.length
+      }
+      PjtService.groupSelect(data)
+    }
+    else 
+    console.log("selectedProgFg: ", selectedProgFg);
+    console.log("PgrdialTextField: ", PgrdialTextField);
+    console.log("dateRange: ", dateRange);
+
+    
+
+  }
+
 
   render() {
 
@@ -792,13 +858,12 @@ class PjtComponent extends Component {
               <Checkbox
                 checked={this.state.selectAllChecked}
                 onChange={this.handleSelectAllChange}
-                sx={{ pb: 4.5 }}
+                sx={{ pb: 4.8 }}
               />
               <InputLabel
                 sx={{
-                  pb: 3.2,
+                  pb: 3.5,
                   fontWeight: "bold",
-                  // fontSize: "13px",
                 }}
               >
                 프로젝트:
@@ -808,15 +873,14 @@ class PjtComponent extends Component {
                   ml: 0.5,
                   color: "#0054FF",
                   fontWeight: "bold",
-                  // fontSize: "13px",
-                  pb: 3.2,
+                  pb: 3.5,
                 }}
               >
                 {cardCount}
               </InputLabel>
               <InputLabel
                 sx={{
-                  pb: 3.2,
+                  pb: 3.5,
                   fontWeight: "bold",
                   marginRight: "0.5rem", // 간격 조정
                   // fontSize: "13px",
@@ -888,13 +952,12 @@ class PjtComponent extends Component {
               width: "100%",
               maxHeight: 40,
               // borderBottom: "2px solid #000",
-              ml: 1,
+              ml: 2,
             }}
           >
             <Grid item>
               <InputLabel
                 sx={{
-                  ml: 2,
                   mr: 2,
                   mb: 1,
                   textAlign: "left",
@@ -948,7 +1011,7 @@ class PjtComponent extends Component {
                   name="pjtCd"
                   onChange={this.handlePjt}
                   onBlur={this.duplication}
-                  value={dup ? pjtCd : " "}
+                  value={dup ? pjtCd : ""}
                 />
               </Grid>
 
@@ -1160,7 +1223,8 @@ class PjtComponent extends Component {
                     type="date"
                     name="prDt"
                     value={dayjs(prDt).format("YYYY-MM-DD")}
-                    onChange={this.handlePjt}
+                    onChange={this.handlePr}
+                    mask="none"
                     sx={{ mr: 1 }}
                   />
                   ~
@@ -1168,7 +1232,7 @@ class PjtComponent extends Component {
                     type="date"
                     name="toDt"
                     value={dayjs(toDt).format("YYYY-MM-DD")}
-                    onChange={this.handlePjt}
+                    onChange={this.handlePr}
                     sx={{ ml: 1 }}
                   />
                 </Grid>

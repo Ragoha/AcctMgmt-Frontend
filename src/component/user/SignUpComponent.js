@@ -34,31 +34,26 @@ class SignUpComponent extends Component {
       error: false,
       errorMessage: "",
     };
-    this.throttleHandleChange = throttle(this.handleChange, 300);
-    this.throttleHandleChange2 = throttle(this.handleChange2, 600);
   }
 
-  handleChange2 = (value) => {
+  handleChange2 = (e) => {
+    const { value } = e.target;
     const isIdValid =
-      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ""; 
-    const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value);
-
+      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ""; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
+    const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value); // 입력된 값에 한글이 포함되어 있는지 확인합니다.
+    this.setState({ isIdDuplicated: false });
     this.setState({
       id: isIdValid ? value : "",
+      // error: !isIdValid,
       errorMessage: isKoreanInput
         ? "알파벳 대소문자와 숫자만 사용 가능합니다."
         : !isIdValid
-          ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-          : "",
+        ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
+        : "",
       isIdValid: isIdValid && !isKoreanInput,
     });
   };
-
-  handleInputChange2 = (event) => {
-    const inputValue = event.target.value;
-    this.throttleHandleChange2(inputValue);
-  };
-
+ 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -219,7 +214,7 @@ class SignUpComponent extends Component {
                     placeholder="아이디 입력(6 ~ 20자)"
                     variant="outlined"
                     value={id}
-                    onChange={this.handleInputChange2}
+                    onChange={this.handleChange2}
                     onBlur={this.handleBlur}
                     disabled={error}
                     error={error}
@@ -273,7 +268,7 @@ class SignUpComponent extends Component {
                     type="password"
                     value={password}
                     error={password && !isPasswordValid}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     onBlur={this.handleBlur}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
@@ -324,7 +319,7 @@ class SignUpComponent extends Component {
                     // placeholder="한번 더 입력하세요"
                     type="password"
                     value={confirmPassword}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     onBlur={this.handleBlur}
                     sx={{
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -349,7 +344,7 @@ class SignUpComponent extends Component {
                   variant="outlined"
                   color="secondary"
                   value={name}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -372,7 +367,7 @@ class SignUpComponent extends Component {
                   placeholder="이메일을 입력해주세요"
                   type="email"
                   value={email}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -395,7 +390,7 @@ class SignUpComponent extends Component {
                   name="phone"
                   placeholder="휴대폰 번호 입력('-' 제외 11자리 입력)"
                   value={phone}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -418,7 +413,7 @@ class SignUpComponent extends Component {
                     name="company"
                     placeholder="회사명을 입력해주세요"
                     value={company}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -452,7 +447,7 @@ class SignUpComponent extends Component {
                   color="secondary"
                   name="position"
                   placeholder="직책을 입력해주세요"
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {

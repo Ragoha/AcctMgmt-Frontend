@@ -9,6 +9,7 @@ class User {
         coNm: "", //회사이름
         empId: "", //아이디
         empEmail: "", //이메일
+        empTel:"", //전화번호
         empName: "", //이름
         empSx: "", //성별
         empAuth: "", //권한
@@ -23,6 +24,7 @@ class User {
           state.coNm = action.payload.coNm;
           state.empId = action.payload.empId;
           state.empEmail = action.payload.empEmail;
+          state.empTel = action.payload.empTel;
           state.divCd = action.payload.divCd;
           state.divNm = action.payload.divNm;
           state.deptOd = action.payload.deptOd;
@@ -36,6 +38,7 @@ class User {
           state.coNm = null;
           state.empId = null;
           state.empEmail = null;
+          state.empTel = null;
           state.divCd = null;
           state.deptOd = null;
           state.empName = null;
