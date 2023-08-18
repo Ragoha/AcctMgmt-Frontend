@@ -14,7 +14,7 @@ class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      divCd: "",
+      divCd: this.props.divCd,
       bgtCd: "",
       mgtCd: "",
       gisu: "",
@@ -194,11 +194,14 @@ class DataGridComponent extends Component {
   };
 
   getBgtICFList = async (data) => {
-    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd });
+    console.log(data);
+    console.log("==============")
+    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd, gisu: data.gisu });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
+      gisu: this.state.gisu,
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -223,7 +226,7 @@ class DataGridComponent extends Component {
           isNew: true,
         });
       }
-      await this.setState({ rows: rowsWithId });
+      await this.setState({ rows: rowsWithId, gisu: data.gisu });
       this.footerRef.current.sumCarrAm(rowsWithId);
     });
   };
@@ -243,6 +246,7 @@ class DataGridComponent extends Component {
         user: this.props.user,
         row: row,
         divCd: this.state.divCd,
+        // gisu: this.state.gisu,
       }).then(() => {
         this.props.handleClickSerachButton();
         BgtICFService.getBgtICFList({
@@ -341,14 +345,7 @@ class DataGridComponent extends Component {
         filterable: false,
         hideable: false,
         renderHeader: (params) => (
-          <Checkbox
-          // checked={this.state.selectedRows.length === this.props.rows.length}
-          // indeterminate={
-          //   this.state.selectedRows.length > 0 &&
-          //   this.state.selectedRows.length < this.props.rows.length
-          // }
-          // onChange={(event) => this.handleHeaderCheckboxChange(event)}
-          />
+          <Checkbox/>
         ),
         renderCell: (params) => (
           <Checkbox
@@ -720,8 +717,13 @@ class CustomFooterStatusComponent extends Component {
           ]}
           columns={[
             {
+              field: "emp0",
+              width: 65
+            },
+            {
               field: "text",
               flex: 1,
+              align: "right"
             },
             {
               field: "sumCarrAm",

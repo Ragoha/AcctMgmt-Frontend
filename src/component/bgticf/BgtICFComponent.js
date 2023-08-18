@@ -76,11 +76,12 @@ class BgtICFComponent extends Component {
     super(props);
     this.state = {
       bgtCDRows: [],
-      divCd: 0,
+      divCd: this.props.user.divCd,
       divNm: "",
       divTextField: this.props.user.divCd + ". " + this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
+      bgtGrList: [],
       bgtGrTextField: "",
       gisuText: "",
       gisuRows: [],
@@ -117,18 +118,18 @@ class BgtICFComponent extends Component {
   };
 
   handleRowDelete = () => {
-    console.log("Asf")
+    console.log("Asdf");
     this.bgtICFRef.current.handleDeleteClick({
       bgtCd: this.state.selectedRowId,
       sq: this.state.selectedRowSq,
-      sqList: this.state.selectedRows
+      sqList: this.state.selectedRows,
     });
   };
 
   setSelectedRows = async (selectedRows) => {
     await this.setState({ selectedRows: selectedRows });
     console.log(this.state.selectedRows);
-  }
+  };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
@@ -196,12 +197,31 @@ class BgtICFComponent extends Component {
     console.log(this.state);
   };
 
-  handleSetBgtGrTextField = (data) => {
-    this.setState({
-      bgtGrTextField: data.bgtGrCd + ". " + data.bgtGrNm,
-      bgtGrCd: data.bgtGrCd,
-      bgtGrNm: data.bgtGrNm,
-    });
+  handleSetBgtGrTextField = (dataList) => {
+    console.log(dataList);
+    if (dataList.length > 0) {
+      console.log("맞음?");
+      const concatenatedText = dataList
+        .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
+        .join(", ");
+      
+      const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+
+      this.setState({
+        bgtGrTextField: concatenatedText,
+        bgtGrCdList: bgtGrCdList,
+      });
+      console.log("리스트 데이터:", concatenatedText);
+      console.log("리스트:", bgtGrCdList)
+    } else {
+      console.log("그냥");
+      this.setState({
+        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+        bgtGrCd: dataList.bgtGrCd,
+        bgtGrNm: dataList.bgtGrNm,
+      });
+    }
+    console.log(this.state);
   };
 
   handleClickDivSearchIcon = () => {
@@ -234,6 +254,7 @@ class BgtICFComponent extends Component {
       gisu: this.state.gisuText,
       bgtGrCd: this.state.bgtGrCd,
       bgtGrNm: this.state.bgtGrNm,
+      bgtGrCdList: this.state.bgtGrCdList,
       bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
@@ -249,7 +270,7 @@ class BgtICFComponent extends Component {
     });
   };
 
-  componentWillMount() {
+  componentDidMount() {
     BgtICFService.findGisuByCoCd({
       accessToken: this.props.accessToken,
       user: this.props.user,
@@ -263,6 +284,7 @@ class BgtICFComponent extends Component {
       );
 
       this.setState({
+        gisu: gisuRows[gisuRows.length - 1],
         gisuRows: gisuRows,
         gisuRangeRows: gisuRangeRows,
         gisuText: gisuRows[gisuRows.length - 1],
@@ -279,6 +301,7 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
+    console.log("zzzzzzzzzzzzzzz")
     console.log(e.row);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
@@ -292,7 +315,7 @@ class BgtICFComponent extends Component {
     }
 
     if (e.key == "Backspace") {
-      this.setState({ divTextField: "", divCd: "" });
+      this.setState({ divTextField: "", divCd: "", bgtCDRows: [] });
     }
   };
 
@@ -302,7 +325,7 @@ class BgtICFComponent extends Component {
     }
 
     if (e.key == "Backspace") {
-      this.setState({ bgtGrTextField: "", bgtGrCd: "" });
+      this.setState({ bgtGrTextField: "", bgtGrCd: "", bgtCDRows: [] });
     }
   };
 
@@ -312,9 +335,9 @@ class BgtICFComponent extends Component {
     }
 
     if (e.key == "Backspace") {
-      this.setState({ bgtCDTextField: "", bgtCd: "" });
+      this.setState({ bgtCDTextField: "", bgtCd: "", bgtCDRows: [] });
     }
-  }
+  };
 
   render() {
     const { divTextField, bgtCDTextField } = this.state;
