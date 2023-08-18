@@ -32,7 +32,7 @@ class DataGridComponent extends Component {
     console.log("tet");
     console.log(this.state.rows);
     this.footerRef.current.sumCarrAm(this.state.rows);
-  }
+  };
 
   SetPjtTextField = async (data) => {
     const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
@@ -75,12 +75,11 @@ class DataGridComponent extends Component {
     if (params.reason === GridCellEditStopReasons.cellFocusOut) {
       event.defaultMuiPrevented = false;
     }
-
   };
 
   processRowUpdate = async (newRow) => {
-    console.log("cell")
-    console.log(newRow)
+    console.log("cell");
+    console.log(newRow);
 
     // const updatedRows = this.state.rows.map((row) => {
     //   if (row.id === this.state.selectedRowId) {
@@ -96,7 +95,8 @@ class DataGridComponent extends Component {
         newRow.mgtNm !== "" &&
         newRow.carrAm1 !== "" &&
         newRow.carrAm2 !== "" &&
-        newRow.carrAm3 !== ""
+        newRow.carrAm3 !== "" &&
+        newRow.remDc !== ""
       ) {
         console.log("저장");
         console.log(newRow);
@@ -123,16 +123,11 @@ class DataGridComponent extends Component {
       }));
       this.updateBgtICF(updatedRow);
 
-      
-
-      
       return updatedRow;
     }
 
     console.log(this.state.rows);
     // const updatedRow = { ...newRow, isNew: false };
-
-    
   };
 
   handleGetBgtICFList() {
@@ -182,6 +177,7 @@ class DataGridComponent extends Component {
         });
 
         this.setState({ rows: rowsWithId });
+        this.footerRef.current.sumCarrAm(rowsWithId);
       });
     });
   };
@@ -209,7 +205,7 @@ class DataGridComponent extends Component {
           carrAm: "",
           carrAm1: "",
           carrAm2: "",
-          carrAm3: "",  
+          carrAm3: "",
           remDc: "",
           bgtTy: "",
           modifyId: "",
@@ -222,7 +218,7 @@ class DataGridComponent extends Component {
   };
 
   insertBgtICF = (row) => {
-    console.log("insert")
+    console.log("insert");
     console.log(row);
     if (
       row.mgtCd !== "" &&
@@ -242,7 +238,7 @@ class DataGridComponent extends Component {
           accessToken: this.props.accessToken,
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
-        }).then(async (response) => {
+        }).then((response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
             id: row.sq,
@@ -264,7 +260,8 @@ class DataGridComponent extends Component {
             isNew: true,
           });
 
-          await this.setState({ rows: rowsWithId });
+          this.setState({ rows: rowsWithId });
+          this.footerRef.current.sumCarrAm(rowsWithId);
         });
       });
     }
@@ -304,35 +301,24 @@ class DataGridComponent extends Component {
         });
 
         this.setState({ rows: rowsWithId });
+        this.footerRef.current.sumCarrAm(rowsWithId);
       });
     });
   };
 
   handleRowClick = async (params) => {
-    console.log("row");
-    console.log(params.row);
 
     this.props.setSelectedRowId(params.row);
 
-    await this.setState({ selectedRowId: params.row.id, selectedRow: params.row });
-    console.log(this.state.selectedRowId);
+    await this.setState({
+      selectedRowId: params.row.id,
+      selectedRow: params.row,
+    });
 
-    console.log(this.state.selectedRow);
   };
 
   render() {
     const { rows, selectedRowId } = this.state;
-
-    const currencyFormatter = new Intl.NumberFormat("ko-KR", {
-      /* style: "currency", currency: "KRW", */
-    });
-
-    const krAmount = {
-      type: "number",
-      width: 130,
-      valueFormatter: ({ value }) => currencyFormatter.format(value),
-      cellClassName: "font-tabular-nums",
-    };
 
     const columns = [
       {
@@ -374,7 +360,6 @@ class DataGridComponent extends Component {
         headerName: "이월금액",
         headerAlign: "center",
         editable: false,
-        ...krAmount,
         renderCell: (params) => {
           return (
             <Grid
@@ -387,7 +372,7 @@ class DataGridComponent extends Component {
               params.row.carrAm2 === "" &&
               params.row.carrAm3 === ""
                 ? ""
-                : (params.row.carrAm1 + params.row.carrAm2 - params.row.carrAm3)
+                : (params.row.carrAm1 + params.row.carrAm2 + params.row.carrAm3)
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Grid>
@@ -400,7 +385,6 @@ class DataGridComponent extends Component {
         headerName: "사고이월금액",
         headerAlign: "center",
         editable: true,
-        ...krAmount,
         cellClassName: "carrAm1",
         renderCell: (params) => {
           return (
@@ -425,7 +409,6 @@ class DataGridComponent extends Component {
         headerName: "명시이월금액",
         headerAlign: "center",
         editable: true,
-        ...krAmount,
         cellClassName: "carrAm2",
         renderCell: (params) => {
           return (
@@ -450,7 +433,6 @@ class DataGridComponent extends Component {
         headerName: "예비이월금액",
         headerAlign: "center",
         editable: true,
-        ...krAmount,
         cellClassName: "carrAm3",
         renderCell: (params) => {
           return (
@@ -516,7 +498,7 @@ class DataGridComponent extends Component {
             borderBottom: "2px solid #EAEAEA",
             "& .MuiDataGrid-cell:focus-within": {
               outline: "none",
-              border: "1px solid #1976d2"
+              border: "1px solid #1976d2",
             },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold",
@@ -610,7 +592,6 @@ class CustomFooterStatusComponent extends Component {
   }
 
   sumCarrAm = (rows) => {
-
     let sumCarrAm1 = 0;
     let sumCarrAm2 = 0;
     let sumCarrAm3 = 0;
@@ -621,13 +602,24 @@ class CustomFooterStatusComponent extends Component {
       sumCarrAm3 += row.carrAm3 === "" ? 0 : Number(row.carrAm3);
     });
 
-    this.setState({sumCarrAm: sumCarrAm1+sumCarrAm2-sumCarrAm3, sumCarrAm1: sumCarrAm1, sumCarrAm2: sumCarrAm2, sumCarrAm3: sumCarrAm3});
+    this.setState({
+      sumCarrAm: sumCarrAm1 + sumCarrAm2 + sumCarrAm3,
+      sumCarrAm1: sumCarrAm1,
+      sumCarrAm2: sumCarrAm2,
+      sumCarrAm3: sumCarrAm3,
+    });
   };
 
   render() {
-    const { rows } = this.props;
     return (
-      <Box container sx={{ mt: 2 }}>
+      <Box
+        container
+        sx={{
+          mt: 2,
+          // height: 120,
+          border: "none",
+        }}
+      >
         <DataGrid
           showCellVerticalBorder
           hideFooter
@@ -703,9 +695,6 @@ class CustomFooterStatusComponent extends Component {
     );
   }
 }
-
-
-
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
   DataGridComponent

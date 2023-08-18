@@ -1,17 +1,16 @@
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, Button, Grid, InputAdornment, Select, TextField, MenuItem } from "@mui/material";
+import { Button, Grid, InputAdornment, MenuItem, Select } from "@mui/material";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import BgtCDService from "../../service/BgtCDService";
 import { SET_GROUPCD } from '../../store/BgtCDStore';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect } from "../common/style/CommonStyle";
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField } from "../common/style/CommonStyle";
 import BgtCDDatagrid from "./BgtCDDatagrid";
 import BgtCDDetailInfo from "./BgtCDDetailInfo";
 import BgtCDDropDownBox from "./BgtCDDropDownBox";
 import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
-import BgtCDGroupReg from "./modal/BgtCDGroupReg";
 import BgtCDSubSearch from "./modal/BgtCDSubSearch";
 import BgtGrSearch from "./modal/BgtGrSearch";
 class BgtCD extends Component {
@@ -304,7 +303,7 @@ class BgtCD extends Component {
     this.BgtCDDevFgCustom.current.handleUp();
   }
   BgtCDAddSubDialogOpen = () => {
-    this.BgtCDAddSubDialog.current.initStart();
+    this.BgtCDAddSubDialog.current.handleUp();
   }
   BgtCDGroupRegOpen = () => {
     this.BgtCDGroupReg.current.handleUp();
@@ -473,8 +472,6 @@ class BgtCD extends Component {
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
         <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
-        {/*예산그룹등록 */}
-        <BgtCDGroupReg ref={this.BgtCDGroupReg} />
         {/*그룹레벨설정 */}
         <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch} />
         <BgtGrSearch setBgtGrCdText={this.setBgtGrCdText} ref={this.BgtGrSearch} />
