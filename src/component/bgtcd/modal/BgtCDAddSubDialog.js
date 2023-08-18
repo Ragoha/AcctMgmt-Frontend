@@ -1,20 +1,21 @@
-import CloseIcon from "@mui/icons-material/Close";
-import { Button, Grid, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { randomId } from "@mui/x-data-grid-generator";
+import dayjs from "dayjs";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtCDService from "../../../service/BgtCDService";
+import BgtGrService from "../../../service/BgtGrService";
 import {
+  CustomButtonGridContainer,
+  CustomCloseIcon,
   CustomConfirmButton,
   CustomDialogActions,
   CustomDialogContent,
   CustomDialogTitle,
-  CustomLargeButtonGridContainer,
   CustomShortDataGridContainer,
-  CustomShortDialog,
-  CustomShortFormGridContainer,
+  CustomShortDialog
 } from "../../common/style/CommonDialogStyle";
-import SearchIcon from '@mui/icons-material/Search';
-import { CustomDataGrid } from "../../common/style/CommonStyle";
 class BgtCDADDSubDialog extends Component {
   constructor(props) {
     super(props);
@@ -23,106 +24,120 @@ class BgtCDADDSubDialog extends Component {
       columns: [
         {
           field: "bgtGrCd",
-          headerName: "그룹코드",
+          headerName: "예산과목그룹코드",
           flex: 1,
           headerAlign: "center",
-          editable: true
+          editable: true,
         },
         {
           field: "bgtGrNm",
-          headerName: "그룹명",
+          headerName: "예산과목그룹명",
           flex: 1,
           headerAlign: "center",
-          editable: true
+          editable: true,
         },
       ],
-      rows: [],
+      bgtGrRows: [],
+      selectedRow: [],
     };
   }
-  initStart = () => {
-    const { coCd } = this.props.userInfo;
-    BgtCDService.getBgtGrData(coCd)
-      .then((fetchedRows) => {
-        console.log("여긴 BgtCDDevFgCustom 컴포넌트 마운트");
-        // 받아온 rows 데이터에 isEditable 속성을 false로 설정합니다.
-        const updatedRows = fetchedRows.map(row => ({ ...row, editable: false }));
-        // 새로운 항목도 isEditable을 false로 설정합니다.
-        updatedRows.push({ coCd: coCd, bgtGrCd: '', editable: true });
-        this.setState({ rows: updatedRows });
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-    this.handleUp();
-  }
-  clickedRow =(params)=>{
-    const {bgtGrCd} =params.row;
-    this.setState({bgtGrCd :bgtGrCd },()=>console.log(this.state.bgtGrCd))
 
-  }
-  processRowUpdate = (newRow) => {
-    console.log('processRowupdate');
-    console.log(newRow);
-    const { empId } = this.props.userInfo;
-    // 새로운 행이 isEditable: true 속성을 가진 마지막 행인지 확인
-    const isLastRow = this.state.rows[this.state.rows.length - 1].editable;
-
-    if (isLastRow) {
-      // 입력된 새 행을 업데이트
-      const updatedRow = { ...newRow, insertId: empId, editable: false, isNew: false };
-      console.log('업데이트')
-      console.log(updatedRow)
-
-      this.setState((prevState) => {
-        // 기존 행들을 유지하면서 마지막 빈 행을 제거하고, 새로운 행을 추가
-        const newRows = [...prevState.rows.slice(0, prevState.rows.length - 1), updatedRow];
-        return { rows: newRows };
-      }, () => {
-        const { coCd } = this.props.userInfo;
-
-        // 새로운 빈 행을 마지막에 추가
-        this.setState({
-          rows: [...this.state.rows, { coCd: coCd, bgtGrCd: '', editable: true }]
-        });
-      });
-    } else {
-      // 기존 행이 업데이트되는 경우 (여기서는 일단 간단하게 처리하였습니다)
-      const updatedRow = { ...newRow, isNew: false };
-      this.setState((prevState) => ({
-        rows: prevState.rows.map((row) => row.bgtGrCd === newRow.bgtGrCd ? updatedRow : row)
+  initBgtGr = () => {
+    BgtGrService.findBgtGrByCoCd({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+    }).then((response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: randomId(),
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
       }));
-    }
-
-    return newRow;
-  };
-  deleteBgtGr=()=>{
-    const {bgtGrCd} =this.state;
-    const {coCd} =this.props.userInfo;
-    const {accessToken} = this.props;
-    const data ={
-      coCd:coCd,
-      bgtGrCd:bgtGrCd
-    }
-    BgtCDService.deleteBgtGr(data,accessToken)
-    BgtCDService.getBgtGrData(coCd)
-    .then((fetchedRows) => {
-      console.log("여긴 BgtCDDevFgCustom 컴포넌트 마운트");
-      // 받아온 rows 데이터에 isEditable 속성을 false로 설정합니다.
-      const updatedRows = fetchedRows.map(row => ({ ...row, editable: false }));
-      // 새로운 항목도 isEditable을 false로 설정합니다.
-      updatedRows.push({ coCd: coCd, bgtGrCd: '', editable: true });
-      this.setState({ rows: updatedRows });
-
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
+      bgtGrRows.push({
+        id: randomId(),
+        bgtGrCd: "",
+        bgtGrNm: "",
+        isNew: true,
+      });
+      this.setState({ bgtGrRows: bgtGrRows });
     });
-    this.handleUp();
+  };
+
+  clickedRow = (params) => {
+    const { bgtGrCd } = params.row;
+    this.setState({ bgtGrCd: bgtGrCd }, () => console.log(this.state.bgtGrCd));
+  };
+  processRowUpdate = (newRow) => {
+    console.log(newRow);
+
+    if (newRow.isNew) {
+      if (newRow.bgtGrCd !== "" && newRow.bgtGrNm !== "") {
+        console.log("저장");
+        this.insertBgtGr(newRow);
+      }
+
+      // this.setState((prevState) => ({
+      //   rows: prevState.rows.map((row) =>
+      //     row.id === newRow.id ? newRow : row
+      //   ),
+      // }));
+
+      return newRow;
+    } else {
+      console.log("수정");
+      const updatedRow = { ...newRow, isNew: false };
+
+      //   this.setState((prevState) => ({
+      //     rows: prevState.rows.map((row) =>
+      //       row.id === newRow.id ? updatedRow : row
+      //     ),
+      //   }));
+      this.updateBgtGr(updatedRow);
+
+      return updatedRow;
+    }
+  };
+
+  insertBgtGr = (data) => {
+    BgtGrService.insertBgtGr({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      bgtGr: data,
+    }).then(() => {
+      this.initBgtGr();
+    });
   }
+
+  updateBgtGr = (data) => {
+    BgtGrService.updateBgtGr({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      bgtGr: data,
+    }).then(() => {
+      this.initBgtGr();
+    });
+  };
+
+  deleteBgtGr = () => {
+    console.log(this.state.selectedRow);
+    BgtGrService.deleteBgtGr({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      bgtGrCd: this.state.selectedRow.bgtGrCd,
+    }).then(() => {
+      this.initBgtGr();
+    });
+  };
+
+  handleClickRow = (params) => {
+    this.setState({ selectedRow: params.row }, () => {
+      console.log(this.state.selectedRow);
+    });
+  };
 
   /*default function */
   handleUp = () => {
     this.setState({ open: true });
+    this.initBgtGr();
   };
 
   handleDown = () => {
@@ -130,72 +145,78 @@ class BgtCDADDSubDialog extends Component {
   };
 
   handleClickConfirm = () => {
-    console.log('확인버튼 ')
-    console.log(this.state.rows)
+    console.log("확인버튼 ");
+    console.log(this.state.rows);
     const { accessToken } = this.props;
     const data = this.state.rows;
     BgtCDService.insertBgtGr(data, accessToken);
     this.handleDown();
-  }
+  };
 
   render() {
-    const { open, columns, rows } = this.state;
+    const { open, columns, bgtGrRows } = this.state;
 
     return (
-      <CustomShortDialog open={open}>
-        <CustomDialogTitle>
-          예산그룹등록
-          <IconButton size="small" onClick={this.handleDown}>
-            <CloseIcon sx={{ color: "white" }} />
+      <CustomShortDialog
+        open={open}
+        PaperProps={{ sx: { width: 500, height: 600 } }}
+      >
+        <CustomDialogTitle sx={{ fontWeight: "bold" }}>
+          예산과목그룹 등록
+          <IconButton
+            size="small"
+            onClick={() => this.setState({ open: false })}
+          >
+            <CustomCloseIcon />
           </IconButton>
         </CustomDialogTitle>
         <CustomDialogContent>
-          <CustomShortDataGridContainer>
-            <Grid item xs={12}>
-              <CustomDataGrid
-                columns={columns}
-                rows={rows}
-                getRowId={(row) => row.bgtGrCd}
-                showColumnVerticalBorder={true}
-                showCellVerticalBorder={true} // 각 셀마다 영역주기
-                editMode="row"
-                onRowClick={this.clickedRow}
-                processRowUpdate={this.processRowUpdate}
-                onProcessRowUpdateError={(error) => { }}
-                hideFooter
-              />
-            </Grid>
+          <Grid container direction="column" alignItems="flex-end">
+            <Button
+              sx={{ mt: 1, mb: 1, mr: 2 }}
+              variant="outlined"
+              onClick={this.deleteBgtGr}
+            >
+              삭 제
+            </Button>
+          </Grid>
+
+          <CustomShortDataGridContainer container>
+            <DataGrid
+              sx={{ borderTop: "2px solid #000" }}
+              rows={bgtGrRows}
+              columns={columns}
+              showColumnVerticalBorder={true}
+              showCellVerticalBorder={true}
+              processRowUpdate={this.processRowUpdate}
+              onRowClick={this.handleClickRow}
+              hideFooter
+            />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
         <CustomDialogActions>
-          <CustomLargeButtonGridContainer
-            container
-            justifyContent="flex-end"
-            sx={{ maxWidth: "1168px", ml: 2, mr: 2, mb: 2 }}
-          >
-            <CustomConfirmButton
-              variant="outlined"
-              onClick={this.handleClickConfirm}
-            >
-              저장
+          <CustomButtonGridContainer container justifyContent="flex-end">
+            <CustomConfirmButton variant="outlined" onClick={this.handleDown}>
+              확인
             </CustomConfirmButton>
-            <Button variant="outlined" onClick={this.deleteBgtGr} sx={{ mr: "16px" }}>
-              삭제
-            </Button>
-            <Button variant="outlined" onClick={this.handleDown} >
+
+            <Button
+              variant="outlined"
+              onClick={() => this.setState({ open: false })}
+            >
               취소
             </Button>
-          </CustomLargeButtonGridContainer>
+          </CustomButtonGridContainer>
         </CustomDialogActions>
       </CustomShortDialog>
     );
   }
 }
 const mapStateToProps = (state) => ({
-  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
-  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
-  //groupcd: state.BgtCDStore || {}
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {}
 });
+
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
   BgtCDADDSubDialog
 );

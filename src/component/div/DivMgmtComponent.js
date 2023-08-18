@@ -19,6 +19,7 @@ import CompanyService from '../../service/CompanyService';
 import DivsService from '../../service/DivsService';
 import AddressComponent from './dialog/AddressComponent';
 import DivDialogComponent from './dialog/DivDialogComponent';
+import Swal from 'sweetalert2';
 
 class DivMgmtComponent extends Component {
   constructor(props) {
@@ -30,8 +31,8 @@ class DivMgmtComponent extends Component {
       focused: null,
       cards: [],
       cardCount: 0,
-      coCd: 0,
-      divCd: 0,
+      coCd: '',
+      divCd: '',
       coNm: '',
       divNm: '',
       insertId: '', //등록자
@@ -56,6 +57,60 @@ class DivMgmtComponent extends Component {
       isChanged: false,
       isDivCdEditable: false
     }
+  }
+
+  //icon = success, error, warning, info, question | title : "알럿창에 띄울 멘트" | timer:안넣으면 1500이 기본 값
+  //ex)this.showCommonToast(Success, "성공", 1300);
+  showCommonToast = (icon, title, timer) => {
+    const commonToast = Swal.mixin({
+      toast: true,
+      position: 'center-center',
+      showConfirmButton: false,
+      timer: timer ? timer : 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+
+    commonToast.fire({
+      icon: icon,
+      title: title
+    });
+  }
+  //icon = success, error, warning, info, question | title : "알럿창에 띄울 제목" | text:알럿창에 띄울 멘트
+  showCommonSwal = (title, text, icon) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      color: '#716add',
+      background: '#FCFCFC', // 원하는 배경색으로 설정
+      customClass: {
+        container: 'custom-swal-container',
+        popup: 'custom-swal-popup',
+      },
+    });
+  }
+
+  showCommonSwalYn = (title, text, icon, yesButtonText, callback) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: yesButtonText
+    }).then((result) => {
+      if (result.isConfirmed) {
+        callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
+      }
+      else {
+        callback(false); // 취소 버튼을 눌렀을 때 콜백 함수를 호출하고 false를 전달
+      }
+    });
   }
 
   componentDidMount() {
@@ -85,6 +140,7 @@ class DivMgmtComponent extends Component {
         const divZip = response.data[0].divZip;
         const divAddr = response.data[0].divAddr;
         const divAddr1 = response.data[0].divAddr1;
+        const insertDt = response.data[0].insertDt;
 
         this.setState({
           cardCount: cardCount, // state에 값을 저장
@@ -104,6 +160,7 @@ class DivMgmtComponent extends Component {
           divZip: divZip,
           divAddr: divAddr,
           divAddr1: divAddr1,
+          insertDt: insertDt,
           DivdialTextField: ''
         })
         CompanyService.getCompany({
@@ -202,23 +259,27 @@ class DivMgmtComponent extends Component {
 
   handleBlur = (e) => {
     const { divCd } = this.state;
-    const newDivCd = parseInt(e.target.value)
+    const newDivCd = e.target.value;
     const { divCdList } = this.state;
 
-    divCdList.includes(newDivCd) ?
+    if (divCdList.includes(newDivCd)) {
+      this.showCommonToast("warning", "사용중인 사업장코드입니다.");
       this.setState({
         divCd: ''
-      }) : (this.setState({
-        divCd: divCd
-      }))
-
+      });
+    } else {
+      // this.showCommonToast("success", "사용가능한 회사코드입니다.");
+      this.setState({
+        divCd: newDivCd
+      });
+    }
   }
 
   addCardButton = () => {
     console.log(this.state.cardCount);
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
     if (this.state.divCdList.includes('0000')) {
-      alert("미등록 사업장이 존재합니다.");
+      this.showCommonToast('warning', '미등록 사업장이 존재합니다.');
     } else {
       const newCardCount = this.state.cardCount + 1;
       const newDivCdList = [...this.state.divCdList, '0000'];
@@ -253,6 +314,7 @@ class DivMgmtComponent extends Component {
             divZip: '',
             divAddr: '',
             divAddr1: '',
+            insertDt: '',
             isDivCdEditable: true
           })
         }).catch((error) => {
@@ -268,155 +330,168 @@ class DivMgmtComponent extends Component {
 
   comInfo = () => {
     const { coNm } = this.state;
-    CompanyService.getCoNm({
-      accessToken: this.props.accessToken,
-      coNm: coNm
-    })
-      .then((response) => {
-        const coCd = response.data[0].coCd
-        this.setState({
-          coCd: coCd
-        })
-        CompanyService.getCompany({
+
+    this.showCommonSwalYn("정보", coNm + " 회사정보를 불러오겠습니까?", "info", "확인", (confirmed) => {
+      if (confirmed) {
+        CompanyService.getCoNm({
           accessToken: this.props.accessToken,
-          coCd: coCd
+          coNm: coNm
         })
           .then((response) => {
-            // const newDivNmList = response.data.map((item) => item.divNm);
-            const coCdList = response.data.map((item) => item.coCd);
-            const coNmList = response.data.map((item) => item.coNm);
-
-            const coCd = response.data[0].coCd;
-            const coNm = response.data[0].coNm;
-            const jongmok = response.data[0].jongmok;
-            const businessType = response.data[0].businessType;
-            const ceoNm = response.data[0].ceoNm;
-            const coZip = response.data[0].coZip;
-            const coAddr = response.data[0].coAddr;
-            const coAddr1 = response.data[0].coAddr1;
+            const coCd = response.data[0].coCd
             this.setState({
-              coCdList: coCdList,
-              coNmList: coNmList,
-              // divNmList: newDivNmList,
-              focused: '0000',
-              coCd: coCd,
-              coNm: coNm,
-              divCd: '',
-              divNm: '',
-              ceoNm: ceoNm,
-              jongmok: jongmok,
-              businessType: businessType,
-              divNb: '',
-              toNb: '',
-              divZip: coZip,
-              divAddr: coAddr,
-              divAddr1: coAddr1
+              coCd: coCd
             })
-          })
-      }).catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        // alert("중복된 회사 또는 모두 입력해주세요");
-      })
-  }
-
-
-  insertDivs = () => {
-    const { coNm } = this.state;
-    const userInfo = this.props.userInfo;
-    const { empId, empEmail } = userInfo;
-    CompanyService.getCoNm({
-      accessToken: this.props.accessToken,
-      coNm: coNm
-    })
-      .then((response) => {
-        const coCd = response.data[0].coCd
-
-        this.setState({
-          coCd: coCd
-        })
-
-        const { divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, insertId } = this.state;
-        return DivsService.insertDivs({
-          accessToken: this.props.accessToken,
-          coCd: coCd,
-          divCd: divCd,
-          divNm: divNm,
-          ceoNm: ceoNm,
-          jongmok: jongmok,
-          businessType: businessType,
-          divNb: divNb,
-          toNb: toNb,
-          divZip: divZip,
-          divAddr: divAddr,
-          divAddr1: divAddr1,
-          insertId: empId
-        })
-
-          .then((response) => {
-            console.log(response.data);
-            window.confirm('사업장등록 완료!');
-
-            console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
-            this.setState({ coCd: coCd });
-            DivsService.getDivision({
+            CompanyService.getCompany({
               accessToken: this.props.accessToken,
               coCd: coCd
             })
               .then((response) => {
+                // const newDivNmList = response.data.map((item) => item.divNm);
                 const coCdList = response.data.map((item) => item.coCd);
-                const divCdList = response.data.map((item) => item.divCd);
-                const divNmList = response.data.map((item) => item.divNm);
-                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+                const coNmList = response.data.map((item) => item.coNm);
 
                 const coCd = response.data[0].coCd;
-                const divCd = response.data[0].divCd;
-                const divNm = response.data[0].divNm;
-                const ceoNm = response.data[0].ceoNm;
+                const coNm = response.data[0].coNm;
                 const jongmok = response.data[0].jongmok;
                 const businessType = response.data[0].businessType;
-                const divNb = response.data[0].divNb;
-                const toNb = response.data[0].toNb;
-                const divZip = response.data[0].divZip;
-                const divAddr = response.data[0].divAddr;
-                const divAddr1 = response.data[0].divAddr1;
-
+                const ceoNm = response.data[0].ceoNm;
+                const coZip = response.data[0].coZip;
+                const coAddr = response.data[0].coAddr;
+                const coAddr1 = response.data[0].coAddr1;
                 this.setState({
-                  cardCount: cardCount, // state에 값을 저장
                   coCdList: coCdList,
-                  divCdList: divCdList,
-                  divNmList: divNmList,
-
-                  focused: coCdList[cardCount - 1],
+                  coNmList: coNmList,
+                  // divNmList: newDivNmList,
+                  focused: '0000',
                   coCd: coCd,
-                  divCd: divCd,
-                  divNm: divNm,
+                  coNm: coNm,
+                  divCd: '',
+                  divNm: '',
                   ceoNm: ceoNm,
                   jongmok: jongmok,
                   businessType: businessType,
-                  divNb: divNb,
-                  toNb: toNb,
-                  divZip: divZip,
-                  divAddr: divAddr,
-                  divAddr1: divAddr1,
-                  insertId: insertId,
-                  isDivCdEditable: false
+                  divNb: '',
+                  toNb: '',
+                  divZip: coZip,
+                  divAddr: coAddr,
+                  divAddr1: coAddr1
                 })
-                CompanyService.getCompany({
-                  accessToken: this.props.accessToken,
-                  coCd: coCd
-                })
-                  .then((response) => {
-                    const coNm = response.data[0].coNm;
-
-                    this.setState({
-                      coNm: coNm
-                    })
-                  })
               })
+          }).catch((error) => {
+            // 오류 발생 시의 처리
+            console.error(error);
+            this.showCommonToast("error", "실패하였습니다.");
           })
-      })
+      }
+    })
+  }
+
+
+  insertDivs = () => {
+    // const { coNm } = this.state;
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    // CompanyService.getCoNm({
+    //   accessToken: this.props.accessToken,
+    //   coNm: coNm
+    // })
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd })
+
+    const { divCd, divNm, ceoNm, jongmok, businessType, divNb, toNb, divZip, divAddr, divAddr1, insertId, cardCount } = this.state;
+
+    if (!this.state.divCdList.includes('0000')) {
+      this.showCommonToast("error", "등록할 사업장을 추가해주세요");
+    } else {
+      const impValues = { divCd };
+      if (Object.values(impValues).some((value) => value === "")) {
+        this.showCommonToast("warning", "필수 값을 입력하세요");
+        return;
+      }
+      //showCommonSwalYn = (title, text, icon, yesButtonText)
+      this.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
+        if (confirmed) {
+          // confirmed가 true인 경우에만 저장 로직을 실행
+          return DivsService.insertDivs({
+            accessToken: this.props.accessToken,
+            coCd: coCd,
+            divCd: divCd,
+            divNm: divNm,
+            ceoNm: ceoNm,
+            jongmok: jongmok,
+            businessType: businessType,
+            divNb: divNb,
+            toNb: toNb,
+            divZip: divZip,
+            divAddr: divAddr,
+            divAddr1: divAddr1,
+            insertId: empId
+          })
+
+            .then((response) => {
+              console.log(response.data);
+              this.showCommonToast("success", "사업장 등록되었습니다.");
+
+              console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+              this.setState({ coCd: coCd });
+              DivsService.getDivision({
+                accessToken: this.props.accessToken,
+                coCd: coCd
+              })
+                .then((response) => {
+                  console.log(response.data)
+                  const coCdList = response.data.map((item) => item.coCd);
+                  const divCdList = response.data.map((item) => item.divCd);
+                  const divNmList = response.data.map((item) => item.divNm);
+                  const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                  this.setState({
+                    cardCount: cardCount, // state에 값을 저장
+                    coCdList: coCdList,
+                    divCdList: divCdList,
+                    divNmList: divNmList,
+
+                    focused: divCdList[cardCount - 1],
+                    coCd: coCd,
+                    divCd: divCd,
+                    divNm: divNm,
+                    ceoNm: ceoNm,
+                    jongmok: jongmok,
+                    businessType: businessType,
+                    divNb: divNb,
+                    toNb: toNb,
+                    divZip: divZip,
+                    divAddr: divAddr,
+                    divAddr1: divAddr1,
+                    insertId: insertId,
+                    isDivCdEditable: false
+                  })
+                  CompanyService.getCompany({
+                    accessToken: this.props.accessToken,
+                    coCd: coCd
+                  })
+                    .then((response) => {
+                      const coNm = response.data[0].coNm;
+
+                      this.setState({
+                        coNm: coNm
+                      })
+                    })
+                    .catch((error) => {
+                      // 오류 발생 시의 처리
+                      console.error(error);
+                      this.showCommonToast('warning', '사업장 등록에 실패했습니다.');
+                    });
+                })
+            })
+        }
+      }
+      )
+    }
+
     //       const coCdList = response.data.map((item) => item.coCd);
     //       const divCdList = response.data.map((item) => item.divCd);
     //       const divNmList = response.data.map((item) => item.divNm);
@@ -496,7 +571,7 @@ class DivMgmtComponent extends Component {
           insertDt: '',
           isDivCdEditable: true
         }) :
-        
+
         DivsService.getDiv({
           accessToken: this.props.accessToken,
           coCd: coCd,
@@ -529,7 +604,7 @@ class DivMgmtComponent extends Component {
               divZip: divZip,
               divAddr: divAddr,
               divAddr1: divAddr1,
-              insertDt:  insertDt,
+              insertDt: insertDt,
               isDivCdEditable: false
             })
             CompanyService.getCompany({
@@ -554,6 +629,7 @@ class DivMgmtComponent extends Component {
 
   helpClick = () => {
     this.divDialogRef.current.handleUp();
+    this.divDialogRef.current.setDivKeyword(this.state.DivdialTextField);
   };
 
 
@@ -567,7 +643,7 @@ class DivMgmtComponent extends Component {
       divCd: data.divCd  //밑에 coCd 넘겨주기
     });
     this.searchClick(data.divCd);    //여기에서 coCd같이 보내야함...
-  }; 
+  };
 
 
   searchClick = (divCd) => {
@@ -577,7 +653,7 @@ class DivMgmtComponent extends Component {
 
     this.setState({ coCd: coCd })
 
-    DivsService.getDiv({       
+    DivsService.getDiv({
       accessToken: this.props.accessToken,
       coCd: coCd,
       divCd: divCd
@@ -622,16 +698,23 @@ class DivMgmtComponent extends Component {
           divAddr1: divAddr1
         })
       })
+    CompanyService.getCompany({
+      accessToken: this.props.accessToken,
+      coCd: coCd
+    })
+      .then((response) => {
+        const coNm = response.data[0].coNm;
+
+        this.setState({
+          coNm: coNm
+        })
+      })
       .catch((error) => {
         // 오류 발생 시의 처리
         console.error(error);
         // alert("중복된 회사 또는 모두 입력해주세요");
       })
   }
-
-  // searchName =(e)=>{
-  //   this.setState({CodialTextField : e.target.value});
-  // }
 
   setDivZipAddr = (data) => {
     this.setState({ divZip: data.divZip });
@@ -662,7 +745,7 @@ class DivMgmtComponent extends Component {
     })
       .then((response) => {
         console.log(response.data);
-        window.confirm('업데이트 완료!');
+        this.showCommonToast("success", "수정되었습니다.");
 
         console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
@@ -676,18 +759,6 @@ class DivMgmtComponent extends Component {
             const divCdList = response.data.map((item) => item.divCd);
             const divNmList = response.data.map((item) => item.divNm);
             const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-            const coCd = response.data[0].coCd;
-            const divCd = response.data[0].divCd;
-            const divNm = response.data[0].divNm;
-            const ceoNm = response.data[0].ceoNm;
-            const jongmok = response.data[0].jongmok;
-            const businessType = response.data[0].businessType;
-            const divNb = response.data[0].divNb;
-            const toNb = response.data[0].toNb;
-            const divZip = response.data[0].divZip;
-            const divAddr = response.data[0].divAddr;
-            const divAddr1 = response.data[0].divAddr1;
 
             this.setState({
               cardCount: cardCount, // state에 값을 저장
@@ -720,87 +791,122 @@ class DivMgmtComponent extends Component {
                   coNm: coNm
                 })
               })
+              .catch((error) => {
+                // 오류 발생 시의 처리
+                console.error(error);
+                this.showCommonToast("warning", "수정에 실패하였습니다.");
+              });
           })
       })
   }
 
   deleteDivs = () => {  //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { divCd } = this.state;
-    if(divCd === ''){
-      window.confirm("사업장삭제 완료!");
-      this.componentDidMount();
-    }else{
-    DivsService.deleteDivs({
-      accessToken: this.props.accessToken,
-      divCd: divCd
-    })
-      .then((response) => {
-        console.log(response.data);
-        window.confirm('사업장삭제 완료!');
-
-        const userInfo = this.props.userInfo;
-        const { coCd, empId, empEmail } = userInfo;
-        console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
-
-        this.setState({ coCd: coCd });
-        DivsService.getDivision({
-          accessToken: this.props.accessToken,
-          coCd: coCd
-        })
-          .then((response) => {
-            const coCdList = response.data.map((item) => item.coCd);
-            const divCdList = response.data.map((item) => item.divCd);
-            const divNmList = response.data.map((item) => item.divNm);
-            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-            const coCd = response.data[0].coCd;
-            const divCd = response.data[0].divCd;
-            const divNm = response.data[0].divNm;
-            const ceoNm = response.data[0].ceoNm;
-            const jongmok = response.data[0].jongmok;
-            const businessType = response.data[0].businessType;
-            const divNb = response.data[0].divNb;
-            const toNb = response.data[0].toNb;
-            const divZip = response.data[0].divZip;
-            const divAddr = response.data[0].divAddr;
-            const divAddr1 = response.data[0].divAddr1;
-
-            this.setState({
-              cardCount: cardCount, // state에 값을 저장
-              coCdList: coCdList,
-              divCdList: divCdList,
-              divNmList: divNmList,
-              focused: divCdList[0],
-              coCd: coCd,
-              divCd: divCd,
-              divNm: divNm,
-              ceoNm: ceoNm,
-              jongmok: jongmok,
-              businessType: businessType,
-              divNb: divNb,
-              toNb: toNb,
-              divZip: divZip,
-              divAddr: divAddr,
-              divAddr1: divAddr1,
-              DivdialTextField:''
-            })
-            CompanyService.getCompany({
-              accessToken: this.props.accessToken,
-              coCd: coCd
-            })
-              .then((response) => {
-                const coNm = response.data[0].coNm;
-
-                this.setState({
-                  coNm: coNm
-                })
-              })
+    if (this.state.divCdList.includes('0000')) {
+      this.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+        if (confirmed) {
+          this.showCommonToast("success", "삭제되었습니다.");
+          this.componentDidMount();
+        }
+      })
+    } else {
+      this.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+        if (confirmed) {
+          DivsService.deleteDivs({
+            accessToken: this.props.accessToken,
+            divCd: divCd
           })
-      }).catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        alert("업데이트 실패..");
-      });
+            .then((response) => {
+              this.showCommonToast("success", "삭제되었습니다.");
+
+              const userInfo = this.props.userInfo;
+              const { coCd, empId, empEmail } = userInfo;
+              console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+              this.setState({ coCd: coCd });
+
+              DivsService.getDivision({
+                accessToken: this.props.accessToken,
+                coCd: coCd
+              })
+                .then((response) => {
+                  const coCdList = response.data.map((item) => item.coCd);
+                  const divCdList = response.data.map((item) => item.divCd);
+                  const divNmList = response.data.map((item) => item.divNm);
+                  const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                  const coCd = response.data[0].coCd;
+                  const divCd = response.data[0].divCd;
+                  const divNm = response.data[0].divNm;
+                  const ceoNm = response.data[0].ceoNm;
+                  const jongmok = response.data[0].jongmok;
+                  const businessType = response.data[0].businessType;
+                  const divNb = response.data[0].divNb;
+                  const toNb = response.data[0].toNb;
+                  const divZip = response.data[0].divZip;
+                  const divAddr = response.data[0].divAddr;
+                  const divAddr1 = response.data[0].divAddr1;
+
+                  this.setState({
+                    cardCount: cardCount, // state에 값을 저장
+                    coCdList: coCdList,
+                    divCdList: divCdList,
+                    divNmList: divNmList,
+                    focused: divCdList[0],
+                    coCd: coCd,
+                    divCd: divCd,
+                    divNm: divNm,
+                    ceoNm: ceoNm,
+                    jongmok: jongmok,
+                    businessType: businessType,
+                    divNb: divNb,
+                    toNb: toNb,
+                    divZip: divZip,
+                    divAddr: divAddr,
+                    divAddr1: divAddr1,
+                    DivdialTextField: ''
+                  })
+                  CompanyService.getCompany({
+                    accessToken: this.props.accessToken,
+                    coCd: coCd
+                  })
+                    .then((response) => {
+                      const coNm = response.data[0].coNm;
+
+                      this.setState({
+                        coNm: coNm
+                      })
+                    })
+                }).catch((error) => {
+                  // 오류 발생 시의 처리
+                  console.error(error);
+                  this.showCommonToast("error", "등록된 사업장이 없습니다."); //여기를 고쳐야함!!
+                  this.setState((prevState) => ({
+                    divCdList: prevState.divCdList.filter((divId) => divId !== divCd),
+                  }));
+                  this.setState({
+                    cardCount: 0, // state에 값을 저장
+                    coCd: coCd,
+                    divCd: '',
+                    divNm: '',
+                    ceoNm: '',
+                    jongmok: '',
+                    businessType: '',
+                    divNb: '',
+                    toNb: '',
+                    divZip: '',
+                    divAddr: '',
+                    divAddr1: '',
+                    DivdialTextField: ''
+                  })
+                });
+            }).catch((error) => {
+              // 오류 발생 시의 처리
+              console.error(error);
+              this.showCommonToast("error", "삭제실패");
+            });
+        }
+      })
     }
   }
 
@@ -814,6 +920,16 @@ class DivMgmtComponent extends Component {
     this.componentDidMount();
   }
 
+  handleTextFieldChange = (e) => {
+    this.setState({ DivdialTextField: e.target.value });
+  };
+
+  handleEnterKey = (event) => {
+    if (event.key === 'Enter') {
+      this.helpClick();
+    }
+  };
+
   render() {
     const { open, coCd, divCd, toNb, divNm, jongmok, businessType, ceoNm, divNb, divZip, divAddr, divAddr1, modifyId, insertDt } = this.state;
     const { coNm } = this.state;
@@ -825,9 +941,8 @@ class DivMgmtComponent extends Component {
     const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
-
     const cards = divCdList.map((divCd, index) => (
-      <Card key={divCd} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #6798FD' : '1px solid #000', backgroundColor: this.state.focused === divCd ? '#E5FFFF' : 'white' }}>
+      <Card key={index} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '2px solid #6798FD' : '1px solid #D5D5D5', backgroundColor: this.state.focused === divCd ? '#E5FFFF' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(divCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: "absolute", top: "3px", left: "5px" }}>
@@ -839,8 +954,15 @@ class DivMgmtComponent extends Component {
             {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
               {index + 1}
             </Typography> */}
-            <Typography sx={{ fontSize: 14 }} variant='h3' style={{ position: "absolute", bottom: "30px", left: "5px" }}>
-              {divNmList[index]}
+            <Typography sx={{
+              fontSize: 14,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }} variant='h3' style={{ position: "absolute", bottom: "30px", left: "5px" }}>
+              {divNmList[index] && divNmList[index].length > 8
+                ? `${divNmList[index].slice(0, 8)}...`
+                : divNmList[index]}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -895,6 +1017,8 @@ class DivMgmtComponent extends Component {
               <CustomTextField
                 name="DivdialTextField"
                 value={this.state.DivdialTextField}
+                onChange={this.handleTextFieldChange} // 입력 필드 값이 변경될 때 호출되는 핸들러 함수
+                onKeyDown={this.handleEnterKey} // 엔터 키 입력 처리
                 placeholder="사업장코드/사업장명 "
                 InputProps={{
                   endAdornment: (
@@ -940,7 +1064,7 @@ class DivMgmtComponent extends Component {
                 alignItems: "center",
                 width: "100%",
                 backgroundColor: "#FCFCFC",
-                borderBottom:"2px solid #000",
+                borderBottom: "2px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 사업장:</CustomInputLabel>
@@ -972,7 +1096,7 @@ class DivMgmtComponent extends Component {
               container
               sx={{ position: "relative", bottom: "60px", width: "100%" }}
             >
-               <Button
+              <Button
                 variant="extended"
                 onClick={this.addCardButton}
                 sx={{
@@ -988,7 +1112,7 @@ class DivMgmtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon sx={{ mb:0.2, fontSize:'medium',color: "blue" }} />
+                <AddIcon sx={{ mb: 0.2, fontSize: 'medium', color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -1003,7 +1127,7 @@ class DivMgmtComponent extends Component {
               </Grid>
             </Grid>
 
-            <Grid container sx={{ mt:'-4px',border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: '-4px', border: "2px solid #EAEAEA" }}>
               <Grid
                 item
                 xs={2}
@@ -1011,7 +1135,7 @@ class DivMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop:"2px solid #000",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1025,7 +1149,7 @@ class DivMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop:"2px solid #000",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
@@ -1069,7 +1193,7 @@ class DivMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop:"2px solid #000",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1085,7 +1209,7 @@ class DivMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop:"2px solid #000",
+                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
@@ -1098,6 +1222,7 @@ class DivMgmtComponent extends Component {
                   // onChange={this.handleCompany}
                   onBlur={this.handleBlur}
                   value={divCd || ""}
+                  inputProps={{ maxLength: 8 }} // 최대 8자까지 허용
                 ></CustomWideTextField>
               </Grid>
 
@@ -1132,6 +1257,7 @@ class DivMgmtComponent extends Component {
                   name="divNm"
                   onChange={this.handleCompany}
                   value={divNm || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1166,6 +1292,7 @@ class DivMgmtComponent extends Component {
                   name="jongmok"
                   onChange={this.handleCompany}
                   value={jongmok || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1200,6 +1327,7 @@ class DivMgmtComponent extends Component {
                   name="businessType"
                   onChange={this.handleCompany}
                   value={businessType || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1234,6 +1362,7 @@ class DivMgmtComponent extends Component {
                   name="ceoNm"
                   onChange={this.handleCompany}
                   value={ceoNm || ""}
+                  inputProps={{ maxLength: 20 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1346,7 +1475,7 @@ class DivMgmtComponent extends Component {
                         onChange={this.handleCompany}
                         value={divZip || ""}
                         InputProps={{ readOnly: true }}
-                        sx={{ mt:1, ml: 1, width: "150px" }}
+                        sx={{ mt: 1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
                         sx={{ ml: 1, mt: 1 }}
@@ -1371,7 +1500,7 @@ class DivMgmtComponent extends Component {
                       name="divAddr1"
                       onChange={this.handleCompany}
                       value={divAddr1 || ""}
-                      sx={{mt: "0px !important"}}
+                      sx={{ mt: "0px !important" }}
                     />
                   </Grid>
                 </Grid>

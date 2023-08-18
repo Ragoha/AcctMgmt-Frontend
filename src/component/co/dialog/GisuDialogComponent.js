@@ -119,20 +119,21 @@ class GisuDialogComponent extends Component {
   }
 
   updateGisu = (data) => {
-    GisuService.updateGisu({
-      accessToken: this.props.accessToken,
-      coCd: this.props.coCd,
-      gisu: data
-    }).then(() => {
-      this.initGisu();
-    });
+    console.log(data);
+    // GisuService.updateGisu({
+    //   accessToken: this.props.accessToken,
+    //   coCd: this.props.user.coCd,
+    //   gisu: data,
+    // }).then(() => {
+    //   this.initGisu();
+    // });
   }
 
   handleClickDelete = () => {
     console.log(this.state.selectedRow.gisu);
     GisuService.deleteGisu({
       accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
+      coCd: this.props.coCd,
       gisu: this.state.selectedRow.gisu,
     }).then(() => {
       this.initGisu();
@@ -238,14 +239,14 @@ class GisuDialogComponent extends Component {
             <CustomConfirmButton
               variant="outlined"
               onClick={this.handleDown}>
-              확인
+              확 인
             </CustomConfirmButton>
 
             <Button
               variant="outlined"
               onClick={() => this.setState({ open: false })}
             >
-              취소
+              취 소
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>

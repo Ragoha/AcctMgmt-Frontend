@@ -5,7 +5,7 @@ import {
   Button,
   Grid,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
@@ -76,11 +76,12 @@ class BgtICFComponent extends Component {
     super(props);
     this.state = {
       bgtCDRows: [],
-      divCd: 0,
+      divCd: this.props.user.divCd,
       divNm: "",
-      divTextField: this.props.user.divCd+". "+this.props.user.divNm,
+      divTextField: this.props.user.divCd + ". " + this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
+      bgtGrList: [],
       bgtGrTextField: "",
       gisuText: "",
       gisuRows: [],
@@ -97,8 +98,9 @@ class BgtICFComponent extends Component {
       divRows: [],
       selectedRowId: "",
       selectedRowSq: "",
+      selectedRows: [],
       isNew: false,
-      innerHeight: window.innerHeight
+      innerHeight: window.innerHeight,
     };
 
     this.bgtICFRef = createRef();
@@ -116,10 +118,17 @@ class BgtICFComponent extends Component {
   };
 
   handleRowDelete = () => {
+    console.log("Asdf");
     this.bgtICFRef.current.handleDeleteClick({
       bgtCd: this.state.selectedRowId,
-      sq: this.state.selectedRowSq
-    })();
+      sq: this.state.selectedRowSq,
+      sqList: this.state.selectedRows,
+    });
+  };
+
+  setSelectedRows = async (selectedRows) => {
+    await this.setState({ selectedRows: selectedRows });
+    console.log(this.state.selectedRows);
   };
 
   handleInputChange = async (e) => {
@@ -143,7 +152,7 @@ class BgtICFComponent extends Component {
   handleChangeGrFgText = (event, newValue) => {
     console.log(newValue);
     this.setState({ grFg: newValue.value, grFgText: newValue.label });
-  }
+  };
 
   handleAddRow = () => {
     const { bgtDTO } = this.state;
@@ -188,12 +197,31 @@ class BgtICFComponent extends Component {
     console.log(this.state);
   };
 
-  handleSetBgtGrTextField = (data) => {
-    this.setState({
-      bgtGrTextField: data.bgtGrCd + ". " + data.bgtGrNm,
-      bgtGrCd: data.bgtGrCd,
-      bgtGrNm: data.bgtGrNm,
-    });
+  handleSetBgtGrTextField = (dataList) => {
+    console.log(dataList);
+    if (dataList.length > 0) {
+      console.log("맞음?");
+      const concatenatedText = dataList
+        .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
+        .join(", ");
+      
+      const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+
+      this.setState({
+        bgtGrTextField: concatenatedText,
+        bgtGrCdList: bgtGrCdList,
+      });
+      console.log("리스트 데이터:", concatenatedText);
+      console.log("리스트:", bgtGrCdList)
+    } else {
+      console.log("그냥");
+      this.setState({
+        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+        bgtGrCd: dataList.bgtGrCd,
+        bgtGrNm: dataList.bgtGrNm,
+      });
+    }
+    console.log(this.state);
   };
 
   handleClickDivSearchIcon = () => {
@@ -209,11 +237,14 @@ class BgtICFComponent extends Component {
   };
 
   handleSetBgtCDTextField = (data) => {
-    this.setState({ bgtCDTextField: data.bgtCd + ". " + data.bgtNm, bgtCd: data.bgtCd, bgtNm: data.bgtNm });
+    this.setState({
+      bgtCDTextField: data.bgtCd + ". " + data.bgtNm,
+      bgtCd: data.bgtCd,
+      bgtNm: data.bgtNm,
+    });
   };
 
   handleClickSerachButton = () => {
-
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
@@ -223,11 +254,12 @@ class BgtICFComponent extends Component {
       gisu: this.state.gisuText,
       bgtGrCd: this.state.bgtGrCd,
       bgtGrNm: this.state.bgtGrNm,
+      bgtGrCdList: this.state.bgtGrCdList,
       bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
       bgtNm: this.state.bgtNm,
-      bgtText: this.state.bgtCDTextField
+      bgtText: this.state.bgtCDTextField,
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -238,7 +270,7 @@ class BgtICFComponent extends Component {
     });
   };
 
-  componentWillMount() {
+  componentDidMount() {
     BgtICFService.findGisuByCoCd({
       accessToken: this.props.accessToken,
       user: this.props.user,
@@ -252,6 +284,7 @@ class BgtICFComponent extends Component {
       );
 
       this.setState({
+        gisu: gisuRows[gisuRows.length - 1],
         gisuRows: gisuRows,
         gisuRangeRows: gisuRangeRows,
         gisuText: gisuRows[gisuRows.length - 1],
@@ -268,17 +301,43 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
+    console.log("zzzzzzzzzzzzzzz")
     console.log(e.row);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
-    
+
     this.bgtICFRef.current.getBgtICFList(e.row);
   };
 
-  test = () => {
-    alert("Asdf");
-    this.bgtICFRef.current.updateBgtICF();
-  }
+  handleKeyDownDivTextField = (e) => {
+    if (e.key == "Enter") {
+      this.divRef.current.setDivDialog(this.state.divTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ divTextField: "", divCd: "", bgtCDRows: [] });
+    }
+  };
+
+  handleKeyDownBgtGrTextField = (e) => {
+    if (e.key == "Enter") {
+      this.bgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtGrTextField: "", bgtGrCd: "", bgtCDRows: [] });
+    }
+  };
+
+  handleKeyDownBgtCDTextField = (e) => {
+    if (e.key == "Enter") {
+      this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtCDTextField: "", bgtCd: "", bgtCDRows: [] });
+    }
+  };
 
   render() {
     const { divTextField, bgtCDTextField } = this.state;
@@ -317,11 +376,7 @@ class BgtICFComponent extends Component {
                 name="divTextField"
                 value={divTextField}
                 onChange={this.handleInputChange}
-                onKeyDown={(e) => {
-                  if (e.key == "Enter") {
-                    alert("Asdf");
-                  }
-                }}
+                onKeyDown={this.handleKeyDownDivTextField}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -377,6 +432,7 @@ class BgtICFComponent extends Component {
                 name="bgtGrTextField"
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDownBgtGrTextField}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -418,9 +474,10 @@ class BgtICFComponent extends Component {
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
               <CustomTextField
-                name="bgtCd"
-                value={bgtCDTextField}
+                name="bgtCDTextField"
+                value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleKeyDownBgtCDTextField}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -433,7 +490,7 @@ class BgtICFComponent extends Component {
           </Grid>
           <Grid item xs={4}>
             {/* <ListDisplay/> */}
-            <SnackBarComponent />
+            <SnackBarComponent severity="success" message="저장되었습니다." />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>
@@ -461,9 +518,6 @@ class BgtICFComponent extends Component {
                   backgroundColor: "#EDF4FB !important",
                   fontWeight: "bold",
                 },
-                // "& .MuiDataGrid-row.Mui-selected:hover": {
-                //   background: "#FFD8D8",
-                // },
 
                 "& .style-divfg-1": { background: "#86E57F" },
                 "& .style-divfg-1 .bgtNm .MuiDataGrid-cellContent": {
@@ -517,6 +571,7 @@ class BgtICFComponent extends Component {
               ref={this.bgtICFRef}
               setSelectedRowId={this.setSelectedRowId}
               handleClickSerachButton={this.handleClickSerachButton}
+              setSelectedRows={this.setSelectedRows}
               divCd={this.state.divCd}
             />
           </Grid>

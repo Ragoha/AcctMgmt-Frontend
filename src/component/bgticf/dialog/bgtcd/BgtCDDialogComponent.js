@@ -9,7 +9,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  TextField
+  TextField,
 } from "@mui/material";
 import { randomId } from "@mui/x-data-grid-generator";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -18,8 +18,21 @@ import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../service/BgtICFService";
-import { CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomLargeButtonGridContainer, CustomLargeDataGridContainer, CustomLargeFormGridContainer } from "../../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../common/style/CommonStyle";
+import {
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomLargeButtonGridContainer,
+  CustomLargeDataGridContainer,
+  CustomLargeFormGridContainer,
+} from "../../../common/style/CommonDialogStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../../common/style/CommonStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
 const columns = [
@@ -79,11 +92,32 @@ class BgtCDDialogComponent extends Component {
     this.childBgtGrRef = createRef();
   }
 
+  setBgtCDDialog = (keyword) => {
+    console.log(keyword);
+    BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
+      user: this.props.user,
+      accessToken: this.props.accessToken,
+      keyword: keyword,
+    }).then((response) => {
+      const bgtCDRows = response.map((row) => ({
+        id: randomId(),
+        gisu: row.gisu,
+        bgtGrNm: row.bgtGrNm,
+        bgtCd: row.bgtCd,
+        bgtNm: row.bgtNm,
+        hBgtNm: row.dataPath,
+      }));
+      this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
+      this.handleUp();
+      console.log(this.state);
+    });
+  };
+
   initBgtCDDialog = () => {
     this.setState({ keyword: "", rangeState: true });
     this.handleClickSearchIcon();
     this.handleUp();
-  }
+  };
 
   handleUp = () => {
     this.setState({ open: true });
@@ -162,11 +196,9 @@ class BgtCDDialogComponent extends Component {
         bgtGrNm: row.bgtGrNm,
         bgtCd: row.bgtCd,
         bgtNm: row.bgtNm,
-        hBgtNm: row.dataPath
+        hBgtNm: row.dataPath,
       }));
       this.setState({ bgtCDRows: bgtCDRows });
-
-      console.log(this.state);
     });
   };
 
@@ -183,14 +215,19 @@ class BgtCDDialogComponent extends Component {
     console.log(this.state);
   };
 
+  handleKeyDownBgtGrTextField = (e) => {
+    if (e.key == "Enter") {
+      this.childBgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
+    }
+
+    if (e.key == "Backspace") {
+      this.setState({ bgtGrTextField: "", bgtGrCd: "" });
+    }
+  };
+
   render() {
-    const {
-      open,
-      columns,
-      rangeState,
-      bgtGrTextField,
-      rangeTextField,
-    } = this.state;
+    const { open, columns, rangeState, bgtGrTextField, rangeTextField } =
+      this.state;
 
     return (
       <>
@@ -239,8 +276,8 @@ class BgtCDDialogComponent extends Component {
                     name="bgtGrTextField"
                     value={bgtGrTextField}
                     onChange={this.handleInputChange}
+                    onKeyDown={this.handleKeyDownBgtGrTextField}
                     variant="outlined"
-                    onKeyDown={this.handlePressEnter}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -266,12 +303,8 @@ class BgtCDDialogComponent extends Component {
                     value={this.state.keyword}
                     onChange={this.handleInputChange}
                     variant="outlined"
-                    onKeyDown={this.handlePressEnter}
                   />
-                  <CustomSearchButton
-                    variant="outlined"
-                    sx={{ right: "-9px" }}
-                  >
+                  <CustomSearchButton variant="outlined" sx={{ right: "-9px" }}>
                     <SearchIcon onClick={this.handleClickSearchIcon} />
                   </CustomSearchButton>
                 </Grid>
@@ -381,4 +414,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, { forwardRef: true })(BgtCDDialogComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  BgtCDDialogComponent
+);
