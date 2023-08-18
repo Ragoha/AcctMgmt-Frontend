@@ -1,13 +1,12 @@
-import {
-  Grid,
-  InputLabel,
-  Tooltip
-} from "@mui/material";
+import { Grid, InputLabel, Tooltip } from "@mui/material";
 import axios from "axios";
 import React, { Component } from "react";
 import validator from "validator";
-import throttle from 'lodash/throttle';
-import { CustomInputLabel, CustomMediumTextField } from "../common/style/CommonStyle";
+import throttle from "lodash/throttle";
+import {
+  CustomInputLabel,
+  CustomMediumTextField,
+} from "../common/style/CommonStyle";
 class SignUpComponent extends Component {
   constructor(props) {
     super(props);
@@ -34,29 +33,24 @@ class SignUpComponent extends Component {
       error: false,
       errorMessage: "",
     };
-    this.throttleHandleChange = throttle(this.handleChange, 300);
-    this.throttleHandleChange2 = throttle(this.handleChange2, 600);
   }
 
-  handleChange2 = (value) => {
+  handleChange2 = (e) => {
+    const { value } = e.target;
     const isIdValid =
-      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ""; 
-    const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value);
-
+      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ""; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
+    const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value); // 입력된 값에 한글이 포함되어 있는지 확인합니다.
+    this.setState({ isIdDuplicated: false });
     this.setState({
       id: isIdValid ? value : "",
+      // error: !isIdValid,
       errorMessage: isKoreanInput
         ? "알파벳 대소문자와 숫자만 사용 가능합니다."
         : !isIdValid
-          ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-          : "",
+        ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
+        : "",
       isIdValid: isIdValid && !isKoreanInput,
     });
-  };
-
-  handleInputChange2 = (event) => {
-    const inputValue = event.target.value;
-    this.throttleHandleChange2(inputValue);
   };
 
   handleChange = (e) => {
@@ -164,7 +158,7 @@ class SignUpComponent extends Component {
         this.setState({
           isIdDuplicated: false,
           errorMessage: "중복된 아이디 입니다.",
-          isIdValid:false,
+          isIdValid: false,
         });
       });
   };
@@ -203,11 +197,15 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomInputLabel>
-                    아이디
-                  </CustomInputLabel>
-                  <span style={{ marginLeft: '8px', fontSize: '10px', color: isIdValid ? 'green' : 'red' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>아이디</CustomInputLabel>
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      fontSize: "10px",
+                      color: isIdValid ? "green" : "red",
+                    }}
+                  >
                     {errorMessage}
                   </span>
                 </div>
@@ -219,7 +217,7 @@ class SignUpComponent extends Component {
                     placeholder="아이디 입력(6 ~ 20자)"
                     variant="outlined"
                     value={id}
-                    onChange={this.handleInputChange2}
+                    onChange={this.handleChange2}
                     onBlur={this.handleBlur}
                     disabled={error}
                     error={error}
@@ -252,13 +250,19 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomInputLabel>
-                    패스워드
-                  </CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>패스워드</CustomInputLabel>
                   {password && !isPasswordValid && (
-                    <span style={{ marginLeft: '8px', fontSize: '10px', color: isPasswordValid ? 'green' : 'red' }}>
-                      {this.state.isPasswordValid ? '사용 가능한 패스워드 입니다.' : '알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!'}
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "10px",
+                        color: isPasswordValid ? "green" : "red",
+                      }}
+                    >
+                      {this.state.isPasswordValid
+                        ? "사용 가능한 패스워드 입니다."
+                        : "알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!"}
                     </span>
                   )}
                 </div>
@@ -273,11 +277,13 @@ class SignUpComponent extends Component {
                     type="password"
                     value={password}
                     error={password && !isPasswordValid}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     onBlur={this.handleBlur}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: isPasswordValid ? "success.main" : "error.main",
+                        borderColor: isPasswordValid
+                          ? "success.main"
+                          : "error.main",
                       },
                       whiteSpace: "pre-wrap",
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -324,7 +330,7 @@ class SignUpComponent extends Component {
                     // placeholder="한번 더 입력하세요"
                     type="password"
                     value={confirmPassword}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     onBlur={this.handleBlur}
                     sx={{
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -349,7 +355,7 @@ class SignUpComponent extends Component {
                   variant="outlined"
                   color="secondary"
                   value={name}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -372,7 +378,7 @@ class SignUpComponent extends Component {
                   placeholder="이메일을 입력해주세요"
                   type="email"
                   value={email}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -395,7 +401,7 @@ class SignUpComponent extends Component {
                   name="phone"
                   placeholder="휴대폰 번호 입력('-' 제외 11자리 입력)"
                   value={phone}
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
@@ -418,7 +424,7 @@ class SignUpComponent extends Component {
                     name="company"
                     placeholder="회사명을 입력해주세요"
                     value={company}
-                    onChange={this.throttleHandleChange}
+                    onChange={this.handleChange}
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -452,7 +458,7 @@ class SignUpComponent extends Component {
                   color="secondary"
                   name="position"
                   placeholder="직책을 입력해주세요"
-                  onChange={this.throttleHandleChange}
+                  onChange={this.handleChange}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
