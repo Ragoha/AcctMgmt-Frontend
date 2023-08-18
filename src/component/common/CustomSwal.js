@@ -7,7 +7,7 @@ class CustomSwal {
             toast: true,
             position: position ? position : 'center-center' ,
             showConfirmButton: false,
-            timer: timer ? timer : 1500,
+            timer: timer ? timer : 1000,
             timerProgressBar: true,
             didOpen: (toast) => {
                 toast.addEventListener('mouseenter', Swal.stopTimer);

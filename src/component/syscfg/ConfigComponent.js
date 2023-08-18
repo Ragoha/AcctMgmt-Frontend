@@ -230,7 +230,7 @@ class ConfigComponent extends React.Component {
             </Grid>
           </Grid>
         </CustomHeaderGridContainer>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid container sx={{ mt: 1 }}>
           <CustomGridContainer
             container
             justifyContent="left"
@@ -248,7 +248,7 @@ class ConfigComponent extends React.Component {
             </Grid>
           </CustomGridContainer>
           <Grid item xs={12}>
-          <CustomInputLabel sx={{ ml: 4 }}>공통설정</CustomInputLabel>
+          <CustomInputLabel sx={{fontSize: 18, }}>공통설정</CustomInputLabel>
           </Grid>
           <Grid item xs={8}>
             <TableContainer component={Paper}>
