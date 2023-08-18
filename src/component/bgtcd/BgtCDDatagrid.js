@@ -26,42 +26,65 @@ class BgtCDDatagrid extends Component {
 
     // }
     processRowUpdate = (newRow) => {
-        console.log('========================processRowUpdate입니다========================')
-        const data = {
-            bgtNm: newRow.bgtNm,
-            bgtCd: newRow.bgtCd,
-            dataPath: newRow.dataPath
+        console.log('================processRowUpdate입니다===============')
+        const { coCd } = this.props.userInfo;
+        const { accessToken } = this.props;
+        if (newRow.isNew === true) {
+            const data = {
+                divFg: newRow.divFg,
+                bgtNm: newRow.bgtNm,
+                bgtCd: newRow.bgtCd,
+                dataPath: newRow.dataPath,
+                parentCd: newRow.parentCd
+            }
+            this.props.insertAddRow(data);
+            const updatedRow = { ...newRow, isNew: false };
+            this.setState((prevState) => ({
+                rows: prevState.rows.map((row) =>
+                    row.divFg === newRow.divFg ? updatedRow : row
+                ),
+            }), () => console.log(this.state.rows));
+            return updatedRow;
+        } else {
+            const data = {
+                bgtCd: newRow.bgtCd,
+                bgtNm: newRow.bgtNm,
+                coCd: coCd
+            }
+            BgtCDService.updateBgtNm(data, accessToken);
+            // this.props.getDataGridRows();
         }
-        this.props.insertAddRow(data);
-        const updatedRow = { ...newRow, isNew: false };
-        this.setState((prevState) => ({
-            rows: prevState.rows.map((row) =>
-                row.divFg === newRow.divFg ? updatedRow : row
-            ),
-        }), () => console.log(this.state.rows));
-        return updatedRow;
-    };
-    setRowModesModel = (data, mode) => {
-        // console.log(id)
-        console.log('rowModesModel : ' + this.state.rowModesModel)
-        this.setState((prevState) => ({
-            rowModesModel: {
-                ...prevState.rowModesModel,
-                [data.bgtCd]: { mode },
-            },
-        }));
+
     };
     clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
-        console.dir(params)
+        console.log(params)
+        if (params.row.bgtCd === " " || params.row.bgtCd === "  " || params.row.bgtCd === undefined) {
+            console.log('수입수출눌렀을때' + params.row.bgtCd + "|")
+            let tDataPath = "";
+            if (params.row.bgtCd === undefined) {
+                tDataPath = params.id
+                tDataPath = tDataPath.split("/");
+                tDataPath = tDataPath[tDataPath.length - 1] +","; 
+                console.log(tDataPath);
+            }
+            if(params.row.bgtCd===" "){
+                tDataPath = '수입'
+            }
+            if(params.row.bgtCd==="  "){
+                tDataPath = '수출'
+            }
+            this.props.setClickDataPath(tDataPath)
+            return null;
+        }
+        console.log('찍었을때 param ')
+        console.log(params.row)
         console.log('clickedROw !' + params.row.bgtCd + 'and DataPath ' + params.row.dataPath)
         console.log('isNew까지 체크해볼게 : ' + params.row.isNew)
-        console.log("isnew ?: " + params.row.isNew);
-        const { bgtCd, dataPath, isNew, bgtNm } = params.row;
+        const { bgtCd, dataPath, isNew, bgtNm, divFg } = params.row;
         this.setState({ dataPath: dataPath })
+        this.props.setClickedData(dataPath, bgtCd, divFg);
         if (isNew !== true) {//새로 만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
-                console.log(bgtCd)
-                console.log('이게 bgtCd야 : ' + bgtCd);
-                this.props.setDetailInfo(bgtCd);
+            this.props.setDetailInfo(bgtCd);
         } else if (isNew == true) {
             console.log('이건 새로 만들어진 로우다');
             this.setState({
