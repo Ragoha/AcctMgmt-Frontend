@@ -14,7 +14,7 @@ class BgtGrSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
+      open: false,
       selectedRow: { bgtGrCd: "", bgtGrNm: "" },
       bgtGrRows: [],
       keyword: "",
@@ -35,7 +35,7 @@ class BgtGrSearch extends Component {
         (response)=>{
             this.setState({rows:response})
         })
-    this.handleUp();
+    // this.handleUp();
   }
   /* */
   handleClickRow=(params)=>{

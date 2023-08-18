@@ -89,7 +89,7 @@ render() {
             padding: 2,
           }}
         >
-          그룹레벨설정
+          그룹레벨설정asdfasdfasfd
           <IconButton
             size="small"
             onClick={() =>
