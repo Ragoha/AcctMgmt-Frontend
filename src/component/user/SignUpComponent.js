@@ -1,13 +1,12 @@
-import {
-  Grid,
-  InputLabel,
-  Tooltip
-} from "@mui/material";
+import { Grid, InputLabel, Tooltip } from "@mui/material";
 import axios from "axios";
 import React, { Component } from "react";
 import validator from "validator";
-import throttle from 'lodash/throttle';
-import { CustomInputLabel, CustomMediumTextField } from "../common/style/CommonStyle";
+import throttle from "lodash/throttle";
+import {
+  CustomInputLabel,
+  CustomMediumTextField,
+} from "../common/style/CommonStyle";
 class SignUpComponent extends Component {
   constructor(props) {
     super(props);
@@ -53,7 +52,7 @@ class SignUpComponent extends Component {
       isIdValid: isIdValid && !isKoreanInput,
     });
   };
- 
+
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -159,7 +158,7 @@ class SignUpComponent extends Component {
         this.setState({
           isIdDuplicated: false,
           errorMessage: "중복된 아이디 입니다.",
-          isIdValid:false,
+          isIdValid: false,
         });
       });
   };
@@ -198,11 +197,15 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomInputLabel>
-                    아이디
-                  </CustomInputLabel>
-                  <span style={{ marginLeft: '8px', fontSize: '10px', color: isIdValid ? 'green' : 'red' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>아이디</CustomInputLabel>
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      fontSize: "10px",
+                      color: isIdValid ? "green" : "red",
+                    }}
+                  >
                     {errorMessage}
                   </span>
                 </div>
@@ -247,13 +250,19 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <CustomInputLabel>
-                    패스워드
-                  </CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>패스워드</CustomInputLabel>
                   {password && !isPasswordValid && (
-                    <span style={{ marginLeft: '8px', fontSize: '10px', color: isPasswordValid ? 'green' : 'red' }}>
-                      {this.state.isPasswordValid ? '사용 가능한 패스워드 입니다.' : '알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!'}
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "10px",
+                        color: isPasswordValid ? "green" : "red",
+                      }}
+                    >
+                      {this.state.isPasswordValid
+                        ? "사용 가능한 패스워드 입니다."
+                        : "알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요!!!"}
                     </span>
                   )}
                 </div>
@@ -272,7 +281,9 @@ class SignUpComponent extends Component {
                     onBlur={this.handleBlur}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: isPasswordValid ? "success.main" : "error.main",
+                        borderColor: isPasswordValid
+                          ? "success.main"
+                          : "error.main",
                       },
                       whiteSpace: "pre-wrap",
                       "& .MuiOutlinedInput-input::placeholder": {

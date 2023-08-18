@@ -298,69 +298,73 @@ class CoMgmtComponent extends Component {
   insertCo = () => {
     const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1 } = this.state;
 
-    const impValues = { coCd };
-    if (Object.values(impValues).some((value) => value === "")) {
-      this.showCommonToast("warning", "필수 값을 입력하세요");
-      return;
-    }
-    //showCommonSwalYn = (title, text, icon, yesButtonText)
-    this.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
-      if (confirmed) {
-        // confirmed가 true인 경우에만 저장 로직을 실행
-        CompanyService.insertCo({
-          accessToken: this.props.accessToken,
-          coCd: coCd,
-          coNm: coNm,
-          gisu: gisu,
-          frDt: frDt,
-          toDt: toDt,
-          jongmok: jongmok,
-          businessType: businessType,
-          coNb: coNb,
-          ceoNm: ceoNm,
-          coZip: coZip,
-          coAddr: coAddr,
-          coAddr1: coAddr1,
-        })
-
-          .then((response) => {
-            console.log(response.data);
-            this.showCommonToast("success", "회사 등록되었습니다.");
-            const coCdList = response.data.map((item) => item.coCd);
-            const coNmList = response.data.map((item) => item.coNm);
-            const ceoNmList = response.data.map((item) => item.ceoNm);
-            const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-            this.setState({
-              cardCount: cardCount, // state에 값을 저장
-              coCdList: coCdList,
-              coNmList: coNmList,
-              ceoNmList: ceoNmList,
-              focused: coCdList[cardCount - 1],
-              coCd: coCd,
-              coNm: coNm,
-              gisu:gisu,
-              frDt: frDt,
-              toDt:toDt ,
-              dateRange: frDt + ' ~ ' + toDt,
-              jongmok:jongmok ,
-              businessType:businessType ,
-              coNb: coNb,
-              ceoNm:ceoNm ,
-              coZip:coZip ,
-              coAddr:coAddr ,
-              coAddr1:coAddr1 ,
-              isCoCdEditable: false
-              // isChanged: false
-            });
-          })
-          .catch((error) => {
-            // 오류 발생 시의 처리
-            console.error(error);
-            this.showCommonToast('warning', '회사 등록에 실패했습니다.');
-          });
+    if (!this.state.coCdList.includes('0000')) {
+      this.showCommonToast("error", "등록할 회사를 추가해주세요");
+    } else {
+      const impValues = { coCd };
+      if (Object.values(impValues).some((value) => value === "")) {
+        this.showCommonToast("warning", "필수 값을 입력하세요");
+        return;
       }
-    })
+      //showCommonSwalYn = (title, text, icon, yesButtonText)
+      this.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
+        if (confirmed) {
+          // confirmed가 true인 경우에만 저장 로직을 실행
+          CompanyService.insertCo({
+            accessToken: this.props.accessToken,
+            coCd: coCd,
+            coNm: coNm,
+            gisu: gisu,
+            frDt: frDt,
+            toDt: toDt,
+            jongmok: jongmok,
+            businessType: businessType,
+            coNb: coNb,
+            ceoNm: ceoNm,
+            coZip: coZip,
+            coAddr: coAddr,
+            coAddr1: coAddr1,
+          })
+
+            .then((response) => {
+              console.log(response.data);
+              this.showCommonToast("success", "회사 등록되었습니다.");
+              const coCdList = response.data.map((item) => item.coCd);
+              const coNmList = response.data.map((item) => item.coNm);
+              const ceoNmList = response.data.map((item) => item.ceoNm);
+              const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+              this.setState({
+                cardCount: cardCount, // state에 값을 저장
+                coCdList: coCdList,
+                coNmList: coNmList,
+                ceoNmList: ceoNmList,
+                focused: coCdList[cardCount - 1],
+                coCd: coCd,
+                coNm: coNm,
+                gisu: gisu,
+                frDt: frDt,
+                toDt: toDt,
+                dateRange: frDt + ' ~ ' + toDt,
+                jongmok: jongmok,
+                businessType: businessType,
+                coNb: coNb,
+                ceoNm: ceoNm,
+                coZip: coZip,
+                coAddr: coAddr,
+                coAddr1: coAddr1,
+                isCoCdEditable: false
+                // isChanged: false
+              });
+            })
+            .catch((error) => {
+              // 오류 발생 시의 처리
+              console.error(error);
+              this.showCommonToast('warning', '회사 등록에 실패했습니다.');
+            });
+        }
+      })
+    }
   };
 
   addrButton = () => {
@@ -593,14 +597,14 @@ class CoMgmtComponent extends Component {
           coAddr1: coAddr1,
           // isChanged: false,
           isCoCdEditable: false
+        })
       })
-    })
       .catch((error) => {
         // 오류 발생 시의 처리
         this.showCommonToast("warning", "수정에 실패하였습니다.");
         console.error(error);
-  })
-      }
+      })
+  }
 
 
   deleteCo = () => {
@@ -608,64 +612,72 @@ class CoMgmtComponent extends Component {
     const { coCd } = this.state;
     const cardCount = this.state;
     if (coCd === '') {
-      this.showCommonToast("success", "삭제되었습니다.");
-      this.componentDidMount();
-    } else {
-      CompanyService.deleteCo({
-        accessToken: this.props.accessToken,
-        coCd: coCd,
-      })
-        .then((response) => {
-          console.log(response.data);
+      this.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+        if (confirmed) {
           this.showCommonToast("success", "삭제되었습니다.");
-          const coCdList = response.data.map((item) => item.coCd);
-          const coNmList = response.data.map((item) => item.coNm);
-          const ceoNmList = response.data.map((item) => item.ceoNm);
-          const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-          const coCd = response.data[0].coCd;
-          const coNm = response.data[0].coNm;
-          const gisu = response.data[0].gisu;
-          const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
-          const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
-          const jongmok = response.data[0].jongmok;
-          const businessType = response.data[0].businessType;
-          const coNb = response.data[0].coNb;
-          const ceoNm = response.data[0].ceoNm;
-          const coZip = response.data[0].coZip;
-          const coAddr = response.data[0].coAddr;
-          const coAddr1 = response.data[0].coAddr1;
-          this.setState({
-            cardCount: cardCount, // state에 값을 저장
-            coCdList: coCdList,
-            coNmList: coNmList,
-            ceoNmList: ceoNmList,
-            focused: coCdList[0],
+          this.componentDidMount();
+        }
+      })
+    } else {
+      this.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+        if (confirmed) {
+          CompanyService.deleteCo({
+            accessToken: this.props.accessToken,
             coCd: coCd,
-            coNm: coNm,
-            gisu: gisu,
-            frDt: frDt,
-            toDt: toDt,
-            dateRange: frDt + ' ~ ' + toDt,
-            jongmok: jongmok,
-            businessType: businessType,
-            coNb: coNb,
-            ceoNm: ceoNm,
-            coZip: coZip,
-            coAddr: coAddr,
-            coAddr1: coAddr1,
-            CodialTextField: "",
-            isCoCdEditable: false
-          });
-        })
-        // window.location.href="/acctmgmt/ozt/co";
-        .catch((error) => {
-          // 오류 발생 시의 처리
-          this.showCommonToast("error", "삭제실패");
-          console.error(error);
-        });
-    }
-  };
+          })
+            .then((response) => {
+              console.log(response.data);
+              this.showCommonToast("success", "삭제되었습니다.");
+              const coCdList = response.data.map((item) => item.coCd);
+              const coNmList = response.data.map((item) => item.coNm);
+              const ceoNmList = response.data.map((item) => item.ceoNm);
+              const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+              const coCd = response.data[0].coCd;
+              const coNm = response.data[0].coNm;
+              const gisu = response.data[0].gisu;
+              const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
+              const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
+              const jongmok = response.data[0].jongmok;
+              const businessType = response.data[0].businessType;
+              const coNb = response.data[0].coNb;
+              const ceoNm = response.data[0].ceoNm;
+              const coZip = response.data[0].coZip;
+              const coAddr = response.data[0].coAddr;
+              const coAddr1 = response.data[0].coAddr1;
+              this.setState({
+                cardCount: cardCount, // state에 값을 저장
+                coCdList: coCdList,
+                coNmList: coNmList,
+                ceoNmList: ceoNmList,
+                focused: coCdList[0],
+                coCd: coCd,
+                coNm: coNm,
+                gisu: gisu,
+                frDt: frDt,
+                toDt: toDt,
+                dateRange: frDt + ' ~ ' + toDt,
+                jongmok: jongmok,
+                businessType: businessType,
+                coNb: coNb,
+                ceoNm: ceoNm,
+                coZip: coZip,
+                coAddr: coAddr,
+                coAddr1: coAddr1,
+                CodialTextField: "",
+                isCoCdEditable: false
+              });
+            })
+            // window.location.href="/acctmgmt/ozt/co";
+            .catch((error) => {
+              // 오류 발생 시의 처리
+              this.showCommonToast("error", "삭제실패");
+              console.error(error);
+            });
+        }
+      })
+    };
+  }
 
   setGisuInfo = async (data) => {
     await this.setState({
@@ -782,11 +794,18 @@ class CoMgmtComponent extends Component {
             </Typography>
 
             <Typography
-              sx={{ fontSize: 14 }}
+              sx={{
+                fontSize: 14,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
               variant="h3"
               style={{ position: "absolute", bottom: "30px", left: "5px" }}
             >
-              {coNmList[index]}
+              {coNmList[index] && coNmList[index].length > 8
+                ? `${coNmList[index].slice(0, 8)}...`
+                : coNmList[index]}
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -1017,6 +1036,7 @@ class CoMgmtComponent extends Component {
                   name="coNm"
                   onChange={this.handleCompany}
                   value={coNm || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1048,6 +1068,7 @@ class CoMgmtComponent extends Component {
                   name="jongmok"
                   onChange={this.handleCompany}
                   value={jongmok || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1080,6 +1101,7 @@ class CoMgmtComponent extends Component {
                   name="businessType"
                   onChange={this.handleCompany}
                   value={businessType || ""}
+                  inputProps={{ maxLength: 29 }}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1111,6 +1133,7 @@ class CoMgmtComponent extends Component {
                   name="ceoNm"
                   onChange={this.handleCompany}
                   value={ceoNm || ""}
+                  inputProps={{ maxLength: 20 }}
                 ></CustomWideTextField>
               </Grid>
 

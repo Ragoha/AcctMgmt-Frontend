@@ -1,31 +1,34 @@
 import Box from "@mui/material/Box";
 import React, { Component } from "react";
 
-import { Grid } from "@mui/material";
+import { Checkbox, Grid } from "@mui/material";
 import { DataGrid, GridCellEditStopReasons } from "@mui/x-data-grid";
 import { randomId } from "@mui/x-data-grid-generator";
 import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import PjtDialogComponent from "./dialog/PjtDialogComponent";
+import SnackBarComponent from "../common/SnackBarComponent";
 
 class DataGridComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      divCd: "",
+      divCd: this.props.divCd,
       bgtCd: "",
       mgtCd: "",
       gisu: "",
       rows: [],
       selectedRowId: "",
       selectedRow: [],
+      selectedRows: [],
       pjtCd: "",
       pjtNm: "",
     };
 
     this.pjtRef = createRef();
     this.footerRef = createRef();
+    this.snackBarRef = createRef();
   }
 
   initBgtICF = () => {
@@ -142,12 +145,20 @@ class DataGridComponent extends Component {
     );
   }
 
-  handleDeleteClick = (data) => () => {
+  handleDeleteClick = (data) => {
+    console.log("================")
+    console.log(data);
+
+    const sqList = data.sqList.map((sq) => sq.sq).join(",");
+
+    console.log(sqList)
+
     BgtICFService.deleteBgtICF({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: data.bgtCd,
       sq: data.sq,
+      sqList: sqList,
     }).then(() => {
       this.props.handleClickSerachButton();
       BgtICFService.getBgtICFList({
@@ -183,11 +194,14 @@ class DataGridComponent extends Component {
   };
 
   getBgtICFList = async (data) => {
-    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd });
+    console.log(data);
+    console.log("==============")
+    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd, gisu: data.gisu });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
+      gisu: this.state.gisu,
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -212,7 +226,7 @@ class DataGridComponent extends Component {
           isNew: true,
         });
       }
-      await this.setState({ rows: rowsWithId });
+      await this.setState({ rows: rowsWithId, gisu: data.gisu });
       this.footerRef.current.sumCarrAm(rowsWithId);
     });
   };
@@ -232,6 +246,7 @@ class DataGridComponent extends Component {
         user: this.props.user,
         row: row,
         divCd: this.state.divCd,
+        // gisu: this.state.gisu,
       }).then(() => {
         this.props.handleClickSerachButton();
         BgtICFService.getBgtICFList({
@@ -262,6 +277,7 @@ class DataGridComponent extends Component {
 
           this.setState({ rows: rowsWithId });
           this.footerRef.current.sumCarrAm(rowsWithId);
+          this.snackBarRef.current.handleUp("sucess", "저장되었습니다.");
         });
       });
     }
@@ -307,20 +323,59 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = async (params) => {
-
     this.props.setSelectedRowId(params.row);
 
     await this.setState({
       selectedRowId: params.row.id,
       selectedRow: params.row,
     });
-
   };
 
   render() {
     const { rows, selectedRowId } = this.state;
 
     const columns = [
+      {
+        field: "confirmed",
+        width: 65,
+        headerName: "",
+        menu: false,
+        disableColumnMenu: true,
+        sortable: false,
+        filterable: false,
+        hideable: false,
+        renderHeader: (params) => (
+          <Checkbox/>
+        ),
+        renderCell: (params) => (
+          <Checkbox
+            onChange={async () => {
+              // console.log(params);
+              const newSelectedRow = {
+                sq: params.row.sq
+              };
+
+              const isSelected = this.state.selectedRows.some(
+                (row) =>
+                  row.sq === newSelectedRow.sq
+              );
+
+              if (isSelected) {
+                const updatedSelectedRows = this.state.selectedRows.filter(
+                  (row) =>
+                    row.sq !== newSelectedRow.sq
+                );
+                await this.setState({ selectedRows: updatedSelectedRows });
+              } else {
+                await this.setState((prevState) => ({
+                  selectedRows: [...prevState.selectedRows, newSelectedRow],
+                }));
+              }
+              this.props.setSelectedRows(this.state.selectedRows);
+            }}
+          />
+        ),
+      },
       {
         field: "mgtNm",
         headerName: "프로젝트",
@@ -372,8 +427,18 @@ class DataGridComponent extends Component {
               params.row.carrAm2 === "" &&
               params.row.carrAm3 === ""
                 ? ""
-                : (params.row.carrAm1 + params.row.carrAm2 + params.row.carrAm3)
-                    .toString()
+                : (
+                    (params.row.carrAm1 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm1)) +
+                    (params.row.carrAm2 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm2)) +
+                    (params.row.carrAm3 === ""
+                      ? 0
+                      : parseInt(params.row.carrAm3))
+                  )
+                    .toLocaleString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Grid>
           );
@@ -485,6 +550,12 @@ class DataGridComponent extends Component {
           onCellEditStop={this.handleCellEditStop}
           showCellVerticalBorder
           showColumnVerticalBorder
+          // checkboxSelection
+          // onRowSelectionModelChange={async (newRowSelectionModel) => {
+          //   console.log(newRowSelectionModel);
+          //   await this.setState({ selectedRows: newRowSelectionModel });
+          //   console.log(this.state.selectedRows);
+          // }}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{
@@ -510,10 +581,10 @@ class DataGridComponent extends Component {
               outline: "none !important",
               border: "1px solid #1976d2 !important",
             },
-            "& .MuiDataGrid-row:last-child": {
-              background: "#FFFCFC",
-              color: "black",
-            },
+            "& .MuiDataGrid-row.MuiDataGrid-row--lastVisible:last-child .MuiCheckbox-root":
+              {
+                display: "none",
+              },
             "& .MuiDataGrid-row:hover": {
               background: "#F5F5F5 !important",
             },
@@ -568,6 +639,8 @@ class DataGridComponent extends Component {
           ref={this.pjtRef}
           SetPjtTextField={this.SetPjtTextField}
         />
+
+        <SnackBarComponent ref={this.snackBarRef} />
       </>
     );
   }
@@ -623,9 +696,11 @@ class CustomFooterStatusComponent extends Component {
         <DataGrid
           showCellVerticalBorder
           hideFooter
+          getRowId={(row) => row.id}
           rows={[
             {
-              id: "unique-row-key", // 행에 고유한 키 추가
+              id: 0,
+              text: "합계",
               sumCarrAm: this.state.sumCarrAm
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -642,8 +717,13 @@ class CustomFooterStatusComponent extends Component {
           ]}
           columns={[
             {
-              field: "unique-column-key1",
+              field: "emp0",
+              width: 65
+            },
+            {
+              field: "text",
               flex: 1,
+              align: "right"
             },
             {
               field: "sumCarrAm",
@@ -670,15 +750,15 @@ class CustomFooterStatusComponent extends Component {
               flex: 1,
             },
             {
-              field: "unique-column-key2",
+              field: "emp1",
               flex: 1,
             },
             {
-              field: "",
+              field: "emp2",
               flex: 1,
             },
             {
-              field: "",
+              field: "emp3",
               flex: 1,
             },
           ]}
@@ -688,6 +768,10 @@ class CustomFooterStatusComponent extends Component {
             },
             "& .MuiDataGrid-row": {
               background: "#F6FFCC",
+            },
+
+            "& .MuiDataGrid-cellContent:first-child": {
+              float: "right",
             },
           }}
         />
