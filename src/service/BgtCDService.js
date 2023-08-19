@@ -8,7 +8,6 @@ class BgtCDService {
       bgtCdSearchText = "";
     }
     console.log("coCd" + coCd + "/gisu:" + gisu + "/bgtCdSearchText:" + bgtCdSearchText + "/groupCd:" + groupCd);
-
     const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getSearchData", {
       params: {
         coCd: coCd,
@@ -237,6 +236,24 @@ class BgtCDService {
 
     return returnData;
   }
+  updateBgtNm(data, accessToken) {
+    console.log('updateBgtNm')
+    console.log(data)
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/updateBgtNm", {
+      params: {
+        coCd: data.coCd,
+        bgtCd: data.bgtCd,
+        bgtNm: data.bgtNm,
+      }
+    }, {
+      headers: {
+        "access-token": accessToken,
+      },
+      withCredentials: true,
+    }).then((response) => response.data);
+
+    return returnData;
+  }
   checkTopData(data, accessToken) {
     const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/checkTopData", {
       params: {
@@ -268,22 +285,7 @@ class BgtCDService {
       withCredentials: true,
     }).then((response) => response.data);
   }
-  updateBgtNm(data, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/updateBgtNm", {
-      params: {
-        coCd: data.coCd,
-        bgtCd: data.bgtCd,
-        bgtNm: data.bgtNm,
-      }
-    }, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    }).then((response) => response.data);
-
-    return returnData;
-  }
+  
   /*---update end---*/
 
   /*---delete start ---*/

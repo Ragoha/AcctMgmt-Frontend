@@ -1,6 +1,6 @@
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Grid, InputAdornment, MenuItem, Select } from "@mui/material";
+import { Button, FormControl, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from "@mui/material";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import BgtCDService from "../../service/BgtCDService";
@@ -13,6 +13,12 @@ import BgtCDAddSubDialog from "./modal/BgtCDAddSubDialog";
 import BgtCDDevFgCustom from "./modal/BgtCDDevFgCustom";
 import BgtCDSubSearch from "./modal/BgtCDSubSearch";
 import BgtGrSearch from "./modal/BgtGrSearch";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import Swal from 'sweetalert2';
+import CustomSwal from "../common/CustomSwal";
+import SnackBarComponent from "../common/SnackBarComponent";
 class BgtCD extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +31,7 @@ class BgtCD extends Component {
     this.BgtCDDropDownBox = React.createRef();
     this.BgtCDSubSearch = React.createRef();
     this.BgtGrSearch = React.createRef();
+    this.snackBarRef = React.createRef();
     this.state = {
       open: false,
       rows: [],
@@ -32,11 +39,13 @@ class BgtCD extends Component {
       gisuList: [],
       defaultValue: '',
       bgtGrSearchText: '',
+      toDt:dayjs(new Date()).format("YYYY-MM-DD"),
     }
   }
-  async componentDidMount() {
+
+  componentDidMount() {
     this.initSubList();
-    await this.initGisuList();
+    this.initGisuList();
     this.setInitRow();
     // this.getDataGridRows();
   }
@@ -172,6 +181,12 @@ class BgtCD extends Component {
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
 
+    if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
+      // CustomSwal.showCommonToast("warning", "예산 추가할 위치를 클릭해주세요"); //showCommonSwal showCommonToast showCommonSwalYn
+      CustomSwal.showCommonSwal('warning', '신규 예산품목 추가 위치를 지정해주세요');
+      return null;
+    }
+
     if (tDataPath === "수입," || tDataPath === "수출,") {
       //최상단 즉 수입, 수출을 클릭했을때 자기 형제 코드가 있으면 형제 코드의 최댓값을 찾아서 그 밑에 넣을거고 없으면 최초 값으로 쓸거다 
       const data = {
@@ -231,25 +246,34 @@ class BgtCD extends Component {
   };
   updateDetailInfo = () => {
     const { accessToken } = this.props;
+    const tBgtCd = this.state.tBgtCd
+  if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
+    this.snackBarRef.current.handleUp("error", "업데이트할 행을 클릭해주세요");
+    return null;
+  }else{
     let updateData;
     updateData = this.BgtCDDetailInfo.current.getDetailInfo();
     BgtCDService.updateDetailInfo(updateData, accessToken)
       .then(response => {
+        this.snackBarRef.current.handleUp("success", "저장되었습니다.");
       }).catch(error => {
         console.error("Error fetching data:", error);
       });
+
+  } 
   }
 
   //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
   insertAddRow = async (data) => {
     console.log('BgtCd의 insertAddRow입니다.')
     console.log(data)
+    // console.log(this.state.bgtGrSearchText)//groupCd
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
     data.coCd = coCd;
     const detailInfo = this.BgtCDDetailInfo.current.selectData();
     console.log(this.state)
-    data.groupCd = this.state.defaultValue; //bgtGrSearchText
+    data.groupCd = this.state.bgtGrSearchText; //bgtGrSearchText
     data.ctlFg = detailInfo.ctlFg;
     data.bgajustFg = detailInfo.bgajustFg;
     data.bizFg = detailInfo.bgajustFg;
@@ -266,13 +290,14 @@ class BgtCD extends Component {
   }
 
   initSubList = () => {
+    console.log('온거야 ?')
+    this.setState({ bgtGrList: [] })
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
     BgtCDService.getBgtGrData(coCd, accessToken)
       .then((response) => {
         const bgtGrList = [...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)];
-        this.setState({ bgtGrList });
-        this.setState({ defaultValue: bgtGrList[0] })
+        this.setState({ bgtGrList: bgtGrList, defaultValue: bgtGrList[0] }, () => console.log(this.state.bgtGrList));
       })
       .catch(error => {
         console.error("Error fetching data:", error);
@@ -280,7 +305,7 @@ class BgtCD extends Component {
   }
   changeValue = (event) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
 
-    this.setState({ defaultValue: event.target.value });
+    this.setState({ defaultValue: event.target.value }, () => console.log('바꾼뒤의 값? : ' + this.state.defaultValue));
     this.getDataGridRows(event.target.value);
   }
   /*---로우 추가 관련된 메서드 end---*/
@@ -323,12 +348,59 @@ class BgtCD extends Component {
   handleClickSubCodeSearchIcon = () => {
     this.BgtCDAddSubDialog.current.handleUp();
   };
+  showCommonToast = (icon, title, timer) => {
+    const commonToast = Swal.mixin({
+      toast: true,
+      position: 'center-center',
+      showConfirmButton: false,
+      timer: timer ? timer : 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
 
-
-
+    commonToast.fire({
+      icon: icon,
+      title: title
+    });
+  }
+  //icon = success, error, warning, info, question | title : "알럿창에 띄울 제목" | text:알럿창에 띄울 멘트
+  showCommonSwal = (title, text, icon) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      color: '#716add',
+      background: '#FCFCFC', // 원하는 배경색으로 설정
+      customClass: {
+        container: 'custom-swal-container',
+        popup: 'custom-swal-popup',
+      },
+    });
+  }
+  showCommonSwalYn = (title, text, icon, yesButtonText, callback) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: yesButtonText
+    }).then((result) => {
+      if (result.isConfirmed) {
+        callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
+      }
+      else {
+        callback(false); // 취소 버튼을 눌렀을 때 콜백 함수를 호출하고 false를 전달
+      }
+    });
+  }
 
   render() {
-    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, bgtGrList, gisuList, gisuDefaultValue, defaultValue } = this.state;
+    const { rows, ctlFg, bgajustFg, bottomFg, bizFg, prevBgtCd, bgtGrList, gisuList, gisuDefaultValue, defaultValue, toDt } = this.state;
     return (
       <>
         <CustomHeaderGridContainer
@@ -372,18 +444,41 @@ class BgtCD extends Component {
         >
           <Grid item xs={3}>
             <Grid container direction="row" alignItems="center">
-              <CustomInputLabel>기수</CustomInputLabel>
-              <Select
-                sx={{ width: "250px" }}
-                value={gisuDefaultValue}
-                onChange={this.changeGisuValue}
-              >
-                {gisuList.map((item, index) => (
-                  <MenuItem key={index} value={item} dataindex={index}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
+                <CustomInputLabel> 기수 </CustomInputLabel>
+                <Select
+                  sx={{ width: "100px" ,height: "40px"}}
+                  value={gisuDefaultValue}
+                  onChange={this.changeGisuValue}>
+                  {gisuList.map((item, index) => (
+                    <MenuItem key={index} value={item} dataindex={index}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    name="date"
+                    format="YYYY-MM-DD"
+                    value={dayjs(toDt)}
+                    onChange={this.handleChangeDatePicker}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        sx: {
+                          width: "150px",
+                          ml: "8px",
+                          marginTop: "8px",
+                          marginBottom: "8px",
+                        },
+                        inputProps: {
+                          style: {
+                            borderRadius: 0,
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
             </Grid>
           </Grid>
           <Grid item xs={3}>
@@ -408,7 +503,6 @@ class BgtCD extends Component {
           <Grid item xs={3}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목검색</CustomInputLabel>
-
               <CustomTextField
                 name="bgtCdSearchText"
                 value={this.state.bgtCdSearchText}
@@ -471,10 +565,12 @@ class BgtCD extends Component {
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-        <BgtCDAddSubDialog ref={this.BgtCDAddSubDialog} />
+        <BgtCDAddSubDialog initSubList={this.initSubList} ref={this.BgtCDAddSubDialog} />
         {/*그룹레벨설정 */}
         <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch} />
         <BgtGrSearch setBgtGrCdText={this.setBgtGrCdText} ref={this.BgtGrSearch} />
+        <SnackBarComponent ref={this.snackBarRef}/>
+        
       </>
     );
 
