@@ -36,6 +36,8 @@ class BtgICFService {
   // }
 
   insertBgtICF(data) {
+    console.log(data);
+    console.log("asdfasdfasdfasdf")
     return axios
       .post(
         ACCTMGMT_API_BASE_URL + "/bgticf",
@@ -44,7 +46,7 @@ class BtgICFService {
           gisu: data.row.gisu,
           sq: data.row.sq,
           bgtCd: data.row.bgtCd,
-          divCd: data.divCd,
+          divCd: data.row.divCd,
           deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
           bgtFg: data.row.bgtFg,

@@ -303,10 +303,11 @@ class BgtICFComponent extends Component {
   handleClickBgtCDRow = (e) => {
     console.log("zzzzzzzzzzzzzzz")
     console.log(e.row);
+    console.log(this.state.divCd);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
 
-    this.bgtICFRef.current.getBgtICFList(e.row);
+    this.bgtICFRef.current.getBgtICFList(e.row, {divCd: this.state.divCd});
   };
 
   handleKeyDownDivTextField = (e) => {

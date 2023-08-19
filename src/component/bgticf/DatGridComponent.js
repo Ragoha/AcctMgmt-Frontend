@@ -146,12 +146,12 @@ class DataGridComponent extends Component {
   }
 
   handleDeleteClick = (data) => {
-    console.log("================")
+    console.log("================");
     console.log(data);
 
     const sqList = data.sqList.map((sq) => sq.sq).join(",");
 
-    console.log(sqList)
+    console.log(sqList);
 
     BgtICFService.deleteBgtICF({
       accessToken: this.props.accessToken,
@@ -165,7 +165,8 @@ class DataGridComponent extends Component {
         accessToken: this.props.accessToken,
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
-      }).then((response) => {
+        gisu: this.state.gisu,
+      }).then(async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,
           id: row.sq,
@@ -174,8 +175,10 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
+          mgtNm: "",
           mgtCd: "",
-          gisu: this.state.gisu,
+          divCd: data.divCd,
+          gisu: data.gisu,
           bottomNm: "",
           carrAm: "",
           carrAm1: "",
@@ -187,16 +190,22 @@ class DataGridComponent extends Component {
           isNew: true,
         });
 
-        this.setState({ rows: rowsWithId });
+        await this.setState({ rows: rowsWithId });
         this.footerRef.current.sumCarrAm(rowsWithId);
+        this.snackBarRef.current.handleUp("sucess", "삭제되었습니다.");
       });
     });
   };
 
-  getBgtICFList = async (data) => {
+  getBgtICFList = async (data, parent) => {
     console.log(data);
-    console.log("==============")
-    await this.setState({ bgtCd: data.bgtCd, divCd: data.divCd, gisu: data.gisu });
+    console.log(parent.divCd);
+    console.log("==============");
+    await this.setState({
+      bgtCd: data.bgtCd,
+      divCd: parent.divCd,
+      gisu: data.gisu,
+    });
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
@@ -253,7 +262,8 @@ class DataGridComponent extends Component {
           accessToken: this.props.accessToken,
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
-        }).then((response) => {
+          gisu: this.state.gisu,
+        }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
             id: row.sq,
@@ -262,7 +272,9 @@ class DataGridComponent extends Component {
           rowsWithId.push({
             id: randomId(),
             bgtCd: this.state.bgtCd,
+            mgtNm: "",
             mgtCd: "",
+            divCd: this.state.divCd,
             gisu: this.state.gisu,
             bottomNm: "",
             carrAm: "",
@@ -275,7 +287,7 @@ class DataGridComponent extends Component {
             isNew: true,
           });
 
-          this.setState({ rows: rowsWithId });
+          await this.setState({ rows: rowsWithId });
           this.footerRef.current.sumCarrAm(rowsWithId);
           this.snackBarRef.current.handleUp("sucess", "저장되었습니다.");
         });
@@ -294,7 +306,8 @@ class DataGridComponent extends Component {
         accessToken: this.props.accessToken,
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
-      }).then((response) => {
+        gisu: this.state.gisu,
+      }).then(async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,
           id: row.sq,
@@ -303,7 +316,9 @@ class DataGridComponent extends Component {
         rowsWithId.push({
           id: randomId(),
           bgtCd: this.state.bgtCd,
+          mgtNm: "",
           mgtCd: "",
+          divCd: this.state.divCd,
           gisu: this.state.gisu,
           bottomNm: "",
           carrAm: "",
@@ -316,10 +331,11 @@ class DataGridComponent extends Component {
           isNew: true,
         });
 
-        this.setState({ rows: rowsWithId });
+        await this.setState({ rows: rowsWithId });
         this.footerRef.current.sumCarrAm(rowsWithId);
+        
       });
-    });
+    });this.snackBarRef.current.handleUp("sucess", "수정되었습니다.");
   };
 
   handleRowClick = async (params) => {
@@ -344,26 +360,22 @@ class DataGridComponent extends Component {
         sortable: false,
         filterable: false,
         hideable: false,
-        renderHeader: (params) => (
-          <Checkbox/>
-        ),
+        renderHeader: (params) => <Checkbox />,
         renderCell: (params) => (
           <Checkbox
             onChange={async () => {
               // console.log(params);
               const newSelectedRow = {
-                sq: params.row.sq
+                sq: params.row.sq,
               };
 
               const isSelected = this.state.selectedRows.some(
-                (row) =>
-                  row.sq === newSelectedRow.sq
+                (row) => row.sq === newSelectedRow.sq
               );
 
               if (isSelected) {
                 const updatedSelectedRows = this.state.selectedRows.filter(
-                  (row) =>
-                    row.sq !== newSelectedRow.sq
+                  (row) => row.sq !== newSelectedRow.sq
                 );
                 await this.setState({ selectedRows: updatedSelectedRows });
               } else {
@@ -718,12 +730,12 @@ class CustomFooterStatusComponent extends Component {
           columns={[
             {
               field: "emp0",
-              width: 65
+              width: 65,
             },
             {
               field: "text",
               flex: 1,
-              align: "right"
+              align: "right",
             },
             {
               field: "sumCarrAm",
