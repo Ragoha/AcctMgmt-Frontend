@@ -861,14 +861,7 @@ class PjtComponent extends Component {
                 onChange={this.handleSelectAllChange}
                 sx={{ pb: 4.8 }}
               />
-              <InputLabel
-                sx={{
-                  pb: 3.5,
-                  fontWeight: "bold",
-                }}
-              >
-                프로젝트:
-              </InputLabel>
+              <CustomInputLabel sx={{ pb: 3.5 }}>총 프로젝트 :</CustomInputLabel>
               <InputLabel
                 sx={{
                   ml: 0.5,
@@ -967,7 +960,7 @@ class PjtComponent extends Component {
                   fontSize: 18,
                 }}
               >
-                기본등록사항
+                기본정보
               </InputLabel>
             </Grid>
 

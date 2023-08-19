@@ -49,7 +49,7 @@ class SnackBarComponent extends Component {
           <div>
             <Alert
               onClose={this.handleSnackbarClose}
-              severity={this.severity}
+              severity={this.state.severity}
               sx={{ width: "100%" }}
             >
               {this.state.message}

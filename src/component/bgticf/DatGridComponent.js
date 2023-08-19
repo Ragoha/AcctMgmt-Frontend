@@ -34,7 +34,8 @@ class DataGridComponent extends Component {
   initBgtICF = () => {
     console.log("tet");
     console.log(this.state.rows);
-    this.footerRef.current.sumCarrAm(this.state.rows);
+    this.setState({rows: []})
+    this.footerRef.current.sumCarrAm([]);
   };
 
   SetPjtTextField = async (data) => {
@@ -147,54 +148,57 @@ class DataGridComponent extends Component {
 
   handleDeleteClick = (data) => {
     console.log("================");
-    console.log(data);
+    console.log(data.sqList.length);
+    console.log(this.state)
 
-    const sqList = data.sqList.map((sq) => sq.sq).join(",");
+    if (data.sqList.length >= 1) {
+      const sqList = data.sqList.map((sq) => sq.sq).join(",");
 
-    console.log(sqList);
+      console.log(sqList);
 
-    BgtICFService.deleteBgtICF({
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-      bgtCd: data.bgtCd,
-      sq: data.sq,
-      sqList: sqList,
-    }).then(() => {
-      this.props.handleClickSerachButton();
-      BgtICFService.getBgtICFList({
+      BgtICFService.deleteBgtICF({
         accessToken: this.props.accessToken,
         coCd: this.props.user.coCd,
-        bgtCd: this.state.bgtCd,
-        gisu: this.state.gisu,
-      }).then(async (response) => {
-        const rowsWithId = response.map((row) => ({
-          ...row,
-          id: row.sq,
-        }));
-
-        rowsWithId.push({
-          id: randomId(),
+        bgtCd: data.bgtCd,
+        sq: data.sq,
+        sqList: sqList,
+      }).then(() => {
+        this.props.handleClickSerachButton();
+        BgtICFService.getBgtICFList({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
-          mgtNm: "",
-          mgtCd: "",
-          divCd: data.divCd,
-          gisu: data.gisu,
-          bottomNm: "",
-          carrAm: "",
-          carrAm1: "",
-          carrAm2: "",
-          carrAm3: "",
-          remDc: "",
-          bgtTy: "",
-          modifyId: "",
-          isNew: true,
-        });
+          gisu: this.state.gisu,
+        }).then(async (response) => {
+          const rowsWithId = response.map((row) => ({
+            ...row,
+            id: row.sq,
+          }));
 
-        await this.setState({ rows: rowsWithId });
-        this.footerRef.current.sumCarrAm(rowsWithId);
-        this.snackBarRef.current.handleUp("sucess", "삭제되었습니다.");
+          rowsWithId.push({
+            id: randomId(),
+            bgtCd: this.state.bgtCd,
+            mgtNm: "",
+            mgtCd: "",
+            divCd: data.divCd,
+            gisu: data.gisu,
+            bottomNm: "",
+            carrAm: "",
+            carrAm1: "",
+            carrAm2: "",
+            carrAm3: "",
+            remDc: "",
+            bgtTy: "",
+            modifyId: "",
+            isNew: true,
+          });
+
+          await this.setState({ rows: rowsWithId });
+          this.footerRef.current.sumCarrAm(rowsWithId);
+          this.snackBarRef.current.handleUp("success", "삭제되었습니다.");
+        });
       });
-    });
+    }
   };
 
   getBgtICFList = async (data, parent) => {
@@ -205,7 +209,9 @@ class DataGridComponent extends Component {
       bgtCd: data.bgtCd,
       divCd: parent.divCd,
       gisu: data.gisu,
+      sqList: [],
     });
+    console.log(this.state)
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
@@ -289,7 +295,7 @@ class DataGridComponent extends Component {
 
           await this.setState({ rows: rowsWithId });
           this.footerRef.current.sumCarrAm(rowsWithId);
-          this.snackBarRef.current.handleUp("sucess", "저장되었습니다.");
+          this.snackBarRef.current.handleUp("success", "저장되었습니다.");
         });
       });
     }
@@ -335,7 +341,7 @@ class DataGridComponent extends Component {
         this.footerRef.current.sumCarrAm(rowsWithId);
         
       });
-    });this.snackBarRef.current.handleUp("sucess", "수정되었습니다.");
+    });this.snackBarRef.current.handleUp("success", "수정되었습니다.");
   };
 
   handleRowClick = async (params) => {
