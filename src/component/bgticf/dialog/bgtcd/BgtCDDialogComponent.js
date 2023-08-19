@@ -277,6 +277,7 @@ class BgtCDDialogComponent extends Component {
                     value={bgtGrTextField}
                     onChange={this.handleInputChange}
                     onKeyDown={this.handleKeyDownBgtGrTextField}
+                    placeholder="예산그룹코드/예산그룹명"
                     variant="outlined"
                     InputProps={{
                       endAdornment: (
