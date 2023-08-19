@@ -45,7 +45,7 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row }, () => {
+    this.setState({ selectedRow: [{ bgtGrCd: params.row.bgtGrCd, bgtGrNm: params.row.bgtGrNm }] }, () => {
       console.log(this.state.selectedRow);
     });
     // console.log(this.state);
@@ -61,12 +61,6 @@ class BgtGrDialogComponent extends Component {
     console.log(this.state);
   };
 
-  handlePressEnter = (e) => {
-    if (e.key === "Enter") {
-      this.handleSearchBgtGr();
-    }
-  };
-
   setBgtGrDialog = (keyword) => {
     BgtICFService.findBgtGrByCoCdAndKeyword({
       coCd: this.props.user.coCd,
@@ -80,7 +74,7 @@ class BgtGrDialogComponent extends Component {
           bgtGrNm: row.bgtGrNm,
         }));
 
-        this.setState({ bgtGrRows: bgtGrRows, keyword: keyword });
+        this.setState({ bgtGrRows: bgtGrRows, keyword: keyword, selectedRows: [] });
       })
       .then(() => {
         this.handleUp();
@@ -88,7 +82,7 @@ class BgtGrDialogComponent extends Component {
   };
 
   initBgtGrDialog = () => {
-    this.setState({ keyword: "", bgtGrRows: [] });
+    this.setState({ keyword: "", bgtGrRows: [], selectedRows: [] });
 
     BgtICFService.findBgtGrByCoCdAndKeyword({
       coCd: this.props.user.coCd,
@@ -125,9 +119,12 @@ class BgtGrDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     if (this.state.selectedRows.length == 0) {
+
       await this.props.handleSetBgtGrTextField(this.state.selectedRow);
     } else {
-      await this.props.handleSetBgtGrTextField(this.state.selectedRows);
+      let sortedSelectedRows = [...this.state.selectedRows];
+      sortedSelectedRows.sort((a, b) => a.bgtGrCd - b.bgtGrCd);
+      await this.props.handleSetBgtGrTextField(sortedSelectedRows);
     }
   };
 
@@ -162,11 +159,14 @@ class BgtGrDialogComponent extends Component {
                 const updatedSelectedRows = this.state.selectedRows.filter(
                   (row) => row.bgtGrCd !== newSelectedRow.bgtGrCd
                 );
+
                 await this.setState({ selectedRows: updatedSelectedRows });
               } else {
+
                 await this.setState((prevState) => ({
                   selectedRows: [...prevState.selectedRows, newSelectedRow],
                 }));
+
               }
               console.log(this.state.selectedRows)
             }}

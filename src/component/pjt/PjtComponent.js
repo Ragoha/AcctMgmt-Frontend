@@ -819,6 +819,7 @@ class PjtComponent extends Component {
                 name="dateRange"
                 value={this.state.dateRange || ""}
                 onChange={this.handlePjt}
+                InputLabelProps={{ shrink: true }}
                 sx={{
                   "& input": {
                     height: "9px",
@@ -860,14 +861,7 @@ class PjtComponent extends Component {
                 onChange={this.handleSelectAllChange}
                 sx={{ pb: 4.8 }}
               />
-              <InputLabel
-                sx={{
-                  pb: 3.5,
-                  fontWeight: "bold",
-                }}
-              >
-                프로젝트:
-              </InputLabel>
+              <CustomInputLabel sx={{ pb: 3.5 }}>총 프로젝트 :</CustomInputLabel>
               <InputLabel
                 sx={{
                   ml: 0.5,
@@ -966,7 +960,7 @@ class PjtComponent extends Component {
                   fontSize: 18,
                 }}
               >
-                기본등록사항
+                기본정보
               </InputLabel>
             </Grid>
 
@@ -1001,7 +995,6 @@ class PjtComponent extends Component {
                   disabled={!this.state.isPjtCdEditable}
                   size="small"
                   sx={{
-
                     ml: 2,
                     width: "93%",
                     backgroundColor: this.state.isPjtCdEditable
@@ -1267,7 +1260,7 @@ class PjtComponent extends Component {
                   name="startDt"
                   value={dayjs(startDt).format("YYYY-MM-DD")}
                   onChange={this.handlePjt}
-                  sx={{ ml: 1, }}
+                  sx={{ ml: 1 }}
                 />
               </Grid>
 
@@ -1328,7 +1321,7 @@ class PjtComponent extends Component {
             {this.state.selectedCount > 0 && (
               <InputLabel>
                 선택됨:
-                <span style={{ color: "red", fontWeight: "bold", }}>
+                <span style={{ color: "red", fontWeight: "bold" }}>
                   &nbsp;{this.state.selectedCount}
                 </span>
                 건
@@ -1339,7 +1332,7 @@ class PjtComponent extends Component {
             item
             xs={6}
             align="right"
-            style={{ position: "relative", right: "300px", }}
+            style={{ position: "relative", right: "300px" }}
           >
             {this.state.selectedCount > 0 && (
               <Button variant="outlined" onClick={this.handleDeleteSelected}>
