@@ -96,7 +96,6 @@ class BgtCDADDSubDialog extends Component {
       return updatedRow;
     }
   };
-
   insertBgtGr = (data) => {
     BgtGrService.insertBgtGr({
       accessToken: this.props.accessToken,
@@ -106,7 +105,6 @@ class BgtCDADDSubDialog extends Component {
       this.initBgtGr();
     });
   }
-
   updateBgtGr = (data) => {
     BgtGrService.updateBgtGr({
       accessToken: this.props.accessToken,
@@ -145,11 +143,13 @@ class BgtCDADDSubDialog extends Component {
   };
 
   handleClickConfirm = () => {
-    console.log("확인버튼 ");
-    console.log(this.state.rows);
-    const { accessToken } = this.props;
-    const data = this.state.rows;
-    BgtCDService.insertBgtGr(data, accessToken);
+    // console.log("확인버튼 ");
+    // console.log(this.state.rows);
+    // const { accessToken } = this.props;
+    // const data = this.state.rows;
+    // BgtCDService.insertBgtGr(data, accessToken);
+    this.props.initSubList();
+    console.log('확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼')
     this.handleDown();
   };
 
@@ -196,7 +196,7 @@ class BgtCDADDSubDialog extends Component {
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
-            <CustomConfirmButton variant="outlined" onClick={this.handleDown}>
+            <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
               확인
             </CustomConfirmButton>
 

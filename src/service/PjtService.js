@@ -42,8 +42,8 @@ class PjtService {
 
   getPgrBy(keyword, coCd) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch", coCd, {
-        params: {
+    .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch/" + coCd, {
+      params: {
           keyword: keyword
         },
       })
@@ -58,8 +58,8 @@ class PjtService {
   duplication(coCd, Pjt) {
     return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/duplication/" + coCd, Pjt);
   }
-  groupSelect(data){
-    return axios.get(ACCTMGMT_API_BASE_URL + "/pjtDate/group" , data);
+  getGroupPjt(data){
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/groupSel/", data);
   }
 }
 

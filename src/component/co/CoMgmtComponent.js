@@ -1266,7 +1266,7 @@ class CoMgmtComponent extends Component {
                   {gisu}
                 </CustomInputLabel>
                 <CustomInputLabel sx={{ textAlign: "right", mr: 1 }}>
-                  기
+                기
                 </CustomInputLabel>
                 <CustomDatePrToTextField
                   name="dateRange"

@@ -21,7 +21,8 @@ class BtgICFService {
         params: {
           coCd: data.coCd,
           bgtCd: data.bgtCd,
-          gisu: data.gisu
+          gisu: data.gisu,
+          groupCd: data.groupCd
         },
         headers: {
           "access-token": data.accessToken,
@@ -36,6 +37,8 @@ class BtgICFService {
   // }
 
   insertBgtICF(data) {
+    console.log(data);
+    console.log("asdfasdfasdfasdf")
     return axios
       .post(
         ACCTMGMT_API_BASE_URL + "/bgticf",
@@ -161,6 +164,11 @@ class BtgICFService {
 
   findBgcCDByGisuAndGroupCdAndToDtAndKeyword(data) {
     console.log(data);
+    let bgtGrCdListString = "";
+    if (data.bgtGrCdList && data.bgtGrCdList.length > 0) {
+      bgtGrCdListString = data.bgtGrCdList.join(", ");
+    }
+    console.log(bgtGrCdListString);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd", {
         params: {
@@ -169,6 +177,7 @@ class BtgICFService {
           groupCd: data.bgtGrCd,
           keyword: data.keyword,
           toDt: dayjs(data.range),
+          bgtGrCdList: bgtGrCdListString,
         },
         headers: {
           "access-token": data.accessToken,
@@ -201,6 +210,12 @@ class BtgICFService {
       bgtGrCdListString = data.bgtGrCdList.join(", ");
     }
 
+    
+    let bgtCdListString = "";
+    if (data.bgtCdList && data.bgtCdList.length > 0) {
+      bgtCdListString = data.bgtCdList.join(", ");
+    }
+
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
         params: {
@@ -210,6 +225,7 @@ class BtgICFService {
           groupCd: data.bgtGrCd,
           grFg: data.grFg,
           bgtCd: data.bgtCd,
+          bgtCdList: bgtCdListString,
           bgtGrCdList: bgtGrCdListString,
           // coCd: data.coCd,
           // divCd: data.divCd,

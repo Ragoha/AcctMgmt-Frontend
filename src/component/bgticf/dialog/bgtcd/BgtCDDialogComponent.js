@@ -35,40 +35,6 @@ import {
 } from "../../../common/style/CommonStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
-const columns = [
-  {
-    field: "gisu",
-    headerName: "기수",
-    width: 50,
-    headerAlign: "center",
-    align: "center",
-  },
-  {
-    field: "bgtGrNm",
-    headerName: "예산그룹",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtCd",
-    headerName: "예산과목코드",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtNm",
-    headerName: "예산과목명",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "hBgtNm",
-    headerName: "상위예산과목",
-    width: 507,
-    headerAlign: "center",
-  },
-];
-
 class BgtCDDialogComponent extends Component {
   constructor(props) {
     super(props);
@@ -78,14 +44,16 @@ class BgtCDDialogComponent extends Component {
       selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
       bgtCDRows: [],
+      bgtCDCdRows: [],
       gisu: "모든예산과목",
       gisuValue: "0",
       keyword: "",
-      columns: columns,
       rangeState: true,
       rangeTextField: dayjs(new Date()).format("YYYY-MM-DD"),
       bgtCDMarkTextField: "",
       bgtGrTextField: "",
+      bgtGrCdList: [],
+      selectedRows: [],
       keywordTextField: "",
     };
 
@@ -128,7 +96,7 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ bgtCd: params.row.bgtCd, bgtNm: params.row.bgtNm });
+    this.setState({ selectedRow: params.row });
   };
 
   handleInputChange = async (e) => {
@@ -151,12 +119,19 @@ class BgtCDDialogComponent extends Component {
     );
   };
 
-  handleClickConfirm = () => {
-    this.props.handleSetBgtCDTextField({
-      bgtCd: this.state.bgtCd,
-      bgtNm: this.state.bgtNm,
-    });
+  handleClickConfirm = async () => {
 
+    if (this.state.selectedRows.length == 0) {
+      await this.props.handleSetBgtCDTextField(this.state.selectedRow);
+    } else {
+      let sortedSelectedRows = [...this.state.selectedRows];
+      sortedSelectedRows.sort((a, b) => a.bgtCd - b.bgtCd);
+      console.log(sortedSelectedRows);
+      await this.props.handleSetBgtCDTextField(sortedSelectedRows);
+    }
+
+    
+    
     this.handleDown();
   };
 
@@ -166,11 +141,27 @@ class BgtCDDialogComponent extends Component {
     // this.childBgtGrRef.current.handleUp();
   };
 
-  handleSetBgtCDTextField = (response) => {
-    this.setState({
-      bgtGrTextField: response.bgtGrCd + ". " + response.bgtGrNm,
-      bgtGrCd: response.bgtGrCd,
-    });
+  handleSetBgtCDTextField = (dataList) => {
+    console.log(dataList);
+    if (dataList.length > 0) {
+      const concatenatedText = dataList
+        .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
+        .join(", ");
+
+      const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+
+      this.setState({
+        bgtGrTextField: concatenatedText,
+        bgtGrCdList: bgtGrCdList,
+      });
+    } else {
+      this.setState({
+        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+        bgtGrCd: dataList.bgtGrCd,
+        bgtGrNm: dataList.bgtGrNm,
+      });
+    }
+    console.log(this.state);
   };
 
   handleClickSearchIcon = () => {
@@ -189,6 +180,7 @@ class BgtCDDialogComponent extends Component {
       range: tmpRange,
       accessToken: this.props.accessToken,
       user: this.props.user,
+      bgtGrCdList: this.state.bgtGrCdList,
     }).then((response) => {
       const bgtCDRows = response.map((row) => ({
         id: randomId(),
@@ -226,8 +218,98 @@ class BgtCDDialogComponent extends Component {
   };
 
   render() {
-    const { open, columns, rangeState, bgtGrTextField, rangeTextField } =
+    const { open, rangeState, bgtGrTextField, rangeTextField, selectedRows } =
       this.state;
+
+    const columns = [
+      {
+        field: "confirmed",
+        width: 65,
+        headerName: "",
+        menu: false,
+        disableColumnMenu: true,
+        sortable: false,
+        filterable: false,
+        hideable: false,
+        renderHeader: (params) => (
+          <Checkbox
+            checked={selectedRows.length === this.state.bgtCDRows.length}
+            onClick={async (e) => {
+              this.setState({ bgtCDCdRows: this.state.bgtCDRows });
+              console.log(e.target.checked);
+          
+              if (!e.target.checked) {
+                await this.setState({ selectedRows: [] });
+              } else {
+                await this.setState({ selectedRows: [...this.state.bgtCDRows] });
+              }
+              console.log(this.state.selectedRows);
+            }}
+          />
+        ),
+        renderCell: (params) => (
+          <Checkbox
+            checked={selectedRows.some(
+              (row) => row.bgtCd === params.row.bgtCd
+            )}
+            onChange={async () => {
+              
+              const newSelectedRow = {
+                bgtCd: params.row.bgtCd,
+                bgtNm: params.row.bgtNm,
+              };
+              const isSelected = selectedRows.some(
+                (row) => row.bgtCd === newSelectedRow.bgtCd
+              );
+
+              if (isSelected) {
+                const updatedSelectedRows = selectedRows.filter(
+                  (row) => row.bgtCd !== newSelectedRow.bgtCd
+                );
+                await this.setState({ selectedRows: updatedSelectedRows });
+              } else {
+                await this.setState((prevState) => ({
+                  selectedRows: [...prevState.selectedRows, newSelectedRow],
+                }));
+                
+              }
+              console.log(this.state.selectedRows);
+            }}
+          />
+        ),
+      },
+      {
+        field: "gisu",
+        headerName: "기수",
+        width: 50,
+        headerAlign: "center",
+        align: "center",
+      },
+      {
+        field: "bgtGrNm",
+        headerName: "예산그룹",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "bgtCd",
+        headerName: "예산과목코드",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "bgtNm",
+        headerName: "예산과목명",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "hBgtNm",
+        headerName: "상위예산과목",
+        width: 507,
+        headerAlign: "center",
+      },
+    ];
 
     return (
       <>
@@ -277,6 +359,7 @@ class BgtCDDialogComponent extends Component {
                     value={bgtGrTextField}
                     onChange={this.handleInputChange}
                     onKeyDown={this.handleKeyDownBgtGrTextField}
+                    placeholder="예산그룹코드/예산그룹명"
                     variant="outlined"
                     InputProps={{
                       endAdornment: (

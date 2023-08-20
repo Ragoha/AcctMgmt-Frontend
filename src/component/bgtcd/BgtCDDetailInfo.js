@@ -11,6 +11,7 @@ import { Divider } from '@material-ui/core';
 import { CustomBtnBgtcd, CustomInputLabel } from '../common/style/CommonStyle';
 import { connect } from 'react-redux';
 import { SET_GROUPCD } from '../../store/BgtCDStore';
+import SnackBarComponent from '../common/SnackBarComponent';
 
 /*리덕스 import */
 // import { connect } from 'react-redux';
@@ -20,6 +21,7 @@ import { SET_GROUPCD } from '../../store/BgtCDStore';
 class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구현.
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.state = {
       // Detail_Info_FormControle 의 menuValues
       detailInfo: props.detailInfo,
@@ -115,23 +117,22 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   };
 
   deleteRow = () => {
+    // if(this.props.tBgtCd)
+
     const data = this.state.bgtCd
     const { accessToken } = this.props;
     BgtCDService.deleteRow(data, accessToken)
       .then(response => {
         if (response === 0) {
-          alert('삭제완료야 ㅋㅋ')
+          this.snackBarRef.current.handleUp("success" , "삭제완료")
         } else {
-          alert("하위 과목들이 있어서 안돼 ")
+          this.snackBarRef.current.handleUp("error" , "하위 과목이 존재합니다")
         }
       }).catch(error => {
         console.error("deleteRow 에러야 :", error);
       }).then(
-      /*여기서 내일 Redux로 부모의 함수하는거 붙이는거 해볼 예정 . */
+        
     );
-    /*[230720] : 지금 삭제는 되는데 삭제하고나서 DataGrid가 바뀌질 않음 -230721-에 해볼예정
-    * [230801] : delete 이후에 dataGrid 다시 불러오기 구현 시작 
-    */
   }
   render() {
     const { menuItemValues, ctlFg, bgajustFg, bottomFg, bizFg, toDt } = this.state;
@@ -250,6 +251,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
             </Button>
           </Grid>
         </Grid>
+        <SnackBarComponent ref={this.snackBarRef}/>
       </Grid>
     );
   }

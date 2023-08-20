@@ -121,13 +121,13 @@ class GisuDialogComponent extends Component {
 
   updateGisu = (data) => {
     console.log(data);
-    // GisuService.updateGisu({
-    //   accessToken: this.props.accessToken,
-    //   coCd: this.props.user.coCd,
-    //   gisu: data,
-    // }).then(() => {
-    //   this.initGisu();
-    // });
+    GisuService.updateGisu({
+      accessToken: this.props.accessToken,
+      coCd: this.props.user.coCd,
+      gisu: data,
+    }).then(() => {
+      this.initGisu();
+    });
   }
 
   handleClickDelete = () => {
