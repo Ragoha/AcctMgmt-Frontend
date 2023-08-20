@@ -12,6 +12,7 @@ import CustomSwal from '../common/CustomSwal.js';
 import { CustomDateTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect, CustomWideTextField } from '../common/style/CommonStyle';
 import PgrDialogComponent from './dialog/PgrDialogComponent';
 import PjtDialogComponent from './dialog/PjtDialogComponent';
+import PgrInsertDialogComponent from './dialog/PgrInsertDialogComponent';
 import './styles.css'; // 스타일시트 불러오기
 
 class PjtComponent extends Component {
@@ -19,6 +20,7 @@ class PjtComponent extends Component {
     super(props);
     this.pjtDialogRef = createRef();
     this.pgrDialogRef = createRef();
+    this.pgrinsertRef = createRef();
     this.cardListRef = createRef();
     this.state = {
       open: false,
@@ -495,10 +497,14 @@ class PjtComponent extends Component {
   pgrhelpClick = () => {
     this.pgrDialogRef.current.handleUp();
   };
+  pgrinsertClick = () => {
+    this.pgrinsertRef.current.handleUp();
+  };
   // 다이얼로그 닫을 때 사용
   closeDialog = () => {
     this.pjtDialogRef.current.handleDown();
     this.pgrDialogRef.current.handleDown();
+    this.pgrinsertRef.current.handleDown();
   }
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
   handleSetPjtTextField = async (data) => {
@@ -568,8 +574,9 @@ class PjtComponent extends Component {
   };
 
   handleSetPgrTextField = async (data) => {
+    this.setState({ pgrTextFieldData: data })
     await this.setState({
-      PgrdialTextField: data.pgrCd + ". " + data.pgrNm,
+      PgrdialTextField: data.pgrCd && data.pgrNm ? data.pgrCd + ". " + data.pgrNm : "",
       pgrCd: data.pgrCd  //밑에 pjtCd 넘겨주기
     });
   };
@@ -628,28 +635,122 @@ class PjtComponent extends Component {
       this.pjthelpClick();
     }
   };
+  getGroupPjtData = async (data) => {
+    PjtService.getGroupPjt(data)
+      .then((response) => {
+        if (response.data.length === 0) {
+          // this.resetState();
+          CustomSwal.showCommonToast("error", "검색결과가 없습니다");
+        }
+        else {
+          const pjtCdList = response.data.map((item) => item.pjtCd);
+          const pjtNmList = response.data.map((item) => item.pjtNm);
+          const pjtPrList = response.data.map((item) => item.prDt);
+          const pjtToList = response.data.map((item) => item.toDt);
+          const progFgList = response.data.map((item) => item.progFg);
+          const cardCount = response.data.length;
+          const pjtCd = response.data[0].pjtCd;
+          const pgrCd = response.data[0].pgrCd;
+          const pgrNm = response.data[0].pgrNm;
+          const pjtNm = response.data[0].pjtNm;
+          const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+          const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+          const progFg = response.data[0].progFg;
+          const apjtNm = response.data[0].apjtNm;
+          const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
+          const note = response.data[0].note;
 
+          this.setState({
+            cardCount: cardCount,
+            pjtCdList: pjtCdList,
+            pjtNmList: pjtNmList,
+            pjtPrList: pjtPrList,
+            pjtToList: pjtToList,
+            progFgList: progFgList,
+            focused: pjtCdList[0],
+            pjtCd: pjtCd,
+            pgrCd: pgrCd,
+            pgrNm: pgrNm,
+            pjtNm: pjtNm,
+            prDt: prDt,
+            toDt: toDt,
+            progFg: progFg,
+            apjtNm: apjtNm,
+            startDt: startDt,
+            note: note,
+            isChanged: false,
+            isPrChanged: false,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   handleClickSerachButton = (e) => {
-
-    const { selectedProgFg, PgrdialTextField, dateRange, pjtTextFieldData } = this.state;
-    if (pjtTextFieldData != null) {
-      console.log("pjtCd: ", pjtTextFieldData.pjtCd);
-      
+    const { coCd } = this.props.userInfo;
+    const { selectedProgFg, pgrTextFieldData, dateRange, pjtTextFieldData } = this.state;
+    let date = dayjs(dateRange).format("YYYY-MM-DD")
+    if (date === "Invalid Date") {
+      date = null;
+    }
+    // console.log("짂히나?",pgrTextFieldData.pgrCd)
+    if (pjtTextFieldData != null && pgrTextFieldData == null) {
       const data = {
+        coCd: coCd,
         pjtCd: pjtTextFieldData.pjtCd,
         progFg: selectedProgFg,
-        // pgrCd: PgrdialTextField,
-        prDt: dateRange.length
+        prDt: date
       }
-      PjtService.groupSelect(data)
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+            this.resetState();
+          }
+        });
     }
-    else 
-    console.log("selectedProgFg: ", selectedProgFg);
-    console.log("PgrdialTextField: ", PgrdialTextField);
-    console.log("dateRange: ", dateRange);
-
-    
-
+    else if (pjtTextFieldData != null && pgrTextFieldData != null) {
+      const data = {
+        pjtCd: pjtTextFieldData.pjtCd,
+        pgrCd: pgrTextFieldData.pgrCd,
+        coCd: coCd,
+        progFg: selectedProgFg,
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+            this.resetState();
+          }
+        });
+    }
+    else if (pjtTextFieldData == null && pgrTextFieldData != null) {
+      const data = {
+        pgrCd: pgrTextFieldData.pgrCd,
+        coCd: coCd,
+        progFg: selectedProgFg,
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+            this.resetState();
+          }
+        });
+    }
+    else {
+      const data = {
+        coCd: coCd,
+        progFg: selectedProgFg,
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+            this.resetState();
+          }
+        });
+    }
   }
 
 
@@ -712,7 +813,7 @@ class PjtComponent extends Component {
             <CustomHeaderInputLabel>프로젝트 등록</CustomHeaderInputLabel>
           </Grid>
           <Grid item container justifyContent="flex-end" xs={4}>
-            <Button variant="outlined" sx={{ mr: 1 }}>
+            <Button variant="outlined" sx={{ mr: 1 }} onClick={this.pgrinsertClick}>
               프로젝트그룹추가
             </Button>
             {isPjtCdEditable ? (
@@ -790,6 +891,7 @@ class PjtComponent extends Component {
             >
               <CustomInputLabel>프로젝트분류</CustomInputLabel>
               <CustomTextField
+                // onChange={this.handleTextFieldChange} // 입력 필드 값이 변경될 때 호출되는 핸들러 함수
                 name="PgrTextField"
                 value={this.state.PgrdialTextField}
                 placeholder="프로젝트그룹코드 "
@@ -1355,6 +1457,9 @@ class PjtComponent extends Component {
         <PgrDialogComponent
           handleSetPgrTextField={this.handleSetPgrTextField}
           ref={this.pgrDialogRef}
+        />
+        <PgrInsertDialogComponent
+          ref={this.pgrinsertRef}
         />
       </>
     );
