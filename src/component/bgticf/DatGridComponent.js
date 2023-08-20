@@ -18,6 +18,7 @@ class DataGridComponent extends Component {
       bgtCd: "",
       mgtCd: "",
       gisu: "",
+      groupCd: "",
       rows: [],
       selectedRowId: "",
       selectedRow: [],
@@ -34,7 +35,7 @@ class DataGridComponent extends Component {
   initBgtICF = () => {
     console.log("tet");
     console.log(this.state.rows);
-    this.setState({rows: []})
+    this.setState({ rows: [] });
     this.footerRef.current.sumCarrAm([]);
   };
 
@@ -149,7 +150,7 @@ class DataGridComponent extends Component {
   handleDeleteClick = (data) => {
     console.log("================");
     console.log(data.sqList.length);
-    console.log(this.state)
+    console.log(this.state);
 
     if (data.sqList.length >= 1) {
       const sqList = data.sqList.map((sq) => sq.sq).join(",");
@@ -210,13 +211,15 @@ class DataGridComponent extends Component {
       divCd: parent.divCd,
       gisu: data.gisu,
       sqList: [],
+      groupCd: data.groupCd,
     });
-    console.log(this.state)
+    console.log(this.state);
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
+      groupCd: this.state.groupCd,
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -339,9 +342,9 @@ class DataGridComponent extends Component {
 
         await this.setState({ rows: rowsWithId });
         this.footerRef.current.sumCarrAm(rowsWithId);
-        
       });
-    });this.snackBarRef.current.handleUp("success", "수정되었습니다.");
+    });
+    this.snackBarRef.current.handleUp("success", "수정되었습니다.");
   };
 
   handleRowClick = async (params) => {
@@ -603,6 +606,10 @@ class DataGridComponent extends Component {
               {
                 display: "none",
               },
+
+            "& .MuiDataGrid-row:last-child": {
+              background: "#FFF5F5",
+            },
             "& .MuiDataGrid-row:hover": {
               background: "#F5F5F5 !important",
             },
@@ -786,6 +793,7 @@ class CustomFooterStatusComponent extends Component {
             },
             "& .MuiDataGrid-row": {
               background: "#F6FFCC",
+              fontWeight: "bold",
             },
 
             "& .MuiDataGrid-cellContent:first-child": {
