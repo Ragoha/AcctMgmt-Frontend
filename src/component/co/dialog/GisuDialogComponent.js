@@ -16,6 +16,7 @@ import {
 } from "../../common/style/CommonDialogStyle";
 import GisuService from "../../../service/GisuService";
 import { random, randomId } from "@mui/x-data-grid-generator";
+import CustomSwal from '../../common/CustomSwal.js';
 
 class GisuDialogComponent extends Component {
   constructor(props) {
@@ -131,13 +132,18 @@ class GisuDialogComponent extends Component {
 
   handleClickDelete = () => {
     console.log(this.state.selectedRow.gisu);
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+      if (confirmed) {
     GisuService.deleteGisu({
       accessToken: this.props.accessToken,
       coCd: this.props.coCd,
       gisu: this.state.selectedRow.gisu,
     }).then(() => {
+      CustomSwal.showCommonToast("success", "삭제되었습니다.");
       this.initGisu();
     });
+  }
+})
   };
 
   handleClickConfirm = () => {

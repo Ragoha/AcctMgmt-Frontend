@@ -1397,6 +1397,7 @@ class DivMgmtComponent extends Component {
                   sx={{ ml: 2 }}
                   onChange={this.handleCompany}
                   value={divNb || ""}
+                  placeholder="ex)123-45-67890"
                   InputProps={{
                     inputComponent: InputMask,
                     inputProps: {
@@ -1437,6 +1438,7 @@ class DivMgmtComponent extends Component {
                   sx={{ ml: 2 }}
                   onChange={this.handleCompany}
                   value={toNb || ""}
+                  placeholder="ex)123456-7890123"
                   InputProps={{
                     inputComponent: InputMask,
                     inputProps: {
