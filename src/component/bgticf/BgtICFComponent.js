@@ -28,6 +28,8 @@ import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import SnackBarComponentWrapper from "../common/SnackBarComponent";
 import SnackBarComponent from "../common/SnackBarComponent";
+import CustomSwal from "../common/CustomSwal";
+import { randomId } from "@mui/x-data-grid-generator";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -93,6 +95,7 @@ class BgtICFComponent extends Component {
       grFgText: "전체",
       bgtCd: "",
       bgtNm: "",
+      bgtCdList: [],
       bgtCDTextField: "",
       bgtDTO: [],
       divRows: [],
@@ -119,11 +122,21 @@ class BgtICFComponent extends Component {
 
   handleRowDelete = () => {
     console.log("Asdf");
-    this.bgtICFRef.current.handleDeleteClick({
-      bgtCd: this.state.selectedRowId,
-      sq: this.state.selectedRowSq,
-      sqList: this.state.selectedRows,
-    });
+    CustomSwal.showCommonSwalYn(
+      "삭제",
+      "삭제하시겠습니까?",
+      "info",
+      "삭제",
+      (confirm) => {
+        if (confirm) {
+          this.bgtICFRef.current.handleDeleteClick({
+            bgtCd: this.state.selectedRowId,
+            sq: this.state.selectedRowSq,
+            sqList: this.state.selectedRows,
+          });
+        }
+      }
+    );
   };
 
   setSelectedRows = async (selectedRows) => {
@@ -135,23 +148,6 @@ class BgtICFComponent extends Component {
     const { name, value } = e.target;
     await this.setState({ [name]: value });
     console.log(this.state);
-  };
-
-  handleChangeGisuText = (event, newValue) => {
-    console.log("Selected value:", newValue);
-    const index = this.state.gisuRows.findIndex((value) => value === newValue);
-
-    this.setState({
-      gisuText: newValue,
-      gisuRangeText: this.state.gisuRangeRows[index],
-    });
-
-    console.log("Selected option index:", index);
-  };
-
-  handleChangeGrFgText = (event, newValue) => {
-    console.log(newValue);
-    this.setState({ grFg: newValue.value, grFgText: newValue.label });
   };
 
   handleAddRow = () => {
@@ -200,21 +196,17 @@ class BgtICFComponent extends Component {
   handleSetBgtGrTextField = (dataList) => {
     console.log(dataList);
     if (dataList.length > 0) {
-      console.log("맞음?");
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
         .join(", ");
-      
+
       const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
 
       this.setState({
         bgtGrTextField: concatenatedText,
         bgtGrCdList: bgtGrCdList,
       });
-      console.log("리스트 데이터:", concatenatedText);
-      console.log("리스트:", bgtGrCdList)
     } else {
-      console.log("그냥");
       this.setState({
         bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
         bgtGrCd: dataList.bgtGrCd,
@@ -236,12 +228,28 @@ class BgtICFComponent extends Component {
     this.bgtCDRef.current.initBgtCDDialog();
   };
 
-  handleSetBgtCDTextField = (data) => {
-    this.setState({
-      bgtCDTextField: data.bgtCd + ". " + data.bgtNm,
-      bgtCd: data.bgtCd,
-      bgtNm: data.bgtNm,
-    });
+  handleSetBgtCDTextField = (dataList) => {
+    console.log("===========");
+    console.log(dataList);
+    if (dataList.length > 0) {
+      const concatenatedText = dataList
+        .map((data) => data.bgtCd + ". " + data.bgtNm)
+        .join(", ");
+
+      const bgtCdList = dataList.map((data) => data.bgtCd);
+
+      this.setState({
+        bgtCDTextField: concatenatedText,
+        bgtCdList: bgtCdList,
+      });
+    } else {
+      this.setState({
+        bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
+        bgtCd: dataList.bgtCd,
+        bgtNm: dataList.bgtNm,
+      });
+    }
+    console.log(this.state);
   };
 
   handleClickSerachButton = () => {
@@ -258,13 +266,14 @@ class BgtICFComponent extends Component {
       bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
+      bgtCdList: this.state.bgtCdList,
       bgtNm: this.state.bgtNm,
       bgtText: this.state.bgtCDTextField,
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.bgtCd,
+        id: randomId(),
       }));
       this.setState({ bgtCDRows: rowsWithId });
     });
@@ -301,12 +310,13 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
-    console.log("zzzzzzzzzzzzzzz")
+    console.log("zzzzzzzzzzzzzzz");
     console.log(e.row);
+    console.log(this.state.divCd);
     // BgtICFService.findBgtICFByCoCdAndBgtCd
     // this.bgtICFRef.current.handleGetBgtICFList();
-
-    this.bgtICFRef.current.getBgtICFList(e.row);
+    this.setState({ selectedRows: [] });
+    this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd });
   };
 
   handleKeyDownDivTextField = (e) => {
@@ -316,6 +326,7 @@ class BgtICFComponent extends Component {
 
     if (e.key == "Backspace") {
       this.setState({ divTextField: "", divCd: "", bgtCDRows: [] });
+      this.bgtICFRef.current.initBgtICF();
     }
   };
 
@@ -326,6 +337,7 @@ class BgtICFComponent extends Component {
 
     if (e.key == "Backspace") {
       this.setState({ bgtGrTextField: "", bgtGrCd: "", bgtCDRows: [] });
+      this.bgtICFRef.current.initBgtICF();
     }
   };
 
@@ -336,7 +348,31 @@ class BgtICFComponent extends Component {
 
     if (e.key == "Backspace") {
       this.setState({ bgtCDTextField: "", bgtCd: "", bgtCDRows: [] });
+      this.bgtICFRef.current.initBgtICF();
     }
+  };
+
+  handleChangeGisuText = (event, newValue) => {
+    console.log("Selected value:", newValue);
+    const index = this.state.gisuRows.findIndex((value) => value === newValue);
+
+    this.setState({
+      gisuText: newValue,
+      gisuRangeText: this.state.gisuRangeRows[index],
+      bgtCDRows: [],
+    });
+    this.bgtICFRef.current.initBgtICF();
+    console.log("Selected option index:", index);
+  };
+
+  handleChangeGrFgText = (event, newValue) => {
+    console.log(newValue);
+    this.setState({
+      grFg: newValue.value,
+      grFgText: newValue.label,
+      bgtCDRows: [],
+    });
+    this.bgtICFRef.current.initBgtICF();
   };
 
   render() {
@@ -377,6 +413,7 @@ class BgtICFComponent extends Component {
                 value={divTextField}
                 onChange={this.handleInputChange}
                 onKeyDown={this.handleKeyDownDivTextField}
+                placeholder="사업장코드/사업장명"
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -433,6 +470,7 @@ class BgtICFComponent extends Component {
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
                 onKeyDown={this.handleKeyDownBgtGrTextField}
+                placeholder="예산그룹코드/예산그룹명"
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -478,6 +516,7 @@ class BgtICFComponent extends Component {
                 value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
                 onKeyDown={this.handleKeyDownBgtCDTextField}
+                placeholder="예산과목코드/예산과목명"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

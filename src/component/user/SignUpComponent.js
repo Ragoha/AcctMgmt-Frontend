@@ -2,14 +2,17 @@ import { Grid, InputLabel, Tooltip } from "@mui/material";
 import axios from "axios";
 import React, { Component } from "react";
 import validator from "validator";
-import throttle from "lodash/throttle";
+import CustomSwal from '../common/CustomSwal.js';
 import {
   CustomInputLabel,
   CustomMediumTextField,
 } from "../common/style/CommonStyle";
+import CoDialogComponent from "../co/dialog/CoDialogComponent";
+
 class SignUpComponent extends Component {
   constructor(props) {
     super(props);
+    this.coDialogRef = React.createRef();
     this.state = {
       id: "",
       name: "",
@@ -32,9 +35,21 @@ class SignUpComponent extends Component {
       value: "",
       error: false,
       errorMessage: "",
+      CodialTextField: "",
     };
   }
-
+  helpClick = () => {
+    this.coDialogRef.current.handleUp();
+  }
+  closeDialog = () => {
+    this.dialogRef.current.handleDown();
+  };
+  handleSetCodialTextField = async (data) => {
+    await this.setState({
+      CodialTextField: data.coCd,
+      coCd: data.coCd, //밑에 coCd 넘겨주기
+    });
+  };
   handleChange2 = (e) => {
     const { value } = e.target;
     const isIdValid =
@@ -47,8 +62,8 @@ class SignUpComponent extends Component {
       errorMessage: isKoreanInput
         ? "알파벳 대소문자와 숫자만 사용 가능합니다."
         : !isIdValid
-        ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-        : "",
+          ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
+          : "",
       isIdValid: isIdValid && !isKoreanInput,
     });
   };
@@ -107,7 +122,8 @@ class SignUpComponent extends Component {
 
     // 폼 필드의 값이 비어있는지 확인
     if (Object.values(signData).some((value) => value === "")) {
-      alert("모든 필드에 값을 입력해주세요.");
+      // alert("모든 필드에 값을 입력해주세요.");
+      CustomSwal.showCommonSwal("모든 필드에 값을 입력해주세요", "", "warning");
       return;
     }
 
@@ -121,7 +137,7 @@ class SignUpComponent extends Component {
       })
       .then((response) => {
         // 회원가입 성공 시 처리 로직
-        alert("회원가입 성공", response);
+        CustomSwal.showCommonSwal("회원가입 완료", "", "success", response);
         console.log(response.data);
         this.props.handleClose();
         this.handleClose(); // 추가: 회원가입 성공 시 상태 초기화
@@ -130,6 +146,7 @@ class SignUpComponent extends Component {
       .catch((error) => {
         // 회원가입 실패 시 처리 로직
         alert("회원가입 실패", error);
+        CustomSwal.showCommonSwal("회원가입 실패", "", "error", error);
         console.error(error);
       });
     // handle form submission logic here
@@ -147,13 +164,15 @@ class SignUpComponent extends Component {
       .get(ACCTMGMT_API_BASE_URL + "/emp/idcheck/" + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
-        alert("사용가능한 아이디 입니다.", response);
+        // alert("사용가능한 아이디 입니다.", response);
+        CustomSwal.showCommonToast("success", "사용가능한 아이디 입니다");
         console.error(response);
         this.setState({ isIdDuplicated: true });
       })
       .catch((error) => {
         // 아이디 중복 없을 때 처리 로직
-        alert("아이디 중복이요", error);
+        // alert("아이디 중복이요", error);
+        CustomSwal.showCommonToast("warning", "중복된 아이디 입니다");
         console.log(error.data);
         this.setState({
           isIdDuplicated: false,
@@ -291,11 +310,6 @@ class SignUpComponent extends Component {
                       },
                     }}
                   />
-                  {/* {password && !isPasswordValid && (
-                    <span style={{ marginLeft: '8px', fontSize: '10px', color: 'red' }}>
-                      알파벳 대소문자, 숫자, 특수문자를 포함한 8글자 이상을 입력하세요
-                    </span>
-                  )} */}
                 </Grid>
               </Grid>
             </Grid>
@@ -303,43 +317,47 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>패스워드 확인</CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>패스워드 확인</CustomInputLabel>
+                  {password && (
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "12px",
+                        color:
+                          confirmPassword && password !== confirmPassword ? "red" : "green",
+                      }}
+                    >
+                      {confirmPassword && password !== confirmPassword
+                        ? "비밀번호가 일치하지 않습니다."
+                        : "비밀번호가 일치합니다."}
+                    </span>
+                  )}
+                </div>
               </Grid>
               <Grid item xs={9}>
-                <Tooltip
-                  title={
-                    <div>
-                      {confirmPassword !== "" &&
-                        (password !== confirmPassword
-                          ? "비밀번호가 일치하지 않습니다."
-                          : "비밀번호가 일치합니다.")}
-                    </div>
+                <CustomMediumTextField
+                  variant="outlined"
+                  color={
+                    confirmPassword
+                      ? password === confirmPassword
+                        ? "success"
+                        : "error"
+                      : "secondary"
                   }
-                >
-                  <CustomMediumTextField
-                    variant="outlined"
-                    color={
-                      confirmPassword
-                        ? password === confirmPassword
-                          ? "success"
-                          : "error"
-                        : "secondary"
-                    }
-                    name="confirmPassword"
-                    placeholder="패스워드 재입력"
-                    // placeholder="한번 더 입력하세요"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={this.handleChange}
-                    onBlur={this.handleBlur}
-                    sx={{
-                      "& .MuiOutlinedInput-input::placeholder": {
-                        fontSize: "12px", // 원하는 폰트 크기로 설정
-                      },
-                    }}
-                    error={confirmPassword && password !== confirmPassword}
-                  />
-                </Tooltip>
+                  name="confirmPassword"
+                  placeholder="패스워드 재입력"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={this.handleChange}
+                  onBlur={this.handleBlur}
+                  sx={{
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      fontSize: "12px",
+                    },
+                  }}
+                  error={confirmPassword && password !== confirmPassword}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -423,7 +441,7 @@ class SignUpComponent extends Component {
                     color="secondary"
                     name="company"
                     placeholder="회사명을 입력해주세요"
-                    value={company}
+                    value={this.state.CodialTextField}
                     onChange={this.handleChange}
                     fullWidth
                     sx={{
@@ -439,7 +457,7 @@ class SignUpComponent extends Component {
                       fontSize: "14px",
                       cursor: "pointer",
                     }}
-                    onClick={this.handleAddressSearch}
+                    onClick={this.helpClick}
                   >
                     회사 검색
                   </InputLabel>
@@ -470,6 +488,10 @@ class SignUpComponent extends Component {
             </Grid>
           </Grid>
         </Grid>
+        <CoDialogComponent
+          handleSetCodialTextField={this.handleSetCodialTextField}
+          ref={this.coDialogRef}
+        />
       </form>
     );
   }

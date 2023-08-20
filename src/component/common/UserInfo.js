@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
+import { DELETE_TOKEN } from "../../store/Auth";
+import { DEL_USER } from "../../store/User";
+import { DEL_CONFIG } from "../../store/Config";
+import { Outlet, useNavigate } from "react-router-dom";
 import Cookie from "../../storage/Cookie";
 class UserInfo extends Component {
   constructor(props) {
@@ -85,7 +89,19 @@ class UserInfo extends Component {
     );
   }
 }
+function withNavigation(Component) {
+  return (props) => <Component {...props} navigate={useNavigate()} />;
+}
 const mapStateToProps = (state) => ({
-  userInfo: state.user || {},
+  accessToken: state.auth && state.auth.accessToken,
+  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+  configData: state.config.configData,
 });
-export default connect(mapStateToProps)(UserInfo);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
+    delUserInfo: (userInfo) => dispatch(DEL_USER(userInfo)),
+    delConfig: (config) => dispatch(DEL_CONFIG(config)),
+  };
+};
+export default connect(mapStateToProps,mapDispatchToProps)(withNavigation(UserInfo));

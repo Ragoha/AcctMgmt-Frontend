@@ -2,29 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import BusinessIcon from '@mui/icons-material/Business';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import GroupIcon from "@mui/icons-material/Group";
+import DomainDisabledIcon from "@mui/icons-material/DomainDisabled";
+import { ApartmentOutlined } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
 
-import ListIcon from '@mui/icons-material/List';
 import { Button, InputLabel, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-
+import { styled } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
+import Swal from 'sweetalert2';
 import CompanyService from '../../service/CompanyService';
 import DeptService from '../../service/DeptService';
 import DivsService from '../../service/DivsService';
 import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import DeptDialogComponent from './dialog/DeptDialogComponent';
-import Swal from 'sweetalert2';
 
 class DeptMgmtComponent extends Component {
     constructor(props) {
@@ -65,9 +62,16 @@ class DeptMgmtComponent extends Component {
             deptNmList: [],
             CodialTextField: '',
             isChanged: false,
-            isDeptCdEditable: false
+            isDeptCdEditable: false,
+            expanded: []
         }
     }
+
+    handleToggle = (event, nodeIds) => {
+        this.setState({
+            expanded: nodeIds,
+        });
+    };
 
     //icon = success, error, warning, info, question | title : "알럿창에 띄울 멘트" | timer:안넣으면 1500이 기본 값
     //ex)this.showCommonToast(Success, "성공", 1300);
@@ -205,16 +209,16 @@ class DeptMgmtComponent extends Component {
                     deptCdList: deptCdList,
                     deptNmList: deptNmList,
 
-                    focused: deptCd,
+                    focused: coCd,
                     coCd: coCd,
-                    divCd: divCd,
-                    divNm: divNm,
-                    deptCd: deptCd,
-                    deptNm: deptNm,
+                    divCd: '',
+                    divNm: '',
+                    deptCd: '',
+                    deptNm: '',
                     // ceoNm: ceoNm,
-                    deptZip: deptZip,
-                    deptAddr: deptAddr,
-                    deptAddr1: deptAddr1,
+                    deptZip: '',
+                    deptAddr: '',
+                    deptAddr1: '',
                     DeptdialTextField: ''
                 })
                 // if(!response.data.length){
@@ -324,7 +328,7 @@ class DeptMgmtComponent extends Component {
                     deptCdList: deptCdList,
                     deptNmList: deptNmList,
 
-                    //   focused: coCd,
+                    focused: deptCd,
                     //   coCd: coCd,
                     //   coNm: coNm,
                     divCd: divCd,
@@ -408,7 +412,7 @@ class DeptMgmtComponent extends Component {
         this.setState({
             coCd: coCd
         })
-        const { divCd, deptCd, deptNm, deptZip, deptAddr, deptAddr1, insertId } = this.state;
+        const { divCd, deptCd, deptNm, deptZip, deptAddr, deptAddr1, insertId,insertDt } = this.state;
 
         if (!this.state.deptCdList.includes('0000')) {
             this.showCommonToast("error", "등록할 부서를 추가해주세요");
@@ -491,12 +495,13 @@ class DeptMgmtComponent extends Component {
                             const coCd = response.data[0].coCd;
                             // const divCd = response.data[0].divCd;
                             // const divNm = response.data[0].divNm;
-                            const deptCd = response.data[0].deptCd;
-                            const deptNm = response.data[0].deptNm;
+                            // const deptCd = response.data[0].deptCd;
+                            // const deptNm = response.data[0].deptNm;
                             // const ceoNm = response.data[0].ceoNm;
-                            const deptZip = response.data[0].deptZip;
-                            const deptAddr = response.data[0].deptAddr;
-                            const deptAddr1 = response.data[0].deptAddr1;
+                            // const deptZip = response.data[0].deptZip;
+                            // const deptAddr = response.data[0].deptAddr;
+                            // const deptAddr1 = response.data[0].deptAddr1;
+                            const insertDt = response.data[0].insertDt;
 
                             this.setState({
                                 cardCount: cardCount, // state에 값을 저장
@@ -516,6 +521,7 @@ class DeptMgmtComponent extends Component {
                                 deptZip: deptZip,
                                 deptAddr: deptAddr,
                                 deptAddr1: deptAddr1,
+                                insertDt : insertDt,
                                 isDeptCdEditable: false
                             })
                         }).catch((error) => {
@@ -545,7 +551,10 @@ class DeptMgmtComponent extends Component {
         const { deptCd, deptNm, deptZip, deptAddr, deptAddr1 } = this.state;
         const userInfo = this.props.userInfo;
         const { coCd, empId, empEmail } = userInfo;
-
+    
+        if(!deptCd){
+            this.showCommonToast("error", "수정 할 부서를 선택해주세요."); //이거 부서선택했다가 사업장이나 회사가면 토기화 안되는듯 insertDt가 그거 초기화해주면 사실상 필요는 없으려나 그래도 있는게
+        }else{
         DeptService.updateDept({
             accessToken: this.props.accessToken,
             deptCd: deptCd,
@@ -600,12 +609,12 @@ class DeptMgmtComponent extends Component {
                                 const coCd = response.data[0].coCd;
                                 // const divCd = response.data[0].divCd;
                                 // const divNm = response.data[0].divNm;
-                                const deptCd = response.data[0].deptCd;
-                                const deptNm = response.data[0].deptNm;
+                                // const deptCd = response.data[0].deptCd;
+                                // const deptNm = response.data[0].deptNm;
                                 // const ceoNm = response.data[0].ceoNm;
-                                const deptZip = response.data[0].deptZip;
-                                const deptAddr = response.data[0].deptAddr;
-                                const deptAddr1 = response.data[0].deptAddr1;
+                                // const deptZip = response.data[0].deptZip;
+                                // const deptAddr = response.data[0].deptAddr;
+                                // const deptAddr1 = response.data[0].deptAddr1;
 
                                 this.setState({
                                     cardCount: cardCount, // state에 값을 저장
@@ -645,9 +654,13 @@ class DeptMgmtComponent extends Component {
                 this.showCommonToast("warning", "수정에 실패하였습니다.");
             });
     }
+}
 
     deleteDept = () => {
         const { deptCd } = this.state;
+    if(!deptCd){
+        this.showCommonToast("error", "삭제 할 부서를 선택해주세요.");
+    }else{
         if (deptCd === '0000') {
             this.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
                 if (confirmed) {
@@ -728,14 +741,14 @@ class DeptMgmtComponent extends Component {
                             const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
                             const coCd = response.data[0].coCd;
-                            const divCd = response.data[0].divCd;
-                            const divNm = response.data[0].divNm;
-                            const deptCd = response.data[0].deptCd;
-                            const deptNm = response.data[0].deptNm;
+                            // const divCd = response.data[0].divCd;
+                            // const divNm = response.data[0].divNm;
+                            // const deptCd = response.data[0].deptCd;
+                            // const deptNm = response.data[0].deptNm;
                             // const ceoNm = response.data[0].ceoNm;
-                            const deptZip = response.data[0].deptZip;
-                            const deptAddr = response.data[0].deptAddr;
-                            const deptAddr1 = response.data[0].deptAddr1;
+                            // const deptZip = response.data[0].deptZip;
+                            // const deptAddr = response.data[0].deptAddr;
+                            // const deptAddr1 = response.data[0].deptAddr1;
 
                             this.setState({
                                 cardCount: cardCount, // state에 값을 저장
@@ -745,16 +758,16 @@ class DeptMgmtComponent extends Component {
                                 deptCdList: deptCdList,
                                 deptNmList: deptNmList,
 
-                                focused: deptCd,
+                                focused: coCd,
                                 coCd: coCd,
-                                divCd: divCd,
-                                divNm: divNm,
-                                deptCd: deptCd,
-                                deptNm: deptNm,
-                                // ceoNm: ceoNm,
-                                deptZip: deptZip,
-                                deptAddr: deptAddr,
-                                deptAddr1: deptAddr1,
+                                divCd: '',
+                                divNm: '',
+                                deptCd: '',
+                                deptNm: '',
+                                ceoNm: '',
+                                deptZip: '',
+                                deptAddr: '',
+                                deptAddr1: '',
                                 DeptdialTextField: '',
                                 isDeptCdEditable: false
                             })
@@ -770,7 +783,7 @@ class DeptMgmtComponent extends Component {
                                 // divNmList: divNmList,
                                 deptCdList: '',
                                 deptNmList: '',
-
+                                focused: coCd,
                                 coCd: coCd,
                                 divCd: '',
                                 divNm: '',
@@ -787,7 +800,7 @@ class DeptMgmtComponent extends Component {
                 }
             })
         }
-    }
+    }}
 
     reClick = () => {
         this.componentDidMount();
@@ -807,8 +820,10 @@ class DeptMgmtComponent extends Component {
             const divCd = parts[1];
 
             this.setState({
+                focused:divCd,
                 coCd: coCd,
                 divCd: divCd,
+                // divNm: divNm,
                 deptCd: '',
                 deptNm: '',
                 deptZip: '',
@@ -860,7 +875,7 @@ class DeptMgmtComponent extends Component {
                         coCdList: coCdList,
                         // divCdList: divCdList,
                         // divNmList: divNmList,
-                        focused: deptCdList.length,
+                        focused: deptCd,
                         coCd: coCd,
                         divCd: divCd,
                         divNm: divNm,
@@ -885,7 +900,11 @@ class DeptMgmtComponent extends Component {
                             })
                         })
                 })
-        }
+            }else{
+                this.setState({
+                    focused: coCd
+                })
+            }
     }
 
     handleTextFieldChange = (e) => {
@@ -901,8 +920,7 @@ class DeptMgmtComponent extends Component {
     render() {
         const { open, divCd, coCd, deptCd, deptNm, divNm, ceoNm, deptZip, deptAddr, deptAddr1, rows, insertId, modifyId, insertDt } = this.state;
         const { coNm } = this.state;
-        const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList } = this.state;
-
+        const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList, index } = this.state;
 
         const currentDate = new Date();
 
@@ -913,19 +931,25 @@ class DeptMgmtComponent extends Component {
         const newDivCdList = [...new Set(divCdList)]
         const newDeptCdList = [...new Set(deptCdList)]
 
-        const allNodeIds = [];
+        const expanded = [`co-${coCd}`, ...newDivCdList.map(divCd => `div-${divCd}`)]; 
+        const CustomTreeView = styled(TreeView)(({ theme }) => ({
+            [`& .Mui-selected`]: {
+              backgroundColor: 'transparent !important', // Override the selected background color
+            },
+          }));
 
         const trees = (
-            <TreeItem nodeId={`co-${coCd}`} label={coCd + '. ' + coNm}>
+            <TreeItem nodeId={`co-${coCd}`} label={<Grid sx={{ display: 'flex', alignItems:'center',backgroundColor: this.state.focused === coCd ? 'skyblue' : 'white'}}><ApartmentOutlined sx={{color:'gray', mt:-0.2, mr:0.5}}/>{coCd + '. ' + coNm}</Grid>}  onClick={() => this.handleSelect(`co-${coCd}`)}>   
                 {newDivCdList.map((divCd, index) => (
-                    <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} labelIcon={BusinessIcon} label={divCd + '. ' + divNmList[index]}
-                        onClick={() => this.handleSelect(`div-${divCd}`)} >
+                    <TreeItem key={`div-${index}`} nodeId={`div-${divCd}`} label={<Grid sx={{ display: 'flex', alignItems:'center',backgroundColor: this.state.focused === divCd ? 'red' : 'white' }}><DomainDisabledIcon sx={{color:'gray',mt:-0.2, mr:0.5}}/>{divCd + '. ' + divNmList[index]}</Grid>}
+                        onClick={() => this.handleSelect(`div-${divCd}`)}   
+                    >
                         {rows.map((row, subIndex) => (
                             (row.divCd === divCd) ?
                                 <TreeItem
                                     key={`dept-${subIndex}`}
                                     nodeId={`dept-${row.deptCd}`}
-                                    label={row.deptCd + '. ' + row.deptNm}
+                                    label={<Grid sx={{ display: 'flex', alignItems:'center',backgroundColor: this.state.focused === row.deptCd ? 'orange' : 'white' }}><GroupIcon sx={{color:'gray',mt:-0.2, mr:0.5}}/>{row.deptCd + '. ' + row.deptNm}</Grid>}
                                     onClick={() => this.handleSelect(`dept-${row.deptCd}`)}
                                 />
                                 : null
@@ -1051,14 +1075,16 @@ class DeptMgmtComponent extends Component {
                             height: "calc(100% - 5%)",
                             overflowY: "auto",
                         }}>
-                            <TreeView
+                            <CustomTreeView
+                                // defaultExpanded={initialExpanded}
+                                expanded={expanded}
+                                onNodeToggle={this.handleToggle}
                                 defaultCollapseIcon={<ExpandMoreIcon />}
-                                defaultExpanded= {allNodeIds}
                                 defaultExpandIcon={<ChevronRightIcon />}
                                 sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
                             >
                                 {trees}
-                            </TreeView>
+                            </CustomTreeView>
                         </Grid>
                     </Grid>
 
@@ -1142,7 +1168,7 @@ class DeptMgmtComponent extends Component {
                                 borderBottom: "1px solid lightgray",
                                 borderRight: "1px solid #EAEAEA",
                             }} >
-                                <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='divCd' onChange={this.handleCompany} value={divCd || ''} InputProps={{ readOnly: true }}></CustomWideTextField>
+                                <CustomWideTextField sx={{ ml: 2, backgroundColor: '#FFEAEA' }} name='divCd' onChange={this.handleCompany} value={divCd|| ''} InputProps={{ readOnly: true }}></CustomWideTextField>
                             </Grid>
 
                             <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderBottom: '1px solid lightgray', borderRight: '1px solid #EAEAEA', backgroundColor: '#FCFCFC' }}>
