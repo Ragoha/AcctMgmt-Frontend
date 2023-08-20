@@ -117,14 +117,44 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   };
 
   deleteRow = () => {
-    // if(this.props.tBgtCd)
+    const tBgtCd = this.state.bgtCd;
+    const { coCd } = this.props.userInfo;
+    const gisu = this.props.gisuDefaultValue;
+    const keyword = this.props.bgtGrSearchText;
+    const groupCd = this.props.groupCd;
 
+
+
+
+
+
+
+
+
+    
+    console.log('tBgtCd : ?' +tBgtCd );
+    if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
+      console.log('tBgtCd :  ? ' + tBgtCd)
+      this.snackBarRef.current.handleUp("error" , "과목을 선택해주세요")
+      return null;
+    }
     const data = this.state.bgtCd
     const { accessToken } = this.props;
     BgtCDService.deleteRow(data, accessToken)
       .then(response => {
         if (response === 0) {
           this.snackBarRef.current.handleUp("success" , "삭제완료")
+          BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
+            (response) => {
+              console.log("response?")
+              console.dir(response)
+              if (response.data != "") {
+                this.setState({ rows: response.data })
+              } else {
+                this.setState({ rows: [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }] })
+              }
+            }
+          )
         } else {
           this.snackBarRef.current.handleUp("error" , "하위 과목이 존재합니다")
         }

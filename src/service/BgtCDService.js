@@ -154,6 +154,9 @@ class BgtCDService {
       params: {
         bgtCd: data.bgtCd,
         coCd: data.coCd,
+        groupCd:data.groupCd,
+        gisu : data.gisu
+        
       }
     }, {
       headers: {
