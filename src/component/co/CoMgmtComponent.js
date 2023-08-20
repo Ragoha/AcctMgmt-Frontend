@@ -1164,6 +1164,7 @@ class CoMgmtComponent extends Component {
                   name="coNb"
                   onChange={this.handleCompany}
                   value={coNb || ""}
+                  placeholder="ex)123-45-67890"
                   InputProps={{
                     inputComponent: InputMask,
                     inputProps: {
