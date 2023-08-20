@@ -58,6 +58,17 @@ class BgtCD extends Component {
     console.log("최상단 조회 검색시 gisu : " + gisu)
     const keyword = this.state.bgtCdSearchText;
     const groupCd = this.state.bgtGrSearchText;
+    if(groupCd ===undefined || groupCd ===null||groupCd===""||gisu ===null||gisu===undefined||gisu===""){
+      if(groupCd ===undefined || groupCd ===null||groupCd===""){
+        this.snackBarRef.current.handleUp("error", "예산그룹선택필수");
+        return null;
+      }else if(gisu ===null||gisu===undefined||gisu===""){
+        this.snackBarRef.current.handleUp("error", "기수선택필수");
+        return null;
+      }
+      
+      
+    }
     const { accessToken } = this.props;
     BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
       (response) => {
@@ -176,8 +187,7 @@ class BgtCD extends Component {
     this.setState({ tDataPath: dataPath, tBgtCd: bgtCd, tDivFg: divFg })
   }
   handleRowAdd = () => {
-    const { tDataPath, tBgtCd, tDivFg } = this.state;
-    const { rows } = this.state;
+    const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
 
@@ -205,10 +215,7 @@ class BgtCD extends Component {
             { dataPath: data.dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: data.divFg, parentCd: "" },
           ];
           this.setState({ rows: newRows1 }, () => console.log(this.state));
-
-          console.log('흠---------------------------------------------')
         })
-      console.log('3흠.......................')
       return null;
     }
     //rows들 중 내가 클릭한 로우를 부모로 갖는 row들 중 가장 마지막 row의 dataPath값을 갖고온 뒤 
@@ -230,7 +237,7 @@ class BgtCD extends Component {
       }
     }
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-    const data = { bgtCd: bgtCd, coCd: coCd }
+    const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const dataPath = this.state.tDataPath;
     const a = (parseInt(tDivFg) + 1).toString();
     BgtCDService.getAddRowData(data, accessToken)
@@ -457,12 +464,14 @@ class BgtCD extends Component {
                 </Select>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    disabled={true}
                     name="date"
                     format="YYYY-MM-DD"
                     value={dayjs(toDt)}
                     onChange={this.handleChangeDatePicker}
                     slotProps={{
                       textField: {
+                        disabled:true,
                         size: "small",
                         sx: {
                           width: "150px",
@@ -471,6 +480,7 @@ class BgtCD extends Component {
                           marginBottom: "8px",
                         },
                         inputProps: {
+                          
                           style: {
                             borderRadius: 0,
                           },
