@@ -166,11 +166,11 @@ class BgtCDService {
     }).then((response) => response.data)
     return returnData;
   }
-  getBgtCDdialog(coCd, accessToken) {
-    console.log('11111겟비지티시디다이알로그 서비스')
+  getBgtCDdialog(coCd, keyword,accessToken) {
     const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getBgtCDdialog", {
       params: {
-        coCd: coCd
+        coCd: coCd,
+        keyword: keyword ,
       }
     }, {
       headers: {
@@ -225,10 +225,26 @@ class BgtCDService {
 
     return returnData;
   }
-  getinitBgtGrSearch(coCd, accessToken) {
+  getinitBgtGrSearch(coCd, keyword ,accessToken) {
     const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getinitBgtGrSearch", {
       params: {
         coCd: coCd,
+        keyword: keyword
+      }
+    }, {
+      headers: {
+        "access-token": accessToken,
+      },
+      withCredentials: true,
+    }).then((response) => response.data)
+
+    return returnData;
+  }
+  getbgtGrSearchKeywordData(data,accessToken){
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/getbgtGrSearchKeywordData" , {
+      params:{
+        coCd : data.coCd,
+        keyword: data.keyword
       }
     }, {
       headers: {
@@ -292,8 +308,12 @@ class BgtCDService {
   /*---update end---*/
 
   /*---delete start ---*/
-  deleteRow(bgtCd, accessToken) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/deleteRow", { params: { bgtCd: bgtCd } }, {
+  deleteRow(data, accessToken) {
+    return axios.delete(ACCTMGMT_API_BASE_URL + "/deleteRow", { 
+      params: { 
+        bgtCd: data.bgtCd ,
+        coCd : data.coCd
+    } }, {
       headers: {
         "access-token": accessToken,
       },

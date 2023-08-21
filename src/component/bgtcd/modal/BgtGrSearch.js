@@ -31,10 +31,10 @@ class BgtGrSearch extends Component {
   initBgtGrSearch=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
-    BgtCDService.getinitBgtGrSearch(coCd,accessToken).then(
-        (response)=>{
-            this.setState({rows:response})
-        })
+    const keyword= null;
+    BgtCDService.getinitBgtGrSearch(coCd,keyword,accessToken).then(
+      (response)=>this.setState({rows:response},()=>console.log(this.state.rows))
+    )
     // this.handleUp();
   }
   /* */
@@ -46,8 +46,43 @@ class BgtGrSearch extends Component {
     this.props.setBgtGrCdText(this.state.keyword);
     this.handleDown();
   }
-
- 
+  setTextFieldAndDataGrid=(bgtGrSearchText)=>{//bgtCd에서 Enter눌렀을때 해당 값을 keyword로 조회해올것
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    const data ={
+      coCd : coCd,
+      keyword : bgtGrSearchText,
+    }
+    this.setState({keyword:bgtGrSearchText}) //여기는 텍스트 필드만 조회해올것, 아래는 데이터 그리드를 조회해서 변경할 것 .
+    BgtCDService.getbgtGrSearchKeywordData(data,bgtGrSearchText).then(
+      (response)=>{
+        this.setState({rows:response})
+      }
+    )
+  }
+  handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    await this.setState({ [name]: value });
+    console.log(this.state);
+  }
+  handlePressEnter=(params)=>{
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    const keyword = this.state.keyword;
+    if (params.code === "Enter") {
+      BgtCDService.getinitBgtGrSearch(coCd,keyword,accessToken).then(
+        (response)=>this.setState({rows:response},()=>console.log(this.state.rows))
+      )
+    }
+  }
+  searchIconClick=()=>{
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    const keyword = this.state.keyword;
+      BgtCDService.getinitBgtGrSearch(coCd, keyword, accessToken).then(
+        (response)=>{this.setState({rows:response})}
+      )
+  }
   /*default*/
   handleUp = () => {
     this.setState({ open: true });
@@ -59,7 +94,7 @@ class BgtGrSearch extends Component {
 
 
   render() {
-    const { open, columns} = this.state;
+    const { open, columns,keyword} = this.state;
 
     return (
       <CustomShortDialog open={open}>
@@ -87,13 +122,14 @@ class BgtGrSearch extends Component {
                 <CustomTextField
                   id="keyword"
                   name="keyword"
-                  value={this.state.keyword}
-                //   onChange={this.handleInputChange}
+                  value = {keyword}
+                  onChange={this.handleInputChange}
                   variant="outlined"
-                //   onKeyDown={this.handlePressEnter}
-                ></CustomTextField>
+                  onKeyPress={this.handlePressEnter}
+                > </CustomTextField>
+               
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon />
+                  <SearchIcon onClick={this.searchIconClick}/>
                 </CustomSearchButton>
               </Grid>
             </Grid>
