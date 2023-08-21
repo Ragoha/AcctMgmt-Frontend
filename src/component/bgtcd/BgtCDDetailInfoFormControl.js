@@ -18,10 +18,17 @@ class BgtCDDetailInfoFormControl extends Component {
       bgajustFg: this.props.bgajustFg, //8
       bottomFg: this.props.bottomFg, //10
       bizFg: this.props.bizFg, //11 
+      disable : false 
+    }
+  }
+  componentDidMount(){
+    if(this.state.title ==="회계계정과목"){
+      this.setState({disable:true},()=>console.log('회계계정과목임'))
     }
   }
   componentDidUpdate(prevProps) {
     //이전의 props 에서의 값과 비교했을때 값이 달라진다면 ?  
+    
     if (this.props.ctlFg !== prevProps.ctlFg) {
       this.setState({ ctlFg: this.props.ctlFg }, () => {
         const newDefaultValue = this.state.ctlFg;
@@ -71,6 +78,7 @@ class BgtCDDetailInfoFormControl extends Component {
           <CustomWideSelect
             value={defaultValue}
             onChange={this.changeValue} 
+            disabled={this.state.disable}
           >
             {" "}
             {menuItemValues.map((menuItemValue, index) => (
