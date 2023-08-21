@@ -12,6 +12,7 @@ import { CustomBtnBgtcd, CustomInputLabel } from '../common/style/CommonStyle';
 import { connect } from 'react-redux';
 import { SET_GROUPCD } from '../../store/BgtCDStore';
 import SnackBarComponent from '../common/SnackBarComponent';
+import Swal from 'sweetalert2';
 
 /*리덕스 import */
 // import { connect } from 'react-redux';
@@ -68,7 +69,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
           bottomFg: response[0].bottomFg,
           bizFg: response[0].bizFg,
           toDt : response[0].toDt,
-          
         });
         //여기서 redux에 response[0]의 데이터를 집어넣는다.
         //this.props.set_detailInfo(response[0]);
@@ -119,50 +119,111 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   deleteRow = () => {
     const tBgtCd = this.state.bgtCd;
     const { coCd } = this.props.userInfo;
-    const gisu = this.props.gisuDefaultValue;
-    const keyword = this.props.bgtGrSearchText;
+    const gisu = this.props.gisu;
+    const keyword = this.props.keyword;
     const groupCd = this.props.groupCd;
-
-
-
-
-
-
-
-
-
-    
+    console.log("로스트아크화이팅")
+    console.log(gisu)
+    console.log(groupCd)
+    console.log(keyword)
     console.log('tBgtCd : ?' +tBgtCd );
-    if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
-      console.log('tBgtCd :  ? ' + tBgtCd)
-      this.snackBarRef.current.handleUp("error" , "과목을 선택해주세요")
-      return null;
-    }
-    const data = this.state.bgtCd
-    const { accessToken } = this.props;
-    BgtCDService.deleteRow(data, accessToken)
-      .then(response => {
-        if (response === 0) {
-          this.snackBarRef.current.handleUp("success" , "삭제완료")
-          BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
-            (response) => {
-              console.log("response?")
-              console.dir(response)
-              if (response.data != "") {
-                this.setState({ rows: response.data })
-              } else {
-                this.setState({ rows: [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }] })
-              }
-            }
-          )
-        } else {
-          this.snackBarRef.current.handleUp("error" , "하위 과목이 존재합니다")
+    this.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+      if (confirmed) {
+        if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
+          console.log('tBgtCd :  ? ' + tBgtCd)
+          this.snackBarRef.current.handleUp("error" , "과목을 선택해주세요")
+          return null;
         }
-      }).catch(error => {
-        console.error("deleteRow 에러야 :", error);
-      }).then(
-        
-    );
+        const data = {
+          coCd : coCd,
+          bgtCd :this.state.bgtCd,
+          gisu : gisu,
+          keyword : keyword,
+          groupCd : groupCd
+        }
+        const { accessToken } = this.props;
+        BgtCDService.deleteRow(data, accessToken)
+          .then(response => {
+            if (response === 2) {
+              this.snackBarRef.current.handleUp("success" , "삭제완료")
+              this.props.getRecallDataGrid();
+              // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(////
+              //   (response) => {
+              //     console.log("response?")
+              //     console.dir(response)
+              //     if (response.data != "") {
+              //       this.setState({ rows: response.data })
+              //     } else {
+              //       this.setState({ rows: [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }] })
+              //     }
+              //   }
+              // )
+            }else if (response===1){
+              this.snackBarRef.current.handleUp("error" , "사용중인 데이터입니다.")
+            } else if(response ===0){
+              this.snackBarRef.current.handleUp("error" , "하위 과목이 존재합니다")
+            }
+          }).catch(error => {
+            console.error("deleteRow 에러야 :", error);
+          }).then(
+           
+        );
+      }else {
+        this.showCommonToast('warning', '삭제가 취소되었습니다.');
+      }
+
+    });
+  }
+  showCommonToast = (icon, title, timer) => {
+    const commonToast = Swal.mixin({
+      toast: true,
+      position: 'center-center',
+      showConfirmButton: false,
+      timer: timer ? timer : 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+
+    commonToast.fire({
+      icon: icon,
+      title: title
+    });
+  }
+  //icon = success, error, warning, info, question | title : "알럿창에 띄울 제목" | text:알럿창에 띄울 멘트
+  showCommonSwal = (title, text, icon) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      color: '#716add',
+      background: '#FCFCFC', // 원하는 배경색으로 설정
+      customClass: {
+        container: 'custom-swal-container',
+        popup: 'custom-swal-popup',
+      },
+    });
+  }
+  //CustomSwal.showCommonSwalYn("저장", "저장하시겠습니까?", "info", "저장", (confirmed) => {
+  showCommonSwalYn = (title, text, icon, yesButtonText, callback) => {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: yesButtonText
+    }).then((result) => {
+      if (result.isConfirmed) {
+        callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
+      }
+      else {
+        callback(false); // 취소 버튼을 눌렀을 때 콜백 함수를 호출하고 false를 전달
+      }
+    });
   }
   render() {
     const { menuItemValues, ctlFg, bgajustFg, bottomFg, bizFg, toDt } = this.state;
@@ -209,6 +270,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               <Grid item xs={8}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                  disabled={true}
                     name="date"
                     format="YYYY-MM-DD"
                     value={dayjs(toDt)}

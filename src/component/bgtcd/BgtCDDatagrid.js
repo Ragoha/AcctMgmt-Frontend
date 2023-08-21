@@ -14,10 +14,12 @@ class BgtCDDatagrid extends Component {
                 { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center', },
             ],
             rows: [],
+            tRows: [],
             dataPath: '초기값그대로야~ 다시 뽑아 ~',
             rowModesModel: {},
             bgtCd: null,
             isNew: false,
+          
         }
     }
     //[230810] 업데이트 끝내고 isNew 값 바꿔야함
@@ -29,6 +31,12 @@ class BgtCDDatagrid extends Component {
         console.log('================processRowUpdate입니다===============')
         const { coCd } = this.props.userInfo;
         const { accessToken } = this.props;
+        const gisu = this.props.gisuDefaultValue;
+        const keyword = this.props.keyword;
+        const groupCd = this.props.groupCd;
+        const tRows =[];
+        console.log('data--')
+        console.log("gisu: " +gisu +"/keyword : "+ keyword + "/groupCd :" +groupCd);
         if (newRow.isNew === true) {
             const data = {
                 divFg: newRow.divFg,
@@ -52,7 +60,13 @@ class BgtCDDatagrid extends Component {
                 coCd: coCd
             }
             BgtCDService.updateBgtNm(data, accessToken);
-            // this.props.getDataGridRows();
+            // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then((response)=>{
+            //   console.log(response)
+            //   console.log(response.data)
+            //   // tRows=response.data;
+            // })
+
+            return newRow;
         }
 
     };
@@ -86,7 +100,7 @@ class BgtCDDatagrid extends Component {
         this.props.setClickedData(dataPath, bgtCd, divFg);
         if (isNew !== true) {//새로 만들어진 행이 아니라 기존의 행일땐 이대로 간다. 
             this.props.setDetailInfo(bgtCd);
-        } else if (isNew == true) {
+        } else if (isNew === true) {
             console.log('이건 새로 만들어진 로우다');
             this.setState({
                 bgtCd: params.row.bgtCd,

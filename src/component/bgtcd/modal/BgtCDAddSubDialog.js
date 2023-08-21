@@ -149,8 +149,7 @@ class BgtCDADDSubDialog extends Component {
     // const data = this.state.rows;
     // BgtCDService.insertBgtGr(data, accessToken);
     this.props.initSubList();
-    console.log('확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼확인버튼')
-    this.handleDown();
+     this.handleDown();
   };
 
   render() {
