@@ -26,7 +26,7 @@ import {
 const columns = [
   { field: 'check', headerName: '', width: 10, headerAlign: 'center' },
   { field: 'pgrCd', headerName: '프로젝트그룹코드', width: 180, headerAlign: 'center' },
-  { field: 'pgrNm', headerName: '프로젝트그룹명', width: 286, headerAlign: 'center' }
+  { field: 'pgrNm', headerName: '프로젝트그룹명', width: 200, headerAlign: 'center' }
 ]
 
 class PgrDialogComponent extends Component {

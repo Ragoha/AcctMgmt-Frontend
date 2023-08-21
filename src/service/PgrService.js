@@ -20,15 +20,14 @@ class PgrService {
             .then((response) => response.data);
     }
 
-    insertGisu(data) {
+    insertPgr(data) {
         return axios
             .post(
-                ACCTMGMT_API_BASE_URL + "/gisu",
+                ACCTMGMT_API_BASE_URL + "/pgr",
                 {
-                    coCd: data.coCd,
-                    gisu: data.gisu.gisu,
-                    frDt: data.gisu.frDt,
-                    toDt: data.gisu.toDt,
+                    coCd: data.Pgr.coCd,
+                    pgrCd: data.Pgr.pgrCd,
+                    pgrNm: data.Pgr.pgrNm,
                 },
                 {
                     headers: {
@@ -42,13 +41,13 @@ class PgrService {
             });
     }
 
-    deleteGisu(data) {
+    deletePgr(data) {
         console.log(data);
         return axios
-            .delete(ACCTMGMT_API_BASE_URL + "/gisu", {
+            .delete(ACCTMGMT_API_BASE_URL + "/pgr", {
                 params: {
                     coCd: data.coCd,
-                    gisu: data.gisu,
+                    pgrCd: data.pgrCd,
                 },
                 headers: {
                     "access-token": data.accessToken,

@@ -9,10 +9,10 @@ class CustomSwal {
             showConfirmButton: false,
             timer: timer ? timer : 1000,
             timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-            }
+            // didOpen: (toast) => {
+            //     toast.addEventListener('mouseenter', Swal.stopTimer);
+            //     toast.addEventListener('mouseleave', Swal.resumeTimer);
+            // }
         });
 
         commonToast.fire({
