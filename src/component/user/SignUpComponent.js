@@ -145,7 +145,7 @@ class SignUpComponent extends Component {
       })
       .catch((error) => {
         // 회원가입 실패 시 처리 로직
-        alert("회원가입 실패", error);
+        // alert("회원가입 실패", error);
         CustomSwal.showCommonSwal("회원가입 실패", "", "error", error);
         console.error(error);
       });

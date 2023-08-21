@@ -5,6 +5,9 @@ import { DEL_USER } from "../../store/User";
 import { DEL_CONFIG } from "../../store/Config";
 import { Outlet, useNavigate } from "react-router-dom";
 import Cookie from "../../storage/Cookie";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+
 class UserInfo extends Component {
   constructor(props) {
     super(props);
@@ -18,10 +21,12 @@ class UserInfo extends Component {
       deptOd: "",
       empEmail: "",
       empTel: "",
+      empAuth:"",
     };
+    this.role = "";
   }
   componentDidMount() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel } = this.props.userInfo;
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.props.userInfo;
     this.setState({
       coNm,
       empName,
@@ -31,6 +36,7 @@ class UserInfo extends Component {
       deptOd,
       empEmail,
       empTel,
+      empAuth,
     });
   }
   logout = () => {
@@ -52,7 +58,13 @@ class UserInfo extends Component {
     // });
   };
   render() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel } = this.state;
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.state;
+   
+    if (empAuth === "ROLE_ADMIN") { 
+      this.role = "관리자"; 
+    } else {
+      this.role = "사원"; 
+    }
     return (
       <div style={{
         position: "absolute",
@@ -61,29 +73,29 @@ class UserInfo extends Component {
         background: "white",
         padding: "10px",
         boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.3)",
-        height: "400px",
-        width: "700px",
+        height: "180px",
+        width: "200px",
         fontSize: "15px",
         color: "black",
         borderRadius: "15px", // 네모 모양의 코너를 둥글게 조정
       }}>
-        <div>소속: {coNm}</div>
-        <div>이름: {empName}</div>
-        <div>직책: 사원</div>
-        <div>이메일: {empEmail}</div>
-        <div>전화번호: {empTel}</div>
-        <button style={{
-          background: "transparent",
-          border: "2px solid skyblue",
-          color: "skyblue",
-          borderRadius: "5px",
-          marginTop: "20px",
-          cursor: "pointer",
-        }}>사원 페이지로 이동</button>
+        <PermIdentityIcon color="primary"/>
+        <div>{coNm}</div>
+        <div>{empName}</div>
+        <div>{this.role}</div>
+        <div>{empEmail}</div>
+        <div>{empTel}</div>
         <div style={{ marginLeft: "15px" }}>
-          <a onClick={this.logout} style={{ cursor: "pointer" }}>
-            LogOut
-          </a>
+          <PowerSettingsNewIcon
+          onClick={this.logout}
+          style={{
+            cursor: "pointer",
+            color: "#6799FF", // 아이콘 색상을 회색으로 변경
+            position: "absolute", // 위치 조정을 위해 절대 위치 지정
+            bottom: "5px", // 아이콘을 아래쪽으로 조금 내림
+            right: "5px", // 아이콘을 오른쪽으로 조금 이동
+          }}
+        />
         </div>
       </div>
     );
