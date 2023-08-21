@@ -174,17 +174,18 @@ class GisuDialogComponent extends Component {
 
       return newRow;
     } else {
-      console.log("수정");
+      console.log(newRow);
+      console.log(this.state.selectedRow);
       const updatedRow = { ...newRow, isNew: false };
-
+      
       //   this.setState((prevState) => ({
       //     rows: prevState.rows.map((row) =>
       //       row.id === newRow.id ? updatedRow : row
       //     ),
       //   }));
-      this.updateGisu(updatedRow);
+      // this.updateGisu(updatedRow);
 
-      return updatedRow;
+      return this.state.selectedRow;
     }
   };
 

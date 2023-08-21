@@ -7,8 +7,8 @@ import { randomId } from "@mui/x-data-grid-generator";
 import { createRef } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
-import PjtDialogComponent from "./dialog/PjtDialogComponent";
 import SnackBarComponent from "../common/SnackBarComponent";
+import PjtDialogComponent from "./dialog/PjtDialogComponent";
 
 class DataGridComponent extends Component {
   constructor(props) {

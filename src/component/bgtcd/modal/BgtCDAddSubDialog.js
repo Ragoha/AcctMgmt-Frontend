@@ -14,7 +14,7 @@ import {
   CustomDialogContent,
   CustomDialogTitle,
   CustomShortDataGridContainer,
-  CustomShortDialog
+  CustomShortDialog,
 } from "../../common/style/CommonDialogStyle";
 class BgtCDADDSubDialog extends Component {
   constructor(props) {
@@ -84,16 +84,17 @@ class BgtCDADDSubDialog extends Component {
       return newRow;
     } else {
       console.log("수정");
-      const updatedRow = { ...newRow, isNew: false };
 
-      //   this.setState((prevState) => ({
-      //     rows: prevState.rows.map((row) =>
-      //       row.id === newRow.id ? updatedRow : row
-      //     ),
-      //   }));
-      this.updateBgtGr(updatedRow);
+      const updatedRow = {
+        ...newRow,
+        isNew: false,
+      };
 
-      return updatedRow;
+      if (newRow.bgtGrCd == this.state.selectedRow.bgtGrCd) {
+        this.updateBgtGr(updatedRow);
+        return updatedRow;
+      }
+      return this.state.selectedRow;
     }
   };
   insertBgtGr = (data) => {
@@ -104,7 +105,7 @@ class BgtCDADDSubDialog extends Component {
     }).then(() => {
       this.initBgtGr();
     });
-  }
+  };
   updateBgtGr = (data) => {
     BgtGrService.updateBgtGr({
       accessToken: this.props.accessToken,
@@ -143,7 +144,6 @@ class BgtCDADDSubDialog extends Component {
   };
 
   handleClickConfirm = () => {
-    
     this.handleDown();
   };
 
@@ -190,7 +190,10 @@ class BgtCDADDSubDialog extends Component {
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
-            <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
+            <CustomConfirmButton
+              variant="outlined"
+              onClick={this.handleClickConfirm}
+            >
               확인
             </CustomConfirmButton>
 
@@ -208,7 +211,7 @@ class BgtCDADDSubDialog extends Component {
 }
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {}
+  user: state.user || {},
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
