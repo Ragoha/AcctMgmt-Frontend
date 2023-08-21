@@ -92,8 +92,6 @@ class BgtCDDropDownBox extends React.Component {
                     onClick={this.handleClose} //공통으로 들어가야할 기능 
                   >
                     <MenuItem onClick={this.selectFun}
-                    >간편검색</MenuItem>
-                    <MenuItem onClick={this.selectFun}
                     >예산그룹등록</MenuItem>
                     {/* <MenuItem onClick={this.selectFun}
                     >예산과목복사</MenuItem> */}

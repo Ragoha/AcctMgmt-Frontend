@@ -79,6 +79,7 @@ class BgtCDSubSearch extends Component {
   
   /*default*/
   handleUp = () => {
+    this.initBgtCDDialog();
     this.setState({ open: true });
   };
 
