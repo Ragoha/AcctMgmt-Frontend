@@ -20,6 +20,7 @@ class DataGridComponent extends Component {
       gisu: "",
       groupCd: "",
       rows: [],
+      sqList: [],
       selectedRowId: "",
       selectedRow: [],
       selectedRows: [],
@@ -225,6 +226,10 @@ class DataGridComponent extends Component {
         ...row,
         id: row.sq,
       }));
+
+      const sqList = response.map((row) => ({
+        sq: row.sq
+      }))
       if (data.bottomFg == 0) {
         rowsWithId.push({
           id: randomId(),
@@ -244,7 +249,11 @@ class DataGridComponent extends Component {
           isNew: true,
         });
       }
-      await this.setState({ rows: rowsWithId, gisu: data.gisu });
+      await this.setState({
+        rows: rowsWithId,
+        gisu: data.gisu,
+        sqList: sqList,
+      });
       this.footerRef.current.sumCarrAm(rowsWithId);
     });
   };
@@ -357,7 +366,7 @@ class DataGridComponent extends Component {
   };
 
   render() {
-    const { rows, selectedRowId } = this.state;
+    const { rows, selectedRows, selectedRowId } = this.state;
 
     const columns = [
       {
@@ -369,9 +378,24 @@ class DataGridComponent extends Component {
         sortable: false,
         filterable: false,
         hideable: false,
-        renderHeader: (params) => <Checkbox />,
+        renderHeader: (params) => (
+          <Checkbox
+            checked={selectedRows.length === this.state.sqList.length}
+            onClick={async (e) => {
+              if (!e.target.checked) {
+                await this.setState({ selectedRows: [] });
+              } else {
+                await this.setState({
+                  selectedRows: [...this.state.sqList],
+                });
+              }
+              console.log(this.state.selectedRows);
+            }}
+          />
+        ),
         renderCell: (params) => (
           <Checkbox
+            checked={selectedRows.some((row) => row.sq === params.row.sq)}
             onChange={async () => {
               // console.log(params);
               const newSelectedRow = {

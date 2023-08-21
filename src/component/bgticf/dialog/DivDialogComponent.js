@@ -1,14 +1,25 @@
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  Grid,
-  IconButton
-} from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../common/style/CommonStyle";
+import {
+  CustomButtonGridContainer,
+  CustomCloseIcon,
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomShortDataGridContainer,
+  CustomShortDialog,
+  CustomShortFormGridContainer,
+} from "../../common/style/CommonDialogStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../common/style/CommonStyle";
 
 class DivDialogComponent extends Component {
   constructor(props) {
@@ -56,11 +67,10 @@ class DivDialogComponent extends Component {
   };
 
   setDivDialog = (keyword) => {
-
     BgtICFService.findDivByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
-      keyword: keyword
+      keyword: keyword,
     })
       .then((response) => {
         const divRows = response.map((row) => ({
@@ -68,7 +78,13 @@ class DivDialogComponent extends Component {
           divCd: row.divCd,
           divNm: row.divNm,
         }));
-        this.setState({ divRows: divRows, keyword: keyword});
+        this.setState({
+          divRows: divRows,
+          keyword: keyword,
+          divCd: "",
+          divNm: "",
+          selectedRow: [],
+        });
       })
       .then(() => {
         this.handleUp();
@@ -84,30 +100,30 @@ class DivDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    console.log(params);
-    this.setState({ selectedRow: params.row }, () => {
-      console.log(this.state.selectedRow);
-    });
-    // console.log(this.state);
+    this.setState({ selectedRow: params.row });
   };
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
   };
 
+  handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      this.handleSearchDiv();
+    }
+  };
+
   handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetDivTextField(this.state.selectedRow);
   };
 
-  handleInputChange = async (e) => {
+  handleInputChange = (e) => {
     const { name, value } = e.target;
-    await this.setState({ [name]: value });
-    console.log(this.state);
+    this.setState({ [name]: value });
   };
 
-  handleClickSearchIcon = () => {
+  handleSearchDiv = () => {
     BgtICFService.findDivByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       keyword: this.state.keyword,
@@ -118,8 +134,7 @@ class DivDialogComponent extends Component {
         divCd: row.divCd,
         divNm: row.divNm,
       }));
-      await this.setState({ divRows: divRows });
-      console.log(this.state);
+      this.setState({ divRows: divRows, selectedRow: [] });
     });
   };
 
@@ -155,14 +170,10 @@ class DivDialogComponent extends Component {
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      console.log(`Pressed keyCode ${e.key}`);
-                    }
-                  }}
+                  onKeyDown={this.handleKeyDown}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleClickSearchIcon} />
+                  <SearchIcon onClick={this.handleSearchDiv} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
@@ -201,4 +212,6 @@ const mapStateToProps = (state) => ({
   user: state.user || {},
 });
 
-export default connect(mapStateToProps, null, null, {forwardRef: true}) (DivDialogComponent);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  DivDialogComponent
+);
