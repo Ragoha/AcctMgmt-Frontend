@@ -1,19 +1,40 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import { InputAdornment } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
+import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import { connect } from "react-redux";
 
 class ListDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputValue: "",
-      listItems: ["abc", "def", "gea"],
+      listItems: [],
       isDeleteIconVisible: false,
     };
+
+    this.bgtCdRef = createRef();
   }
+
+  setListItem = (data) => {
+    console.log(data);
+    const listItems = data.map((item) => item.bgtCd + ". " + item.bgtNm);
+    let inputValue;
+    if (listItems.length > 1) {
+      inputValue = listItems[0] +" 외 "+(listItems.length - 1)+"건";
+    } else {
+      inputValue = listItems[0];
+    }
+    console.log(listItems);
+    this.setState({
+      listItems: listItems,
+      inputValue: inputValue,
+    });
+  };
 
   handleChange = (event) => {
     this.setState({ inputValue: event.target.value });
@@ -53,12 +74,12 @@ class ListDisplay extends Component {
     event.stopPropagation();
   };
 
-  componentDidMount() {
-    this.setState({
-      inputValue:
-        this.state.listItems[0] + "외 " + this.state.listItems.length + "건",
-    });
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     inputValue:
+  //       this.state.listItems[0] + "외 " + this.state.listItems.length + "건",
+  //   });
+  // }
 
   handleMouseEnter = () => {
     this.setState({ isDeleteIconVisible: true });
@@ -68,10 +89,15 @@ class ListDisplay extends Component {
     this.setState({ isDeleteIconVisible: false });
   };
 
+  handleClickSearch = () => {
+    console.log(this.bgtCdRef);
+    this.bgtCdRef.current.handleUp();
+  }
+
   render() {
     const { inputValue, listItems, isDeleteIconVisible } = this.state;
     return (
-      <div>
+      <>
         <Autocomplete
           tfStyle
           freeSolo
@@ -95,17 +121,28 @@ class ListDisplay extends Component {
             <TextField
               onFocus={this.handleMouseEnter} // 이 줄을 추가하세요
               onBlur={this.handleMouseLeave} // 이 줄을 추가하세요
+              placeholder="예산과목코드/예산과목명"
+              sx={{
+                width: 255,
+                "& .MuiInputBase-root": {
+                  height: 40,
+                  paddingLeft: "9px",
+                  paddingTop: 0,
+                  // paddingRight: 0,
+                  paddingBottom: 0,
+                },
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Backspace") {
                   console.log(`Pressed keyCode ${e.key}`);
-                  this.setState({ listItems: [] });
+                  this.setState({ listItems: [], inputValue: "" });
                 }
               }}
               {...params}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
-                  <>
+                  <InputAdornment position="end">
                     <DeleteIcon
                       onClick={() => {
                         alert("asdf");
@@ -113,19 +150,15 @@ class ListDisplay extends Component {
                       style={{ cursor: "pointer" }}
                       sx={{
                         position: "absolute",
-                        right: "50px",
+                        right: "32px",
                         visibility: isDeleteIconVisible ? "visible" : "hidden",
                       }}
                     />
                     <SearchIcon
-                      onClick={() => {
-                        alert("1111");
-                      }}
-                      style={{ cursor: "pointer" }}
-                      sx={{ mr: "-30px", position: "absolute", right: "50px" }}
+                      onClick={this.handleClickSearch}
                     />
                     {params.InputProps.endAdornment}
-                  </>
+                  </InputAdornment>
                 ),
               }}
             />
@@ -142,9 +175,18 @@ class ListDisplay extends Component {
             </li>
           )}
         />
-      </div>
+        <BgtCDDialogComponent ref={this.bgtCdRef} />
+      </>
     );
   }
 }
 
-export default ListDisplay;
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  ListDisplay
+);
+

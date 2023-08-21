@@ -61,10 +61,9 @@ class BgtCDDialogComponent extends Component {
   }
 
   setBgtCDDialog = (keyword) => {
- 
     let tmpRange = "";
 
-    this.setState({ rangeState: false });
+    this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
 
     if (this.state.rangeState) {
       tmpRange = this.state.rangeTextField;
@@ -94,7 +93,6 @@ class BgtCDDialogComponent extends Component {
       this.handleUp();
     });
 
-
     // BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
     //   user: this.props.user,
     //   accessToken: this.props.accessToken,
@@ -113,8 +111,8 @@ class BgtCDDialogComponent extends Component {
     // });
   };
 
-  initBgtCDDialog = () => {
-    this.setState({ keyword: "", rangeState: true });
+  initBgtCDDialog = async () => {
+    await this.setState({ keyword: "", bgtGrTextField: "", rangeState: true });
     this.handleSearchBgtCd();
     this.handleUp();
   };
@@ -128,7 +126,7 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ selectedRow: params.row });
+    this.setState({ selectedRow: [params.row] });
   };
 
   handleInputChange = async (e) => {
@@ -152,12 +150,13 @@ class BgtCDDialogComponent extends Component {
   handleClickConfirm = async () => {
     if (this.state.selectedRows.length == 0) {
       await this.props.handleSetBgtCDTextField(this.state.selectedRow);
+      this.test(this.state.selectedRow);
     } else {
       let sortedSelectedRows = [...this.state.selectedRows];
       sortedSelectedRows.sort((a, b) => a.bgtCd - b.bgtCd);
       await this.props.handleSetBgtCDTextField(sortedSelectedRows);
+      this.test(sortedSelectedRows);
     }
-
     this.handleDown();
   };
 
@@ -190,7 +189,7 @@ class BgtCDDialogComponent extends Component {
           bgtGrTextField: "",
           bgtGrCd: "",
           bgtGrNm: "",
-          bgtGrCdList: []
+          bgtGrCdList: [],
         });
       }
     }
@@ -253,6 +252,10 @@ class BgtCDDialogComponent extends Component {
       this.handleSearchBgtCd();
     }
   };
+
+  test = (data) => {
+    this.props.handleTest(data);
+  }
 
   render() {
     const { open, rangeState, bgtGrTextField, rangeTextField, selectedRows } =

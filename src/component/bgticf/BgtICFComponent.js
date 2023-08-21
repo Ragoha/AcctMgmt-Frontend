@@ -30,6 +30,7 @@ import SnackBarComponentWrapper from "../common/SnackBarComponent";
 import SnackBarComponent from "../common/SnackBarComponent";
 import CustomSwal from "../common/CustomSwal";
 import { randomId } from "@mui/x-data-grid-generator";
+import ListDisplay from "./test";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -106,15 +107,12 @@ class BgtICFComponent extends Component {
       innerHeight: window.innerHeight,
     };
 
+    this.bgtCdListRef = createRef();
     this.bgtICFRef = createRef();
     this.divRef = createRef();
     this.bgtGrRef = createRef();
     this.bgtCDRef = createRef();
   }
-
-  handleSet = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
 
   handleGetBgtICFList = (e) => {
     this.bgtICFRef.current.handleGetBgtICFList();
@@ -177,6 +175,10 @@ class BgtICFComponent extends Component {
     this.setState((prevState) => ({
       bgtDTO: [...prevState.bgtDTO, updatedRows],
     }));
+  };
+
+  resetBgtICF = () => {
+    // this.setState({bgtCdList: [], bgtGrCdList:[]})
   };
 
   setSelectedRowId = (row) => {
@@ -245,6 +247,8 @@ class BgtICFComponent extends Component {
 
   handleSetBgtCDTextField = (dataList) => {
     if (dataList.length > 0) {
+      console.log(dataList);
+      console.log("asdf");
       const concatenatedText = dataList
         .map((data) => data.bgtCd + ". " + data.bgtNm)
         .join(", ");
@@ -256,11 +260,19 @@ class BgtICFComponent extends Component {
         bgtCdList: bgtCdList,
       });
     } else {
-      this.setState({
-        bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-        bgtCd: dataList.bgtCd,
-        bgtNm: dataList.bgtNm,
-      });
+      if (dataList.bgtCd && dataList.bgtNm) {
+        this.setState({
+          bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
+          bgtCd: dataList.bgtCd,
+          bgtNm: dataList.bgtNm,
+        });
+      } else {
+        this.setState({
+          bgtCDTextField: "",
+          bgtCd: "",
+          bgtNm: "",
+        });
+      }
     }
   };
 
@@ -348,7 +360,12 @@ class BgtICFComponent extends Component {
     }
 
     if (e.key == "Backspace") {
-      this.setState({ bgtGrTextField: "", bgtGrCd: "", bgtCDRows: [] });
+      this.setState({
+        bgtGrTextField: "",
+        bgtGrCd: "",
+        bgtGrCdList: [],
+        bgtCDRows: [],
+      });
       this.bgtICFRef.current.initBgtICF();
     }
   };
@@ -386,6 +403,12 @@ class BgtICFComponent extends Component {
     });
     this.bgtICFRef.current.initBgtICF();
   };
+
+  handleTest = (data) => {
+    // alert("test");
+
+    this.bgtCdListRef.current.setListItem(data);
+  }
 
   render() {
     const { divTextField, bgtCDTextField } = this.state;
@@ -540,7 +563,10 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            {/* <ListDisplay/> */}
+            <ListDisplay
+              bgtCdList={this.state.bgtCdList}
+              ref={this.bgtCdListRef}
+            />
             <SnackBarComponent severity="success" message="저장되었습니다." />
           </Grid>
         </CustomGridContainer>
@@ -641,6 +667,7 @@ class BgtICFComponent extends Component {
         <BgtCDDialogComponent
           ref={this.bgtCDRef}
           handleSetBgtCDTextField={this.handleSetBgtCDTextField}
+          handleTest={this.handleTest}
         />
       </>
     );
