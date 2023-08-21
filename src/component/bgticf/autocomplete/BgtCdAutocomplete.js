@@ -5,10 +5,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import React, { Component, createRef } from "react";
-import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import BgtCDDialogComponent from "../dialog/BgtCDDialogComponent";
 import { connect } from "react-redux";
 
-class ListDisplay extends Component {
+class BgtCdAutocomplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +43,7 @@ class ListDisplay extends Component {
   handleRemove = async (index) => {
     await this.setState((prevState) => ({
       listItems: prevState.listItems.filter((item, i) => i !== index),
-      bgtCdList: prevState.bgtCdList.filter((item, i) => i !== index)
+      bgtCdList: prevState.bgtCdList.filter((item, i) => i !== index),
     }));
     if (this.state.listItems.length > 1) {
       await this.setState({
@@ -109,35 +109,33 @@ class ListDisplay extends Component {
 
     this.props.changeBgtCdList(bgtCdList);
 
-    // if (dataList.length > 0) {
-    //   console.log(dataList);
-    //   console.log("asdf");
-    //   const concatenatedText = dataList
-    //     .map((data) => data.bgtCd + ". " + data.bgtNm)
-    //     .join(", ");
-
-    //   const bgtCdList = dataList.map((data) => data.bgtCd);
-
-    //   this.setState({
-    //     bgtCDTextField: concatenatedText,
-    //     bgtCdList: bgtCdList,
-    //   });
-    // } else {
-    //   if (dataList.bgtCd && dataList.bgtNm) {
-    //     this.setState({
-    //       bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-    //       bgtCd: dataList.bgtCd,
-    //       bgtNm: dataList.bgtNm,
-    //     });
-    //   } else {
-    //     this.setState({
-    //       bgtCDTextField: "",
-    //       bgtCd: "",
-    //       bgtNm: "",
-    //     });
-    //   }
-    // }
   };
+
+  handleKeyDownBgtCd = (e) => {
+    console.log(this.state);
+    console.log(e.key);
+    if (e.key === "Backspace") {
+      this.setState(
+        {
+          bgtCDTextField: "",
+          bgtCd: "",
+          bgtCDRows: [],
+          listItems: [],
+          bgtCdList: [],
+        }
+      );
+      this.props.resetBgt();
+    } else if (e.key === "Enter") {
+      this.bgtCdRef.current.setBgtCDDialog(this.state.bgtCDTextField);
+    }
+  };
+
+    handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    await this.setState({ [name]: value });
+    console.log(this.state);
+  };
+
 
   render() {
     const { bgtCDTextField, listItems, isDeleteIconVisible } = this.state;
@@ -148,6 +146,7 @@ class ListDisplay extends Component {
           freeSolo
           options={listItems}
           value={bgtCDTextField}
+          inputValue={bgtCDTextField}
           size=""
           disableClearable
           clearIcon={
@@ -161,12 +160,13 @@ class ListDisplay extends Component {
               />
             </>
           }
-          // onChange={this.handleAutocompleteChange}
           renderInput={(params) => (
             <TextField
-              onFocus={this.handleMouseEnter} // 이 줄을 추가하세요
-              onBlur={this.handleMouseLeave} // 이 줄을 추가하세요
+              onFocus={this.handleMouseEnter}
+              onBlur={this.handleMouseLeave}
               placeholder="예산과목코드/예산과목명"
+              name="bgtCDTextField"
+              onChange={this.handleInputChange}
               sx={{
                 width: 255,
                 "& .MuiInputBase-root": {
@@ -177,14 +177,7 @@ class ListDisplay extends Component {
                   paddingBottom: 0,
                 },
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace") {
-                  console.log(`Pressed keyCode ${e.key}`);
-                  this.setState({ listItems: [], inputValue: "" });
-                } else if (e.key === "Enter") {
-                  alert("Asdzzzzf")
-                }
-              }}
+              onKeyDown={this.handleKeyDownBgtCd}
               {...params}
               InputProps={{
                 ...params.InputProps,
@@ -192,7 +185,7 @@ class ListDisplay extends Component {
                   <InputAdornment position="end">
                     <DeleteIcon
                       onClick={() => {
-                        alert("asdf");
+                        this.setState({ bgtCDTextField: "" });
                       }}
                       style={{ cursor: "pointer" }}
                       sx={{
@@ -243,5 +236,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  ListDisplay
+  BgtCdAutocomplete
 );

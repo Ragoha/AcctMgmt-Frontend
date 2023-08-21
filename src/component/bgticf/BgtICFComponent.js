@@ -8,11 +8,14 @@ import {
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { randomId } from "@mui/x-data-grid-generator";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
+import CustomSwal from "../common/CustomSwal";
+import SnackBarComponent from "../common/SnackBarComponent";
 import {
   CustomAutoComplete,
   CustomGridContainer,
@@ -23,14 +26,11 @@ import {
   CustomTextField,
 } from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
+import BgtCdAutocomplete from "./autocomplete/BgtCdAutocomplete";
+import BgtCDDialogComponent from "./dialog/BgtCDDialogComponent";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
-import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import SnackBarComponentWrapper from "../common/SnackBarComponent";
-import SnackBarComponent from "../common/SnackBarComponent";
-import CustomSwal from "../common/CustomSwal";
-import { randomId } from "@mui/x-data-grid-generator";
-import ListDisplay from "./test";
+import BgtGrAutocomplete from "./autocomplete/BgtGrAutocomplete";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -84,7 +84,7 @@ class BgtICFComponent extends Component {
       divTextField: this.props.user.divCd + ". " + this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
-      bgtGrList: [],
+      bgtGrCdList: [],
       bgtGrTextField: "",
       gisuText: "",
       gisuRows: [],
@@ -276,9 +276,27 @@ class BgtICFComponent extends Component {
     }
   };
 
-  changeBgtCdList = (bgtCdList) => {
-    this.setState({ bgtCdList: bgtCdList });
+  changeBgtCdList = async (bgtCdList) => {
+    console.log("zzzzzzzzzzzzzzzzzzz");
+    console.log(bgtCdList);
+    await this.setState({ bgtCdList: bgtCdList, bgtCDRows: [] });
+    console.log(this.state.bgtCdList);
   };
+
+  changeBgtGrList = async (bgtGrCdList) => {
+    await this.setState({ bgtGrCdList: bgtGrCdList, bgtCDRows: [] });
+    console.log(this.state);
+  };
+
+  resetBgt = () => {
+    this.setState({ bgtCDRows: [], bgtCdList: [] });
+    this.bgtICFRef.current.initBgtICF();
+  };
+
+  resetBgtGr = () => {
+    this.setState({ bgtCDRows: [], bgtGrCdList: [] });
+    this.bgtICFRef.current.initBgtICF();
+  }
 
   handleClickSerachButton = () => {
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
@@ -504,7 +522,12 @@ class BgtICFComponent extends Component {
               justifyContent="flex-start"
             >
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <CustomTextField
+              <BgtGrAutocomplete
+                ref={this.bgtGrRef}
+                changeBgtGrList={this.changeBgtGrList}
+                resetBgtGr={this.resetBgtGr}
+              />
+              {/* <CustomTextField
                 name="bgtGrTextField"
                 value={this.state.bgtGrTextField}
                 onChange={this.handleInputChange}
@@ -518,7 +541,7 @@ class BgtICFComponent extends Component {
                     </InputAdornment>
                   ),
                 }}
-              />
+              /> */}
               <CustomSearchButton
                 variant="outlined"
                 onClick={this.handleClickSerachButton}
@@ -550,29 +573,30 @@ class BgtICFComponent extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
-              <ListDisplay
+              <BgtCdAutocomplete
                 bgtCdList={this.state.bgtCdList}
                 changeBgtCdList={this.changeBgtCdList}
+                resetBgt={this.resetBgt}
                 ref={this.bgtCdListRef}
               />
-              {/* <CustomTextField
-                name="bgtCDTextField"
-                value={this.state.bgtCDTextField}
-                onChange={this.handleInputChange}
-                onKeyDown={this.handleKeyDownBgtCDTextField}
-                placeholder="예산과목코드/예산과목명"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleSearchBgtCD} />
-                    </InputAdornment>
-                  ),
-                }}
-              ></CustomTextField> */}
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <SnackBarComponent severity="success" message="저장되었습니다." />
+            <CustomTextField
+              name="bgtGrTextField"
+              value={this.state.bgtGrTextField}
+              onChange={this.handleInputChange}
+              onKeyDown={this.handleKeyDownBgtGrTextField}
+              placeholder="예산그룹코드/예산그룹명"
+              size="small"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>
@@ -664,16 +688,16 @@ class BgtICFComponent extends Component {
           handleSetDivTextField={this.handleSetDivTextField}
         />
 
-        <BgtGrDialogComponent
+        {/* <BgtGrDialogComponent
           ref={this.bgtGrRef}
           handleSetBgtGrTextField={this.handleSetBgtGrTextField}
-        />
+        /> */}
 
-        <BgtCDDialogComponent
+        {/* <BgtCDDialogComponent
           ref={this.bgtCDRef}
           handleSetBgtCDTextField={this.handleSetBgtCDTextField}
           handleTest={this.handleTest}
-        />
+        /> */}
       </>
     );
   }

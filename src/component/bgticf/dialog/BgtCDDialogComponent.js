@@ -17,7 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
-import BgtICFService from "../../../../service/BgtICFService";
+import BgtICFService from "../../../service/BgtICFService";
 import {
   CustomConfirmButton,
   CustomDialogActions,
@@ -26,14 +26,14 @@ import {
   CustomLargeButtonGridContainer,
   CustomLargeDataGridContainer,
   CustomLargeFormGridContainer,
-} from "../../../common/style/CommonDialogStyle";
+} from "../../common/style/CommonDialogStyle";
 import {
   CustomDataGrid,
   CustomInputLabel,
   CustomSearchButton,
   CustomTextField,
-} from "../../../common/style/CommonStyle";
-import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+} from "../../common/style/CommonStyle";
+import BgtGrDialogComponent from "./bgtcd/BgtGrDialogComponent";
 
 class BgtCDDialogComponent extends Component {
   constructor(props) {

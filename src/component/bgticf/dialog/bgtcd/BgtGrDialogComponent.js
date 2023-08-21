@@ -2,7 +2,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Button, Checkbox, Grid, IconButton } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import BgtICFService from "../../../../../service/BgtICFService";
+import BgtICFService from "../../../../service/BgtICFService";
 import {
   CustomButtonGridContainer,
   CustomCloseIcon,
@@ -13,13 +13,13 @@ import {
   CustomShortDataGridContainer,
   CustomShortDialog,
   CustomShortFormGridContainer,
-} from "../../../../common/style/CommonDialogStyle";
+} from "../../../common/style/CommonDialogStyle";
 import {
   CustomDataGrid,
   CustomInputLabel,
   CustomSearchButton,
   CustomTextField,
-} from "../../../../common/style/CommonStyle";
+} from "../../../common/style/CommonStyle";
 
 class BgtGrDialogComponent extends Component {
   constructor(props) {
