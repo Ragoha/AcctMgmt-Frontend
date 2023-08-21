@@ -84,7 +84,8 @@ class BgtGrSearch extends Component {
       )
   }
   /*default*/
-  handleUp = () => {
+  handleUp = async () => {
+    await this.initBgtGrSearch();
     this.setState({ open: true });
   };
 
@@ -99,7 +100,7 @@ class BgtGrSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산그룹조회
+          예산그룹조회afadfasdf
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -116,8 +117,7 @@ class BgtGrSearch extends Component {
                 container
                 direction="row"
                 alignItems="center"
-                justifyContent="center"
-              >
+                justifyContent="center">
                 <CustomInputLabel>검색어</CustomInputLabel>
                 <CustomTextField
                   id="keyword"

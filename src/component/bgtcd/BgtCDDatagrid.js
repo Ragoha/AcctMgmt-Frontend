@@ -1,17 +1,19 @@
 import { Box } from '@mui/material';
 import { DataGridPro } from '@mui/x-data-grid-pro';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import BgtCDService from '../../service/BgtCDService';
 import { connect } from 'react-redux';
 import { GridRowModes, GridRowEditStopReasons } from "@mui/x-data-grid-pro";
+import SnackBarComponent from '../common/SnackBarComponent';
 class BgtCDDatagrid extends Component {
     constructor(props) {
         super(props);
+        this.snackBarRef = React.createRef();
         this.state = {
             columns: [
-                //{ field: 'defNm', headerName: '분류명', width: 100 },
-                { field: 'bgtCd', headerName: '예산코드', width: 140, headerAlign: 'center', },
-                { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center', },
+              //{ field: 'defNm', headerName: '분류명', width: 100 },
+              { field: 'bgtCd', headerName: '예산코드', width: 300, headerAlign: 'center',align:'center', },
+              { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center',align:'center', },
             ],
             rows: [],
             tRows: [],
@@ -60,13 +62,9 @@ class BgtCDDatagrid extends Component {
                 coCd: coCd
             }
             BgtCDService.updateBgtNm(data, accessToken);
-            // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then((response)=>{
-            //   console.log(response)
-            //   console.log(response.data)
-            //   // tRows=response.data;
-            // })
-
-            return newRow;
+            this.snackBarRef.current.handleUp("success" , "수정 완료")
+           
+          return newRow;
         }
 
     };
@@ -145,17 +143,18 @@ class BgtCDDatagrid extends Component {
               onRowClick={this.clickedRow}
               processRowUpdate={this.processRowUpdate}
               onProcessRowUpdateError={(error) => {}}
-              defaultGroupingExpansionDepth={7}
+              defaultGroupingExpansionDepth={9}
               getRowClassName={(params) => `style-divfg-${params.row.divFg}`}
               editMode="row" //row 단위로 편집 모양 잡힘
               headerAlign="center"
               groupingColDef={{
                 headerName: "분류명",
                 headerAlign: "center",
+                width:270
               }}
               InputProps={{
                 style: {
-                  font: 15,
+                  font: 30,
                 },
               }}
               components={{
@@ -186,6 +185,7 @@ class BgtCDDatagrid extends Component {
                 "& .style-divfg-8": { background: "#FFFFFF" },
               }}
             />
+             <SnackBarComponent ref={this.snackBarRef}/>
           </Box>
         );
     }
