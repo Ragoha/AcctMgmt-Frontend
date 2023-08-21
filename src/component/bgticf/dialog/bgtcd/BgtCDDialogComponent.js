@@ -35,40 +35,6 @@ import {
 } from "../../../common/style/CommonStyle";
 import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
 
-const columns = [
-  {
-    field: "gisu",
-    headerName: "기수",
-    width: 50,
-    headerAlign: "center",
-    align: "center",
-  },
-  {
-    field: "bgtGrNm",
-    headerName: "예산그룹",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtCd",
-    headerName: "예산과목코드",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "bgtNm",
-    headerName: "예산과목명",
-    width: 180,
-    headerAlign: "center",
-  },
-  {
-    field: "hBgtNm",
-    headerName: "상위예산과목",
-    width: 507,
-    headerAlign: "center",
-  },
-];
-
 class BgtCDDialogComponent extends Component {
   constructor(props) {
     super(props);
@@ -78,14 +44,16 @@ class BgtCDDialogComponent extends Component {
       selectedRow: { bgtCDCd: "", bgtCDNm: "" },
       bgtGrCd: "",
       bgtCDRows: [],
+      bgtCDCdRows: [],
       gisu: "모든예산과목",
       gisuValue: "0",
       keyword: "",
-      columns: columns,
       rangeState: true,
       rangeTextField: dayjs(new Date()).format("YYYY-MM-DD"),
       bgtCDMarkTextField: "",
       bgtGrTextField: "",
+      bgtGrCdList: [],
+      selectedRows: [],
       keywordTextField: "",
     };
 
@@ -93,11 +61,24 @@ class BgtCDDialogComponent extends Component {
   }
 
   setBgtCDDialog = (keyword) => {
-    console.log(keyword);
+    let tmpRange = "";
+
+    this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
+
+    if (this.state.rangeState) {
+      tmpRange = this.state.rangeTextField;
+    } else {
+      tmpRange = dayjs("1900-01-01").format("YYYY-MM-DD");
+    }
+
     BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
-      user: this.props.user,
-      accessToken: this.props.accessToken,
+      gisu: this.state.gisuValue,
+      bgtGrCd: this.state.bgtGrCd,
       keyword: keyword,
+      range: tmpRange,
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+      bgtGrCdList: this.state.bgtGrCdList,
     }).then((response) => {
       const bgtCDRows = response.map((row) => ({
         id: randomId(),
@@ -107,15 +88,32 @@ class BgtCDDialogComponent extends Component {
         bgtNm: row.bgtNm,
         hBgtNm: row.dataPath,
       }));
+      console.log("asdf");
       this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
       this.handleUp();
-      console.log(this.state);
     });
+
+    // BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
+    //   user: this.props.user,
+    //   accessToken: this.props.accessToken,
+    //   keyword: keyword,
+    // }).then((response) => {
+    //   const bgtCDRows = response.map((row) => ({
+    //     id: randomId(),
+    //     gisu: row.gisu,
+    //     bgtGrNm: row.bgtGrNm,
+    //     bgtCd: row.bgtCd,
+    //     bgtNm: row.bgtNm,
+    //     hBgtNm: row.dataPath,
+    //   }));
+    //   this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
+    //   this.handleUp();
+    // });
   };
 
-  initBgtCDDialog = () => {
-    this.setState({ keyword: "", rangeState: true });
-    this.handleClickSearchIcon();
+  initBgtCDDialog = async () => {
+    await this.setState({ keyword: "", bgtGrTextField: "", rangeState: true });
+    this.handleSearchBgtCd();
     this.handleUp();
   };
 
@@ -128,52 +126,76 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState({ bgtCd: params.row.bgtCd, bgtNm: params.row.bgtNm });
+    this.setState({ selectedRow: [params.row] });
   };
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
-    await this.setState({ [name]: value });
-    console.log("test");
+    this.setState({ [name]: value });
   };
 
   handleSearchBgtGr = () => {
     BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
-      async (response) => {
+      (response) => {
         const bgtCDRows = response.map((row) => ({
           id: row.bgtGrCd,
           bgtGrCd: row.bgtGrCd,
           bgtGrNm: row.bgtGrNm,
         }));
-        await this.setState({ bgtCDRows: bgtCDRows });
-        console.log(this.state);
+        this.setState({ bgtCDRows: bgtCDRows });
       }
     );
   };
 
-  handleClickConfirm = () => {
-    this.props.handleSetBgtCDTextField({
-      bgtCd: this.state.bgtCd,
-      bgtNm: this.state.bgtNm,
-    });
-
+  handleClickConfirm = async () => {
+    if (this.state.selectedRows.length == 0) {
+      await this.props.handleSetBgtCDTextField(this.state.selectedRow);
+      // this.test(this.state.selectedRow);
+    } else {
+      let sortedSelectedRows = [...this.state.selectedRows];
+      sortedSelectedRows.sort((a, b) => a.bgtCd - b.bgtCd);
+      await this.props.handleSetBgtCDTextField(sortedSelectedRows);
+      // this.test(sortedSelectedRows);
+    }
     this.handleDown();
   };
 
-  handleClickBgtGrSearchIcon = () => {
-    // console.dir(this.childBgtGrRef);
-    this.childBgtGrRef.current.handleInitBgtGrDialog();
-    // this.childBgtGrRef.current.handleUp();
+  handleSearchBgtGr = () => {
+    // this.childBgtGrRef.current.handleInitBgtGrDialog();
+    this.childBgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
   };
 
-  handleSetBgtCDTextField = (response) => {
-    this.setState({
-      bgtGrTextField: response.bgtGrCd + ". " + response.bgtGrNm,
-      bgtGrCd: response.bgtGrCd,
-    });
+  handleSetBgtCDTextField = (dataList) => {
+    if (dataList.length > 0) {
+      const concatenatedText = dataList
+        .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
+        .join(", ");
+
+      const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+
+      this.setState({
+        bgtGrTextField: concatenatedText,
+        bgtGrCdList: bgtGrCdList,
+      });
+    } else {
+      if (dataList.bgtGrCd && dataList.bgtGrNm) {
+        this.setState({
+          bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+          bgtGrCd: dataList.bgtGrCd,
+          bgtGrNm: dataList.bgtGrNm,
+        });
+      } else {
+        this.setState({
+          bgtGrTextField: "",
+          bgtGrCd: "",
+          bgtGrNm: "",
+          bgtGrCdList: [],
+        });
+      }
+    }
   };
 
-  handleClickSearchIcon = () => {
+  handleSearchBgtCd = () => {
     let tmpRange = "";
 
     if (this.state.rangeState) {
@@ -189,6 +211,7 @@ class BgtCDDialogComponent extends Component {
       range: tmpRange,
       accessToken: this.props.accessToken,
       user: this.props.user,
+      bgtGrCdList: this.state.bgtGrCdList,
     }).then((response) => {
       const bgtCDRows = response.map((row) => ({
         id: randomId(),
@@ -208,11 +231,10 @@ class BgtCDDialogComponent extends Component {
     }));
   };
 
-  handleChangeDatePicker = async (newValue) => {
-    await this.setState({
+  handleChangeDatePicker = (newValue) => {
+    this.setState({
       rangeTextField: dayjs(newValue).format("YYYY-MM-DD"),
     });
-    console.log(this.state);
   };
 
   handleKeyDownBgtGrTextField = (e) => {
@@ -225,9 +247,106 @@ class BgtCDDialogComponent extends Component {
     }
   };
 
+  handleKeyDownKeyword = (e) => {
+    if (e.key == "Enter") {
+      this.handleSearchBgtCd();
+    }
+  };
+
+  // test = (data) => {
+  //   this.props.handleTest(data);
+  // }
+
   render() {
-    const { open, columns, rangeState, bgtGrTextField, rangeTextField } =
+    const { open, rangeState, bgtGrTextField, rangeTextField, selectedRows } =
       this.state;
+
+    const columns = [
+      {
+        field: "confirmed",
+        width: 65,
+        headerName: "",
+        menu: false,
+        disableColumnMenu: true,
+        sortable: false,
+        filterable: false,
+        hideable: false,
+        renderHeader: (params) => (
+          <Checkbox
+            checked={selectedRows.length === this.state.bgtCDRows.length}
+            onClick={async (e) => {
+              this.setState({ bgtCDCdRows: this.state.bgtCDRows });
+              console.log(e.target.checked);
+
+              if (!e.target.checked) {
+                await this.setState({ selectedRows: [] });
+              } else {
+                await this.setState({
+                  selectedRows: [...this.state.bgtCDRows],
+                });
+              }
+              console.log(this.state.selectedRows);
+            }}
+          />
+        ),
+        renderCell: (params) => (
+          <Checkbox
+            checked={selectedRows.some((row) => row.bgtCd === params.row.bgtCd)}
+            onChange={async () => {
+              const newSelectedRow = {
+                bgtCd: params.row.bgtCd,
+                bgtNm: params.row.bgtNm,
+              };
+              const isSelected = selectedRows.some(
+                (row) => row.bgtCd === newSelectedRow.bgtCd
+              );
+
+              if (isSelected) {
+                const updatedSelectedRows = selectedRows.filter(
+                  (row) => row.bgtCd !== newSelectedRow.bgtCd
+                );
+                await this.setState({ selectedRows: updatedSelectedRows });
+              } else {
+                await this.setState((prevState) => ({
+                  selectedRows: [...prevState.selectedRows, newSelectedRow],
+                }));
+              }
+            }}
+          />
+        ),
+      },
+      {
+        field: "gisu",
+        headerName: "기수",
+        width: 50,
+        headerAlign: "center",
+        align: "center",
+      },
+      {
+        field: "bgtGrNm",
+        headerName: "예산그룹",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "bgtCd",
+        headerName: "예산과목코드",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "bgtNm",
+        headerName: "예산과목명",
+        width: 180,
+        headerAlign: "center",
+      },
+      {
+        field: "hBgtNm",
+        headerName: "상위예산과목",
+        width: 507,
+        headerAlign: "center",
+      },
+    ];
 
     return (
       <>
@@ -282,9 +401,7 @@ class BgtCDDialogComponent extends Component {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <SearchIcon
-                            onClick={this.handleClickBgtGrSearchIcon}
-                          />
+                          <SearchIcon onClick={this.handleSearchBgtGr} />
                         </InputAdornment>
                       ),
                     }}
@@ -303,10 +420,11 @@ class BgtCDDialogComponent extends Component {
                     name="keyword"
                     value={this.state.keyword}
                     onChange={this.handleInputChange}
+                    onKeyDown={this.handleKeyDownKeyword}
                     variant="outlined"
                   />
                   <CustomSearchButton variant="outlined" sx={{ right: "-9px" }}>
-                    <SearchIcon onClick={this.handleClickSearchIcon} />
+                    <SearchIcon onClick={this.handleSearchBgtCd} />
                   </CustomSearchButton>
                 </Grid>
               </Grid>
@@ -393,10 +511,10 @@ class BgtCDDialogComponent extends Component {
                 variant="outlined"
                 onClick={this.handleClickConfirm}
               >
-                확인
+                확 인
               </CustomConfirmButton>
               <Button variant="outlined" onClick={this.handleDown}>
-                취소
+                취 소
               </Button>
             </CustomLargeButtonGridContainer>
           </CustomDialogActions>

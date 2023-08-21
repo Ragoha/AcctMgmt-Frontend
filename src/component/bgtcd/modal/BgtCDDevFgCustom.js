@@ -13,10 +13,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtCDService from "../../../service/BgtCDService";
 import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog } from "../../common/style/CommonDialogStyle";
+import SnackBarComponent from "../../common/SnackBarComponent";
 
 class BgtCDDevFgCustom extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.state = {
       open: false,
       rows: [],
@@ -67,6 +69,7 @@ class BgtCDDevFgCustom extends Component {
         row.divFg === newRow.divFg ? updatedRow : row
       ),
     }), () => console.log(this.state.rows));
+    this.snackBarRef.current.handleUp("success", "변경되었습니다.");
     return updatedRow;
   };
   updateBgtCDTerm = () => {
@@ -134,6 +137,7 @@ class BgtCDDevFgCustom extends Component {
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>
+        <SnackBarComponent ref={this.snackBarRef}/>
       </CustomShortDialog>
     );
   }

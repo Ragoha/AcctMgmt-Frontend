@@ -14,11 +14,7 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
 import React, { Component } from "react";
 import Scrollbars from "react-custom-scrollbars";
-import { connect } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-import { DELETE_TOKEN } from "../../store/Auth";
-import { DEL_USER } from "../../store/User";
-import { DEL_CONFIG } from "../../store/Config";
 import MainListItems from "./MainListItems";
 import UserInfo from "./UserInfo";
 import { CustomTextField } from "./style/CommonStyle";
@@ -162,7 +158,7 @@ class MainComponent extends Component {
                   right:"30px",
                 }}
               >
-                <Badge badgeContent={4} color="secondary">
+                <Badge badgeContent={12} color="secondary">
                   <AccountCircle />
                 </Badge>
               </IconButton>
@@ -173,7 +169,6 @@ class MainComponent extends Component {
                   <UserInfo />
                 </div>
               )}
-              <CustomTextField sx={{border : "1px solid white"}}></CustomTextField>
             </Toolbar>
           </AppBar>
 
@@ -226,25 +221,10 @@ class MainComponent extends Component {
 
 // ... (중략)
 
-const mapStateToProps = (state) => ({
-  accessToken: state.auth && state.auth.accessToken,
-  userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
-  configData: state.config.configData,
-});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    delAccessToken: (accessToken) => dispatch(DELETE_TOKEN(accessToken)),
-    delUserInfo: (userInfo) => dispatch(DEL_USER(userInfo)),
-    delConfig: (config) => dispatch(DEL_CONFIG(config)),
-  };
-};
 
 function withNavigation(Component) {
   return (props) => <Component {...props} navigate={useNavigate()} />;
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withNavigation(MainComponent));
+export default (withNavigation(MainComponent));

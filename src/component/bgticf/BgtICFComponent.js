@@ -29,6 +29,8 @@ import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
 import SnackBarComponentWrapper from "../common/SnackBarComponent";
 import SnackBarComponent from "../common/SnackBarComponent";
 import CustomSwal from "../common/CustomSwal";
+import { randomId } from "@mui/x-data-grid-generator";
+import ListDisplay from "./test";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -94,6 +96,7 @@ class BgtICFComponent extends Component {
       grFgText: "전체",
       bgtCd: "",
       bgtNm: "",
+      bgtCdList: [],
       bgtCDTextField: "",
       bgtDTO: [],
       divRows: [],
@@ -104,15 +107,12 @@ class BgtICFComponent extends Component {
       innerHeight: window.innerHeight,
     };
 
+    this.bgtCdListRef = createRef();
     this.bgtICFRef = createRef();
     this.divRef = createRef();
     this.bgtGrRef = createRef();
     this.bgtCDRef = createRef();
   }
-
-  handleSet = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
 
   handleGetBgtICFList = (e) => {
     this.bgtICFRef.current.handleGetBgtICFList();
@@ -126,11 +126,13 @@ class BgtICFComponent extends Component {
       "info",
       "삭제",
       (confirm) => {
-        this.bgtICFRef.current.handleDeleteClick({
-          bgtCd: this.state.selectedRowId,
-          sq: this.state.selectedRowSq,
-          sqList: this.state.selectedRows,
-        });
+        if (confirm) {
+          this.bgtICFRef.current.handleDeleteClick({
+            bgtCd: this.state.selectedRowId,
+            sq: this.state.selectedRowSq,
+            sqList: this.state.selectedRows,
+          });
+        }
       }
     );
   };
@@ -175,24 +177,32 @@ class BgtICFComponent extends Component {
     }));
   };
 
+  resetBgtICF = () => {
+    // this.setState({bgtCdList: [], bgtGrCdList:[]})
+  };
+
   setSelectedRowId = (row) => {
     this.setState({ selectedRowId: row.bgtCd, selectedRowSq: row.sq });
   };
 
   handleSetDivTextField = (data) => {
-    console.log(data);
-    this.setState({
-      divTextField: data.divCd + ". " + data.divNm,
-      divCd: data.divCd,
-      divNm: data.divNm,
-    });
-    console.log(this.state);
+    if (data.divCd && data.divNm) {
+      this.setState({
+        divTextField: data.divCd + ". " + data.divNm,
+        divCd: data.divCd,
+        divNm: data.divNm,
+      });
+    } else {
+      this.setState({
+        divTextField: "",
+        divCd: "",
+        divNm: "",
+      });
+    }
   };
 
   handleSetBgtGrTextField = (dataList) => {
-    console.log(dataList);
     if (dataList.length > 0) {
-      console.log("맞음?");
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
         .join(", ");
@@ -203,37 +213,71 @@ class BgtICFComponent extends Component {
         bgtGrTextField: concatenatedText,
         bgtGrCdList: bgtGrCdList,
       });
-      console.log("리스트 데이터:", concatenatedText);
-      console.log("리스트:", bgtGrCdList);
     } else {
-      console.log("그냥");
-      this.setState({
-        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
-        bgtGrCd: dataList.bgtGrCd,
-        bgtGrNm: dataList.bgtGrNm,
-      });
+      if (dataList.bgtGrCd && dataList.bgtGrNm) {
+        this.setState({
+          bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+          bgtGrCd: dataList.bgtGrCd,
+          bgtGrNm: dataList.bgtGrNm,
+        });
+      } else {
+        this.setState({
+          bgtGrTextField: "",
+          bgtGrCd: "",
+          bgtGrNm: "",
+        });
+      }
     }
-    console.log(this.state);
   };
 
   handleClickDivSearchIcon = () => {
-    this.divRef.current.initDivDialog();
+    // this.divRef.current.initDivDialog();
+    this.divRef.current.setDivDialog(this.state.divTextField);
   };
 
   handleClickBgtGrSerachIcon = () => {
-    this.bgtGrRef.current.initBgtGrDialog();
+    // this.bgtGrRef.current.initBgtGrDialog();
+    this.bgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
   };
 
-  handleClickBgtCDSearchIcon = () => {
-    this.bgtCDRef.current.initBgtCDDialog();
+  handleSearchBgtCD = () => {
+    // this.bgtCDRef.current.initBgtCDDialog();
+    this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
   };
 
-  handleSetBgtCDTextField = (data) => {
-    this.setState({
-      bgtCDTextField: data.bgtCd + ". " + data.bgtNm,
-      bgtCd: data.bgtCd,
-      bgtNm: data.bgtNm,
-    });
+  handleSetBgtCDTextField = (dataList) => {
+    if (dataList.length > 0) {
+      console.log(dataList);
+      console.log("asdf");
+      const concatenatedText = dataList
+        .map((data) => data.bgtCd + ". " + data.bgtNm)
+        .join(", ");
+
+      const bgtCdList = dataList.map((data) => data.bgtCd);
+
+      this.setState({
+        bgtCDTextField: concatenatedText,
+        bgtCdList: bgtCdList,
+      });
+    } else {
+      if (dataList.bgtCd && dataList.bgtNm) {
+        this.setState({
+          bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
+          bgtCd: dataList.bgtCd,
+          bgtNm: dataList.bgtNm,
+        });
+      } else {
+        this.setState({
+          bgtCDTextField: "",
+          bgtCd: "",
+          bgtNm: "",
+        });
+      }
+    }
+  };
+
+  changeBgtCdList = (bgtCdList) => {
+    this.setState({ bgtCdList: bgtCdList });
   };
 
   handleClickSerachButton = () => {
@@ -250,13 +294,14 @@ class BgtICFComponent extends Component {
       bgtGrText: this.state.bgtGrTextField,
       grFg: this.state.grFg,
       bgtCd: this.state.bgtCd,
+      bgtCdList: this.state.bgtCdList,
       bgtNm: this.state.bgtNm,
       bgtText: this.state.bgtCDTextField,
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
         ...row,
-        id: row.bgtCd,
+        id: randomId(),
       }));
       this.setState({ bgtCDRows: rowsWithId });
     });
@@ -319,7 +364,12 @@ class BgtICFComponent extends Component {
     }
 
     if (e.key == "Backspace") {
-      this.setState({ bgtGrTextField: "", bgtGrCd: "", bgtCDRows: [] });
+      this.setState({
+        bgtGrTextField: "",
+        bgtGrCd: "",
+        bgtGrCdList: [],
+        bgtCDRows: [],
+      });
       this.bgtICFRef.current.initBgtICF();
     }
   };
@@ -342,8 +392,6 @@ class BgtICFComponent extends Component {
     this.setState({
       gisuText: newValue,
       gisuRangeText: this.state.gisuRangeRows[index],
-      bgtCDTextField: "",
-      bgtCd: "",
       bgtCDRows: [],
     });
     this.bgtICFRef.current.initBgtICF();
@@ -355,11 +403,15 @@ class BgtICFComponent extends Component {
     this.setState({
       grFg: newValue.value,
       grFgText: newValue.label,
-      bgtCDTextField: "",
-      bgtCd: "",
       bgtCDRows: [],
     });
     this.bgtICFRef.current.initBgtICF();
+  };
+
+  handleTest = (data) => {
+    // alert("test");
+
+    this.bgtCdListRef.current.setListItem(data);
   };
 
   render() {
@@ -498,7 +550,12 @@ class BgtICFComponent extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
-              <CustomTextField
+              <ListDisplay
+                bgtCdList={this.state.bgtCdList}
+                changeBgtCdList={this.changeBgtCdList}
+                ref={this.bgtCdListRef}
+              />
+              {/* <CustomTextField
                 name="bgtCDTextField"
                 value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
@@ -507,15 +564,14 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleClickBgtCDSearchIcon} />
+                      <SearchIcon onClick={this.handleSearchBgtCD} />
                     </InputAdornment>
                   ),
                 }}
-              ></CustomTextField>
+              ></CustomTextField> */}
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            {/* <ListDisplay/> */}
             <SnackBarComponent severity="success" message="저장되었습니다." />
           </Grid>
         </CustomGridContainer>
@@ -616,6 +672,7 @@ class BgtICFComponent extends Component {
         <BgtCDDialogComponent
           ref={this.bgtCDRef}
           handleSetBgtCDTextField={this.handleSetBgtCDTextField}
+          handleTest={this.handleTest}
         />
       </>
     );

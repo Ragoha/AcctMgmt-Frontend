@@ -18,7 +18,9 @@ class DataGridComponent extends Component {
       bgtCd: "",
       mgtCd: "",
       gisu: "",
+      groupCd: "",
       rows: [],
+      sqList: [],
       selectedRowId: "",
       selectedRow: [],
       selectedRows: [],
@@ -34,7 +36,7 @@ class DataGridComponent extends Component {
   initBgtICF = () => {
     console.log("tet");
     console.log(this.state.rows);
-    this.setState({rows: []})
+    this.setState({ rows: [] });
     this.footerRef.current.sumCarrAm([]);
   };
 
@@ -149,7 +151,7 @@ class DataGridComponent extends Component {
   handleDeleteClick = (data) => {
     console.log("================");
     console.log(data.sqList.length);
-    console.log(this.state)
+    console.log(this.state);
 
     if (data.sqList.length >= 1) {
       const sqList = data.sqList.map((sq) => sq.sq).join(",");
@@ -210,18 +212,24 @@ class DataGridComponent extends Component {
       divCd: parent.divCd,
       gisu: data.gisu,
       sqList: [],
+      groupCd: data.groupCd,
     });
-    console.log(this.state)
+    console.log(this.state);
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
+      groupCd: this.state.groupCd,
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
         id: row.sq,
       }));
+
+      const sqList = response.map((row) => ({
+        sq: row.sq
+      }))
       if (data.bottomFg == 0) {
         rowsWithId.push({
           id: randomId(),
@@ -241,7 +249,11 @@ class DataGridComponent extends Component {
           isNew: true,
         });
       }
-      await this.setState({ rows: rowsWithId, gisu: data.gisu });
+      await this.setState({
+        rows: rowsWithId,
+        gisu: data.gisu,
+        sqList: sqList,
+      });
       this.footerRef.current.sumCarrAm(rowsWithId);
     });
   };
@@ -339,9 +351,9 @@ class DataGridComponent extends Component {
 
         await this.setState({ rows: rowsWithId });
         this.footerRef.current.sumCarrAm(rowsWithId);
-        
       });
-    });this.snackBarRef.current.handleUp("success", "수정되었습니다.");
+    });
+    this.snackBarRef.current.handleUp("success", "수정되었습니다.");
   };
 
   handleRowClick = async (params) => {
@@ -354,7 +366,7 @@ class DataGridComponent extends Component {
   };
 
   render() {
-    const { rows, selectedRowId } = this.state;
+    const { rows, selectedRows, selectedRowId } = this.state;
 
     const columns = [
       {
@@ -366,9 +378,24 @@ class DataGridComponent extends Component {
         sortable: false,
         filterable: false,
         hideable: false,
-        renderHeader: (params) => <Checkbox />,
+        renderHeader: (params) => (
+          <Checkbox
+            checked={selectedRows.length === this.state.sqList.length}
+            onClick={async (e) => {
+              if (!e.target.checked) {
+                await this.setState({ selectedRows: [] });
+              } else {
+                await this.setState({
+                  selectedRows: [...this.state.sqList],
+                });
+              }
+              console.log(this.state.selectedRows);
+            }}
+          />
+        ),
         renderCell: (params) => (
           <Checkbox
+            checked={selectedRows.some((row) => row.sq === params.row.sq)}
             onChange={async () => {
               // console.log(params);
               const newSelectedRow = {
@@ -603,6 +630,10 @@ class DataGridComponent extends Component {
               {
                 display: "none",
               },
+
+            "& .MuiDataGrid-row:last-child": {
+              background: "#FFF5F5",
+            },
             "& .MuiDataGrid-row:hover": {
               background: "#F5F5F5 !important",
             },
@@ -786,6 +817,7 @@ class CustomFooterStatusComponent extends Component {
             },
             "& .MuiDataGrid-row": {
               background: "#F6FFCC",
+              fontWeight: "bold",
             },
 
             "& .MuiDataGrid-cellContent:first-child": {
