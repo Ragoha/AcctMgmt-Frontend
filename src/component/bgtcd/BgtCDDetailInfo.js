@@ -312,6 +312,11 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               menuItemValues={menuItemValues[3]}
               ref={(ref) => (this.bizFgControl = ref)}
             />
+            <Select sx={{width:"300px"}}
+              Value={"영차"}
+            >
+
+            </Select>
           </Grid>
         </Grid>
         <Grid

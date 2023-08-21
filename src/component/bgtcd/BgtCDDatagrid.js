@@ -1,27 +1,30 @@
 import { Box } from "@mui/material";
 import { DataGridPro } from "@mui/x-data-grid-pro";
-import { Component } from "react";
+import React, { Component } from "react";
 import BgtCDService from "../../service/BgtCDService";
 import { connect } from "react-redux";
 import { GridRowModes, GridRowEditStopReasons } from "@mui/x-data-grid-pro";
+import SnackBarComponent from "../common/SnackBarComponent";
 class BgtCDDatagrid extends Component {
   constructor(props) {
     super(props);
+    this.snackBarRef = React.createRef();
     this.state = {
       columns: [
         //{ field: 'defNm', headerName: '분류명', width: 100 },
         {
           field: "bgtCd",
           headerName: "예산코드",
-          width: 140,
+          width: 300,
           headerAlign: "center",
+          align: "center",
         },
         {
           field: "bgtNm",
           headerName: "예산과목명",
-          cellClassName: "bgtNm",
-          flex: 1,
+          width: 250,
           headerAlign: "center",
+          align: "center",
         },
       ],
       rows: [],
@@ -75,15 +78,12 @@ class BgtCDDatagrid extends Component {
         coCd: coCd,
       };
       BgtCDService.updateBgtNm(data, accessToken);
-      // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then((response)=>{
-      //   console.log(response)
-      //   console.log(response.data)
-      //   // tRows=response.data;
-      // })
+      this.snackBarRef.current.handleUp("success", "수정 완료");
 
       return newRow;
     }
   };
+
   clickedRow = (params) => {
     //데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
     console.log("clickedRowwww");
@@ -152,7 +152,6 @@ class BgtCDDatagrid extends Component {
       ...column,
       editable: column.field !== "id" ? true : false,
     }));
-
     return (
       <Box
         style={{
@@ -176,7 +175,7 @@ class BgtCDDatagrid extends Component {
           getRowClassName={(params) =>
             `style-divfg-${params.row.divFg}${params.row.isNew ? "-new" : ""}`
           }
-          editMode="row" //row 단위로 편집 모양 잡힘
+          editMode="cell" //row 단위로 편집 모양 잡힘
           headerAlign="center"
           groupingColDef={{
             headerName: "분류명",
