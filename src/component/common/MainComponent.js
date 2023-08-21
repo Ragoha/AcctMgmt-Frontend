@@ -158,7 +158,7 @@ class MainComponent extends Component {
                   right:"30px",
                 }}
               >
-                <Badge badgeContent={4} color="secondary">
+                <Badge badgeContent={12} color="secondary">
                   <AccountCircle />
                 </Badge>
               </IconButton>
@@ -169,7 +169,6 @@ class MainComponent extends Component {
                   <UserInfo />
                 </div>
               )}
-              <CustomTextField sx={{border : "1px solid white"}}></CustomTextField>
             </Toolbar>
           </AppBar>
 

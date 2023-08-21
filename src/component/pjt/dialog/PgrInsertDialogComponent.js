@@ -28,14 +28,14 @@ class PgrInsertDialogComponent extends Component {
                     {
                         field: "coCd",
                         headerName: "",
-                        editable: true,
+                        editable: false,
                         width: 90,
                         headerAlign: "center",
                         align: "center",
                     },
                     {
                         field: "pgrCd",
-                        headerName: "그룹코드",
+                        headerName: "코드",
                         editable: true,
                         width: 188.2,
                         headerAlign: "center",
@@ -43,7 +43,7 @@ class PgrInsertDialogComponent extends Component {
                     },
                     {
                         field: "pgrNm",
-                        headerName: "그룹이름",
+                        headerName: "분류명",
                         editable: true,
                         width: 188.2,
                         headerAlign: "center",
@@ -57,15 +57,15 @@ class PgrInsertDialogComponent extends Component {
 
     handleUp = () => {
         this.setState({ open: true });
-        this.initcoCd();
+        this.initPgr();
     };
 
     handleDown = () => {
         this.setState({ open: false });
-        this.props.setcoCdInfo(this.state.selectedRow);
+        // this.props.setcoCdInfo(this.state.selectedRow);
     };
 
-    initcoCd = () => {
+    initPgr = () => {
         const userInfo = this.props.userInfo;
         const { coCd } = userInfo;
         PgrService.findpgrByCoCd({
@@ -80,7 +80,7 @@ class PgrInsertDialogComponent extends Component {
             }));
             pgrRows.push({
                 id: randomId(),
-                coCd: "",
+                coCd: coCd,
                 pgrCd: "",
                 pgrNm: "",
                 isNew: true,
@@ -89,14 +89,14 @@ class PgrInsertDialogComponent extends Component {
         });
     };
 
-    insertcoCd = (data) => {
-        // PjtService.insertcoCd({
-        //   accessToken: this.props.accessToken,
-        //   coCd: this.props.coCd,
-        //   coCd: data
-        // }).then(() => {
-        //   this.initcoCd();
-        // });
+    insertPgr = (data) => {
+        PgrService.insertPgr({
+          accessToken: this.props.accessToken,
+          coCd: this.props.coCd,
+          Pgr: data,
+        }).then(() => {
+          this.initPgr();
+        });
     }
 
     updatePgr = (data) => {
@@ -106,19 +106,19 @@ class PgrInsertDialogComponent extends Component {
         //   coCd: this.props.user.coCd,
         //   coCd: data,
         // }).then(() => {
-        //   this.initcoCd();
+        //   this.initPgr();
         // });
     }
 
     handleClickDelete = () => {
-        console.log(this.state.selectedRow.coCd);
-        // PjtService.deletecoCd({
-        //   accessToken: this.props.accessToken,
-        //   coCd: this.props.coCd,
-        //   coCd: this.state.selectedRow.coCd,
-        // }).then(() => {
-        //   this.initcoCd();
-        // });
+        console.log(this.state.selectedRow.pgrCd);
+        PgrService.deletePgr({
+          accessToken: this.props.accessToken,
+          coCd: this.state.selectedRow.coCd,
+          pgrCd: this.state.selectedRow.pgrCd,
+        }).then(() => {
+          this.initPgr();
+        });
     };
 
     handleClickConfirm = () => {
@@ -137,7 +137,7 @@ class PgrInsertDialogComponent extends Component {
         if (newRow.isNew) {
             if (newRow.pgrCd !== "" && newRow.pgrNm !== "") {
                 console.log("저장");
-                this.insertcoCd(newRow);
+                this.insertPgr(newRow);
             }
 
             return newRow;
@@ -186,8 +186,14 @@ class PgrInsertDialogComponent extends Component {
                                 rows={pgrRows}
                                 columns={data.columns.map((col) => {
                                     if (col.field === "pgrCd" || col.field === "pgrNm") {
+                                        return col;
                                     }
-                                    return col;
+
+                                    // coCd 열을 수정 불가능하게 만듭니다.
+                                    return {
+                                        ...col,
+                                        // editable: false,
+                                    };
                                 })}
                                 showColumnVerticalBorder={true}
                                 showCellVerticalBorder={true}

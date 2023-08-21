@@ -9,15 +9,16 @@ class CustomSwal {
             showConfirmButton: false,
             timer: timer ? timer : 1000,
             timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-            }
+            // didOpen: (toast) => {
+            //     toast.addEventListener('mouseenter', Swal.stopTimer);
+            //     toast.addEventListener('mouseleave', Swal.resumeTimer);
+            // }
         });
 
         commonToast.fire({
             icon: icon,
-            title: title
+            title: title,
+            timerProgressBar: false
         });
     }
     //icon = success, error, warning, info, question | title : "알럿창에 띄울 제목" | text:알럿창에 띄울 멘트

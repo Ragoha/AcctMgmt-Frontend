@@ -1,48 +1,69 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import { InputAdornment } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
+import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import { connect } from "react-redux";
 
 class ListDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputValue: "",
-      listItems: ["abc", "def", "gea"],
+      listItems: [],
       isDeleteIconVisible: false,
+      bgtCDTextField: "",
+      bgtCd: "",
+      bgtCdList: [],
+      bgtNm: "",
     };
+
+    this.bgtCdRef = createRef();
   }
 
-  handleChange = (event) => {
-    this.setState({ inputValue: event.target.value });
-  };
-
-  handleSubmit = () => {
-    const { inputValue, listItems } = this.state;
-    if (inputValue.trim() !== "") {
-      this.setState({
-        listItems: [...listItems, inputValue],
-        inputValue: "",
-      });
+  setListItem = (data) => {
+    console.log(data);
+    const listItems = data.map((item) => item.bgtCd + ". " + item.bgtNm);
+    let bgtCDTextField;
+    if (listItems.length > 1) {
+      bgtCDTextField = listItems[0] + " 외 " + (listItems.length - 1) + "건";
+    } else {
+      bgtCDTextField = listItems[0];
     }
+    console.log(listItems);
+    this.setState({
+      listItems: listItems,
+      bgtCDTextField: bgtCDTextField,
+    });
   };
 
   handleRemove = async (index) => {
     await this.setState((prevState) => ({
       listItems: prevState.listItems.filter((item, i) => i !== index),
+      bgtCdList: prevState.bgtCdList.filter((item, i) => i !== index)
     }));
-    if (this.state.listItems.length > 0) {
+    if (this.state.listItems.length > 1) {
       await this.setState({
-        inputValue:
-          this.state.listItems[0] + "외 " + this.state.listItems.length + "건",
+        bgtCDTextField:
+          this.state.listItems[0] +
+          " 외 " +
+          (this.state.listItems.length - 1) +
+          "건",
+      });
+    } else if (this.state.listItems.length == 1) {
+      await this.setState({
+        bgtCDTextField: this.state.listItems[0],
       });
     } else {
       await this.setState({
-        inputValue: "",
+        bgtCDTextField: "",
       });
     }
+
+    this.props.changeBgtCdList(this.state.bgtCdList);
   };
 
   handleAutocompleteChange = (event, value) => {
@@ -53,13 +74,6 @@ class ListDisplay extends Component {
     event.stopPropagation();
   };
 
-  componentDidMount() {
-    this.setState({
-      inputValue:
-        this.state.listItems[0] + "외 " + this.state.listItems.length + "건",
-    });
-  }
-
   handleMouseEnter = () => {
     this.setState({ isDeleteIconVisible: true });
   };
@@ -68,15 +82,72 @@ class ListDisplay extends Component {
     this.setState({ isDeleteIconVisible: false });
   };
 
+  handleClickSearch = () => {
+    console.log(this.bgtCdRef);
+    this.bgtCdRef.current.setBgtCDDialog();
+  };
+
+  handleSetBgtCDTextField = (dataList) => {
+    console.log(dataList);
+    const bgtCDTextList = dataList.map(
+      (data) => data.bgtCd + ". " + data.bgtNm
+    );
+    const bgtCdList = dataList.map((data) => data.bgtCd);
+    let bgtCDTextField;
+    if (bgtCDTextList.length > 1) {
+      bgtCDTextField =
+        bgtCDTextList[0] + " 외 " + (bgtCDTextList.length - 1) + "건";
+    } else {
+      bgtCDTextField = bgtCDTextList[0];
+    }
+
+    this.setState({
+      bgtCdList: bgtCdList,
+      listItems: bgtCDTextList,
+      bgtCDTextField: bgtCDTextField,
+    });
+
+    this.props.changeBgtCdList(bgtCdList);
+
+    // if (dataList.length > 0) {
+    //   console.log(dataList);
+    //   console.log("asdf");
+    //   const concatenatedText = dataList
+    //     .map((data) => data.bgtCd + ". " + data.bgtNm)
+    //     .join(", ");
+
+    //   const bgtCdList = dataList.map((data) => data.bgtCd);
+
+    //   this.setState({
+    //     bgtCDTextField: concatenatedText,
+    //     bgtCdList: bgtCdList,
+    //   });
+    // } else {
+    //   if (dataList.bgtCd && dataList.bgtNm) {
+    //     this.setState({
+    //       bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
+    //       bgtCd: dataList.bgtCd,
+    //       bgtNm: dataList.bgtNm,
+    //     });
+    //   } else {
+    //     this.setState({
+    //       bgtCDTextField: "",
+    //       bgtCd: "",
+    //       bgtNm: "",
+    //     });
+    //   }
+    // }
+  };
+
   render() {
-    const { inputValue, listItems, isDeleteIconVisible } = this.state;
+    const { bgtCDTextField, listItems, isDeleteIconVisible } = this.state;
     return (
-      <div>
+      <>
         <Autocomplete
           tfStyle
           freeSolo
           options={listItems}
-          value={inputValue}
+          value={bgtCDTextField}
           size=""
           disableClearable
           clearIcon={
@@ -86,7 +157,7 @@ class ListDisplay extends Component {
                   alert("abc");
                   this.setState({ listItems: [] });
                 }}
-                sx={{ mr: "30", position: "absolute", left: "-80" }}
+                sx={{ mr: "30", position: "absolute", left: "-70" }}
               />
             </>
           }
@@ -95,17 +166,30 @@ class ListDisplay extends Component {
             <TextField
               onFocus={this.handleMouseEnter} // 이 줄을 추가하세요
               onBlur={this.handleMouseLeave} // 이 줄을 추가하세요
+              placeholder="예산과목코드/예산과목명"
+              sx={{
+                width: 255,
+                "& .MuiInputBase-root": {
+                  height: 40,
+                  paddingLeft: "9px",
+                  paddingTop: 0,
+                  paddingRight: "14px",
+                  paddingBottom: 0,
+                },
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Backspace") {
                   console.log(`Pressed keyCode ${e.key}`);
-                  this.setState({ listItems: [] });
+                  this.setState({ listItems: [], inputValue: "" });
+                } else if (e.key === "Enter") {
+                  alert("Asdzzzzf")
                 }
               }}
               {...params}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
-                  <>
+                  <InputAdornment position="end">
                     <DeleteIcon
                       onClick={() => {
                         alert("asdf");
@@ -113,26 +197,28 @@ class ListDisplay extends Component {
                       style={{ cursor: "pointer" }}
                       sx={{
                         position: "absolute",
-                        right: "50px",
+                        right: "32px",
                         visibility: isDeleteIconVisible ? "visible" : "hidden",
                       }}
                     />
-                    <SearchIcon
-                      onClick={() => {
-                        alert("1111");
-                      }}
-                      style={{ cursor: "pointer" }}
-                      sx={{ mr: "-30px", position: "absolute", right: "50px" }}
-                    />
+                    <SearchIcon onClick={this.handleClickSearch} />
                     {params.InputProps.endAdornment}
-                  </>
+                  </InputAdornment>
                 ),
               }}
             />
           )}
           renderOption={(props, option) => (
-            <li {...props} onClick={this.handleClickListItem}>
-              <span>{option}</span>
+            <li
+              {...props}
+              onClick={this.handleClickListItem}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>{option}</div>
               <IconButton
                 onClick={() => this.handleRemove(listItems.indexOf(option))}
                 size="small"
@@ -142,9 +228,20 @@ class ListDisplay extends Component {
             </li>
           )}
         />
-      </div>
+        <BgtCDDialogComponent
+          handleSetBgtCDTextField={this.handleSetBgtCDTextField}
+          ref={this.bgtCdRef}
+        />
+      </>
     );
   }
 }
 
-export default ListDisplay;
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+});
+
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  ListDisplay
+);

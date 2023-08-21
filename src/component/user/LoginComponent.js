@@ -20,6 +20,7 @@ import { SET_USER } from '../../store/User';
 import ForgotPasswordDialog from '../dialog/ForgotPasswordDialog';
 import SignUpDialog from '../dialog/SignUpDialog';
 import Image4 from './back4.jpg';
+import CustomSwal from '../common/CustomSwal';
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -93,7 +94,8 @@ class LoginComponent extends Component {
           });
       })
       .catch((error) => {
-        alert("아이디 또는 비밀번호가 다릅니다.", error);
+        // alert("아이디 또는 비밀번호가 다릅니다.", error);
+        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를" +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 잘못입력하셨습니다.");
       });
   };
 
@@ -229,11 +231,11 @@ class LoginComponent extends Component {
                     bgcolor: "#7895CB",
                     color: "#FFFFFF",
                     "&:hover": { bgcolor: "#4A55A2", cursor: "pointer" },
-                    fontFamily: '"Lilita One", cursive',
+                    fontFamily: '"VT323", cursive',
                   }}
                 >
                   {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
-                  Sign in
+                  로그인
                 </Button>
                 <Grid container>
                   <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
