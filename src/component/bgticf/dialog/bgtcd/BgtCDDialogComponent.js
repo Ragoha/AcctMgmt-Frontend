@@ -61,11 +61,25 @@ class BgtCDDialogComponent extends Component {
   }
 
   setBgtCDDialog = (keyword) => {
-    console.log(keyword);
+ 
+    let tmpRange = "";
+
+    this.setState({ rangeState: false });
+
+    if (this.state.rangeState) {
+      tmpRange = this.state.rangeTextField;
+    } else {
+      tmpRange = dayjs("1900-01-01").format("YYYY-MM-DD");
+    }
+
     BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
-      user: this.props.user,
-      accessToken: this.props.accessToken,
+      gisu: this.state.gisuValue,
+      bgtGrCd: this.state.bgtGrCd,
       keyword: keyword,
+      range: tmpRange,
+      accessToken: this.props.accessToken,
+      user: this.props.user,
+      bgtGrCdList: this.state.bgtGrCdList,
     }).then((response) => {
       const bgtCDRows = response.map((row) => ({
         id: randomId(),
@@ -75,15 +89,33 @@ class BgtCDDialogComponent extends Component {
         bgtNm: row.bgtNm,
         hBgtNm: row.dataPath,
       }));
+      console.log("asdf");
       this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
       this.handleUp();
-      console.log(this.state);
     });
+
+
+    // BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
+    //   user: this.props.user,
+    //   accessToken: this.props.accessToken,
+    //   keyword: keyword,
+    // }).then((response) => {
+    //   const bgtCDRows = response.map((row) => ({
+    //     id: randomId(),
+    //     gisu: row.gisu,
+    //     bgtGrNm: row.bgtGrNm,
+    //     bgtCd: row.bgtCd,
+    //     bgtNm: row.bgtNm,
+    //     hBgtNm: row.dataPath,
+    //   }));
+    //   this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
+    //   this.handleUp();
+    // });
   };
 
   initBgtCDDialog = () => {
     this.setState({ keyword: "", rangeState: true });
-    this.handleClickSearchIcon();
+    this.handleSearchBgtCd();
     this.handleUp();
   };
 
@@ -101,48 +133,40 @@ class BgtCDDialogComponent extends Component {
 
   handleInputChange = async (e) => {
     const { name, value } = e.target;
-    await this.setState({ [name]: value });
-    console.log("test");
+    this.setState({ [name]: value });
   };
 
   handleSearchBgtGr = () => {
     BgtICFService.findBgtGrCdAndBgtGrNmByKeyword(this.state.keyword).then(
-      async (response) => {
+      (response) => {
         const bgtCDRows = response.map((row) => ({
           id: row.bgtGrCd,
           bgtGrCd: row.bgtGrCd,
           bgtGrNm: row.bgtGrNm,
         }));
-        await this.setState({ bgtCDRows: bgtCDRows });
-        console.log(this.state);
+        this.setState({ bgtCDRows: bgtCDRows });
       }
     );
   };
 
   handleClickConfirm = async () => {
-
     if (this.state.selectedRows.length == 0) {
       await this.props.handleSetBgtCDTextField(this.state.selectedRow);
     } else {
       let sortedSelectedRows = [...this.state.selectedRows];
       sortedSelectedRows.sort((a, b) => a.bgtCd - b.bgtCd);
-      console.log(sortedSelectedRows);
       await this.props.handleSetBgtCDTextField(sortedSelectedRows);
     }
 
-    
-    
     this.handleDown();
   };
 
-  handleClickBgtGrSearchIcon = () => {
-    // console.dir(this.childBgtGrRef);
-    this.childBgtGrRef.current.handleInitBgtGrDialog();
-    // this.childBgtGrRef.current.handleUp();
+  handleSearchBgtGr = () => {
+    // this.childBgtGrRef.current.handleInitBgtGrDialog();
+    this.childBgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
   };
 
   handleSetBgtCDTextField = (dataList) => {
-    console.log(dataList);
     if (dataList.length > 0) {
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
@@ -155,16 +179,24 @@ class BgtCDDialogComponent extends Component {
         bgtGrCdList: bgtGrCdList,
       });
     } else {
-      this.setState({
-        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
-        bgtGrCd: dataList.bgtGrCd,
-        bgtGrNm: dataList.bgtGrNm,
-      });
+      if (dataList.bgtGrCd && dataList.bgtGrNm) {
+        this.setState({
+          bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+          bgtGrCd: dataList.bgtGrCd,
+          bgtGrNm: dataList.bgtGrNm,
+        });
+      } else {
+        this.setState({
+          bgtGrTextField: "",
+          bgtGrCd: "",
+          bgtGrNm: "",
+          bgtGrCdList: []
+        });
+      }
     }
-    console.log(this.state);
   };
 
-  handleClickSearchIcon = () => {
+  handleSearchBgtCd = () => {
     let tmpRange = "";
 
     if (this.state.rangeState) {
@@ -200,11 +232,10 @@ class BgtCDDialogComponent extends Component {
     }));
   };
 
-  handleChangeDatePicker = async (newValue) => {
-    await this.setState({
+  handleChangeDatePicker = (newValue) => {
+    this.setState({
       rangeTextField: dayjs(newValue).format("YYYY-MM-DD"),
     });
-    console.log(this.state);
   };
 
   handleKeyDownBgtGrTextField = (e) => {
@@ -214,6 +245,12 @@ class BgtCDDialogComponent extends Component {
 
     if (e.key == "Backspace") {
       this.setState({ bgtGrTextField: "", bgtGrCd: "" });
+    }
+  };
+
+  handleKeyDownKeyword = (e) => {
+    if (e.key == "Enter") {
+      this.handleSearchBgtCd();
     }
   };
 
@@ -237,11 +274,13 @@ class BgtCDDialogComponent extends Component {
             onClick={async (e) => {
               this.setState({ bgtCDCdRows: this.state.bgtCDRows });
               console.log(e.target.checked);
-          
+
               if (!e.target.checked) {
                 await this.setState({ selectedRows: [] });
               } else {
-                await this.setState({ selectedRows: [...this.state.bgtCDRows] });
+                await this.setState({
+                  selectedRows: [...this.state.bgtCDRows],
+                });
               }
               console.log(this.state.selectedRows);
             }}
@@ -249,11 +288,8 @@ class BgtCDDialogComponent extends Component {
         ),
         renderCell: (params) => (
           <Checkbox
-            checked={selectedRows.some(
-              (row) => row.bgtCd === params.row.bgtCd
-            )}
+            checked={selectedRows.some((row) => row.bgtCd === params.row.bgtCd)}
             onChange={async () => {
-              
               const newSelectedRow = {
                 bgtCd: params.row.bgtCd,
                 bgtNm: params.row.bgtNm,
@@ -271,9 +307,7 @@ class BgtCDDialogComponent extends Component {
                 await this.setState((prevState) => ({
                   selectedRows: [...prevState.selectedRows, newSelectedRow],
                 }));
-                
               }
-              console.log(this.state.selectedRows);
             }}
           />
         ),
@@ -364,9 +398,7 @@ class BgtCDDialogComponent extends Component {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <SearchIcon
-                            onClick={this.handleClickBgtGrSearchIcon}
-                          />
+                          <SearchIcon onClick={this.handleSearchBgtGr} />
                         </InputAdornment>
                       ),
                     }}
@@ -385,10 +417,11 @@ class BgtCDDialogComponent extends Component {
                     name="keyword"
                     value={this.state.keyword}
                     onChange={this.handleInputChange}
+                    onKeyDown={this.handleKeyDownKeyword}
                     variant="outlined"
                   />
                   <CustomSearchButton variant="outlined" sx={{ right: "-9px" }}>
-                    <SearchIcon onClick={this.handleClickSearchIcon} />
+                    <SearchIcon onClick={this.handleSearchBgtCd} />
                   </CustomSearchButton>
                 </Grid>
               </Grid>
@@ -475,10 +508,10 @@ class BgtCDDialogComponent extends Component {
                 variant="outlined"
                 onClick={this.handleClickConfirm}
               >
-                확인
+                확 인
               </CustomConfirmButton>
               <Button variant="outlined" onClick={this.handleDown}>
-                취소
+                취 소
               </Button>
             </CustomLargeButtonGridContainer>
           </CustomDialogActions>

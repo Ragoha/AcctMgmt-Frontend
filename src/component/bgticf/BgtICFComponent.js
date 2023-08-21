@@ -184,17 +184,22 @@ class BgtICFComponent extends Component {
   };
 
   handleSetDivTextField = (data) => {
-    console.log(data);
-    this.setState({
-      divTextField: data.divCd + ". " + data.divNm,
-      divCd: data.divCd,
-      divNm: data.divNm,
-    });
-    console.log(this.state);
+    if (data.divCd && data.divNm) {
+      this.setState({
+        divTextField: data.divCd + ". " + data.divNm,
+        divCd: data.divCd,
+        divNm: data.divNm,
+      });
+    } else {
+      this.setState({
+        divTextField: "",
+        divCd: "",
+        divNm: "",
+      });
+    }
   };
 
   handleSetBgtGrTextField = (dataList) => {
-    console.log(dataList);
     if (dataList.length > 0) {
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
@@ -207,30 +212,38 @@ class BgtICFComponent extends Component {
         bgtGrCdList: bgtGrCdList,
       });
     } else {
-      this.setState({
-        bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
-        bgtGrCd: dataList.bgtGrCd,
-        bgtGrNm: dataList.bgtGrNm,
-      });
+      if (dataList.bgtGrCd && dataList.bgtGrNm) {
+        this.setState({
+          bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
+          bgtGrCd: dataList.bgtGrCd,
+          bgtGrNm: dataList.bgtGrNm,
+        });
+      } else {
+        this.setState({
+          bgtGrTextField: "",
+          bgtGrCd: "",
+          bgtGrNm: "",
+        });
+      }
     }
-    console.log(this.state);
   };
 
   handleClickDivSearchIcon = () => {
-    this.divRef.current.initDivDialog();
+    // this.divRef.current.initDivDialog();
+    this.divRef.current.setDivDialog(this.state.divTextField);
   };
 
   handleClickBgtGrSerachIcon = () => {
-    this.bgtGrRef.current.initBgtGrDialog();
+    // this.bgtGrRef.current.initBgtGrDialog();
+    this.bgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
   };
 
-  handleClickBgtCDSearchIcon = () => {
-    this.bgtCDRef.current.initBgtCDDialog();
+  handleSearchBgtCD = () => {
+    // this.bgtCDRef.current.initBgtCDDialog();
+    this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
   };
 
   handleSetBgtCDTextField = (dataList) => {
-    console.log("===========");
-    console.log(dataList);
     if (dataList.length > 0) {
       const concatenatedText = dataList
         .map((data) => data.bgtCd + ". " + data.bgtNm)
@@ -249,7 +262,6 @@ class BgtICFComponent extends Component {
         bgtNm: dataList.bgtNm,
       });
     }
-    console.log(this.state);
   };
 
   handleClickSerachButton = () => {
@@ -520,7 +532,7 @@ class BgtICFComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleClickBgtCDSearchIcon} />
+                      <SearchIcon onClick={this.handleSearchBgtCD} />
                     </InputAdornment>
                   ),
                 }}
