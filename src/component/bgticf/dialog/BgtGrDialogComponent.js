@@ -21,8 +21,6 @@ import {
   CustomTextField,
 } from "../../common/style/CommonStyle";
 
-
-
 class BgtGrDialogComponent extends Component {
   constructor(props) {
     super(props);
@@ -45,27 +43,20 @@ class BgtGrDialogComponent extends Component {
   };
 
   handleClickRow = (params) => {
-    this.setState(
-      {
-        selectedRow: [
-          { bgtGrCd: params.row.bgtGrCd, bgtGrNm: params.row.bgtGrNm },
-        ],
-      },
-      () => {
-        console.log(this.state.selectedRow);
-      }
-    );
-    // console.log(this.state);
+    this.setState({
+      selectedRow: [
+        { bgtGrCd: params.row.bgtGrCd, bgtGrNm: params.row.bgtGrNm },
+      ],
+    });
   };
 
   setDivRows = async (rows) => {
     await this.setState({ divRows: rows });
   };
 
-  handleInputChange = async (e) => {
+  handleInputChange = (e) => {
     const { name, value } = e.target;
-    await this.setState({ [name]: value });
-    console.log(this.state);
+    this.setState({ [name]: value });
   };
 
   setBgtGrDialog = (keyword) => {
@@ -73,23 +64,20 @@ class BgtGrDialogComponent extends Component {
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
       keyword: keyword,
-    })
-      .then(async (response) => {
-        const bgtGrRows = response.map((row) => ({
-          id: row.bgtGrCd,
-          bgtGrCd: row.bgtGrCd,
-          bgtGrNm: row.bgtGrNm,
-        }));
-
-        this.setState({
-          bgtGrRows: bgtGrRows,
-          keyword: keyword,
-          selectedRows: [],
-        });
-      })
-      .then(() => {
-        this.handleUp();
+    }).then(async (response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
+      this.setState({
+        bgtGrRows: bgtGrRows,
+        keyword: keyword,
+        selectedRow: "",
+        selectedRows: [],
       });
+      this.handleUp();
+    });
   };
 
   initBgtGrDialog = () => {
@@ -105,13 +93,12 @@ class BgtGrDialogComponent extends Component {
         bgtGrNm: row.bgtGrNm,
       }));
 
-      await this.setState({ bgtGrRows: bgtGrRows });
+      await this.setState({ bgtGrRows: bgtGrRows, selectedRow: [] });
+      this.handleUp();
     });
-
-    this.handleUp();
   };
 
-  handleCickSearchIcon = () => {
+  handleSearchBgtGr = () => {
     BgtICFService.findBgtGrByCoCdAndKeyword({
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
@@ -122,13 +109,21 @@ class BgtGrDialogComponent extends Component {
         bgtGrCd: row.bgtGrCd,
         bgtGrNm: row.bgtGrNm,
       }));
-      this.setState({ bgtGrRows: bgtGrRows });
+      this.setState({
+        bgtGrRows: bgtGrRows,
+        selectedRow: [],
+        selectedRows: [],
+      });
     });
   };
 
+  handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      this.handleSearchBgtGr();
+    }
+  };
+
   handleClickConfirm = async () => {
-    console.log(this.state.selectedRow);
-    this.handleDown();
     if (this.state.selectedRows.length == 0) {
       await this.props.handleSetBgtGrTextField(this.state.selectedRow);
     } else {
@@ -136,6 +131,7 @@ class BgtGrDialogComponent extends Component {
       sortedSelectedRows.sort((a, b) => a.bgtGrCd - b.bgtGrCd);
       await this.props.handleSetBgtGrTextField(sortedSelectedRows);
     }
+    this.handleDown();
   };
 
   handleHeaderCheckboxClick = () => {
@@ -167,14 +163,11 @@ class BgtGrDialogComponent extends Component {
               selectedRows.length < this.state.bgtGrRows.length
             }
             onClick={(e) => {
-              console.log(e.target.checked);
               if (!e.target.checked) {
                 this.setState({ selectedRows: [] });
-                
               } else {
                 this.setState({ selectedRows: [...this.state.bgtGrRows] });
               }
-              console.log(this.state.selectedRows);
             }}
           />
         ),
@@ -249,10 +242,10 @@ class BgtGrDialogComponent extends Component {
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  onKeyDown={this.handlePressEnter}
+                  onKeyDown={this.handleKeyDown}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleCickSearchIcon} />
+                  <SearchIcon onClick={this.handleSearchBgtGr} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
