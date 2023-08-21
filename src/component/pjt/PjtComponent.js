@@ -68,9 +68,13 @@ class PjtComponent extends Component {
     if (this.state.isChanged) {
       CustomSwal.showCommonSwalYn("저장되지 않은 내용이 있습니다.", "작성한 프로젝트 정보를 저장하시겠습니까?", "info", "저장", (confirmed) => {
         if (confirmed) {
-          this.handleSave();
+          this.handleFix();
         }
         else{
+          this.setState({
+            isChanged : false,
+          });
+          this.cardClick();
           return;
         }
       });
@@ -190,7 +194,7 @@ class PjtComponent extends Component {
         changedFields.toDt = toDt;
       }
       console.log("읽어온 값 :", prDt);
-      if (prDt != 'Invalid Date') {
+      if (prDt != 'Invalid Date' && startDt != 'Invalid Date') {
         Pjt = {
           coCd: coCd,
           pgrCd: pgrCd,
@@ -205,7 +209,21 @@ class PjtComponent extends Component {
           startDt: startDt,
         }
       }
-      else {
+      else if(prDt != 'Invalid Date' && startDt == 'Invalid Date'){
+        Pjt = {
+          coCd: coCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtCd: pjtCd,
+          pjtNm: pjtNm,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          note: note,
+          prDt: prDt,
+          toDt: toDt,
+        }
+      }
+      else if(prDt == 'Invalid Date' && startDt != 'Invalid Date'){
         Pjt = {
           coCd: coCd,
           pgrCd: pgrCd,
@@ -216,6 +234,18 @@ class PjtComponent extends Component {
           apjtNm: apjtNm,
           note: note,
           startDt: startDt,
+        }
+      }
+      else {
+        Pjt = {
+          coCd: coCd,
+          pgrCd: pgrCd,
+          pgrNm: pgrNm,
+          pjtCd: pjtCd,
+          pjtNm: pjtNm,
+          progFg: progFg,
+          apjtNm: apjtNm,
+          note: note,
         }
       }
 
@@ -534,7 +564,7 @@ class PjtComponent extends Component {
     console.log(pjtCd);
     if (this.state.isChanged) {
       // alert('변경된 내용이 저장되지 않았습니다.');
-      CustomSwal.showCommonToast("warning", "변경된 내용이 저장되지 않았습니다.");
+      CustomSwal.showCommonToast("warning", "변경된 내용이 <br/> 저장되지 않았습니다.");
     } else {
       this.setState({ focused: pjtCd });
 
@@ -1115,7 +1145,7 @@ class PjtComponent extends Component {
               item
               ref={this.cardListRef}
               sx={{
-                pr: 1, // 우측 여백 추가
+                // pr:2, // 우측 여백 추가
                 pl: 1,
                 // pb: 1,
                 width: "100%",

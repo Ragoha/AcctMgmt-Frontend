@@ -30,10 +30,18 @@ class LoginComponent extends Component {
       password: "",
       isIconOpen: false,
       showForm: false,
+      rememberId: false, // 아이디 저장 체크박스 상태
     };
   }
+  handleRememberIdChange = (e) => {
+    this.setState({ rememberId: e.target.checked });
+  };
 
   componentDidMount() {
+    const rememberedId = Cookie.get("rememberedId");
+    if (rememberedId) {
+      this.setState({ id: rememberedId, rememberId: true });
+    }
     setTimeout(() => {
       this.setState({ showForm: true });
     }, 10);
@@ -54,10 +62,15 @@ class LoginComponent extends Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    const { id, password } = this.state;
+    const { id, password, rememberId } = this.state;
     const loginData = { empId: id, empPw: password };
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
+    if (rememberId) {
+      Cookie.set("rememberedId", id);
+    } else {
+      Cookie.remove("rememberedId"); // 체크 해제 시 쿠키 제거
+    }
     axios
       .post(ACCTMGMT_API_BASE_URL + "/login", loginData, {
         headers: {
@@ -95,7 +108,7 @@ class LoginComponent extends Component {
       })
       .catch((error) => {
         // alert("아이디 또는 비밀번호가 다릅니다.", error);
-        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를" +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 잘못입력하셨습니다.");
+        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를 <br/> 잘못입력하셨습니다.");
       });
   };
 
@@ -157,6 +170,7 @@ class LoginComponent extends Component {
                 style={{
                   fontFamily: '"Montserrat", sans-serif',
                   fontSize: "4vh",
+                  fontweight:"bold",
                 }}
               >
                 DOUZONE
@@ -213,7 +227,13 @@ class LoginComponent extends Component {
                   }}
                 />
                 <FormControlLabel
-                  control={<Checkbox value="remember" />}
+                  control={
+                    <Checkbox
+                      value="rememberId"
+                      checked={this.state.rememberId}
+                      onChange={this.handleRememberIdChange}
+                    />
+                  }
                   label="아이디 저장"
                   sx={{
                     mb: "2vh",
@@ -231,25 +251,26 @@ class LoginComponent extends Component {
                     bgcolor: "#7895CB",
                     color: "#FFFFFF",
                     "&:hover": { bgcolor: "#4A55A2", cursor: "pointer" },
-                    fontFamily: '"VT323", cursive',
+                    fontweight:"bold",
+                    fontFamily: "'Roboto Mono', monospace",
                   }}
                 >
-                  {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
-                  로그인
-                </Button>
-                <Grid container>
-                  <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
-                    <ForgotPasswordDialog />
-                  </Grid>
-                  <Grid item sx={{ "&:hover": { cursor: "pointer" } }}>
-                    <SignUpDialog />
-                  </Grid>
+                {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
+                로그인
+              </Button>
+              <Grid container>
+                <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
+                  <ForgotPasswordDialog />
                 </Grid>
-              </Box>
-            </form>
-          </CSSTransition>
-        </Box>
+                <Grid item sx={{ "&:hover": { cursor: "pointer" } }}>
+                  <SignUpDialog />
+                </Grid>
+              </Grid>
+            </Box>
+          </form>
+        </CSSTransition>
       </Box>
+      </Box >
     );
   }
 }
