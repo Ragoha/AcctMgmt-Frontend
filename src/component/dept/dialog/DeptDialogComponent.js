@@ -99,7 +99,7 @@ class DeptDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     await this.props.handleSetDeptdialTextField(this.state.selectedRow);
-    this.setState({ keyword: "" });
+    this.setState({ keyword: "", selectedRow:"" });
   }
 
   //열 클릭처리

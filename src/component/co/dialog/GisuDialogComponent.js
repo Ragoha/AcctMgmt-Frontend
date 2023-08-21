@@ -126,6 +126,7 @@ class GisuDialogComponent extends Component {
       coCd: this.props.user.coCd,
       gisu: data,
     }).then(() => {
+      CustomSwal.showCommonToast("warning", "기수는 삭제 후 등록해주세요.");
       this.initGisu();
     });
   }
