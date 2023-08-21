@@ -276,6 +276,10 @@ class BgtICFComponent extends Component {
     }
   };
 
+  changeBgtCdList = (bgtCdList) => {
+    this.setState({ bgtCdList: bgtCdList });
+  };
+
   handleClickSerachButton = () => {
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
       accessToken: this.props.accessToken,
@@ -408,7 +412,7 @@ class BgtICFComponent extends Component {
     // alert("test");
 
     this.bgtCdListRef.current.setListItem(data);
-  }
+  };
 
   render() {
     const { divTextField, bgtCDTextField } = this.state;
@@ -546,7 +550,12 @@ class BgtICFComponent extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
-              <CustomTextField
+              <ListDisplay
+                bgtCdList={this.state.bgtCdList}
+                changeBgtCdList={this.changeBgtCdList}
+                ref={this.bgtCdListRef}
+              />
+              {/* <CustomTextField
                 name="bgtCDTextField"
                 value={this.state.bgtCDTextField}
                 onChange={this.handleInputChange}
@@ -559,14 +568,10 @@ class BgtICFComponent extends Component {
                     </InputAdornment>
                   ),
                 }}
-              ></CustomTextField>
+              ></CustomTextField> */}
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <ListDisplay
-              bgtCdList={this.state.bgtCdList}
-              ref={this.bgtCdListRef}
-            />
             <SnackBarComponent severity="success" message="저장되었습니다." />
           </Grid>
         </CustomGridContainer>

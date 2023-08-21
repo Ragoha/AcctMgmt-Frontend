@@ -150,12 +150,12 @@ class BgtCDDialogComponent extends Component {
   handleClickConfirm = async () => {
     if (this.state.selectedRows.length == 0) {
       await this.props.handleSetBgtCDTextField(this.state.selectedRow);
-      this.test(this.state.selectedRow);
+      // this.test(this.state.selectedRow);
     } else {
       let sortedSelectedRows = [...this.state.selectedRows];
       sortedSelectedRows.sort((a, b) => a.bgtCd - b.bgtCd);
       await this.props.handleSetBgtCDTextField(sortedSelectedRows);
-      this.test(sortedSelectedRows);
+      // this.test(sortedSelectedRows);
     }
     this.handleDown();
   };
@@ -253,9 +253,9 @@ class BgtCDDialogComponent extends Component {
     }
   };
 
-  test = (data) => {
-    this.props.handleTest(data);
-  }
+  // test = (data) => {
+  //   this.props.handleTest(data);
+  // }
 
   render() {
     const { open, rangeState, bgtGrTextField, rangeTextField, selectedRows } =
