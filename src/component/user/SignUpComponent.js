@@ -72,6 +72,28 @@ class SignUpComponent extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleChange3 = (event) => {
+    const inputValue = event.target.value;
+
+    // 입력 값을 필터링하여 원하는 값 이외의 입력은 무시하지 않고, 그대로 상태에 저장합니다.
+    this.setState({ position: inputValue });
+  };
+
+  handleBlur2 = () => {
+    // const { position } = this.state;
+
+    // // 입력 값이 허용된 값 중 하나인지 확인하고, 그렇지 않다면 기본값으로 설정합니다.
+    // if (
+    //   position !== "사원" &&
+    //   position !== "팀장" &&
+    //   position !== "대리" &&
+    //   position !== "부장" &&
+    //   position !== "과장" &&
+    //   position !== "주임"
+    // ) {
+    //   this.setState({ position: "" }); // 원하는 값 이외의 입력은 무시하고 공백으로 설정
+    // }
+  };
   handleBlur = () => {
     const { error, id } = this.state;
     const isIdValid = validator.matches(id, /^[a-z0-9_-]{2,10}$/);
@@ -181,6 +203,32 @@ class SignUpComponent extends Component {
         });
       });
   };
+  handleEmail = () => {
+    const { email } = this.state;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i; // 이메일 주소 유효성을 검사하는 정규식
+    const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
+
+    if (!emailRegex.test(email)) {
+      // 이메일 주소가 유효하지 않을 경우
+      CustomSwal.showCommonToast("error", "유효하지 않은<br/> 이메일 주소입니다");
+      this.setState({
+        email: "", // 값 비워주기
+      });
+      return; // 함수 종료
+    }
+
+    axios
+      .get(ACCTMGMT_API_BASE_URL + "/emp/email", { params: { email } })
+      .then((response) => {
+        // CustomSwal.showCommonToast("success", "사용가능한 이메일 입니다");
+      })
+      .catch((error) => {
+        CustomSwal.showCommonToast("error", "사용불가 이메일 입니다");
+        this.setState({
+          email: "",
+        });
+      });
+};
 
   validatePassword = (password) => {
     // Add your password validation logic here
@@ -240,6 +288,7 @@ class SignUpComponent extends Component {
                     onBlur={this.handleBlur}
                     disabled={error}
                     error={error}
+                    inputProps={{ maxLength: 20 }}
                     // helperText={errorMessage}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
@@ -289,6 +338,7 @@ class SignUpComponent extends Component {
               <Grid item xs={9}>
                 <Grid container direction="row" alignItems="center">
                   <CustomMediumTextField
+                    inputProps={{ maxLength: 20 }}
                     variant="outlined"
                     color="secondary"
                     name="password"
@@ -395,7 +445,8 @@ class SignUpComponent extends Component {
                   name="email"
                   placeholder="이메일을 입력해주세요"
                   type="email"
-                  value={email}
+                  value={email} // 이메일 상태 값을 입력 필드에 설정
+                  onBlur={this.handleEmail} // 함수 참조만 전달
                   onChange={this.handleChange}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
@@ -437,6 +488,7 @@ class SignUpComponent extends Component {
               <Grid item xs={9}>
                 <Grid container direction="row" alignItems="center">
                   <CustomMediumTextField
+                    onClick={this.helpClick}
                     variant="outlined"
                     color="secondary"
                     name="company"
@@ -475,8 +527,10 @@ class SignUpComponent extends Component {
                   variant="outlined"
                   color="secondary"
                   name="position"
-                  placeholder="직책을 입력해주세요"
-                  onChange={this.handleChange}
+                  placeholder="사원,주임,대리,팀장,과장,부장"
+                  value={this.state.position}
+                  onBlur={this.handleBlur2} // 입력 필드에서 포커스가 벗어날 때 검사합니다.
+                  onChange={this.handleChange3}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {

@@ -3,7 +3,23 @@ import { Cookies } from 'react-cookie';
 class Cookie {
     constructor() {
         this.cookies = new Cookies();
+
     }
+
+    set(key, value, options) {
+        return this.cookies.set(key, value, options);
+    }
+
+    // Cookie에서 특정 키의 값을 가져오기 위한 함수
+    get(key) {
+        return this.cookies.get(key);
+    }
+
+    // Cookie에서 특정 키의 값을 삭제하기 위한 함수
+    remove(key, options) {
+        return this.cookies.remove(key, options);
+    }
+
     //Refresh Token 을 Cookie에 저장하기 위한 함수
     setRefreshToken(refreshToken) {
         const today = new Date();
