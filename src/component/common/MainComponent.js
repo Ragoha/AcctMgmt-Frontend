@@ -18,6 +18,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import MainListItems from "./MainListItems";
 import UserInfo from "./UserInfo";
 import { CustomTextField } from "./style/CommonStyle";
+import Image4 from './back2.jpg';
 
 const drawerWidth = 240;
 
@@ -209,6 +210,12 @@ class MainComponent extends Component {
               pl: open ? 32 : 9,
               pr: 2,
               transition: "padding 0.4s",
+              // width: "100%",
+              // height: "937px",
+              // backgroundImage: `url(${Image4})`,
+              // backgroundSize: "cover",
+              // backgroundRepeat: "no-repeat",
+              // backgroundPosition: "center",
             }}
           >
             <Outlet />

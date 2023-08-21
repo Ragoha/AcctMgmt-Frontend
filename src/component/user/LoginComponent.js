@@ -100,6 +100,7 @@ class LoginComponent extends Component {
             // 받아온 데이터를 가공하여 userData 객체에 설정
             this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
             // this.props.history.push("/acctmgmt/bgt");
+            CustomSwal.showCommonToast("success", "로그인 성공!", "1500");
             this.props.navigate("/acctmgmt/bgt");
           })
           .catch((error) => {
@@ -108,7 +109,8 @@ class LoginComponent extends Component {
       })
       .catch((error) => {
         // alert("아이디 또는 비밀번호가 다릅니다.", error);
-        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를 <br/> 잘못입력하셨습니다.");
+        // CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를 <br/> 잘못입력하셨습니다.");
+        CustomSwal.showCommonSwal("아이디 또는 비밀번호를 <br/>잘못 입력하셨습니다.","", "error");
       });
   };
 

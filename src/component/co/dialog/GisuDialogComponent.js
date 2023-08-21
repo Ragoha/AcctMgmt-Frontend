@@ -182,9 +182,9 @@ class GisuDialogComponent extends Component {
       //       row.id === newRow.id ? updatedRow : row
       //     ),
       //   }));
-      this.updateGisu(updatedRow);
+      // this.updateGisu(updatedRow);
 
-      return updatedRow;
+      return this.state.selectedRow;
     }
   };
 

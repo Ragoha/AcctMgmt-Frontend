@@ -53,7 +53,7 @@ class SignUpComponent extends Component {
   handleChange2 = (e) => {
     const { value } = e.target;
     const isIdValid =
-      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === ""; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
+      validator.matches(value, /^[a-zA-Z0-9]+$/) || value === "" && value.length >= 4; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
     const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value); // 입력된 값에 한글이 포함되어 있는지 확인합니다.
     this.setState({ isIdDuplicated: false });
     this.setState({
@@ -129,10 +129,9 @@ class SignUpComponent extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { id, name, password, email, gender, phone, company, position } =
-      this.state;
+    const { id, name, password, email, gender, phone, company, position } = this.state;
     const signData = {
-      coCd: company,
+      coCd: this.state.CodialTextField,
       empId: id,
       empPw: password,
       empEmail: email,
@@ -141,14 +140,17 @@ class SignUpComponent extends Component {
       empOd: position,
       empAuth: "ROLE_USER",
     };
-
+    console.log("뭐지 왜 안나오징?", signData);
     // 폼 필드의 값이 비어있는지 확인
     if (Object.values(signData).some((value) => value === "")) {
       // alert("모든 필드에 값을 입력해주세요.");
       CustomSwal.showCommonSwal("모든 필드에 값을 입력해주세요", "", "warning");
       return;
     }
-
+    if(this.state.isIdDuplicated === false){
+      CustomSwal.showCommonSwal("아이디 중복확인을 진행해주세요", "", "warning");
+      return;
+    }
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     // 회원가입 API 호출
     axios
@@ -228,7 +230,7 @@ class SignUpComponent extends Component {
           email: "",
         });
       });
-};
+  };
 
   validatePassword = (password) => {
     // Add your password validation logic here
@@ -289,10 +291,9 @@ class SignUpComponent extends Component {
                     disabled={error}
                     error={error}
                     inputProps={{ maxLength: 20 }}
-                    // helperText={errorMessage}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: isIdValid ? "success.main" : "error.main",
+                        borderColor: isIdValid ? "success.main" : error ? "error.main" : undefined,
                       },
                       "& .MuiOutlinedInput-input::placeholder": {
                         fontSize: "12px",
