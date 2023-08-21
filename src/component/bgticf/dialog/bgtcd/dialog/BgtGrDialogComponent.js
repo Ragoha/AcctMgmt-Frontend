@@ -1,15 +1,25 @@
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  Checkbox,
-  Grid,
-  IconButton
-} from "@mui/material";
+import { Button, Checkbox, Grid, IconButton } from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../../../service/BgtICFService";
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogContent, CustomDialogTitle, CustomShortDataGridContainer, CustomShortDialog, CustomShortFormGridContainer } from "../../../../common/style/CommonDialogStyle";
-import { CustomDataGrid, CustomInputLabel, CustomSearchButton, CustomTextField } from "../../../../common/style/CommonStyle";
+import {
+  CustomButtonGridContainer,
+  CustomCloseIcon,
+  CustomConfirmButton,
+  CustomDialogActions,
+  CustomDialogContent,
+  CustomDialogTitle,
+  CustomShortDataGridContainer,
+  CustomShortDialog,
+  CustomShortFormGridContainer,
+} from "../../../../common/style/CommonDialogStyle";
+import {
+  CustomDataGrid,
+  CustomInputLabel,
+  CustomSearchButton,
+  CustomTextField,
+} from "../../../../common/style/CommonStyle";
 
 class BgtGrDialogComponent extends Component {
   constructor(props) {
@@ -45,19 +55,21 @@ class BgtGrDialogComponent extends Component {
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
       keyword: keyword,
-    })
-      .then(async (response) => {
-        const bgtGrRows = response.map((row) => ({
-          id: row.bgtGrCd,
-          bgtGrCd: row.bgtGrCd,
-          bgtGrNm: row.bgtGrNm,
-        }));
+    }).then(async (response) => {
+      const bgtGrRows = response.map((row) => ({
+        id: row.bgtGrCd,
+        bgtGrCd: row.bgtGrCd,
+        bgtGrNm: row.bgtGrNm,
+      }));
 
-        this.setState({ bgtGrRows: bgtGrRows, keyword: keyword });
-      })
-      .then(() => {
-        this.handleUp();
+      this.setState({
+        bgtGrRows: bgtGrRows,
+        keyword: keyword,
+        selectedRow: "",
+        selectedRows: [],
       });
+      this.handleUp();
+    });
   };
 
   handleInputChange = async (e) => {
@@ -67,7 +79,7 @@ class BgtGrDialogComponent extends Component {
 
   handlePressEnter = (e) => {
     if (e.key === "Enter") {
-      this.handleSearchBgtGrIcon();
+      this.handleSearchBgtGr();
     }
   };
 
@@ -87,7 +99,7 @@ class BgtGrDialogComponent extends Component {
     this.handleUp();
   };
 
-  handleSearchBgtGrIcon = () => {
+  handleSearchBgtGr = () => {
     BgtICFService.findBgtGrByCoCdAndKeyword({
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
@@ -98,15 +110,16 @@ class BgtGrDialogComponent extends Component {
         bgtGrCd: row.bgtGrCd,
         bgtGrNm: row.bgtGrNm,
       }));
-      this.setState({ bgtGrRows: bgtGrRows });
+      this.setState({
+        bgtGrRows: bgtGrRows,
+        selectedRow: "",
+        selectedRows: [],
+      });
     });
     this.handleUp();
   };
 
   handleClickConfirm = async () => {
-    
-    console.log(this.state.selectedRows)
-    
     if (this.state.selectedRows.length == 0) {
       await this.props.handleSetBgtCDTextField(this.state.selectedRow);
     } else {
@@ -139,13 +152,11 @@ class BgtGrDialogComponent extends Component {
               selectedRows.length < this.state.bgtGrRows.length
             }
             onClick={(e) => {
-              console.log(e.target.checked);
               if (!e.target.checked) {
                 this.setState({ selectedRows: [] });
               } else {
                 this.setState({ selectedRows: [...this.state.bgtGrRows] });
               }
-              console.log(this.state.selectedRows);
             }}
           />
         ),
@@ -223,7 +234,7 @@ class BgtGrDialogComponent extends Component {
                   onKeyDown={this.handlePressEnter}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon onClick={this.handleSearchBgtGrIcon} />
+                  <SearchIcon onClick={this.handleSearchBgtGr} />
                 </CustomSearchButton>
               </Grid>
             </Grid>
