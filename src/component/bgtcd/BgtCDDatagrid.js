@@ -1,78 +1,89 @@
-
-import { Box } from '@mui/material';
-import { DataGridPro } from '@mui/x-data-grid-pro';
-import React, { Component } from 'react';
-import BgtCDService from '../../service/BgtCDService';
-import { connect } from 'react-redux';
+import { Box } from "@mui/material";
+import { DataGridPro } from "@mui/x-data-grid-pro";
+import React, { Component } from "react";
+import BgtCDService from "../../service/BgtCDService";
+import { connect } from "react-redux";
 import { GridRowModes, GridRowEditStopReasons } from "@mui/x-data-grid-pro";
-import SnackBarComponent from '../common/SnackBarComponent';
+import SnackBarComponent from "../common/SnackBarComponent";
 class BgtCDDatagrid extends Component {
+  constructor(props) {
+    super(props);
+    this.snackBarRef = React.createRef();
+    this.state = {
+      columns: [
+        //{ field: 'defNm', headerName: '분류명', width: 100 },
+        {
+          field: "bgtCd",
+          headerName: "예산코드",
+          width: 300,
+          headerAlign: "center",
+          align: "center",
+        },
+        {
+          field: "bgtNm",
+          headerName: "예산과목명",
+          width: 250,
+          headerAlign: "center",
+          align: "center",
+        },
+      ],
+      rows: [],
+      tRows: [],
+      dataPath: "초기값그대로야~ 다시 뽑아 ~",
+      rowModesModel: {},
+      bgtCd: null,
+      isNew: false,
+    };
+  }
+  //[230810] 업데이트 끝내고 isNew 값 바꿔야함
+  // changeIsNew = () => {
+  //     console.log('changeIsNew에 도착했음')
 
-    constructor(props) {
-        super(props);
-        this.snackBarRef = React.createRef();
-        this.state = {
-            columns: [
-              //{ field: 'defNm', headerName: '분류명', width: 100 },
-              { field: 'bgtCd', headerName: '예산코드', width: 300, headerAlign: 'center',align:'center', },
-              { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center',align:'center', },
-            ],
-            rows: [],
-            tRows: [],
-            dataPath: '초기값그대로야~ 다시 뽑아 ~',
-            rowModesModel: {},
-            bgtCd: null,
-            isNew: false,
-          
-        }
-    }
-    //[230810] 업데이트 끝내고 isNew 값 바꿔야함
-    // changeIsNew = () => {
-    //     console.log('changeIsNew에 도착했음')
-
-    // }
-    processRowUpdate = (newRow) => {
-        console.log('================processRowUpdate입니다===============')
-        const { coCd } = this.props.userInfo;
-        const { accessToken } = this.props;
-        const gisu = this.props.gisuDefaultValue;
-        const keyword = this.props.keyword;
-        const groupCd = this.props.groupCd;
-        const tRows =[];
-        console.log('data--')
-        console.log("gisu: " +gisu +"/keyword : "+ keyword + "/groupCd :" +groupCd);
-        if (newRow.isNew === true) {
-            const data = {
-                divFg: newRow.divFg,
-                bgtNm: newRow.bgtNm,
-                bgtCd: newRow.bgtCd,
-                dataPath: newRow.dataPath,
-                parentCd: newRow.parentCd
-            }
-            this.props.insertAddRow(data);
-            const updatedRow = { ...newRow, isNew: false };
-            this.setState((prevState) => ({
-                rows: prevState.rows.map((row) =>
-                    row.divFg === newRow.divFg ? updatedRow : row
-                ),
-            }), () => console.log(this.state.rows));
-            return updatedRow;
-        } else {
-            const data = {
-                bgtCd: newRow.bgtCd,
-                bgtNm: newRow.bgtNm,
-                coCd: coCd
-            }
-            BgtCDService.updateBgtNm(data, accessToken);
-            this.snackBarRef.current.handleUp("success" , "수정 완료")
-           
-          return newRow;
-        }
-
+  // }
+  processRowUpdate = (newRow) => {
+    console.log("================processRowUpdate입니다===============");
+    const { coCd } = this.props.userInfo;
+    const { accessToken } = this.props;
+    const gisu = this.props.gisuDefaultValue;
+    const keyword = this.props.keyword;
+    const groupCd = this.props.groupCd;
+    const tRows = [];
+    console.log("data--");
+    console.log(
+      "gisu: " + gisu + "/keyword : " + keyword + "/groupCd :" + groupCd
+    );
+    if (newRow.isNew === true) {
+      const data = {
+        divFg: newRow.divFg,
+        bgtNm: newRow.bgtNm,
+        bgtCd: newRow.bgtCd,
+        dataPath: newRow.dataPath,
+        parentCd: newRow.parentCd,
+      };
+      this.props.insertAddRow(data);
+      const updatedRow = { ...newRow, isNew: false };
+      this.setState(
+        (prevState) => ({
+          rows: prevState.rows.map((row) =>
+            row.divFg === newRow.divFg ? updatedRow : row
+          ),
+        }),
+        () => console.log(this.state.rows)
+      );
+      return updatedRow;
+    } else {
+      const data = {
+        bgtCd: newRow.bgtCd,
+        bgtNm: newRow.bgtNm,
+        coCd: coCd,
+      };
+      BgtCDService.updateBgtNm(data, accessToken);
+      this.snackBarRef.current.handleUp("success", "수정 완료");
 
       return newRow;
     }
   };
+
   clickedRow = (params) => {
     //데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
     console.log("clickedRowwww");
@@ -164,7 +175,7 @@ class BgtCDDatagrid extends Component {
           getRowClassName={(params) =>
             `style-divfg-${params.row.divFg}${params.row.isNew ? "-new" : ""}`
           }
-          editMode="row" //row 단위로 편집 모양 잡힘
+          editMode="cell" //row 단위로 편집 모양 잡힘
           headerAlign="center"
           groupingColDef={{
             headerName: "분류명",
