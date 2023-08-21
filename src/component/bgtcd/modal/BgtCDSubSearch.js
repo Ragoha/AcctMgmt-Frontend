@@ -28,7 +28,8 @@ class BgtCDSubSearch extends Component {
   initBgtCDDialog=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
-    BgtCDService.getBgtCDdialog(coCd,accessToken).then(
+    const keyword = null;
+    BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
         (response)=>{
             this.setState({rows:response})
         })
@@ -42,7 +43,30 @@ class BgtCDSubSearch extends Component {
     this.setState({keyword:data.keyword})
     this.handleUp();
   }
-
+  handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    await this.setState({ [name]: value });
+    console.log(this.state);
+  }
+  handlePressEnter=(params)=>{
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    const keyword = this.state.keyword;
+    if (params.code === "Enter") {
+      console.log('엔터야 ')
+      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+        (response)=>{this.setState({rows:response})}
+      )
+    }
+  }
+  searchIconClick=()=>{
+    const{coCd} = this.props.userInfo;
+    const{accessToken} = this.props;
+    const keyword = this.state.keyword;
+      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+        (response)=>{this.setState({rows:response})}
+      )
+  }
 
   handleClickRow=(params)=>{
     const text = (params.row.bgtCd+"."+params.row.bgtNm)
@@ -69,7 +93,7 @@ class BgtCDSubSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산코드검색
+          예산코드검색 
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -93,12 +117,12 @@ class BgtCDSubSearch extends Component {
                   id="keyword"
                   name="keyword"
                   value={this.state.keyword}
-                //   onChange={this.handleInputChange}
+                  onChange={this.handleInputChange}
                   variant="outlined"
-                //   onKeyDown={this.handlePressEnter}
+                  onKeyDown={this.handlePressEnter}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
-                  <SearchIcon />
+                  <SearchIcon onClick = {this.searchIconClick}/>
                 </CustomSearchButton>
               </Grid>
             </Grid>
