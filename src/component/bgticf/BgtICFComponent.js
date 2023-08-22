@@ -564,7 +564,7 @@ class BgtICFComponent extends Component {
           <Grid item xs={3}>
             <DataGrid
               sx={{
-                height: "calc(100vh - 292px)",
+                height: "calc(100vh - 296px)",
                 "& .MuiDataGrid-columnHeaderTitle": {
                   fontWeight: "bold",
                 },

@@ -637,7 +637,7 @@ class DataGridComponent extends Component {
             NoRowsOverlay: () => "",
           }}
           sx={{
-            height: "calc(100vh - 362px)",
+            height: "calc(100vh - 367px)",
             borderTop: "3px solid black",
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",

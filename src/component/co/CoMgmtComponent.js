@@ -887,19 +887,22 @@ class CoMgmtComponent extends Component {
                     <InputAdornment position="end">
                       <SearchIcon onClick={this.subHelpClick} />
                     </InputAdornment>
-                  )
+                  ),
                 }}
               ></CustomTextField>
 
               <CustomSearchButton
                 variant="outlined"
-                onClick={!this.state.CodialTextField ? this.reClick : this.helpClick}
+                onClick={
+                  !this.state.CodialTextField ? this.reClick : this.helpClick
+                }
                 sx={{
                   minWidth: "5px",
                   position: "absolute",
                   // top: "7px",
                   left: "1810px",
-                }}>
+                }}
+              >
                 <SearchIcon fontSize="medium" />
               </CustomSearchButton>
             </Grid>
@@ -911,7 +914,7 @@ class CoMgmtComponent extends Component {
             container
             sx={{
               width: "25%",
-              height: 670,
+              height: "calc(100vh - 313px)",
               border: "1px solid #EAEAEA",
               backgroundColor: "#FCFCFC",
             }}
@@ -968,6 +971,7 @@ class CoMgmtComponent extends Component {
                   width: "100%",
                   height: "60px",
                   backgroundColor: "white",
+                  marginTop: 1,
                   color: "#5D5D5D",
                   display: "flex",
                   justifyContent: "center",
@@ -976,7 +980,7 @@ class CoMgmtComponent extends Component {
                   },
                 }}
               >
-                <AddIcon sx={{ mb: 0.2, fontSize: "medium", color: "blue" }} />
+                <AddIcon sx={{fontSize: "medium", color: "blue" }} />
                 추가
               </Button>
             </Grid>
@@ -1191,10 +1195,10 @@ class CoMgmtComponent extends Component {
                     inputComponent: InputMask,
                     inputProps: {
                       mask: "999-99-99999",
-                      maskChar: "0"
-                    }
-                  }}>
-                </CustomWideTextField>
+                      maskChar: "0",
+                    },
+                  }}
+                ></CustomWideTextField>
               </Grid>
               <Grid
                 item
@@ -1306,7 +1310,7 @@ class CoMgmtComponent extends Component {
                     ),
                   }}
                 ></CustomDatePrToTextField>
-              
+
                 <Button
                   size="medium"
                   sx={{ ml: 1 }}
