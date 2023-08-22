@@ -89,6 +89,7 @@ class BgtCdBgtGrAutocomplete extends Component {
   };
 
   handleSetBgtGrTextField = (dataList) => {
+    console.log("=================")
     console.log(dataList);
     const bgtGrTextList = dataList.map(
       (data) => data.bgtGrCd + ". " + data.bgtGrNm
