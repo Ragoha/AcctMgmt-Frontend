@@ -25,9 +25,9 @@ class PgrService {
             .post(
                 ACCTMGMT_API_BASE_URL + "/pgr",
                 {
-                    coCd: data.Pgr.coCd,
-                    pgrCd: data.Pgr.pgrCd,
-                    pgrNm: data.Pgr.pgrNm,
+                    coCd: data.pgr.coCd,
+                    pgrCd: data.pgr.pgrCd,
+                    pgrNm: data.pgr.pgrNm,
                 },
                 {
                     headers: {

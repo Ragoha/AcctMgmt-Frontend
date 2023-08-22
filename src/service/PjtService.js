@@ -5,61 +5,97 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class PjtService {
  
-  getPjtList(coCd) {
-
+  getPjtList(data) {
+    console.log("accesstoken : ", data.accessToken);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/" + coCd, {
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/" + data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
       })
   }
 
-  getSelPjtList(pjtCd, coCd) {
+  getSelPjtList(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd + "/" + coCd, {
+      .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + data.pjtCd + "/" + data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
       })
   }
 
-  updatePjt(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + coCd, Pjt);
+  updatePjt(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + data.coCd, data.Pjt,{
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
 
-  insertPjt(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/insert/" + coCd, Pjt);
+  insertPjt(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/insert/" + data.coCd, data.Pjt,{
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
 
-  deletePjt(Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/", Pjt);
+  deletePjt(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/", data.Pjt,{
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
 
-  getPjtBy(keyword, coCd) {
+  getPjtBy(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + coCd, {
+      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
         params: {
-          keyword: keyword
+          keyword: data.keyword
         },
       })
       .then((response) => response.data);
   }
 
-  getPgrBy(keyword, coCd) {
+  getPgrBy(data) {
     return axios
-    .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch/" + coCd, {
+    .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch/" + data.coCd, {
+      headers: {
+        "access-token": data.accessToken,
+      },
       params: {
-          keyword: keyword
+          keyword: data.keyword
         },
       })
       .then((response) => response.data);
   }
 
-  selPjtBy(selData) {
+  selPjtBy(data) {
     return axios
-      .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", selData)
+      .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", data.selData,{
+        headers: {
+          "access-token": data.accessToken,
+        },
+      })
   }
 
-  duplication(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/duplication/" + coCd, Pjt);
+  duplication(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/duplication/" + data.coCd, data.Pjt,{
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
   getGroupPjt(data){
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/groupSel/", data);
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/groupSel/", data.data,{
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
 }
 

@@ -18,7 +18,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import MainListItems from "./MainListItems";
 import UserInfo from "./UserInfo";
 import { CustomTextField } from "./style/CommonStyle";
-import Image4 from "./back2.jpg";
 import SearchComponent from "./SearchComponent";
 
 const drawerWidth = 240;
