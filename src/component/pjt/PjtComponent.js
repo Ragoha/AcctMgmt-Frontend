@@ -70,9 +70,9 @@ class PjtComponent extends Component {
         if (confirmed) {
           this.handleFix();
         }
-        else{
+        else {
           this.setState({
-            isChanged : false,
+            isChanged: false,
           });
           this.cardClick();
           return;
@@ -209,7 +209,7 @@ class PjtComponent extends Component {
           startDt: startDt,
         }
       }
-      else if(prDt != 'Invalid Date' && startDt == 'Invalid Date'){
+      else if (prDt != 'Invalid Date' && startDt == 'Invalid Date') {
         Pjt = {
           coCd: coCd,
           pgrCd: pgrCd,
@@ -223,7 +223,7 @@ class PjtComponent extends Component {
           toDt: toDt,
         }
       }
-      else if(prDt == 'Invalid Date' && startDt != 'Invalid Date'){
+      else if (prDt == 'Invalid Date' && startDt != 'Invalid Date') {
         Pjt = {
           coCd: coCd,
           pgrCd: pgrCd,
@@ -396,7 +396,8 @@ class PjtComponent extends Component {
               this.setState((prevState) => ({
                 cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
                 selectAllChecked: false,
-                isChanged: false,
+                isChangTed: false,
+                isPjtCdEditable:false,
                 pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd),
                 pjtCd: '',
                 pgrCd: '',
@@ -452,6 +453,7 @@ class PjtComponent extends Component {
           cardCount: cardCount - selectedCards.length,
           selectedCards: [],
           selectedCount: 0,
+          isPjtCdEditable:false,
           selectAllChecked: false,
           isChanged: false,
           pjtCd: '',
@@ -606,6 +608,10 @@ class PjtComponent extends Component {
   pjthelpClick = () => {
     this.pjtDialogRef.current.handleUp();
     this.pjtDialogRef.current.setPjtKeyword(this.state.PjtdialTextField);
+  };
+
+  pjthelpClickNotData = () => {
+    this.pjtDialogRef.current.handleUp();
   };
 
   pgrhelpClick = () => {
@@ -783,13 +789,19 @@ class PjtComponent extends Component {
     }
     if (e.key === 'Backspace') {
       // 백스페이스 키를 눌렀고 텍스트 필드가 비어 있을 때
-      this.setState({ PjtdialTextField: '' });
+      this.setState({
+        PjtdialTextField: '',
+        pjtTextFieldData: '',
+      });
     }
   };
   handleClearKey = (e) => {
     if (e.key === 'Backspace') {
       // 백스페이스 키를 눌렀고 텍스트 필드가 비어 있을 때
-      this.setState({ PgrdialTextField: '' });
+      this.setState({ 
+        PgrdialTextField: '' ,
+        pgrTextFieldData: '',
+      });
     }
   };
   getGroupPjtData = async (data) => {
@@ -854,7 +866,7 @@ class PjtComponent extends Component {
     if (date === "Invalid Date") {
       date = null;
     }
-    // console.log("짂히나?",pgrTextFieldData.pgrCd)
+    // console.log("짂히나?",pjtTextFieldData.pjtCd)
     if (pjtTextFieldData != null && pgrTextFieldData == null) {
       const data = {
         coCd: coCd,
@@ -1018,7 +1030,7 @@ class PjtComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.pjthelpClick} />
+                      <SearchIcon onClick={this.pjthelpClickNotData} />
                     </InputAdornment>
                   ),
                 }}
