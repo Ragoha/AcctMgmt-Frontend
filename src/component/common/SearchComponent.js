@@ -4,7 +4,7 @@ import { Stack } from "@mui/system";
 import React, { Component } from "react";
 import { useNavigate } from "react-router-dom";
 
-class HomeComponent extends Component {
+class SearchComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,38 +18,32 @@ class HomeComponent extends Component {
         { title: "[시스템] 시스템환경설정", link: "acctmgmt/syscfg" },
       ],
       searchState: false,
+      inputValue: "",
     };
   }
 
   handleOptionSelect = (event, value) => {
-    
-    console.log(value.length)
-
     const menuList = this.state.menuList.map((menu) => {
       if (menu.title === value) {
         console.log(menu.link);
+        this.setState({ inputValue: "", searchState: false });
         this.props.navigate("/" + menu.link);
       }
-    })
+    });
   };
 
   render() {
     const { menuList } = this.state;
 
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "calc(100vh - 80px)", // 뷰포트 높이만큼 화면을 차지하도록 설정
-        }}
-      >
-        <Stack spacing={2} sx={{ width: 500 }}>
+      <>
+        <Stack spacing={2} sx={{ width: 200 }}>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
             open={this.state.searchState}
+            value={this.state.inputValue}
+            inputValue={this.state.inputValue}
             options={menuList.map((option) => option.title)}
             renderInput={(params) => (
               <TextField
@@ -57,36 +51,49 @@ class HomeComponent extends Component {
                 label=""
                 InputProps={{
                   ...params.InputProps,
+                  disableUnderline: true,
                   endAdornment: (
                     <SearchIcon sx={{ fontSize: "30px" }} color="action" />
                   ),
                 }}
                 onChange={(e) => {
-                  console.log(e.target.value.length);
                   if (e.target.value.length > 0) {
-                    this.setState({ searchState: true });
+                    this.setState({
+                      searchState: true,
+                      inputValue: e.target.value,
+                    });
                   } else {
-                    this.setState({ searchState: false });
+                    this.setState({
+                      searchState: false,
+                      inputValue: e.target.value,
+                    });
                   }
                 }}
-                sx={{ fontSize: "32px" }}
+                onBlur={() => {
+                  this.setState({inputValue: "", searchState:false})
+                }}
+                sx={{ fontSize: "14px" }}
               />
             )}
             onChange={this.handleOptionSelect}
             openOnFocus={true}
             sx={{
               "& .MuiInputBase-root": {
+                paddingTop: "4px !important",
                 paddingLeft: "15px !important",
                 paddingRight: "20px !important",
                 borderRadius: "90px",
+                background: "white",
+                height: "40px",
               },
               "& .MuiInputBase-input": {
-                fontSize: "20px",
+                fontSize: "14px",
               },
             }}
+            
           />
         </Stack>
-      </div>
+      </>
     );
   }
 }
@@ -98,4 +105,4 @@ function withNavigation(Component) {
   };
 }
 
-export default withNavigation(HomeComponent);
+export default withNavigation(SearchComponent);
