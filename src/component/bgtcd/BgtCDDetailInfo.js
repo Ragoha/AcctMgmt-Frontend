@@ -122,12 +122,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     const gisu = this.props.gisu;
     const keyword = this.props.keyword;
     const groupCd = this.props.groupCd;
-    console.log("로스트아크화이팅")
-    console.log(gisu)
-    console.log(groupCd)
-    console.log(keyword)
-    console.log('tBgtCd : ?' +tBgtCd );
-    this.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+    this.showCommonSwalYn("삭 제", "삭제하시겠습니까?", "info", "삭 제", (confirmed) => {
       if (confirmed) {
         if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
           console.log('tBgtCd :  ? ' + tBgtCd)
@@ -215,7 +210,8 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: yesButtonText
+      confirmButtonText: yesButtonText,
+      cancelButtonText: "취 소"
     }).then((result) => {
       if (result.isConfirmed) {
         callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
@@ -270,7 +266,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               <Grid item xs={8}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                  disabled={true}
+                    disabled={true}
                     name="date"
                     format="YYYY-MM-DD"
                     value={dayjs(toDt)}
@@ -312,11 +308,6 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               menuItemValues={menuItemValues[3]}
               ref={(ref) => (this.bizFgControl = ref)}
             />
-            <Select sx={{width:"300px"}}
-              Value={"영차"}
-            >
-
-            </Select>
           </Grid>
         </Grid>
         <Grid

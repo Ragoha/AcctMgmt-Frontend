@@ -17,6 +17,7 @@ import {
   CustomShortDataGridContainer,
   CustomShortDialog,
 } from "../../common/style/CommonDialogStyle";
+// import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 class BgtCDADDSubDialog extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +26,7 @@ class BgtCDADDSubDialog extends Component {
       columns: [
         {
           field: "bgtGrCd",
-          headerName: "예산과목그룹코드",
+          headerName: "예산과목그룹코드aa",
           flex: 1,
           headerAlign: "center",
           editable: true,
@@ -69,23 +70,14 @@ class BgtCDADDSubDialog extends Component {
   };
   processRowUpdate = (newRow) => {
     console.log(newRow);
-
     if (newRow.isNew) {
       if (newRow.bgtGrCd !== "" && newRow.bgtGrNm !== "") {
         console.log("저장");
         this.insertBgtGr(newRow);
       }
-
-      // this.setState((prevState) => ({
-      //   rows: prevState.rows.map((row) =>
-      //     row.id === newRow.id ? newRow : row
-      //   ),
-      // }));
-
       return newRow;
-    } else {
+    } else { //[230822] From Developer --start
       console.log("수정");
-
       const updatedRow = {
         ...newRow,
         isNew: false,
@@ -98,12 +90,19 @@ class BgtCDADDSubDialog extends Component {
       CustomSwal.showCommonToast("warning", "예산과목은 수정이 불가능합니다.");
       return this.state.selectedRow;
     }
+    //[230822] From Developer --end
   };
   insertBgtGr = (data) => {
+    // 
+    // const gisu = this.props.gisu
+    console.log("기수확인해보기야dddddddd: " + this.props.gisu)
     BgtGrService.insertBgtGr({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
+      insertId:this.props.user.empId,
       bgtGr: data,
+      gisu : this.props.gisu
+    
     }).then(() => {
       this.initBgtGr();
     });
@@ -203,7 +202,6 @@ class BgtCDADDSubDialog extends Component {
             >
               확인
             </CustomConfirmButton>
-
             <Button
               variant="outlined"
               onClick={() => this.setState({ open: false })}

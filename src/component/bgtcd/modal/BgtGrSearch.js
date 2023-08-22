@@ -100,7 +100,7 @@ class BgtGrSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산그룹조회afadfasdf
+          예산그룹조회
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>

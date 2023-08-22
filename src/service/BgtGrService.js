@@ -19,13 +19,19 @@ class BgtGrService {
   }
 
   insertBgtGr(data) {
+    console.log("여기아님?:")
+    console.log(data)
+    console.dir(data)
+    console.log('뚜 우 따 따 띠 띠 띠 띠 ')
     return axios
       .post(
         ACCTMGMT_API_BASE_URL + "/bgtgr",
         {
           coCd: data.coCd,
+          insertId:data.insertId,
           bgtGrCd: data.bgtGr.bgtGrCd,
           bgtGrNm: data.bgtGr.bgtGrNm,
+          gisu : data.gisu,
         },
         {
           headers: {
