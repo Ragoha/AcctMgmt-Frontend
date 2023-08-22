@@ -6,6 +6,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtCDService from "../../../service/BgtCDService";
 import BgtGrService from "../../../service/BgtGrService";
+import CustomSwal from '../../common/CustomSwal.js';
 import {
   CustomButtonGridContainer,
   CustomCloseIcon,
@@ -94,6 +95,7 @@ class BgtCDADDSubDialog extends Component {
         this.updateBgtGr(updatedRow);
         return updatedRow;
       }
+      CustomSwal.showCommonToast("warning", "예산과목은 수정이 불가능합니다.");
       return this.state.selectedRow;
     }
   };
@@ -118,13 +120,18 @@ class BgtCDADDSubDialog extends Component {
 
   deleteBgtGr = () => {
     console.log(this.state.selectedRow);
-    BgtGrService.deleteBgtGr({
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-      bgtGrCd: this.state.selectedRow.bgtGrCd,
-    }).then(() => {
-      this.initBgtGr();
-    });
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+      if (confirmed) {
+        BgtGrService.deleteBgtGr({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
+          bgtGrCd: this.state.selectedRow.bgtGrCd,
+        }).then(() => {
+          CustomSwal.showCommonToast("success", "삭제되었습니다.");
+          this.initBgtGr();
+        });
+      }
+    })
   };
 
   handleClickRow = (params) => {

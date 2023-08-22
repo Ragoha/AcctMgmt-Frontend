@@ -44,10 +44,9 @@ export const CustomDataGrid = styled(DataGrid)({
   "& .MuiDataGrid-columnHeader:last-child": {
     borderRight: "none",
   },
-  "& .MuiDataGrid-row .MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-cell--withRightBorder.MuiDataGrid-withBorderColor + .MuiDataGrid-cell":
-    {
-      borderRight: "none",
-    },
+  "& .MuiDataGrid-row .MuiDataGrid-cell:nth-last-child(2)": {
+    borderRight: "none",
+  },
 });
 
 export const CustomTextField = styled(TextField)({

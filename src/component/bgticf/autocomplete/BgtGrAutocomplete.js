@@ -5,49 +5,50 @@ import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import React, { Component, createRef } from "react";
-import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
+import BgtCDDialogComponent from "../dialog/BgtCDDialogComponent";
 import { connect } from "react-redux";
+import BgtGrDialogComponent from "../dialog/BgtGrDialogComponent";
 
-class ListDisplay extends Component {
+class BgtGrAutocomplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputValue: "",
       listItems: [],
       isDeleteIconVisible: false,
-      bgtCDTextField: "",
-      bgtCd: "",
-      bgtCdList: [],
-      bgtNm: "",
+      bgtGrTextField: "",
+      bgtGrCd: "",
+      bgtGrCdList: [],
+      bgtGrNm: "",
     };
 
-    this.bgtCdRef = createRef();
+    this.bgtGrRef = createRef();
   }
 
   setListItem = (data) => {
     console.log(data);
-    const listItems = data.map((item) => item.bgtCd + ". " + item.bgtNm);
-    let bgtCDTextField;
+    const listItems = data.map((item) => item.bgtGrCd + ". " + item.bgtGrNm);
+    let bgtGrTextField;
     if (listItems.length > 1) {
-      bgtCDTextField = listItems[0] + " 외 " + (listItems.length - 1) + "건";
+      bgtGrTextField = listItems[0] + " 외 " + (listItems.length - 1) + "건";
     } else {
-      bgtCDTextField = listItems[0];
+      bgtGrTextField = listItems[0];
     }
     console.log(listItems);
     this.setState({
       listItems: listItems,
-      bgtCDTextField: bgtCDTextField,
+      bgtGrTextField: bgtGrTextField,
     });
   };
 
   handleRemove = async (index) => {
     await this.setState((prevState) => ({
       listItems: prevState.listItems.filter((item, i) => i !== index),
-      bgtCdList: prevState.bgtCdList.filter((item, i) => i !== index)
+      bgtGrCdList: prevState.bgtGrCdList.filter((item, i) => i !== index),
     }));
     if (this.state.listItems.length > 1) {
       await this.setState({
-        bgtCDTextField:
+        bgtGrTextField:
           this.state.listItems[0] +
           " 외 " +
           (this.state.listItems.length - 1) +
@@ -55,15 +56,15 @@ class ListDisplay extends Component {
       });
     } else if (this.state.listItems.length == 1) {
       await this.setState({
-        bgtCDTextField: this.state.listItems[0],
+        bgtGrTextField: this.state.listItems[0],
       });
     } else {
       await this.setState({
-        bgtCDTextField: "",
+        bgtGrTextField: "",
       });
     }
 
-    this.props.changeBgtCdList(this.state.bgtCdList);
+    this.props.changeBgtGrList(this.state.bgtGrCdList);
   };
 
   handleAutocompleteChange = (event, value) => {
@@ -83,71 +84,67 @@ class ListDisplay extends Component {
   };
 
   handleClickSearch = () => {
-    console.log(this.bgtCdRef);
-    this.bgtCdRef.current.setBgtCDDialog();
+    console.log(this.bgtGrRef);
+    // this.bgtGrRef.current.setBgtCDDialog();
+    this.bgtGrRef.current.setBgtGrDialog();
   };
 
-  handleSetBgtCDTextField = (dataList) => {
+  handleSetBgtGrTextField = (dataList) => {
     console.log(dataList);
-    const bgtCDTextList = dataList.map(
-      (data) => data.bgtCd + ". " + data.bgtNm
+    const bgtGrTextList = dataList.map(
+      (data) => data.bgtGrCd + ". " + data.bgtGrNm
     );
-    const bgtCdList = dataList.map((data) => data.bgtCd);
-    let bgtCDTextField;
-    if (bgtCDTextList.length > 1) {
-      bgtCDTextField =
-        bgtCDTextList[0] + " 외 " + (bgtCDTextList.length - 1) + "건";
+    const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+    let bgtGrTextField;
+    if (bgtGrTextList.length > 1) {
+      bgtGrTextField =
+        bgtGrTextList[0] + " 외 " + (bgtGrTextList.length - 1) + "건";
     } else {
-      bgtCDTextField = bgtCDTextList[0];
+      bgtGrTextField = bgtGrTextList[0];
     }
 
     this.setState({
-      bgtCdList: bgtCdList,
-      listItems: bgtCDTextList,
-      bgtCDTextField: bgtCDTextField,
+      bgtGrCdList: bgtGrCdList,
+      listItems: bgtGrTextList,
+      bgtGrTextField: bgtGrTextField,
     });
 
-    this.props.changeBgtCdList(bgtCdList);
+    this.props.changeBgtGrList(bgtGrCdList);
+  };
 
-    // if (dataList.length > 0) {
-    //   console.log(dataList);
-    //   console.log("asdf");
-    //   const concatenatedText = dataList
-    //     .map((data) => data.bgtCd + ". " + data.bgtNm)
-    //     .join(", ");
+  handleKeyDownBgtCd = (e) => {
+    console.log(this.state);
+    console.log(e.key);
+    if (e.key === "Backspace") {
+      this.setState({
+        bgtGrTextField: "",
+        bgtGrCd: "",
+        bgtGrRows: [],
+        listItems: [],
+        bgtGrCdList: [],
+      });
+      this.props.resetBgtGr();
+    } else if (e.key === "Enter") {
+      this.bgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
+    }
+  };
 
-    //   const bgtCdList = dataList.map((data) => data.bgtCd);
-
-    //   this.setState({
-    //     bgtCDTextField: concatenatedText,
-    //     bgtCdList: bgtCdList,
-    //   });
-    // } else {
-    //   if (dataList.bgtCd && dataList.bgtNm) {
-    //     this.setState({
-    //       bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-    //       bgtCd: dataList.bgtCd,
-    //       bgtNm: dataList.bgtNm,
-    //     });
-    //   } else {
-    //     this.setState({
-    //       bgtCDTextField: "",
-    //       bgtCd: "",
-    //       bgtNm: "",
-    //     });
-    //   }
-    // }
+  handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    await this.setState({ [name]: value });
+    console.log(this.state);
   };
 
   render() {
-    const { bgtCDTextField, listItems, isDeleteIconVisible } = this.state;
+    const { bgtGrTextField, listItems, isDeleteIconVisible } = this.state;
     return (
       <>
         <Autocomplete
           tfStyle
           freeSolo
           options={listItems}
-          value={bgtCDTextField}
+          value={bgtGrTextField}
+          inputValue={bgtGrTextField}
           size=""
           disableClearable
           clearIcon={
@@ -161,12 +158,13 @@ class ListDisplay extends Component {
               />
             </>
           }
-          // onChange={this.handleAutocompleteChange}
           renderInput={(params) => (
             <TextField
-              onFocus={this.handleMouseEnter} // 이 줄을 추가하세요
-              onBlur={this.handleMouseLeave} // 이 줄을 추가하세요
-              placeholder="예산과목코드/예산과목명"
+              onFocus={this.handleMouseEnter}
+              onBlur={this.handleMouseLeave}
+              placeholder="예산그룹코드/예산그룹명"
+              name="bgtGrTextField"
+              onChange={this.handleInputChange}
               sx={{
                 width: 255,
                 "& .MuiInputBase-root": {
@@ -177,14 +175,7 @@ class ListDisplay extends Component {
                   paddingBottom: 0,
                 },
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace") {
-                  console.log(`Pressed keyCode ${e.key}`);
-                  this.setState({ listItems: [], inputValue: "" });
-                } else if (e.key === "Enter") {
-                  alert("Asdzzzzf")
-                }
-              }}
+              onKeyDown={this.handleKeyDownBgtCd}
               {...params}
               InputProps={{
                 ...params.InputProps,
@@ -192,7 +183,12 @@ class ListDisplay extends Component {
                   <InputAdornment position="end">
                     <DeleteIcon
                       onClick={() => {
-                        alert("asdf");
+                        this.setState({
+                          bgtGrTextField: "",
+                          listItems: [],
+                          bgtGrCdList: [],
+                        });
+                        this.props.resetBgtGr();
                       }}
                       style={{ cursor: "pointer" }}
                       sx={{
@@ -228,9 +224,9 @@ class ListDisplay extends Component {
             </li>
           )}
         />
-        <BgtCDDialogComponent
-          handleSetBgtCDTextField={this.handleSetBgtCDTextField}
-          ref={this.bgtCdRef}
+        <BgtGrDialogComponent
+          handleSetBgtGrTextField={this.handleSetBgtGrTextField}
+          ref={this.bgtGrRef}
         />
       </>
     );
@@ -243,5 +239,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  ListDisplay
+  BgtGrAutocomplete
 );

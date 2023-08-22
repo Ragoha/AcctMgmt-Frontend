@@ -12,7 +12,7 @@ import Select from '@mui/material/Select';
 import InputMask from "react-input-mask";
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 
 
 import CompanyService from '../../service/CompanyService';
@@ -108,7 +108,8 @@ class DivMgmtComponent extends Component {
           divAddr: divAddr,
           divAddr1: divAddr1,
           insertDt: insertDt,
-          DivdialTextField: ''
+          DivdialTextField: '',
+          isChanged: false
         })
         CompanyService.getCompany({
           accessToken: this.props.accessToken,
@@ -502,7 +503,18 @@ class DivMgmtComponent extends Component {
     if (this.state.isChanged) {
       CustomSwal.showCommonSwalYn("저장", "수정중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
         if (confirmed) {
-          this.updateDivs();}
+          if (this.state.insertDt) {
+            this.updateDivs();
+          }
+          else {
+            this.insertDivs();
+          }
+        }
+        // else {
+        //   this.setState({
+        //     isChanged: false
+        //   })
+        // }
       })
     }
     else {
@@ -585,6 +597,10 @@ class DivMgmtComponent extends Component {
   helpClick = () => {
     this.divDialogRef.current.handleUp();
     this.divDialogRef.current.setDivKeyword(this.state.DivdialTextField);
+  };
+
+  subHelpClick = () => {
+    this.divDialogRef.current.handleUp();
   };
 
 
@@ -844,7 +860,8 @@ class DivMgmtComponent extends Component {
                           divAddr: divAddr,
                           divAddr1: divAddr1,
                           insertDt: insertDt,
-                          DivdialTextField: ''
+                          DivdialTextField: '',
+                          isChanged: false
                         })
                         CompanyService.getCompany({
                           accessToken: this.props.accessToken,
@@ -878,7 +895,8 @@ class DivMgmtComponent extends Component {
                           divAddr: '',
                           divAddr1: '',
                           insertDt: '',
-                          DivdialTextField: ''
+                          DivdialTextField: '',
+                          isChanged: false
                         })
                       });
                   }).catch((error) => {
@@ -928,7 +946,7 @@ class DivMgmtComponent extends Component {
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
     const cards = divCdList.map((divCd, index) => (
-      <Card key={index} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '1px solid rgba(49, 98, 240, 0.9)' : '1px solid #D5D5D5', backgroundColor: this.state.focused === divCd ? 'rgba(160, 210, 255, 0.2)' : 'white'}}>
+      <Card key={index} focused={this.state.focused === divCd} sx={{ width: '100%', height: 70, position: 'relative', border: this.state.focused === divCd ? '1px solid rgba(49, 98, 240, 0.9)' : '1px solid #D5D5D5', backgroundColor: this.state.focused === divCd ? 'rgba(160, 210, 255, 0.2)' : 'white' }}>
         <CardActionArea onClick={() => this.cardClick(divCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography sx={{ fontSize: 14 }} gutterBottom style={{ position: "absolute", top: "3px", left: "5px" }}>
@@ -1009,33 +1027,35 @@ class DivMgmtComponent extends Component {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon onClick={this.helpClick} />
+                      <SearchIcon onClick={this.subHelpClick} />
                     </InputAdornment>
                   ),
                 }}
               ></CustomTextField>
+
+              <CustomSearchButton
+                variant="outlined"
+                onClick={!this.state.DivdialTextField ? this.reClick : this.helpClick}
+                style={{
+                  minWidth: "5px",
+                  position: "absolute",
+                  // top: "7px",
+                  left: "1810px",
+                }}
+              >
+                <SearchIcon fontSize="medium" />
+              </CustomSearchButton>
+
             </Grid>
           </Grid>
-          <Button
-            variant="outlined"
-            onClick={!this.state.DivdialTextField ? this.reClick : this.helpClick}
-            style={{
-              padding: "0px",
-              minWidth: "5px",
-              position: "relative",
-              top: "10px",
-              left: "1015px",
-            }}
-          >
-            <SearchIcon fontSize="medium" />
-          </Button>
+
         </CustomGridContainer>
 
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
           <Grid
             container
             sx={{
-              width: "22%",
+              width: "25%",
               height: 670,
               border: "1px solid #EAEAEA",
               backgroundColor: "#FCFCFC",
@@ -1066,8 +1086,9 @@ class DivMgmtComponent extends Component {
               sx={{
                 pl: 1,
                 pr: 1,
+                pb: 1,
                 width: "100%",
-                height: "calc(100% - 5%)",
+                height: "calc(100% - 7%)",
                 overflowY: "auto",
               }}
             >
@@ -1080,7 +1101,7 @@ class DivMgmtComponent extends Component {
 
             <Grid
               container
-              sx={{ position: "relative", bottom: "60px", width: "100%" }}
+              sx={{ width: "100%" }}
             >
               <Button
                 variant="extended"
