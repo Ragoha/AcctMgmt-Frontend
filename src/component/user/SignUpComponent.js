@@ -38,6 +38,11 @@ class SignUpComponent extends Component {
       borderColor: 'none',
     };
   }
+  handleKey = (e) => {
+    if (e.key === 'Tab') {
+      this.helpClick();
+    }
+  };
   helpClick = () => {
     this.coDialogRef.current.handleUp();
   }
@@ -148,7 +153,7 @@ class SignUpComponent extends Component {
     const { email } = this.state;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i; // 이메일 주소 유효성을 검사하는 정규식
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
-    const borderEmail = email !== '' ? 'success.main' : 'error.main';
+    const borderEmail = email === '' ? 'error.main' : emailRegex.test(email) ? 'success.main' : 'error.main';
     const errorMessageEmail = email === ''
       ? "이메일을 입력해 주세요"
       : ""
@@ -177,8 +182,48 @@ class SignUpComponent extends Component {
           email: "",
         });
       });
+  }
+  handleBlurPhone = () => {
+    const { phone } = this.state;
+    const phoneRegex = /^01[016789]-?\d{3,4}-?\d{4}$/;
 
-  };
+    const borderphone = phone === '' ? 'error.main' : phoneRegex.test(phone) ? 'success.main' : 'error.main';
+    const errorMessagephone = phone === ""
+      ? "번호를 입력해주세요." // 빈 값일 때의 에러 메시지
+      : !phoneRegex.test(phone)
+        ? "올바른 번호를 입력해주세요(\"010-1234-5678, 01112345678\")"
+        : "";
+    this.setState({
+      errorMessagephone,
+      borderphone,
+    });
+  }
+  handleBlurCompany = () => {
+    const { company, CodialTextField } = this.state;
+
+    const bordercompany = company !== '' ? 'success.main' : 'error.main';
+    const errorMessagecompany = company === ''
+      ? "회사를 입력해 주세요"
+      : ""
+    this.setState({
+      errorMessagecompany,
+      bordercompany,
+      company: CodialTextField,
+    });
+  }
+  handleBlurPosition = () => {
+    const { position } = this.state;
+
+    const borderposition = position !== '' ? 'success.main' : 'error.main';
+    const errorMessageposition = position === ''
+      ? "직책을 입력해 주세요"
+      : ""
+    this.setState({
+      errorMessageposition,
+      borderposition,
+    });
+  }
+  handleBlurPosition
   handleClose = () => {
     this.setState({
       id: "",
@@ -198,7 +243,6 @@ class SignUpComponent extends Component {
       errorMessage: "",
     });
   };
-
   handleSubmit = (e) => {
     e.preventDefault();
     const { id, name, password, email, gender, phone, company, position } = this.state;
@@ -288,6 +332,8 @@ class SignUpComponent extends Component {
       email,
       confirmPassword,
       phone,
+      company,
+      position,
       isIdValid,
       isIdDuplicated,
       error,
@@ -302,6 +348,12 @@ class SignUpComponent extends Component {
       borderName,
       errorMessageEmail,
       borderEmail,
+      errorMessagecompany,
+      bordercompany,
+      errorMessageposition,
+      borderposition,
+      errorMessagephone,
+      borderphone,
     } = this.state;
 
     // const isPasswordValid = this.validatePassword(password);
@@ -335,10 +387,11 @@ class SignUpComponent extends Component {
                     onBlur={this.handleBlur}
                     // disabled={error}
                     error={error}
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 12 }}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
                         borderColor: borderColor,
+                        borderWidth: 2,
                       },
                       "& .MuiOutlinedInput-input::placeholder": {
                         fontSize: "12px",
@@ -394,7 +447,8 @@ class SignUpComponent extends Component {
                     onBlur={this.handleBlurPassword}
                     sx={{
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: borderPass
+                        borderColor: borderPass,
+                        borderWidth: 2,
                       },
                       whiteSpace: "pre-wrap",
                       "& .MuiOutlinedInput-input::placeholder": {
@@ -428,13 +482,7 @@ class SignUpComponent extends Component {
               <Grid item xs={9}>
                 <CustomMediumTextField
                   variant="outlined"
-                  // color={
-                  //   confirmPassword
-                  //     ? password === confirmPassword
-                  //       ? "success"
-                  //       : "error"
-                  //     : "secondary"
-                  // }
+                  inputProps={{ maxLength: 20 }}
                   name="confirmPassword"
                   placeholder="패스워드 재입력"
                   type="password"
@@ -446,7 +494,8 @@ class SignUpComponent extends Component {
                       fontSize: "12px",
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: borderConfirmPass
+                      borderColor: borderConfirmPass,
+                      borderWidth: 2,
                     },
                   }}
                 // error={confirmPassword && password !== confirmPassword}
@@ -477,6 +526,7 @@ class SignUpComponent extends Component {
                 <CustomMediumTextField
                   name="name"
                   placeholder="ex)김더존"
+                  inputProps={{ maxLength: 20 }}
                   variant="outlined"
                   color="secondary"
                   value={name}
@@ -487,7 +537,8 @@ class SignUpComponent extends Component {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: borderName
+                      borderColor: borderName,
+                      borderWidth: 2,
                     },
                   }}
                 />
@@ -505,7 +556,7 @@ class SignUpComponent extends Component {
                         marginLeft: "8px",
                         fontSize: "10px",
                         color:
-                          email === "" ? "red" : "green",
+                          email === "" || email !== this.state.emailRegex ? "red" : "green",
                       }}
                     >
                       {errorMessageEmail}
@@ -518,6 +569,7 @@ class SignUpComponent extends Component {
                   variant="outlined"
                   color="secondary"
                   name="email"
+                  inputProps={{ maxLength: 40 }}
                   placeholder="ex)douzone@duzone.com"
                   type="email"
                   value={email} // 이메일 상태 값을 입력 필드에 설정
@@ -528,7 +580,8 @@ class SignUpComponent extends Component {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: borderEmail
+                      borderColor: borderEmail,
+                      borderWidth: 2,
                     },
                   }}
                 />
@@ -538,7 +591,21 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>휴대전화</CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>휴대전화</CustomInputLabel>
+                  {(
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "10px",
+                        color:
+                          phone === "" || phone !== this.state.phoneRegex ? "red" : "green",
+                      }}
+                    >
+                      {errorMessagephone}
+                    </span>
+                  )}
+                </div>
               </Grid>
               <Grid item xs={9}>
                 <Grid container></Grid>
@@ -547,11 +614,17 @@ class SignUpComponent extends Component {
                   color="secondary"
                   name="phone"
                   placeholder="휴대폰 번호 입력('-' 제외 11자리 입력)"
+                  inputProps={{ maxLength: 13 }}
                   value={phone}
                   onChange={this.handleChange}
+                  onBlur={this.handleBlurPhone}
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: borderphone,
+                      borderWidth: 2,
                     },
                   }}
                 />
@@ -561,22 +634,43 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>회사</CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>회사</CustomInputLabel>
+                  {(
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "10px",
+                        color:
+                          company === "" ? "red" : "green",
+                      }}
+                    >
+                      {errorMessagecompany}
+                    </span>
+                  )}
+                </div>
               </Grid>
               <Grid item xs={9}>
                 <Grid container direction="row" alignItems="center">
                   <CustomMediumTextField
+                    onKeyDown={this.handleKey}
                     onClick={this.helpClick}
                     variant="outlined"
                     color="secondary"
                     name="company"
                     placeholder="회사검색"
                     value={this.state.CodialTextField}
+                    onBlur={this.handleBlurCompany}
                     onChange={this.handleChange}
+                    inputProps={{ maxLength: 5 }}
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-input::placeholder": {
                         fontSize: "12px", // 원하는 폰트 크기로 설정
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: bordercompany,
+                        borderWidth: 2,
                       },
                     }}
                   />
@@ -598,20 +692,40 @@ class SignUpComponent extends Component {
           <Grid item xs={12}>
             <Grid container direction="column" sx={{ pl: 6 }}>
               <Grid item xs={3}>
-                <CustomInputLabel>직책</CustomInputLabel>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CustomInputLabel>직책</CustomInputLabel>
+                  {(
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        fontSize: "10px",
+                        color:
+                          position === "" ? "red" : "green",
+                      }}
+                    >
+                      {errorMessageposition}
+                    </span>
+                  )}
+                </div>
               </Grid>
               <Grid item xs={9}>
                 <CustomMediumTextField
                   variant="outlined"
                   color="secondary"
+                  inputProps={{ maxLength: 8 }}
                   name="position"
                   placeholder="ex)사원"
                   value={this.state.position}
                   onChange={this.handleChange3}
+                  onBlur={this.handleBlurPosition}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-input::placeholder": {
                       fontSize: "12px", // 원하는 폰트 크기로 설정
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: borderposition,
+                      borderWidth: 2,
                     },
                   }}
                 />
