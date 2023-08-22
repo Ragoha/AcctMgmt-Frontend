@@ -148,7 +148,13 @@ class GisuDialogComponent extends Component {
   };
 
   handleClickConfirm = () => {
+    // console.log(this.state.selectedRow)
+    // if(this.state.selectedRow.toDt.includes('')){
+    //   console.log("뭐여이건ㅉ")
+    //   CustomSwal.showCommonToast("warning", "적용 할 기수를 클릭해주세요.");
+    // }else{
     this.handleDown();
+  // }
   };
 
   handleClickRow = (params) => {

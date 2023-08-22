@@ -40,7 +40,7 @@ class BgtCD extends Component {
       gisuDefaultValue: '8',
       bgtGrSearchText: '',
       toDt:dayjs(new Date()).format("YYYY-MM-DD"),
-      AddRowFlag : false ,
+      AddRowFlag : false , //예산과목을 추가하면, bgtNm을 정해야하기 때문에 true, 추가하고 업데이트 완료하면 false가 들어간다. 
     }
   }
 
@@ -78,13 +78,13 @@ class BgtCD extends Component {
         if (response.data != "") {
           this.setState({ rows: response.data })
         } else {
-          this.setState({ rows: [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }] })
+          this.setState({ rows: [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }] })
         }
       }
     )
   }
   setInitRow() {
-    const row = [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }]
+    const row = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }]
     this.setState({ rows: row })
   }
   /* 예산그룹검색쪽  */
@@ -186,12 +186,11 @@ class BgtCD extends Component {
         this.setState({rows:response.data});
       }
     )
-    
   }
 
   /*데이터그리드 부분 start*/
   getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-    const tmpRow = [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }];
+    const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
     this.setState({ rows: tmpRow })
     // { field: 'bgtCd', headerName: '예산코드', width: 140, headerAlign: 'center', },
     // { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center', },  getRowId={(row) => row.bgtCd}
@@ -211,6 +210,11 @@ class BgtCD extends Component {
   }
 
   /*---로우 추가 관련된 메서드 start---*/
+  chkFlag = (value) => {
+    this.setState({
+      AddRowFlag:value,
+    },()=>console.log("chkFlag 발동! : " + this.state.AddRowFlag + "/" + this.state.newBgtCd));
+  }
   //데이터 그리드에 추가하는 기능
   setClickedData = (dataPath, bgtCd, divFg) => {
     this.setState({ tDataPath: dataPath, tBgtCd: bgtCd, tDivFg: divFg })
@@ -219,16 +223,22 @@ class BgtCD extends Component {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const { coCd } = this.props.userInfo;
     const { accessToken } = this.props;
+    
     console.log("여기가아니였어 ? 맞을텐ㄷ")
+    // if(tBgtCd==="          "){
+      
+    // }else if(tBgtCd==="           "){
+
+    // }
     console.log(tDivFg)
     if(this.state.AddRowFlag ===true){
-      CustomSwal.showCommonSwal('warning', '작성중인 예산과목이 있습니다');
-
+      console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
+      CustomSwal.showCommonSwal('과목을 추가할 수 없습니다', '작성중인 예산과목이 있습니다');
       return null;
     }
     if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
       // CustomSwal.showCommonToast("warning", "예산 추가할 위치를 클릭해주세요"); //showCommonSwal showCommonToast showCommonSwalYn
-      CustomSwal.showCommonSwal('warning', '신규 예산품목 추가 위치를 지정해주세요');
+      CustomSwal.showCommonSwal('과목을 추가할 수 없습니다', '신규 예산품목 추가 위치를 지정해주세요');
       return null;
     }
     if(tDivFg >7){
@@ -236,7 +246,7 @@ class BgtCD extends Component {
       return null;
     }
 
-    if (tDataPath === "수입," || tDataPath === "수출,") {
+    if (tDataPath === "수입" || tDataPath === "수출") {
       //최상단 즉 수입, 수출을 클릭했을때 자기 형제 코드가 있으면 형제 코드의 최댓값을 찾아서 그 밑에 넣을거고 없으면 최초 값으로 쓸거다 
       const data = {
         coCd: coCd,
@@ -249,6 +259,8 @@ class BgtCD extends Component {
           const bgtCd = data.bgtCd;
           console.log("새로 추가될 로우 데이터 찎어봄 ")
           console.log("bgtCd : " + data.bgtCd + "/ divFg : " + data.divFg + "/dataPath: " + data.dataPath)
+          
+          this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
           const newRows1 = [
             ...this.state.rows,
             { dataPath: data.dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: data.divFg, parentCd: "" },
@@ -282,11 +294,14 @@ class BgtCD extends Component {
     BgtCDService.getAddRowData(data, accessToken)
       .then(data => {
         const bgtCd = data.bgtCd;
+        console.log('==ㄴ==ㄴ==ㄴ==ㄴ==ㄴ==ㄴ==ㄴ' + bgtCd)
+        this.chkFlag(true);
+        // this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
         const newRows = [
           ...this.state.rows,
           { dataPath: this.state.tDataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: a, parentCd: this.state.tBgtCd },
         ];
-        this.setState({ rows: newRows });
+        this.setState({ rows: newRows },()=>this.state.rows);
         this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
       })
   };
@@ -488,27 +503,9 @@ class BgtCD extends Component {
           alignItems="center"
           spacing={2}
         >
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center" >
                 <CustomInputLabel> 기수 </CustomInputLabel>
-                {/* <Autocomplete
-                name="gisuText"
-                disableClearable
-                disablePortal
-                defaultValue={this.state.gisuDefaultValue}
-                value={this.state.gisuDefaultValue}
-                options={this.state.gisuList}
-                onChange={this.handleChangeGisuText}
-                getOptionLabel={(option) => option.toString()}
-                size="small"
-                sx={{ width: "65px", marginRight: "8px" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    value={this.state.gisuList[this.state.gisuList.length - 1]}
-                  />
-                )}
-              /> */}
                 <Select
                   sx={{ width: "100px" ,height: "40px"}}
                   value={this.state.gisuDefaultValue}
@@ -561,7 +558,7 @@ class BgtCD extends Component {
                 </LocalizationProvider> */}
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
               <CustomTextField
@@ -571,17 +568,18 @@ class BgtCD extends Component {
                 onKeyPress={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
-                InputProps={{
+                inputProps={{ maxLength: 8}}
+                InputProps={{ 
                   endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.BgtGrSearchOpen} />
-                    </InputAdornment>
-                  ),
-                }}
+                  <InputAdornment position="end">
+                    <SearchIcon onClick={this.BgtGrSearchOpen} />
+                  </InputAdornment>
+                ),}}
+                
               />
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목검색</CustomInputLabel>
               <CustomTextField
@@ -591,7 +589,8 @@ class BgtCD extends Component {
                 onChange={this.handleInputChange}
                 onKeyPress={this.handleKeyDown}
                 size="small"
-                InputProps={{
+                inputProps={{ maxLength:30 }}
+                InputProps={{  
                   endAdornment: (
                     <InputAdornment position="end">
                       <SearchIcon onClick={this.handleClickBgtCdSerachIcon} />
@@ -601,14 +600,15 @@ class BgtCD extends Component {
               />
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={0.6}>
             <Grid
               container
               direction="row"
               alignItems="center"
               justifyContent="space-between"
+              sx={{ml: "16px"}}
             >
-              <Grid item>
+              <Grid item >
                 <CustomSearchButton
                   variant="outlined"
                   onClick={this.handleClickSerachButton}
@@ -628,7 +628,8 @@ class BgtCD extends Component {
               gisu = {gisuDefaultValue}
               keyword= {keyword}
               groupCd = {groupCd}
-              
+              chkFlag ={this.chkFlag}
+              AddRowFlag = {this.state.AddRowFlag}
               setDetailInfo={this.setDetailInfo}
               insertAddRow={this.insertAddRow}
               getDataGridRows={this.getDataGridRows}
@@ -654,7 +655,7 @@ class BgtCD extends Component {
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-        <BgtCDAddSubDialog initSubList={this.initSubList} ref={this.BgtCDAddSubDialog} />
+        <BgtCDAddSubDialog gisu={this.state.gisuDefaultValue} initSubList={this.initSubList} ref={this.BgtCDAddSubDialog} />
         {/*그룹레벨설정 */}
         <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch} />
         <BgtGrSearch setBgtGrCdText={this.setBgtGrCdText} ref={this.BgtGrSearch} />
