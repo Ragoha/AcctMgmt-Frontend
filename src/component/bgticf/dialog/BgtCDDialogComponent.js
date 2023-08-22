@@ -155,6 +155,7 @@ class BgtCDDialogComponent extends Component {
   };
 
   handleSetBgtGrTextField = (dataList) => {
+    console.log(dataList);
     if (dataList.length > 0) {
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
@@ -167,6 +168,8 @@ class BgtCDDialogComponent extends Component {
         bgtGrCdList: bgtGrCdList,
       });
     } else {
+      console.log(dataList);
+      console.log("asdfasfsadfasdfasfasdfas");
       if (dataList.bgtGrCd && dataList.bgtGrNm) {
         this.setState({
           bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
