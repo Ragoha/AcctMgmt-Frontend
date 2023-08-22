@@ -29,6 +29,7 @@ class BgtCDSubSearch extends Component {
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
     const keyword = null;
+    console.log("이개ㅔ 무한실행 ?")
     BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
         (response)=>{
             this.setState({rows:response})
@@ -37,8 +38,9 @@ class BgtCDSubSearch extends Component {
   }
   getBgtCdLikeSearchDataToRows=(data)=>{ //다이얼로그를 조건으로 검색하고 enter로 열었을때 초기 세팅 
     const{accessToken} = this.props;
+    console.log('이건 ?')
     BgtCDService.getBgtCdLikeSearch(data,accessToken).then((response)=>{
-      this.setState({rows:response},()=>console.log(response));
+      this.setState({rows:response});
     })
     this.setState({keyword:data.keyword})
     this.handleUp();
@@ -58,6 +60,7 @@ class BgtCDSubSearch extends Component {
         (response)=>{this.setState({rows:response})}
       )
     }
+    return null;
   }
   searchIconClick=()=>{
     const{coCd} = this.props.userInfo;
@@ -79,7 +82,6 @@ class BgtCDSubSearch extends Component {
   
   /*default*/
   handleUp = () => {
-    this.initBgtCDDialog();
     this.setState({ open: true });
   };
 
@@ -120,7 +122,7 @@ class BgtCDSubSearch extends Component {
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  onKeyDown={this.handlePressEnter}
+                  onKeyPress={this.handlePressEnter}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
                   <SearchIcon onClick = {this.searchIconClick}/>

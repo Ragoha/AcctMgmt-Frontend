@@ -178,7 +178,6 @@ class BgtCDService {
       },
       withCredentials: true,
     }).then((response) => response.data)
-    console.log('222겟비지티시디다이알로그 서비스')
     return returnData;
   }
   getBgtCdLikeSearch(data, accessToken) {
