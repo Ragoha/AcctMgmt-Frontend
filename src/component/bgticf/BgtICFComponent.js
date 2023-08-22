@@ -15,22 +15,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import CustomSwal from "../common/CustomSwal";
-import SnackBarComponent from "../common/SnackBarComponent";
 import {
   CustomAutoComplete,
   CustomGridContainer,
   CustomHeaderGridContainer,
   CustomHeaderInputLabel,
   CustomInputLabel,
-  CustomSearchButton,
-  CustomTextField,
+  CustomSearchButton
 } from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
 import BgtCdAutocomplete from "./autocomplete/BgtCdAutocomplete";
-import BgtCDDialogComponent from "./dialog/BgtCDDialogComponent";
-import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
-import DivDialogComponent from "./dialog/DivDialogComponent";
 import BgtGrAutocomplete from "./autocomplete/BgtGrAutocomplete";
+import DivDialogComponent from "./dialog/DivDialogComponent";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -356,11 +352,6 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
-    console.log("zzzzzzzzzzzzzzz");
-    console.log(e.row);
-    console.log(this.state.divCd);
-    // BgtICFService.findBgtICFByCoCdAndBgtCd
-    // this.bgtICFRef.current.handleGetBgtICFList();
     this.setState({ selectedRows: [] });
     this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd });
   };
@@ -527,21 +518,6 @@ class BgtICFComponent extends Component {
                 changeBgtGrList={this.changeBgtGrList}
                 resetBgtGr={this.resetBgtGr}
               />
-              {/* <CustomTextField
-                name="bgtGrTextField"
-                value={this.state.bgtGrTextField}
-                onChange={this.handleInputChange}
-                onKeyDown={this.handleKeyDownBgtGrTextField}
-                placeholder="예산그룹코드/예산그룹명"
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
-                    </InputAdornment>
-                  ),
-                }}
-              /> */}
               <CustomSearchButton
                 variant="outlined"
                 onClick={this.handleClickSerachButton}
@@ -582,21 +558,6 @@ class BgtICFComponent extends Component {
             </Grid>
           </Grid>
           <Grid item xs={4}>
-            <CustomTextField
-              name="bgtGrTextField"
-              value={this.state.bgtGrTextField}
-              onChange={this.handleInputChange}
-              onKeyDown={this.handleKeyDownBgtGrTextField}
-              placeholder="예산그룹코드/예산그룹명"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
-                  </InputAdornment>
-                ),
-              }}
-            />
           </Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>

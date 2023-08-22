@@ -166,6 +166,7 @@ class GisuDialogComponent extends Component {
         this.insertGisu(newRow);
       }
 
+      this.setState({ selectedRow: newRow });
       // this.setState((prevState) => ({
       //   rows: prevState.rows.map((row) =>
       //     row.id === newRow.id ? newRow : row
@@ -177,6 +178,7 @@ class GisuDialogComponent extends Component {
       console.log(newRow);
       console.log(this.state.selectedRow);
       const updatedRow = { ...newRow, isNew: false };
+      
       
       //   this.setState((prevState) => ({
       //     rows: prevState.rows.map((row) =>

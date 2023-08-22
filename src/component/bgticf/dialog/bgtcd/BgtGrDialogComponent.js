@@ -121,11 +121,11 @@ class BgtGrDialogComponent extends Component {
 
   handleClickConfirm = async () => {
     if (this.state.selectedRows.length == 0) {
-      await this.props.handleSetBgtCDTextField(this.state.selectedRow);
+      await this.props.handleSetBgtGrTextField(this.state.selectedRow);
     } else {
       let sortedSelectedRows = [...this.state.selectedRows];
       sortedSelectedRows.sort((a, b) => a.bgtGrCd - b.bgtGrCd);
-      await this.props.handleSetBgtCDTextField(sortedSelectedRows);
+      await this.props.handleSetBgtGrTextField(sortedSelectedRows);
     }
 
     this.handleDown();
@@ -244,7 +244,7 @@ class BgtGrDialogComponent extends Component {
               columns={columns}
               rows={this.state.bgtGrRows}
               showColumnVerticalBorder={true}
-              showCellVerticalBorder={true} // 각 셀마다 영역주기
+              showCellVerticalBorder={true}
               onRowClick={this.handleClickRow}
               hideFooter
             />
@@ -256,10 +256,10 @@ class BgtGrDialogComponent extends Component {
               variant="outlined"
               onClick={this.handleClickConfirm}
             >
-              확인
+              확 인
             </CustomConfirmButton>
             <Button variant="outlined" onClick={this.handleDown}>
-              취소
+              취 소
             </Button>
           </CustomButtonGridContainer>
         </CustomDialogActions>

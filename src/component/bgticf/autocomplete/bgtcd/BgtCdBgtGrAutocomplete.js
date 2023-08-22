@@ -5,11 +5,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import React, { Component, createRef } from "react";
-import BgtCDDialogComponent from "../dialog/BgtCDDialogComponent";
 import { connect } from "react-redux";
-import BgtGrDialogComponent from "../dialog/BgtGrDialogComponent";
+import BgtGrDialogComponent from "../../dialog/bgtcd/BgtGrDialogComponent";
 
-class BgtGrAutocomplete extends Component {
+class BgtCdBgtGrAutocomplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -239,5 +238,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  BgtGrAutocomplete
+  BgtCdBgtGrAutocomplete
 );

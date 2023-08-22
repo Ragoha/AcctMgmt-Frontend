@@ -83,7 +83,6 @@ class BgtCdAutocomplete extends Component {
   };
 
   handleClickSearch = () => {
-    console.log(this.bgtCdRef);
     this.bgtCdRef.current.setBgtCDDialog();
   };
 
