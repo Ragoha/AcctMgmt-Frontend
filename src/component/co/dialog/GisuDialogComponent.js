@@ -119,17 +119,17 @@ class GisuDialogComponent extends Component {
     });
   }
 
-  updateGisu = (data) => {
-    console.log(data);
-    GisuService.updateGisu({
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-      gisu: data,
-    }).then(() => {
-      CustomSwal.showCommonToast("warning", "기수는 삭제 후 등록해주세요.");
-      this.initGisu();
-    });
-  }
+  // updateGisu = (data) => {
+  //   console.log(data);
+  //   GisuService.updateGisu({
+  //     accessToken: this.props.accessToken,
+  //     coCd: this.props.user.coCd,
+  //     gisu: data,
+  //   }).then(() => {
+  //     CustomSwal.showCommonToast("warning", "기수는 삭제 후 등록해주세요.");
+  //     this.initGisu();
+  //   });
+  // }
 
   handleClickDelete = () => {
     console.log(this.state.selectedRow.gisu);
@@ -165,7 +165,7 @@ class GisuDialogComponent extends Component {
         console.log("저장");
         this.insertGisu(newRow);
       }
-
+      this.setState({selectedRow : newRow});
       // this.setState((prevState) => ({
       //   rows: prevState.rows.map((row) =>
       //     row.id === newRow.id ? newRow : row
@@ -184,7 +184,7 @@ class GisuDialogComponent extends Component {
       //     ),
       //   }));
       // this.updateGisu(updatedRow);
-
+      CustomSwal.showCommonToast("warning", "기수는 수정이 불가능합니다.");
       return this.state.selectedRow;
     }
   };
