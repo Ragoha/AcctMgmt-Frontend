@@ -1203,7 +1203,7 @@ class DivMgmtComponent extends Component {
             container
             sx={{
               width: "25%",
-              height: "calc(100vh - 313px)",
+              height: "calc(100vh - 309px)",
               border: "1px solid #EAEAEA",
               backgroundColor: "#FCFCFC",
             }}
@@ -1259,6 +1259,7 @@ class DivMgmtComponent extends Component {
                   width: "100%",
                   height: "60px",
                   marginTop: 1,
+                  padding:0,
                   backgroundColor: "white",
                   color: "#5D5D5D",
                   display: "flex",

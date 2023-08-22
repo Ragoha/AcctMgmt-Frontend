@@ -1352,7 +1352,7 @@ class PjtComponent extends Component {
                   border: "1px solid #D5D5D5",
                   width: "100%",
                   height: "60px",
-                  marginTop: 1,
+                  padding: 0,
                   backgroundColor: "white",
                   color: "#5D5D5D",
                   display: "flex",

@@ -914,7 +914,7 @@ class CoMgmtComponent extends Component {
             container
             sx={{
               width: "25%",
-              height: "calc(100vh - 313px)",
+              height: "calc(100vh - 309px)",
               border: "1px solid #EAEAEA",
               backgroundColor: "#FCFCFC",
             }}
