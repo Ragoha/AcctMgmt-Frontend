@@ -109,6 +109,26 @@ class DataGridComponent extends Component {
           "올바르지 않은 입력입니다."
         );
       }
+      if (
+        (updatedRow.carrAm2 !== "" && !/^[0-9]+$/.test(updatedRow.carrAm1)) ||
+        updatedRow.carrAm2.length > 10
+      ) {
+        updatedRow.carrAm2 = "";
+        this.snackBarRef.current.handleUp(
+          "warning",
+          "올바르지 않은 입력입니다."
+        );
+      }
+      if (
+        (updatedRow.carrAm3 !== "" && !/^[0-9]+$/.test(updatedRow.carrAm1)) ||
+        updatedRow.carrAm3.length > 10
+      ) {
+        updatedRow.carrAm3 = "";
+        this.snackBarRef.current.handleUp(
+          "warning",
+          "올바르지 않은 입력입니다."
+        );
+      }
 
       // if (!/^[0-9]+$/.test(updatedRow.carrAm2)) {
       //   updatedRow.carrAm2 = "";
