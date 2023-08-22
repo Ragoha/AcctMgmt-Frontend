@@ -74,6 +74,7 @@ class CoMgmtComponent extends Component {
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
       // inputValue: '',
       isCoCdEditable: false,
+      isDisabled: false,
       originalTextFieldValue: ''
     };
   }
@@ -87,9 +88,6 @@ class CoMgmtComponent extends Component {
     this.setState({ coCd: coCd });
     console.log(coCd)
     // {coCd && empId?
-    // if(this.state.cardCount == 0){
-    //   CompanyService.insertCo();
-    // }else{
     CompanyService.getCoList({
       accessToken: this.props.accessToken,
       // coCd: coCd
@@ -243,7 +241,8 @@ class CoMgmtComponent extends Component {
         coAddr: '',
         coAddr1: '',
         insertDt: '',
-        isCoCdEditable: true
+        isCoCdEditable: true,
+        isDisabled: true
       })
     }
   }; //여기에 모든 state값 초기화 하면 됨 !!!!!
@@ -296,10 +295,10 @@ class CoMgmtComponent extends Component {
                 focused: coCdList[cardCount - 1],
                 coCd: coCd,
                 coNm: coNm,
-                gisu: gisu,
+                gisu: gisu? gisu : 0,
                 frDt: frDt,
                 toDt: toDt,
-                dateRange: frDt + ' ~ ' + toDt,
+                dateRange: frDt && toDt ? frDt + ' ~ ' + toDt : "",
                 jongmok: jongmok,
                 businessType: businessType,
                 coNb: coNb,
@@ -511,6 +510,9 @@ class CoMgmtComponent extends Component {
 
   handleGisu = () => {
     this.gisuRef.current.handleUp();
+    this.setState({
+      isChanged: true
+    })
   };
 
   updateCo = () => {
@@ -592,9 +594,9 @@ class CoMgmtComponent extends Component {
     const userInfo = this.props.userInfo;
     const { coCd } = this.state;
 
-    // if (userInfo.coCd === coCd) {
-    //   CustomSwal.showCommonToast("error", "계정 회사는 삭제 불가");
-    // } else {
+    if (userInfo.coCd === coCd) {
+      CustomSwal.showCommonToast("error", "계정 회사는 <br />삭제가 불가능합니다.");
+    } else {
     if (coCd === '') {
       CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
         if (confirmed) {
@@ -673,7 +675,7 @@ class CoMgmtComponent extends Component {
             }
           })
         })
-      // }
+      }
     }
   }
 
@@ -691,6 +693,11 @@ class CoMgmtComponent extends Component {
   }
 
   insertDate = (selectedRow) => {
+    // console.log(this.state.selectedRow)
+    // if(this.state.selectedRow.toDt.includes('')){
+    //   console.log("뭐여이건ㅉ")
+    //   CustomSwal.showCommonToast("warning", "적용 할 기수를 선택해주세요.");
+    // }else{
     this.setState({
       dateRange:
         dayjs(selectedRow.frDt).format("YYYY-MM-DD") +
@@ -703,6 +710,7 @@ class CoMgmtComponent extends Component {
       open: false,
     });
     console.log(selectedRow);
+  // }
   };
 
   //열 클릭 시, 값 콘솔에 적용
@@ -720,12 +728,14 @@ class CoMgmtComponent extends Component {
     if (coCdList.includes(newCoCd)) {
       CustomSwal.showCommonToast("warning", "사용중인 회사코드입니다.");
       this.setState({
-        coCd: ''
+        coCd: '',
+        isDisabled: true
       });
     } else {
       // this.showCommonToast("success", "사용가능한 회사코드입니다.");
       this.setState({
-        coCd: newCoCd
+        coCd: newCoCd,
+        isDisabled: false
       });
     }
   }
@@ -758,7 +768,7 @@ class CoMgmtComponent extends Component {
 
     const { open, coCd, coNm, jongmok, businessType, ceoNm, coNb, coZip, coAddr, coAddr1, openAddr, gisu, frDt, toDt, insertDt } = this.state;
     const { selectedRow } = this.state;
-    const { data } = this.state;
+    const { isDisabled } = this.state;
     const { cardCount, coCdList, coNmList, ceoNmList } = this.state;
 
     const currentDate = new Date();
@@ -1296,11 +1306,13 @@ class CoMgmtComponent extends Component {
                     ),
                   }}
                 ></CustomDatePrToTextField>
+              
                 <Button
                   size="medium"
                   sx={{ ml: 1 }}
                   variant="outlined"
                   onClick={this.handleGisu}
+                  disabled={isDisabled}
                 >
                   기수등록
                 </Button>
