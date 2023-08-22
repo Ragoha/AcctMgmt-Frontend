@@ -3,6 +3,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import React, { Component } from "react";
 import { useNavigate } from "react-router-dom";
+import Image2 from './erplist3.gif';
 
 class HomeComponent extends Component {
   constructor(props) {
@@ -43,6 +44,12 @@ class HomeComponent extends Component {
           justifyContent: "center",
           alignItems: "center",
           height: "calc(100vh - 80px)", // 뷰포트 높이만큼 화면을 차지하도록 설정
+          backgroundImage: `url(${Image2})`,
+          backgroundColor: '#212631',
+          backgroundSize: "auto",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+
         }}
       >
         <Stack spacing={2} sx={{ width: 500 }}>
@@ -69,7 +76,7 @@ class HomeComponent extends Component {
                     this.setState({ searchState: false });
                   }
                 }}
-                sx={{ fontSize: "32px" }}
+                sx={{ fontSize: "32px", }}
               />
             )}
             onChange={this.handleOptionSelect}
@@ -79,6 +86,8 @@ class HomeComponent extends Component {
                 paddingLeft: "15px !important",
                 paddingRight: "20px !important",
                 borderRadius: "90px",
+                bgcolor:"rgba(255, 255, 255, 0.9)",
+                mb:70,
               },
               "& .MuiInputBase-input": {
                 fontSize: "20px",

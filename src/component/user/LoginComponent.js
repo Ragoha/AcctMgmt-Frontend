@@ -102,7 +102,7 @@ class LoginComponent extends Component {
             // this.props.history.push("/acctmgmt/bgt");
             this.setState({ isLoggingIn: false });
             CustomSwal.showCommonToast("success", user.empName+"님 환영합니다.", "1500");
-            this.props.navigate("/acctmgmt/bgt");
+            this.props.navigate("/acctmgmt/home");
           })
           .catch((error) => {
             this.setState({ isLoggingIn: false });
