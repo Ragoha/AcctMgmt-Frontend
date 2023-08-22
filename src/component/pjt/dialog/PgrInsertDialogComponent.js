@@ -15,6 +15,7 @@ import {
 } from "../../common/style/CommonDialogStyle";
 import PgrService from "../../../service/PgrService";
 import { randomId } from "@mui/x-data-grid-generator";
+import CustomSwal from "../../common/CustomSwal";
 
 class PgrInsertDialogComponent extends Component {
     constructor(props) {
@@ -93,32 +94,26 @@ class PgrInsertDialogComponent extends Component {
         PgrService.insertPgr({
             accessToken: this.props.accessToken,
             coCd: this.props.coCd,
-            Pgr: data,
+            pgr: data,
         }).then(() => {
             this.initPgr();
         });
     }
 
-    updatePgr = (data) => {
-        console.log(data);
-        // PjtService.updatePgr({
-        //   accessToken: this.props.accessToken,
-        //   coCd: this.props.user.coCd,
-        //   coCd: data,
-        // }).then(() => {
-        //   this.initPgr();
-        // });
-    }
-
-    handleClickDelete = () => {
-        console.log(this.state.selectedRow.pgrCd);
-        PgrService.deletePgr({
-            accessToken: this.props.accessToken,
-            coCd: this.state.selectedRow.coCd,
-            pgrCd: this.state.selectedRow.pgrCd,
-        }).then(() => {
-            this.initPgr();
-        });
+    handleClickDelete = (data) => {
+        console.log(this.state.selectedRow.gisu);
+        CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+            if (confirmed) {
+                PgrService.deletePgr({
+                    accessToken: this.props.accessToken,
+                    coCd: this.state.selectedRow.coCd,
+                    pgrCd: this.state.selectedRow.pgrCd,
+                }).then(() => {
+                    CustomSwal.showCommonToast("success", "삭제되었습니다.");
+                    this.initPgr();
+                });
+            }
+        })
     };
 
     handleClickConfirm = () => {
@@ -131,21 +126,40 @@ class PgrInsertDialogComponent extends Component {
         });
     };
 
+    // processRowUpdate = (newRow) => {
+    //     if (newRow.isNew) {
+    //         if (newRow.PgrCd !== "" && newRow.PgrNm !== "") {
+    //             console.log("저장");
+    //             this.insertPgr(newRow);
+    //         }
+    //         return newRow;
+    //     } else {
+    //         console.log(newRow);
+    //         console.log(this.state.selectedRow);
+    //         const updatedRow = { ...newRow, isNew: false };
+    //         this.updatePgr(updatedRow);
+    //         return updatedRow;
+    //     }
+    // };
     processRowUpdate = (newRow) => {
+        console.log("영차",newRow);
+
         if (newRow.isNew) {
-            if (newRow.PgrCd !== "" && newRow.PgrNm !== "") {
-              console.log("저장");
-              this.insertPgr(newRow);
+            if (newRow.pgrCd !== "" && newRow.pgrNm !== "") {
+                console.log("저장");
+                this.insertPgr(newRow);
             }
-      
+            this.setState({ selectedRow: newRow });
+
             return newRow;
-          } else {
+        } else {
             console.log(newRow);
             console.log(this.state.selectedRow);
             const updatedRow = { ...newRow, isNew: false };
-      
+
+            CustomSwal.showCommonToast("warning", "그룹은 수정이 불가능합니다.");
             return this.state.selectedRow;
-          }
+        }
     };
 
     render() {

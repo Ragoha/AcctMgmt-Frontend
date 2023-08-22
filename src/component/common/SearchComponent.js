@@ -37,7 +37,7 @@ class SearchComponent extends Component {
 
     return (
       <>
-        <Stack spacing={2} sx={{ width: 200 }}>
+        <Stack spacing={2} sx={{ width: 250 }}>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -72,7 +72,7 @@ class SearchComponent extends Component {
                 onBlur={() => {
                   this.setState({inputValue: "", searchState:false})
                 }}
-                sx={{ fontSize: "14px" }}
+                sx={{ fontSize: "14px"}}
               />
             )}
             onChange={this.handleOptionSelect}

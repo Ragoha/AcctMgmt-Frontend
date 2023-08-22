@@ -49,26 +49,26 @@ class PjtDialogComponent extends Component {
 
   isSelected = (id) => this.state.selectedRowIds.includes(id);
 
-  handleRowCheckboxClick = (id) => {
-    const { selectedRows } = this.state; // 이미 선택된 행 배열
+  // handleRowCheckboxClick = (id) => {
+  //   const { selectedRows } = this.state; // 이미 선택된 행 배열
 
-    if (selectedRows.includes(id)) {
-      const updatedRows = selectedRows.filter((rowId) => rowId !== id);
-      this.setState({ selectedRows: updatedRows });
-    } else {
-      const updatedRows = [...selectedRows, id];
-      this.setState({ selectedRows: updatedRows });
-    }
-  };
+  //   if (selectedRows.includes(id)) {
+  //     const updatedRows = selectedRows.filter((rowId) => rowId !== id);
+  //     this.setState({ selectedRows: updatedRows });
+  //   } else {
+  //     const updatedRows = [...selectedRows, id];
+  //     this.setState({ selectedRows: updatedRows });
+  //   }
+  // };
 
-  handleHeaderCheckboxClick = (event) => {
-    if (event.target.checked) {
-      const selectedRowIds = this.state.rows.map((row) => row.id);
-      this.setState({ selectedRowIds });
-    } else {
-      this.setState({ selectedRowIds: [] });
-    }
-  };
+  // handleHeaderCheckboxClick = (event) => {
+  //   if (event.target.checked) {
+  //     const selectedRowIds = this.state.rows.map((row) => row.id);
+  //     this.setState({ selectedRowIds });
+  //   } else {
+  //     this.setState({ selectedRowIds: [] });
+  //   }
+  // };
 
 
   setPjtKeyword = (data) => {
@@ -102,7 +102,11 @@ class PjtDialogComponent extends Component {
   handleSearchPjt = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    PjtService.getPjtBy(this.state.keyword, coCd)
+    const {keyword} = this.state;
+    PjtService.getPjtBy({
+      keyword, coCd,
+      accessToken: this.props.accessToken,
+    })
       .then(
         async (response) => {
           const pjtRows = response.map((row) => ({
@@ -200,14 +204,14 @@ class PjtDialogComponent extends Component {
             <CustomDataGrid
               columns={columns}
               rows={this.state.pjtRows}
-              checkboxSelection
+              // checkboxSelection
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true}
               onRowClick={this.handleClickRow}
               hideFooter
-              onSelectionModelChange={(newSelection) => {
-                this.handleRowCheckboxClick(newSelection);
-              }}
+            // onSelectionModelChange={(newSelection) => {
+            //   this.handleRowCheckboxClick(newSelection);
+            // }}
             />
           </CustomShortDataGridContainer>
         </CustomDialogContent>
@@ -226,6 +230,7 @@ class PjtDialogComponent extends Component {
   }
 }
 const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
 });
 export default connect(mapStateToProps, null, null, { forwardRef: true })(PjtDialogComponent);

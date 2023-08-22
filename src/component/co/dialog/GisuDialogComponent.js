@@ -135,16 +135,16 @@ class GisuDialogComponent extends Component {
     console.log(this.state.selectedRow.gisu);
     CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
       if (confirmed) {
-    GisuService.deleteGisu({
-      accessToken: this.props.accessToken,
-      coCd: this.props.coCd,
-      gisu: this.state.selectedRow.gisu,
-    }).then(() => {
-      CustomSwal.showCommonToast("success", "삭제되었습니다.");
-      this.initGisu();
-    });
-  }
-})
+        GisuService.deleteGisu({
+          accessToken: this.props.accessToken,
+          coCd: this.props.coCd,
+          gisu: this.state.selectedRow.gisu,
+        }).then(() => {
+          CustomSwal.showCommonToast("success", "삭제되었습니다.");
+          this.initGisu();
+        });
+      }
+    })
   };
 
   handleClickConfirm = () => {
@@ -165,7 +165,7 @@ class GisuDialogComponent extends Component {
         console.log("저장");
         this.insertGisu(newRow);
       }
-      this.setState({selectedRow : newRow});
+      this.setState({ selectedRow: newRow });
       // this.setState((prevState) => ({
       //   rnpmows: prevState.rows.map((row) =>
       //     row.id === newRow.id ? newRow : row
@@ -177,8 +177,8 @@ class GisuDialogComponent extends Component {
       console.log(newRow);
       console.log(this.state.selectedRow);
       const updatedRow = { ...newRow, isNew: false };
-      
-      
+
+
       //   this.setState((prevState) => ({
       //     rows: prevState.rows.map((row) =>
       //       row.id === newRow.id ? updatedRow : row
