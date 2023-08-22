@@ -167,7 +167,7 @@ class GisuDialogComponent extends Component {
       }
       this.setState({selectedRow : newRow});
       // this.setState((prevState) => ({
-      //   rows: prevState.rows.map((row) =>
+      //   rnpmows: prevState.rows.map((row) =>
       //     row.id === newRow.id ? newRow : row
       //   ),
       // }));
