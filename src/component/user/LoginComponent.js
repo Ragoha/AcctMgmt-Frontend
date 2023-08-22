@@ -29,8 +29,9 @@ class LoginComponent extends Component {
       id: "",
       password: "",
       isIconOpen: false,
-      showForm: false,
       rememberId: false, // 아이디 저장 체크박스 상태
+      isLoggingIn: false, // 로그인 중인지 여부를 나타내는 변수
+
     };
   }
   handleRememberIdChange = (e) => {
@@ -42,9 +43,6 @@ class LoginComponent extends Component {
     if (rememberedId) {
       this.setState({ id: rememberedId, rememberId: true });
     }
-    setTimeout(() => {
-      this.setState({ showForm: true });
-    }, 10);
   }
 
   handleMouseEnter = () => {
@@ -71,6 +69,8 @@ class LoginComponent extends Component {
     } else {
       Cookie.remove("rememberedId"); // 체크 해제 시 쿠키 제거
     }
+    this.setState({ isLoggingIn: true });
+
     axios
       .post(ACCTMGMT_API_BASE_URL + "/login", loginData, {
         headers: {
@@ -100,20 +100,23 @@ class LoginComponent extends Component {
             // 받아온 데이터를 가공하여 userData 객체에 설정
             this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
             // this.props.history.push("/acctmgmt/bgt");
-            this.props.navigate("/acctmgmt/home");
+            this.setState({ isLoggingIn: false });
+            CustomSwal.showCommonToast("success", user.empName+"님 환영합니다.", "1500");
+            this.props.navigate("/acctmgmt/bgt");
           })
           .catch((error) => {
+            this.setState({ isLoggingIn: false });
             console.error(error);
           });
       })
       .catch((error) => {
         // alert("아이디 또는 비밀번호가 다릅니다.", error);
-        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를 <br/> 잘못입력하셨습니다.");
+        CustomSwal.showCommonSwal("아이디 또는 비밀번호를 <br/>잘못 입력하셨습니다.","", "error");
       });
   };
 
   render() {
-    const { showForm, id, password, isIconOpen } = this.state;
+    const { id, password, isIconOpen } = this.state;
 
     return (
       <Box component="div" sx={{ display: "flex", height: "100vh" }}>
@@ -158,12 +161,7 @@ class LoginComponent extends Component {
               },
             }}
           >
-            <CSSTransition
-              in={showForm}
-              timeout={500}
-              classNames="text-slide"
-              unmountOnExit
-            >
+
               <Typography
                 component="h1"
                 variant="h5"
@@ -175,14 +173,7 @@ class LoginComponent extends Component {
               >
                 DOUZONE
               </Typography>
-            </CSSTransition>
           </Box>
-          <CSSTransition
-            in={showForm}
-            timeout={500}
-            classNames="form-slide"
-            unmountOnExit
-          >
             <form onSubmit={this.handleFormSubmit}>
               <Box
                 sx={{
@@ -236,7 +227,7 @@ class LoginComponent extends Component {
                   }
                   label="아이디 저장"
                   sx={{
-                    mb: "2vh",
+                    mr: "17vh",
                   }}
                 />
                 <Button
@@ -268,7 +259,6 @@ class LoginComponent extends Component {
               </Grid>
             </Box>
           </form>
-        </CSSTransition>
       </Box>
       </Box >
     );
