@@ -100,7 +100,7 @@ class LoginComponent extends Component {
             // 받아온 데이터를 가공하여 userData 객체에 설정
             this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
             // this.props.history.push("/acctmgmt/bgt");
-            this.props.navigate("/acctmgmt/bgt");
+            this.props.navigate("/acctmgmt/home");
           })
           .catch((error) => {
             console.error(error);
