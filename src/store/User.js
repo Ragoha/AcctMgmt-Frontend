@@ -17,6 +17,7 @@ class User {
         divCd: "", //사업장코드
         divNm: "", //사업장이름
         deptOd: "", //부서코드
+        empOd: "", //직책
       },
       reducers: {
         SET_USER: (state, action) => {
@@ -32,6 +33,7 @@ class User {
           state.empSx = action.payload.empSxt;
           state.empAuth = action.payload.empAuth;
           state.empCd = action.payload.empCd;
+          state.empOd = action.payload.empOd;
         },
         DEL_USER: (state) => {
           state.coCd = null;
@@ -45,6 +47,7 @@ class User {
           state.empSx = null;
           state.empAuth = null;
           state.empCd = null;
+          state.empOd = null;
         },
       },
     });

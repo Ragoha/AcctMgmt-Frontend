@@ -6,6 +6,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtCDService from "../../../service/BgtCDService";
 import BgtGrService from "../../../service/BgtGrService";
+import CustomSwal from '../../common/CustomSwal.js';
 import {
   CustomButtonGridContainer,
   CustomCloseIcon,
@@ -14,7 +15,7 @@ import {
   CustomDialogContent,
   CustomDialogTitle,
   CustomShortDataGridContainer,
-  CustomShortDialog
+  CustomShortDialog,
 } from "../../common/style/CommonDialogStyle";
 // import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 class BgtCDADDSubDialog extends Component {
@@ -75,13 +76,21 @@ class BgtCDADDSubDialog extends Component {
         this.insertBgtGr(newRow);
       }
       return newRow;
-    } else {
+    } else { //[230822] From Developer --start
       console.log("수정");
-      console.log(newRow)
-      const updatedRow = { ...newRow, isNew: false };
-      this.updateBgtGr(updatedRow);
-      return updatedRow;
+      const updatedRow = {
+        ...newRow,
+        isNew: false,
+      };
+
+      if (newRow.bgtGrCd == this.state.selectedRow.bgtGrCd) {
+        this.updateBgtGr(updatedRow);
+        return updatedRow;
+      }
+      CustomSwal.showCommonToast("warning", "예산과목은 수정이 불가능합니다.");
+      return this.state.selectedRow;
     }
+    //[230822] From Developer --end
   };
   insertBgtGr = (data) => {
     // 
@@ -97,7 +106,7 @@ class BgtCDADDSubDialog extends Component {
     }).then(() => {
       this.initBgtGr();
     });
-  }
+  };
   updateBgtGr = (data) => {
     BgtGrService.updateBgtGr({
       accessToken: this.props.accessToken,
@@ -110,13 +119,18 @@ class BgtCDADDSubDialog extends Component {
 
   deleteBgtGr = () => {
     console.log(this.state.selectedRow);
-    BgtGrService.deleteBgtGr({
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-      bgtGrCd: this.state.selectedRow.bgtGrCd,
-    }).then(() => {
-      this.initBgtGr();
-    });
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+      if (confirmed) {
+        BgtGrService.deleteBgtGr({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
+          bgtGrCd: this.state.selectedRow.bgtGrCd,
+        }).then(() => {
+          CustomSwal.showCommonToast("success", "삭제되었습니다.");
+          this.initBgtGr();
+        });
+      }
+    })
   };
 
   handleClickRow = (params) => {
@@ -136,7 +150,6 @@ class BgtCDADDSubDialog extends Component {
   };
 
   handleClickConfirm = () => {
-    
     this.handleDown();
   };
 
@@ -183,7 +196,10 @@ class BgtCDADDSubDialog extends Component {
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
-            <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
+            <CustomConfirmButton
+              variant="outlined"
+              onClick={this.handleClickConfirm}
+            >
               확인
             </CustomConfirmButton>
             <Button
@@ -200,7 +216,7 @@ class BgtCDADDSubDialog extends Component {
 }
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {}
+  user: state.user || {},
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(

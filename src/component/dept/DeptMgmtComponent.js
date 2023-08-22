@@ -19,7 +19,7 @@ import CustomSwal from '../common/CustomSwal.js';
 import CompanyService from '../../service/CompanyService';
 import DeptService from '../../service/DeptService';
 import DivsService from '../../service/DivsService';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomTextField, CustomWideTextField } from '../common/style/CommonStyle';
 import AddressComponent from './dialog/AddressComponent';
 import DeptDialogComponent from './dialog/DeptDialogComponent';
 
@@ -100,14 +100,18 @@ class DeptMgmtComponent extends Component {
                 console.log(response.data)
                 const divCdList = response.data.map((item) => item.divCd);
                 const divNmList = response.data.map((item) => item.divNm);
-
-                const divCd = response.data[0].divCd;
+                const newDivCdList = [...new Set(divCdList)]
+                // const divCd = response.data[0].divCd;  //이거 고쳣음..!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 const divNm = response.data[0].divNm;
+
+                const expanded = [`co-${coCd}`, ...newDivCdList.map(divCd => `div-${divCd}`)];
                 this.setState({
                     divCdList: divCdList,
                     divNmList: divNmList,
-                    divCd: divCd,
-                    divNm: divNm
+                    newDivCdList: newDivCdList,
+                    // divCd: divCd,
+                    divNm: divNm,
+                    expanded: expanded
                 })
             })
             .catch((error) => {
@@ -132,7 +136,7 @@ class DeptMgmtComponent extends Component {
                 // console.log(divCdList);
                 const deptCdList = response.data.map((item) => item.deptCd);
                 const deptNmList = response.data.map((item) => item.deptNm);
-                const newDivCdList = [...new Set(divCdList)]
+
                 this.state.rows.map((row) => {
                     console.log(row.divCd);
                 })
@@ -148,7 +152,7 @@ class DeptMgmtComponent extends Component {
                 const deptAddr = response.data[0].deptAddr;
                 const deptAddr1 = response.data[0].deptAddr1;
 
-                const expanded = [`co-${coCd}`, ...newDivCdList.map(divCd => `div-${divCd}`)];
+
 
                 this.setState({
                     cardCount: cardCount, // state에 값을 저장
@@ -157,7 +161,7 @@ class DeptMgmtComponent extends Component {
                     // divNmList: divNmList,
                     deptCdList: deptCdList,
                     deptNmList: deptNmList,
-                    newDivCdList: newDivCdList,
+
 
                     focused: `co-${coCd}`,
                     coCd: coCd,
@@ -171,7 +175,7 @@ class DeptMgmtComponent extends Component {
                     deptAddr1: '',
                     insertDt: '',
                     DeptdialTextField: '',
-                    expanded: expanded
+                    isChanged: false
                 })
                 // if(!response.data.length){
                 //     this.setState({
@@ -234,6 +238,9 @@ class DeptMgmtComponent extends Component {
         this.deptDialogRef.current.setDeptKeyword(this.state.DeptdialTextField);
     };
 
+    subHelpClick = () => {
+        this.deptDialogRef.current.handleUp();
+    };
 
     closeDialog = () => {
         this.dialogRef.current.handleDown();
@@ -241,7 +248,7 @@ class DeptMgmtComponent extends Component {
 
     handleSetDeptdialTextField = async (data) => {
         await this.setState({
-            DeptdialTextField: data.deptCd && data.deptNm ? data.deptCd + ". " + data.deptNm : "", 
+            DeptdialTextField: data.deptCd && data.deptNm ? data.deptCd + ". " + data.deptNm : "",
             deptCd: data.deptCd  //밑에 coCd 넘겨주기
         });
         this.searchClick(data.deptCd);
@@ -592,7 +599,7 @@ class DeptMgmtComponent extends Component {
                                         deptZip: deptZip,
                                         deptAddr: deptAddr,
                                         deptAddr1: deptAddr1,
-                                        isChanged: false 
+                                        isChanged: false
                                     })
                                     CompanyService.getCompany({
                                         accessToken: this.props.accessToken,
@@ -729,7 +736,8 @@ class DeptMgmtComponent extends Component {
                                     deptAddr1: '',
                                     DeptdialTextField: '',
                                     insertDt: '',
-                                    isDeptCdEditable: false
+                                    isDeptCdEditable: false,
+                                    isChanged: false
                                 })
                             })
                             .catch((error) => {
@@ -755,7 +763,8 @@ class DeptMgmtComponent extends Component {
                                     deptAddr1: '',
                                     DeptdialTextField: '',
                                     insertDt: '',
-                                    isDeptCdEditable: false
+                                    isDeptCdEditable: false,
+                                    isChanged: false
                                 })
                             });
                     }
@@ -779,108 +788,119 @@ class DeptMgmtComponent extends Component {
         })
         if (this.state.isChanged) {
             CustomSwal.showCommonSwalYn("저장", "수정중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
-              if (confirmed) {
-                this.updateDept();}
-            })
-          }
-          else {
-        if (nodeId.startsWith('div-')) {
-            const parts = nodeId.split('-');
-            const divCd = parts[1];
-
-            this.setState({
-                focused: nodeId,
-                coCd: coCd,
-                divCd: divCd,
-                // divNm: divNm,
-                deptCd: '',
-                deptNm: '',
-                deptZip: '',
-                deptAddr: '',
-                deptAddr1: '',
-                insertDt: '',
-                isDeptCdEditable: true
-            })
-            if (cardCount <= 0 || !this.state.deptCdList.includes('0000')) {
-                this.setState({
-                    isDeptCdEditable: false
-                })
-            }
-
-        } else if (nodeId.startsWith('dept-')) {
-            const parts = nodeId.split('-');
-            const deptCd = parts[1];
-
-            this.setState({
-                deptCd: deptCd
-            })
-            console.log(deptCd)
-            console.log(coCd)
-
-            DeptService.getDepartment({
-                accessToken: this.props.accessToken,
-                deptCd: deptCd
-            })
-                .then((response) => {
-                    console.log(response.data)
-                    const coCdList = response.data.map((item) => item.coCd);
-                    // const divCdList = response.data.map((item) => item.divCd);
-                    // const divNmList = response.data.map((item) => item.divNm);
-                    const deptCdList = response.data.map((item) => item.deptCd);
-                    const deptNmList = response.data.map((item) => item.deptNm);
-
-                    const coCd = response.data[0].coCd;
-                    const divCd = response.data[0].divCd;
-                    const divNm = response.data[0].divNm;
-                    const deptCd = response.data[0].deptCd;
-                    const deptNm = response.data[0].deptNm;
-                    // const ceoNm = response.data[0].ceoNm;
-                    const deptZip = response.data[0].deptZip;
-                    const deptAddr = response.data[0].deptAddr;
-                    const deptAddr1 = response.data[0].deptAddr1;
-                    const insertDt = response.data[0].insertDt;
-
-
-                    this.setState({
-                        coCdList: coCdList,
-                        // divCdList: divCdList,
-                        // divNmList: divNmList,
-                        focused: nodeId,
-                        coCd: coCd,
-                        divCd: divCd,
-                        divNm: divNm,
-                        deptCd: deptCd,
-                        deptNm: deptNm,
-                        // ceoNm: ceoNm,
-                        deptZip: deptZip,
-                        deptAddr: deptAddr,
-                        deptAddr1: deptAddr1,
-                        insertDt: insertDt,
-                        isDeptCdEditable: false
-                    })
-                    CompanyService.getCompany({
-                        accessToken: this.props.accessToken,
-                        coCd: coCd
-                    })
-                        .then((response) => {
-                            const coNm = response.data[0].coNm;
-
-                            this.setState({
-                                coNm: coNm
-                            })
-                        })
-                })
-        } else if(nodeId.startsWith('co-')){
-            const parts = nodeId.split('-');
-            const coCd = parts[1];
-
-            this.setState({
-                focused: nodeId,
-                insertDt: ''
+                if (confirmed) {
+                    if (this.state.insertDt) {
+                        this.updateDept();
+                    }
+                    else {
+                        this.insertDept();
+                    }
+                }
+                // else {
+                //     this.setState({
+                //         isChanged: false
+                //     })
+                // }
             })
         }
+        else {
+            if (nodeId.startsWith('div-')) {
+                const parts = nodeId.split('-');
+                const divCd = parts[1];
+
+                this.setState({
+                    focused: nodeId,
+                    coCd: coCd,
+                    divCd: divCd,
+                    // divNm: divNm,
+                    deptCd: '',
+                    deptNm: '',
+                    deptZip: '',
+                    deptAddr: '',
+                    deptAddr1: '',
+                    insertDt: '',
+                    isDeptCdEditable: true
+                })
+                if (cardCount <= 0 || !this.state.deptCdList.includes('0000')) {
+                    this.setState({
+                        isDeptCdEditable: false
+                    })
+                }
+
+            } else if (nodeId.startsWith('dept-')) {
+                const parts = nodeId.split('-');
+                const deptCd = parts[1];
+
+                this.setState({
+                    deptCd: deptCd
+                })
+                console.log(deptCd)
+                console.log(coCd)
+
+                DeptService.getDepartment({
+                    accessToken: this.props.accessToken,
+                    deptCd: deptCd
+                })
+                    .then((response) => {
+                        console.log(response.data)
+                        const coCdList = response.data.map((item) => item.coCd);
+                        // const divCdList = response.data.map((item) => item.divCd);
+                        // const divNmList = response.data.map((item) => item.divNm);
+                        const deptCdList = response.data.map((item) => item.deptCd);
+                        const deptNmList = response.data.map((item) => item.deptNm);
+
+                        const coCd = response.data[0].coCd;
+                        const divCd = response.data[0].divCd;
+                        const divNm = response.data[0].divNm;
+                        const deptCd = response.data[0].deptCd;
+                        const deptNm = response.data[0].deptNm;
+                        // const ceoNm = response.data[0].ceoNm;
+                        const deptZip = response.data[0].deptZip;
+                        const deptAddr = response.data[0].deptAddr;
+                        const deptAddr1 = response.data[0].deptAddr1;
+                        const insertDt = response.data[0].insertDt;
+
+
+                        this.setState({
+                            coCdList: coCdList,
+                            // divCdList: divCdList,
+                            // divNmList: divNmList,
+                            focused: nodeId,
+                            coCd: coCd,
+                            divCd: divCd,
+                            divNm: divNm,
+                            deptCd: deptCd,
+                            deptNm: deptNm,
+                            // ceoNm: ceoNm,
+                            deptZip: deptZip,
+                            deptAddr: deptAddr,
+                            deptAddr1: deptAddr1,
+                            insertDt: insertDt,
+                            isDeptCdEditable: false
+                        })
+                        CompanyService.getCompany({
+                            accessToken: this.props.accessToken,
+                            coCd: coCd
+                        })
+                            .then((response) => {
+                                const coNm = response.data[0].coNm;
+
+                                this.setState({
+                                    coNm: coNm
+                                })
+                            })
+                    })
+            } else if (nodeId.startsWith('co-')) {
+                const parts = nodeId.split('-');
+                const coCd = parts[1];
+
+                this.setState({
+                    focused: nodeId,
+                    insertDt: ''
+                })
+            }
+        }
     }
-}
 
     handleTextFieldChange = (e) => {
         this.setState({ DeptdialTextField: e.target.value });
@@ -1021,19 +1041,27 @@ class DeptMgmtComponent extends Component {
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <SearchIcon onClick={this.helpClick} /></InputAdornment>
+                                            <SearchIcon onClick={this.subHelpClick} /></InputAdornment>
                                     ),
                                 }}
                             ></CustomTextField>
+
+                            <CustomSearchButton variant="outlined" onClick={!this.state.DeptdialTextField ? this.reClick : this.helpClick}
+                                sx={{
+                                    minWidth: "5px",
+                                    position: "absolute",
+                                    // top: "7px",
+                                    left: "1810px",
+                                }}>
+                                <SearchIcon fontSize="medium" />
+                            </CustomSearchButton>
                         </Grid>
                     </Grid>
-                    <Button variant="outlined" onClick={!this.state.DeptdialTextField ? this.reClick : this.helpClick} style={{ padding: "0px", minWidth: "5px", position: 'relative', top: '10px', left: "836px" }}>
-                        <SearchIcon fontSize="medium" />
-                    </Button>
+
                 </CustomGridContainer >
 
                 <Grid sx={{ position: 'relative', display: 'flex', width: '100%' }}>
-                    <Grid container sx={{ width: '22%', height: 670, border: '1px solid #EAEAEA', backgroundColor: "#FCFCFC" }}>
+                    <Grid container sx={{ width: '25%', height: 730, border: '1px solid #EAEAEA', backgroundColor: "#FCFCFC" }}>
 
                         <Grid item sx={{
                             mb: 1,
@@ -1055,8 +1083,9 @@ class DeptMgmtComponent extends Component {
                         <Grid item sx={{
                             pl: 1,
                             pr: 1,
+                            pb: 1,
                             width: "100%",
-                            height: "calc(100% - 5%)",
+                            height: "calc(100% - 7%)",
                             overflowY: "auto",
                         }}>
                             <CustomTreeView
@@ -1065,7 +1094,7 @@ class DeptMgmtComponent extends Component {
                                 onNodeToggle={this.handleToggle}
                                 defaultCollapseIcon={<ExpandMoreIcon />}
                                 defaultExpandIcon={<ChevronRightIcon />}
-                                sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
+                                // sx={{ height: 110, flexGrow: 1, maxWidth: 400 }}
                             >
                                 {trees}
                             </CustomTreeView>

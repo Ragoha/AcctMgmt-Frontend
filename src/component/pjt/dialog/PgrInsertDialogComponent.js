@@ -91,11 +91,11 @@ class PgrInsertDialogComponent extends Component {
 
     insertPgr = (data) => {
         PgrService.insertPgr({
-          accessToken: this.props.accessToken,
-          coCd: this.props.coCd,
-          Pgr: data,
+            accessToken: this.props.accessToken,
+            coCd: this.props.coCd,
+            Pgr: data,
         }).then(() => {
-          this.initPgr();
+            this.initPgr();
         });
     }
 
@@ -113,11 +113,11 @@ class PgrInsertDialogComponent extends Component {
     handleClickDelete = () => {
         console.log(this.state.selectedRow.pgrCd);
         PgrService.deletePgr({
-          accessToken: this.props.accessToken,
-          coCd: this.state.selectedRow.coCd,
-          pgrCd: this.state.selectedRow.pgrCd,
+            accessToken: this.props.accessToken,
+            coCd: this.state.selectedRow.coCd,
+            pgrCd: this.state.selectedRow.pgrCd,
         }).then(() => {
-          this.initPgr();
+            this.initPgr();
         });
     };
 
@@ -132,22 +132,20 @@ class PgrInsertDialogComponent extends Component {
     };
 
     processRowUpdate = (newRow) => {
-        console.log(newRow);
-
         if (newRow.isNew) {
-            if (newRow.pgrCd !== "" && newRow.pgrNm !== "") {
-                console.log("저장");
-                this.insertPgr(newRow);
+            if (newRow.PgrCd !== "" && newRow.PgrNm !== "") {
+              console.log("저장");
+              this.insertPgr(newRow);
             }
-
+      
             return newRow;
-        } else {
-            console.log("수정");
+          } else {
+            console.log(newRow);
+            console.log(this.state.selectedRow);
             const updatedRow = { ...newRow, isNew: false };
-            this.updatePgr(updatedRow);
-
-            return updatedRow;
-        }
+      
+            return this.state.selectedRow;
+          }
     };
 
     render() {
@@ -186,14 +184,11 @@ class PgrInsertDialogComponent extends Component {
                                 rows={pgrRows}
                                 columns={data.columns.map((col) => {
                                     if (col.field === "pgrCd" || col.field === "pgrNm") {
-                                        return col;
+                                        return {
+                                            ...col,
+                                        };
                                     }
-
-                                    // coCd 열을 수정 불가능하게 만듭니다.
-                                    return {
-                                        ...col,
-                                        // editable: false,
-                                    };
+                                    return col;
                                 })}
                                 showColumnVerticalBorder={true}
                                 showCellVerticalBorder={true}

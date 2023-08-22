@@ -206,9 +206,7 @@ class BgtCD extends Component {
     BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
       .then(rows => {
         this.setState({ rows });
-      }).catch(error => {
-        console.error("Error fetching data:", error);
-      });
+      })
   }
 
   /*---로우 추가 관련된 메서드 start---*/

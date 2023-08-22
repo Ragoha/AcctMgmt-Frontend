@@ -9,6 +9,7 @@ import DeptMgmtComponent from "../component/dept/DeptMgmtComponent";
 import ConfigComponent from "../component/syscfg/ConfigComponent";
 import PjtComponent from "../component/pjt/PjtComponent";
 import { connect } from "react-redux";
+import HomeComponent from "../component/common/HomeComponent";
 
 class MainRouter extends Component {
   render() {
@@ -16,11 +17,12 @@ class MainRouter extends Component {
 
     const defaultRoutes = (
       <>
-        <Route path="ozt/co" element={<CoMgmtComponent />} />
-        <Route path="ozt/div" element={<DivMgmtComponent />} />
-        <Route path="ozt/dept" element={<DeptMgmtComponent />} />
-        <Route path="bgt/bgtcd" element={<BgtCD />} />
-        <Route path="bgt/bgticf" element={<BgtICFComponent />} />
+        <Route path="home" element={<HomeComponent />} />
+        <Route path="co" element={<CoMgmtComponent />} />
+        <Route path="div" element={<DivMgmtComponent />} />
+        <Route path="dept" element={<DeptMgmtComponent />} />
+        <Route path="bgtcd" element={<BgtCD />} />
+        <Route path="bgticf" element={<BgtICFComponent />} />
         <Route path="syscfg" element={<ConfigComponent />} />
         <Route path="pjt" element={<PjtComponent />} />
       </>

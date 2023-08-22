@@ -7,6 +7,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Cookie from "../../storage/Cookie";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import CustomSwal from "./CustomSwal";
 
 class UserInfo extends Component {
   constructor(props) {
@@ -22,11 +23,12 @@ class UserInfo extends Component {
       empEmail: "",
       empTel: "",
       empAuth:"",
+      empOd:"",
     };
     this.role = "";
   }
   componentDidMount() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.props.userInfo;
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth, empOd } = this.props.userInfo;
     this.setState({
       coNm,
       empName,
@@ -37,9 +39,11 @@ class UserInfo extends Component {
       empEmail,
       empTel,
       empAuth,
+      empOd,
     });
   }
   logout = () => {
+    CustomSwal.showCommonToast("info", "오늘도 수고하셨습니다.", "1500");
     // const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
     const userInfo = this.props.userInfo;
@@ -58,12 +62,12 @@ class UserInfo extends Component {
     // });
   };
   render() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.state;
-   
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth, empOd } = this.state;
+    console.log("직책: " , empOd);
     if (empAuth === "ROLE_ADMIN") { 
-      this.role = "관리자"; 
+      this.role = empOd; 
     } else {
-      this.role = "사원"; 
+      this.role = empOd; 
     }
     return (
       <div style={{

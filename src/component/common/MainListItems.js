@@ -9,7 +9,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupsIcon from "@mui/icons-material/Groups";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -44,7 +44,7 @@ class MainListItems extends Component {
 
   setMainHeader = () => {
     this.setState();
-  }
+  };
 
   render() {
     const { openOrganization, openBudget } = this.state;
@@ -57,17 +57,19 @@ class MainListItems extends Component {
         aria-labelledby="nested-list-subheader"
       >
         <Divider />
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: 40 }}>
-            <Tooltip
-              title={this.props.drawerOpen ? "" : "Home"}
-              placement="right"
-            >
-              <HomeIcon />
-            </Tooltip>
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItemButton>
+        <Link to={"home"} style={{ textDecoration: "none", color: "black" }}>
+          <ListItemButton>
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <Tooltip
+                title={this.props.drawerOpen ? "" : "Home"}
+                placement="right"
+              >
+                <HomeIcon />
+              </Tooltip>
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItemButton>
+        </Link>
         <Divider />
 
         <ListItemButton onClick={this.handleOrganizationClick}>
@@ -84,10 +86,7 @@ class MainListItems extends Component {
         </ListItemButton>
         <Collapse in={openOrganization} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <Link
-              to={"ozt/co"}
-              style={{ textDecoration: "none", color: "black" }}
-            >
+            <Link to={"co"} style={{ textDecoration: "none", color: "black" }}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 5 : 2,
@@ -105,10 +104,7 @@ class MainListItems extends Component {
                 <ListItemText primary="회사등록" />
               </ListItemButton>
             </Link>
-            <Link
-              to={"ozt/div"}
-              style={{ textDecoration: "none", color: "black" }}
-            >
+            <Link to={"div"} style={{ textDecoration: "none", color: "black" }}>
               <ListItemButton
                 sx={{
                   pl: this.props.drawerOpen ? 5 : 2,
@@ -127,7 +123,7 @@ class MainListItems extends Component {
               </ListItemButton>
             </Link>
             <Link
-              to={"ozt/dept"}
+              to={"dept"}
               style={{ textDecoration: "none", color: "black" }}
             >
               <ListItemButton
@@ -183,7 +179,7 @@ class MainListItems extends Component {
         <Collapse in={openBudget} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <Link
-              to={"bgt/bgtcd"}
+              to={"bgtcd"}
               style={{ textDecoration: "none", color: "black" }}
             >
               <ListItemButton
@@ -204,7 +200,7 @@ class MainListItems extends Component {
               </ListItemButton>
             </Link>
             <Link
-              to={"bgt/bgticf"}
+              to={"bgticf"}
               style={{ textDecoration: "none", color: "black" }}
             >
               <ListItemButton
