@@ -26,7 +26,7 @@ class BgtCDADDSubDialog extends Component {
       columns: [
         {
           field: "bgtGrCd",
-          headerName: "예산과목그룹코드aa",
+          headerName: "예산과목그룹코드",
           flex: 1,
           headerAlign: "center",
           editable: true,

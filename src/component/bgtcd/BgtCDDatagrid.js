@@ -76,22 +76,24 @@ class BgtCDDatagrid extends Component {
             console.log('수입수출눌렀을때' + params.row.bgtCd + "|")
             let tDataPath = "";
             if (params.row.bgtCd === undefined) {
+                console.log("수입수출이 undefine일때")
                 tDataPath = params.id
                 tDataPath = tDataPath.split("/");
                 tDataPath = tDataPath[tDataPath.length - 1] +","; 
                 console.log(tDataPath);
             }
             if(params.row.bgtCd==="          "){
+                console.log('수입 공백 ')
                 tDataPath = '수입,'
             }
             if(params.row.bgtCd==="           "){
+              console.log('수출 공백 ')
                 tDataPath = '수출,'
             }
             console.log('그럼 tDataPath 가 :' + tDataPath)
             this.props.setClickDataPath(tDataPath)
             return null;
         }
-        console.log('찍었을때 param ')
         console.log(params.row)
         console.log('clickedROw !' + params.row.bgtCd + 'and DataPath ' + params.row.dataPath)
         console.log('isNew까지 체크해볼게 : ' + params.row.isNew)
