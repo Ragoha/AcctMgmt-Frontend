@@ -24,7 +24,6 @@ import {
 } from "../../common/style/CommonStyle";
 
 const columns = [
-  { field: 'check', headerName: '', width: 10, headerAlign: 'center' },
   { field: 'pgrCd', headerName: '프로젝트그룹코드', width: 180, headerAlign: 'center' },
   { field: 'pgrNm', headerName: '프로젝트그룹명', width: 200, headerAlign: 'center' }
 ]
@@ -69,7 +68,10 @@ class PgrDialogComponent extends Component {
   handleSearchPgr = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    PjtService.getPgrBy(this.state.keyword, coCd)
+    const {keyword}= this.state;
+    PjtService.getPgrBy({keyword, coCd,
+      accessToken: this.props.accessToken,
+    })
       .then(
         async (response) => {
           const pgrRows = response.map((row) => ({
@@ -194,6 +196,7 @@ class PgrDialogComponent extends Component {
 }
 const mapStateToProps = (state) => ({
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
 });
 export default connect(mapStateToProps, null, null, { forwardRef: true })(PgrDialogComponent);
 // export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(BgtCD);
