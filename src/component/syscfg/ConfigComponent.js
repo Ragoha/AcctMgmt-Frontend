@@ -12,17 +12,14 @@ import {
   Paper,
   Radio,
   RadioGroup,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Tabs,
-  TextField,
+  TableRow
 } from '@mui/material';
-import {CustomInputLabel, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomGridContainer, CustomTextField } from '../common/style/CommonStyle';
+import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
 
 class ConfigComponent extends React.Component {
   constructor(props) {
@@ -233,35 +230,46 @@ class ConfigComponent extends React.Component {
         <Grid container sx={{ mt: 1 }}>
           <CustomGridContainer
             container
+            direction="row"
+            spacing={2}
             justifyContent="left"
             alignItems="center"
-            spacing={2}
           >
-            <Grid container alignItems="center" direction="row" sx={{ mt: 2, ml: 5 }}>
-              <CustomHeaderInputLabel>회사</CustomHeaderInputLabel>
-              {/* <TextField aria-readonly placeholder={coNm} disabled ></TextField> */}
-              <CustomTextField
-                value={comName}
-                disabled
-                sx={{ ml: 2 }}
-              />
+            <Grid item xs={4}>
+              <Grid container alignItems="center">
+                <CustomInputLabel>부서</CustomInputLabel>
+                <CustomTextField value={comName} disabled />
+              </Grid>
             </Grid>
           </CustomGridContainer>
           <Grid item xs={12}>
-          <CustomInputLabel sx={{fontSize: 18, }}>공통설정</CustomInputLabel>
+            <CustomInputLabel sx={{ fontSize: 18 }}>공통설정</CustomInputLabel>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={8} sx={{ pr: 2 }}>
             <TableContainer component={Paper}>
-              <Table style={{ border: "1px solid #ccc", borderTop:'2px solid black' }}>
+              <Table
+                style={{
+                  border: "1px solid #ccc",
+                  borderTop: "3px solid black",
+                }}
+              >
                 <TableHead sx={{ bgcolor: "beige" }}>
                   <TableRow>
                     <TableCell
-                      style={{ border: "1px solid #ccc", width: "19vh", fontWeight: 'bold'}}
+                      style={{
+                        border: "1px solid #ccc",
+                        width: "19vh",
+                        fontWeight: "bold",
+                      }}
                     >
                       옵션명(option)
                     </TableCell>
                     <TableCell
-                      style={{ border: "1px solid #ccc", width: "10vh", fontWeight: 'bold' }}
+                      style={{
+                        border: "1px solid #ccc",
+                        width: "10vh",
+                        fontWeight: "bold",
+                      }}
                     >
                       설정값(SettingValue)
                     </TableCell>
@@ -282,7 +290,7 @@ class ConfigComponent extends React.Component {
                         {row.option}
                       </TableCell>
                       <TableCell style={{ border: "1px solid #ccc" }}>
-                        {(row[settingsKey])}
+                        {row[settingsKey]}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -291,8 +299,14 @@ class ConfigComponent extends React.Component {
             </TableContainer>
           </Grid>
           {selectedRowData && (
-            <Grid item xs={4} >
-              <Paper style={{ padding: 10, border: '1px solid #d5d5d5', borderTop:'2px solid black' }}>
+            <Grid item xs={4}>
+              <Paper
+                style={{
+                  padding: 10,
+                  border: "1px solid #d5d5d5",
+                  borderTop: "3px solid black",
+                }}
+              >
                 <FormControl component="fieldset" sx={{ width: "30vh" }}>
                   <FormLabel component="label">설정</FormLabel>
                   <RadioGroup
@@ -307,11 +321,15 @@ class ConfigComponent extends React.Component {
                         control={
                           <Radio
                             checked={
-                              selectedRowData.value[idx] === selectedRowData[settingsKey] ||
-                              (this.state.selectedRowId === selectedRowData.id &&
+                              selectedRowData.value[idx] ===
+                                selectedRowData[settingsKey] ||
+                              (this.state.selectedRowId ===
+                                selectedRowData.id &&
                                 optionValue === selectedRowData[settingsKey])
                             }
-                            onChange={(e) => this.handleRadioChange(e, settingsKey)}
+                            onChange={(e) =>
+                              this.handleRadioChange(e, settingsKey)
+                            }
                           />
                         }
                         label={selectedRowData.value[idx] + "." + optionValue}
@@ -322,7 +340,7 @@ class ConfigComponent extends React.Component {
               </Paper>
             </Grid>
           )}
-        </Grid >
+        </Grid>
       </>
     );
   }
