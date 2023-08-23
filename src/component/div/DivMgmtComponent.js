@@ -412,70 +412,70 @@ class DivMgmtComponent extends Component {
               divAddr1: divAddr1,
               insertId: empId,
             })
-            .then((response) => {
-              console.log(response.data);
-              CustomSwal.showCommonToast("success", "사업장 등록되었습니다.");
-
-              console.log(
-                "로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail
-              );
-
-              this.setState({ coCd: coCd });
-              DivsService.getDivision({
-                accessToken: this.props.accessToken,
-                coCd: coCd,
-              }).then((response) => {
+              .then((response) => {
                 console.log(response.data);
-                const coCdList = response.data.map((item) => item.coCd);
-                const divCdList = response.data.map((item) => item.divCd);
-                const divNmList = response.data.map((item) => item.divNm);
-                const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+                CustomSwal.showCommonToast("success", "사업장 등록되었습니다.");
 
-                const insertDt = response.data[0].insertDt;
-                this.setState({
-                  cardCount: cardCount, // state에 값을 저장
-                  coCdList: coCdList,
-                  divCdList: divCdList,
-                  divNmList: divNmList,
+                console.log(
+                  "로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail
+                );
 
-                  focused: divCdList[cardCount - 1],
-                  coCd: coCd,
-                  divCd: divCd,
-                  divNm: divNm,
-                  ceoNm: ceoNm,
-                  jongmok: jongmok,
-                  businessType: businessType,
-                  divNb: divNb,
-                  toNb: toNb,
-                  divZip: divZip,
-                  divAddr: divAddr,
-                  divAddr1: divAddr1,
-                  insertId: insertId,
-                  insertDt: insertDt,
-                  isDivCdEditable: false,
-                  isChanged: false,
-                });
-                CompanyService.getCompany({
+                this.setState({ coCd: coCd });
+                DivsService.getDivision({
                   accessToken: this.props.accessToken,
                   coCd: coCd,
-                })
-                  .then((response) => {
-                    const coNm = response.data[0].coNm;
+                }).then((response) => {
+                  console.log(response.data);
+                  const coCdList = response.data.map((item) => item.coCd);
+                  const divCdList = response.data.map((item) => item.divCd);
+                  const divNmList = response.data.map((item) => item.divNm);
+                  const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
-                    this.setState({
-                      coNm: coNm,
-                    });
-                  })
-                  .catch((error) => {
-                    // 오류 발생 시의 처리
-                    console.error(error);
-                    CustomSwal.showCommonToast(
-                      "warning",
-                      "사업장 등록에 실패했습니다."
-                    );
+                  const insertDt = response.data[0].insertDt;
+                  this.setState({
+                    cardCount: cardCount, // state에 값을 저장
+                    coCdList: coCdList,
+                    divCdList: divCdList,
+                    divNmList: divNmList,
+
+                    focused: divCdList[cardCount - 1],
+                    coCd: coCd,
+                    divCd: divCd,
+                    divNm: divNm,
+                    ceoNm: ceoNm,
+                    jongmok: jongmok,
+                    businessType: businessType,
+                    divNb: divNb,
+                    toNb: toNb,
+                    divZip: divZip,
+                    divAddr: divAddr,
+                    divAddr1: divAddr1,
+                    insertId: insertId,
+                    insertDt: insertDt,
+                    isDivCdEditable: false,
+                    isChanged: false,
                   });
+                  CompanyService.getCompany({
+                    accessToken: this.props.accessToken,
+                    coCd: coCd,
+                  })
+                    .then((response) => {
+                      const coNm = response.data[0].coNm;
+
+                      this.setState({
+                        coNm: coNm,
+                      });
+                    })
+                    .catch((error) => {
+                      // 오류 발생 시의 처리
+                      console.error(error);
+                      CustomSwal.showCommonToast(
+                        "warning",
+                        "사업장 등록에 실패했습니다."
+                      );
+                    });
+                });
               });
-            });
           }
         }
       );
@@ -567,72 +567,72 @@ class DivMgmtComponent extends Component {
       {
         divCd == "0000"
           ? this.setState({
-              coCd: "",
-              coNm: "",
-              divCd: "",
-              divNm: "",
-              ceoNm: "",
-              jongmok: "",
-              businessType: "",
-              divNb: "",
-              toNb: "",
-              divZip: "",
-              divAddr: "",
-              divAddr1: "",
-              insertDt: "",
-              isDivCdEditable: true,
-            })
+            coCd: "",
+            coNm: "",
+            divCd: "",
+            divNm: "",
+            ceoNm: "",
+            jongmok: "",
+            businessType: "",
+            divNb: "",
+            toNb: "",
+            divZip: "",
+            divAddr: "",
+            divAddr1: "",
+            insertDt: "",
+            isDivCdEditable: true,
+          })
           : DivsService.getDiv({
-              accessToken: this.props.accessToken,
-              coCd: coCd,
-              divCd: divCd,
-            })
+            accessToken: this.props.accessToken,
+            coCd: coCd,
+            divCd: divCd,
+          })
 
-              .then((response) => {
-                const coCd = response.data[0].coCd;
-                const divCd = response.data[0].divCd;
-                const divNm = response.data[0].divNm;
-                const ceoNm = response.data[0].ceoNm;
-                const jongmok = response.data[0].jongmok;
-                const businessType = response.data[0].businessType;
-                const divNb = response.data[0].divNb;
-                const toNb = response.data[0].toNb;
-                const divZip = response.data[0].divZip;
-                const divAddr = response.data[0].divAddr;
-                const divAddr1 = response.data[0].divAddr1;
-                const insertDt = response.data[0].insertDt;
+            .then((response) => {
+              const coCd = response.data[0].coCd;
+              const divCd = response.data[0].divCd;
+              const divNm = response.data[0].divNm;
+              const ceoNm = response.data[0].ceoNm;
+              const jongmok = response.data[0].jongmok;
+              const businessType = response.data[0].businessType;
+              const divNb = response.data[0].divNb;
+              const toNb = response.data[0].toNb;
+              const divZip = response.data[0].divZip;
+              const divAddr = response.data[0].divAddr;
+              const divAddr1 = response.data[0].divAddr1;
+              const insertDt = response.data[0].insertDt;
+
+              this.setState({
+                coCd: coCd,
+                divCd: divCd,
+                divNm: divNm,
+                ceoNm: ceoNm,
+                jongmok: jongmok,
+                businessType: businessType,
+                divNb: divNb,
+                toNb: toNb,
+                divZip: divZip,
+                divAddr: divAddr,
+                divAddr1: divAddr1,
+                insertDt: insertDt,
+                isDivCdEditable: false,
+              });
+              CompanyService.getCompany({
+                accessToken: this.props.accessToken,
+                coCd: coCd,
+              }).then((response) => {
+                const coNm = response.data[0].coNm;
 
                 this.setState({
-                  coCd: coCd,
-                  divCd: divCd,
-                  divNm: divNm,
-                  ceoNm: ceoNm,
-                  jongmok: jongmok,
-                  businessType: businessType,
-                  divNb: divNb,
-                  toNb: toNb,
-                  divZip: divZip,
-                  divAddr: divAddr,
-                  divAddr1: divAddr1,
-                  insertDt: insertDt,
-                  isDivCdEditable: false,
+                  coNm: coNm,
                 });
-                CompanyService.getCompany({
-                  accessToken: this.props.accessToken,
-                  coCd: coCd,
-                }).then((response) => {
-                  const coNm = response.data[0].coNm;
-
-                  this.setState({
-                    coNm: coNm,
-                  });
-                });
-              })
-              .catch((error) => {
-                // 오류 발생 시의 처리
-                console.error(error);
-                // alert("중복된 회사 또는 모두 입력해주세요");
               });
+            })
+            .catch((error) => {
+              // 오류 발생 시의 처리
+              console.error(error);
+              // alert("중복된 회사 또는 모두 입력해주세요");
+            });
       }
     }
   };
@@ -894,11 +894,11 @@ class DivMgmtComponent extends Component {
                     const { coCd, empId, empEmail } = userInfo;
                     console.log(
                       "로그인 유저 데이터: " +
-                        coCd +
-                        "/" +
-                        empId +
-                        "/" +
-                        empEmail
+                      coCd +
+                      "/" +
+                      empId +
+                      "/" +
+                      empEmail
                     );
 
                     this.setState({ coCd: coCd });
@@ -1161,6 +1161,7 @@ class DivMgmtComponent extends Component {
           spacing={2}
           justifyContent="left"
           alignItems="center"
+          position='relative'
         >
           <Grid item xs={4}>
             <Grid container alignItems="center">
@@ -1179,23 +1180,21 @@ class DivMgmtComponent extends Component {
                   ),
                 }}
               ></CustomTextField>
-
-              <CustomSearchButton
-                variant="outlined"
-                onClick={
-                  !this.state.DivdialTextField ? this.reClick : this.helpClick
-                }
-                style={{
-                  minWidth: "5px",
-                  position: "absolute",
-                  // top: "7px",
-                  left: "1810px",
-                }}
-              >
-                <SearchIcon fontSize="medium" />
-              </CustomSearchButton>
             </Grid>
           </Grid>
+          <CustomSearchButton
+            variant="outlined"
+            onClick={
+              !this.state.DivdialTextField ? this.reClick : this.helpClick
+            }
+            sx={{
+              minWidth: "5px",
+              position: "absolute",
+              bottom: '25px',
+              right: "0px",
+            }}>
+            <SearchIcon fontSize="medium" />
+          </CustomSearchButton>
         </CustomGridContainer>
 
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -1259,7 +1258,7 @@ class DivMgmtComponent extends Component {
                   width: "100%",
                   height: "60px",
                   marginTop: 1,
-                  padding:0,
+                  padding: 0,
                   backgroundColor: "white",
                   color: "#5D5D5D",
                   display: "flex",
