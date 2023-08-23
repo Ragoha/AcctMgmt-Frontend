@@ -11,7 +11,7 @@ class HomeComponent extends Component {
     this.state = {
       menuList: [
         { title: "[조직관리] 회사등록", link: "acctmgmt/co" },
-        { title: "[조직관리] 업장등록", link: "acctmgmt/div" },
+        { title: "[조직관리] 사업장등록", link: "acctmgmt/div" },
         { title: "[조직관리] 부서등록", link: "acctmgmt/dept" },
         { title: "[조직관리] 프로젝트등록", link: "acctmgmt/co" },
         { title: "[예산관리] 예산과목등록", link: "acctmgmt/bgtcd" },
@@ -24,7 +24,7 @@ class HomeComponent extends Component {
   }
 
   handleOptionSelect = (event, value) => {
-    console.log(value.length);
+    // console.log(value.length);
 
     const menuList = this.state.menuList.map((menu) => {
       if (menu.title === value) {
