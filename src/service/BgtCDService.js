@@ -22,7 +22,7 @@ class BgtCDService {
       bgtCdSearchText = "";
     }
     console.log("coCd" + coCd + "/gisu:" + gisu + "/bgtCdSearchText:" + bgtCdSearchText + "/groupCd:" + groupCd);
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getSearchData", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getsearchdata", {
       params: {
         coCd: coCd,
         gisu: gisu,
@@ -40,7 +40,7 @@ class BgtCDService {
 
   getGridData(coCd, groupcd, gisu, accessToken) {
     const returnData = axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgtcd/getGridData", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgtcd", {//getGridData
         params: {
           coCd: coCd,
           groupcd: groupcd,
@@ -61,7 +61,7 @@ class BgtCDService {
   getDetailInfo(bgtCd, accessToken) {//columns을 클릭했을때 해당 항목의 DetailInfo를 가져오는 코드
     console.log("2.BudgetReg 서비스의 getDetailInfo : " + bgtCd);
     const returnData1 = axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgtcd/getDetailInfo", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgtcd/detailinfo", {
         params: {
           bgtCd: bgtCd
         }
@@ -78,7 +78,7 @@ class BgtCDService {
     return returnData1;
   }
   getBgtCDTerm(CO_CD, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getBgtCDTerm", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcdterm", {
       params: {
         CO_CD: CO_CD
       }
@@ -91,9 +91,19 @@ class BgtCDService {
       .then((response) => response.data);
     return returnData;
   }
+  updateBgtCDTerm(data, accessToken) {
+    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcdterm", data, {
+      headers: {
+        "access-token": accessToken,
+      },
+      withCredentials: true,
+    })
+      .then((response) => response.data);
+    return returnData;
+  }
+  
   getPath(bgtCd, accessToken) {
-    console.log('서비스에서 bgtCd:' + bgtCd + "이렇게 보낼것이야")
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getPath", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getpath", {
       params: {
         bgtCd: bgtCd
       }
@@ -106,18 +116,9 @@ class BgtCDService {
     console.log(returnData)
     return returnData;
   }
-  updateBgtCDTerm(data, accessToken) {
-    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/updateBgtCDTerm", data, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    })
-      .then((response) => response.data);
-    return returnData;
-  }
+  
   insertBgtGr(data, accessToken) {
-    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/insertBgtGr", data, {
+    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", data, {
       headers: {
         "access-token": accessToken,
       },
@@ -125,7 +126,7 @@ class BgtCDService {
     })
   }
   insertAddRow(data, accessToken) {
-    const returnData = axios.post(ACCTMGMT_API_BASE_URL + "/bgtcd/insertAddRow", data, {
+    const returnData = axios.post(ACCTMGMT_API_BASE_URL + "/bgtcd", data, {//insertAddRow
       headers: {
         "access-token": accessToken,
       },
@@ -135,7 +136,7 @@ class BgtCDService {
     return returnData;
   }
   getBgtGrData(coCd, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getBgtGrData", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", {
       params: {
         coCd: coCd
       }
@@ -149,7 +150,7 @@ class BgtCDService {
     return returnData;
   }
   getDefNmFromBGTCD_TERM(coCd, divFg, accessToken) {
-    const returnData = axios(ACCTMGMT_API_BASE_URL + "/bgtcd/getDefNmFromBGTCD_TERM", {
+    const returnData = axios(ACCTMGMT_API_BASE_URL + "/bgtcd/getdefnmfrombgtcdterm", {
       params: {
         coCd: coCd,
         divFg: divFg
@@ -164,7 +165,7 @@ class BgtCDService {
   }
   getAddRowData(data, accessToken) {
     console.log("getAddRowData서비스 !")
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getAddRowData", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getaddrowdata", {
       params: {
         bgtCd: data.bgtCd,
         coCd: data.coCd,
@@ -181,7 +182,7 @@ class BgtCDService {
     return returnData;
   }
   getBgtCDdialog(coCd, keyword,accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getBgtCDdialog", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcddialog", {
       params: {
         coCd: coCd,
         keyword: keyword ,
@@ -195,7 +196,7 @@ class BgtCDService {
     return returnData;
   }
   getBgtCdLikeSearch(data, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getBgtCdLikeSearch", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getbgtcdlikesearch", {
       params: {
         coCd: data.coCd,
         keyword: data.keyword
@@ -209,7 +210,7 @@ class BgtCDService {
     return returnData;
   }
   getinitGisuList(coCd, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getinitGisuList", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/gisu", {
       params: {
         coCd: coCd
       }
@@ -224,7 +225,7 @@ class BgtCDService {
     return returnData;
   }
   getBgtGrSearch(data, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getBgtGrSearch", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getbgtgrsearch", {
       params: {
         coCd: data.coCd,
         keyword: data.keyword,
@@ -239,7 +240,7 @@ class BgtCDService {
     return returnData;
   }
   getinitBgtGrSearch(coCd, keyword ,accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getinitBgtGrSearch", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getinitbgtgrsearch", {
       params: {
         coCd: coCd,
         keyword: keyword
@@ -254,7 +255,7 @@ class BgtCDService {
     return returnData;
   }
   getbgtGrSearchKeywordData(data,accessToken){
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getbgtGrSearchKeywordData" , {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getbgtgrsearchkeyworddata" , {
       params:{
         coCd : data.coCd,
         keyword: data.keyword
@@ -271,12 +272,10 @@ class BgtCDService {
   updateBgtNm(data, accessToken) {
     console.log('updateBgtNm')
     console.log(data)
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/updateBgtNm", {
-      params: {
+    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd", {//updateBgtNm
         coCd: data.coCd,
         bgtCd: data.bgtCd,
         bgtNm: data.bgtNm,
-      }
     }, {
       headers: {
         "access-token": accessToken,
@@ -287,7 +286,7 @@ class BgtCDService {
     return returnData;
   }
   checkTopData(data, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/checkTopData", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/checktopdata", {
       params: {
         coCd: data.coCd,
         gisu: data.gisu,
@@ -310,7 +309,7 @@ class BgtCDService {
     console.log('서비스의 updateDetailInfo');
     console.dir(updateData)
     console.log('서비스의 updateDetailInfo');
-    return axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/updateDetailInfo", updateData, {
+    return axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/detailinfo", updateData, {
       headers: {
         "access-token": accessToken,
       },
@@ -322,7 +321,7 @@ class BgtCDService {
 
   /*---delete start ---*/
   deleteRow(data, accessToken) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd/deleteRow", { 
+    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd", { 
       params: { 
         bgtCd: data.bgtCd ,
         coCd : data.coCd
@@ -334,7 +333,7 @@ class BgtCDService {
     }).then((response) => response.data)
   }
   deleteBgtGr(data, accessToken) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd/deleteBgtGr", {
+    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd/deletebgtgr", {
       params: {
         coCd: data.coCd,
         bgtGrCd: data.bgtGrCd

@@ -23,6 +23,11 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   constructor(props) {
     super(props);
     this.snackBarRef = React.createRef();
+    this.ctlFgControl = React.createRef();
+    this.bgajustFgControl = React.createRef();
+    this.bottomFgControl = React.createRef();
+    this.bizFgControl = React.createRef();
+
     this.state = {
       // Detail_Info_FormControle 의 menuValues
       detailInfo: props.detailInfo,
@@ -44,11 +49,17 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bizFg: null,
       bgtCd: null,
       toDt : dayjs(new Date()).format("YYYY-MM-DD"),
+      // disabled: false
       /*업데이트 하기위해 조회조건의 bgt_cd값이 필요함 */
       //prevBgtCd: props.prevBgtCd,
     }
   }
-
+  disableFlag=(flag)=>{
+    this.ctlFgControl.current.disableFlag(flag);
+    this.bgajustFgControl.current.disableFlag(flag);
+    this.bottomFgControl.current.disableFlag(flag);
+    this.bizFgControl.current.disableFlag(flag);
+  }
   getBgtCd = () => {
     return this.state.bgtCd;
   }
@@ -231,13 +242,13 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               title={"예산통제구분"}
               ctlFg={ctlFg}
               menuItemValues={menuItemValues[0]}
-              ref={(ref) => (this.ctlFgControl = ref)}
+              ref={this.ctlFgControl}
             />
             <BgtCDDetailInfoFormControl
               title={"예산전용구분"}
               bgajustFg={bgajustFg}
               menuItemValues={menuItemValues[1]}
-              ref={(ref) => (this.bgajustFgControl = ref)}
+              ref={this.bgajustFgControl}
             />
 
             <Grid
@@ -300,13 +311,13 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               title={"최하위과목여부"}
               bottomFg={bottomFg}
               menuItemValues={menuItemValues[2]}
-              ref={(ref) => (this.bottomFgControl = ref)}
+              ref={this.bottomFgControl}
             />
             <BgtCDDetailInfoFormControl
               title={"구매성격"}
               bizFg={bizFg}
               menuItemValues={menuItemValues[3]}
-              ref={(ref) => (this.bizFgControl = ref)}
+              ref={this.bizFgControl}
             />
           </Grid>
         </Grid>

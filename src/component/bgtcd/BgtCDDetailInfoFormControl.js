@@ -22,15 +22,40 @@ class BgtCDDetailInfoFormControl extends Component {
     }
   }
   componentDidMount(){
+    if(this.state.title ==="회계계정과목"){this.setState({disable:true},()=>console.log('회계계정과목임'))}
+  }
+
+  disableFlag=(flag)=>{
+    console.log('최후의 순간 ')
     if(this.state.title ==="회계계정과목"){
-      this.setState({disable:true},()=>console.log('회계계정과목임'))
+      this.setState({disable:true})
+    }else{
+      console.log('찍힘 ?:'+flag);
+      this.setState({disable:flag})
+      // if(this.state.disable==false){
+      //   this.setState({defaultValue:""})
+      // }
+      // else{
+      //   var newDefaultValue ="";
+      //   if(this.props.ctlFg ===undefined){
+      //     newDefaultValue = this.props.ctlFg;
+      //   }
+      //   if(this.props.bgajustFg ===undefined){
+      //     newDefaultValue = this.props.bgajustFg;
+      //   }
+      //   if(this.props.bottomFg ===undefined){
+      //     newDefaultValue = this.props.bottomFg;
+      //   }
+      //   if(this.props.bizFg ===undefined){
+      //     newDefaultValue = this.props.bizFg;
+      //   }
+      //   this.setState({defaultValue:this.props.menuItemValues[newDefaultValue]})
+      // }  
     }
   }
   componentDidUpdate(prevProps) {
-    //이전의 props 에서의 값과 비교했을때 값이 달라진다면 ?  
-    
     if (this.props.ctlFg !== prevProps.ctlFg) {
-      this.setState({ ctlFg: this.props.ctlFg }, () => {
+        this.setState({ ctlFg: this.props.ctlFg }, () => {
         const newDefaultValue = this.state.ctlFg;
         this.setState({ defaultValue: this.props.menuItemValues[newDefaultValue] });
       });

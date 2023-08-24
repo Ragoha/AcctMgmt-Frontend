@@ -83,26 +83,32 @@ class BgtCD extends Component {
     this.setState({ rows: row })
   }
   /* 예산그룹검색쪽  */
-  handleBgtGrSearchInputChange = async (event) => {
+  handleBgtGrSearchInputChange =  (event) => {
     // console.log('handleBgtGrSearchInputChange')
     const { name, value } = event.target;
     // console.log('name : ' + name);
-    // console.log('value : ' + value);
-    this.setState({ [name]: "" });
-    await this.setState({ [name]: value });
+    this.setState({ [name]: value });
   }
   handleBgtGrSearchKeyDown = (params) => {
     console.log('bgtGrSearchText...')
+    // console.log(params)
+    // console.log(this.state.bgtGrSearchText)
     if (params.code === "Enter") {
-      this.BgtGrSearch.current.initBgtGrSearch();
+      // console.log("엔터엔터엔터엔터엔터엔터엔터엔터엔터엔터")
+      this.setState({bgtGrSearchText:this.state.bgtGrSearchText})
+      this.BgtGrSearch.current.searchIconClick();
       this.BgtGrSearch.current.setTextFieldAndDataGrid(this.state.bgtGrSearchText);
       this.BgtGrSearchOpen();
     }
-    
+    if(params.code==="Backspace"){
+      this.setState({bgtGrSearchText:""})
+    }
+    //console.log(this.state.bgtGrSearchText)
   }
   /* 예산과목검색 */
   handleInputChange = async (event) => {
     console.log('handleInputChange')
+    // console.log(event)
     const { name, value } = event.target;
     // console.log('name : ' + name);
     // console.log('value : ' + value);
@@ -122,6 +128,9 @@ class BgtCD extends Component {
     if (params.code === "Enter") {
       this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
       this.BgtCDSubSearch.current.handleUp();
+    } 
+    if(params.code ==="Backspace"){
+      this.setState({bgtCdSearchText:""})
     }
   }
   /*--기수 start --*/
@@ -144,11 +153,11 @@ class BgtCD extends Component {
       
   }
   changeGisuValue = async (event, child) => {
-    console.log(event)
-    console.log(child)
+    // console.log(event)
+    // console.log(child)
     const index = event.target.value-1;
     // const index = this.state.gisuList.findIndex((value) => value === child);
-    console.log("indxd가 ? : " + index)
+    // console.log("indxd가 ? : " + index)
     await this.setState({ gisuDefaultValue: event.target.value, dataindex: index});
     this.setState({gisuRangeText: this.state.gisuRangeRows[index]});
   }
@@ -177,11 +186,11 @@ class BgtCD extends Component {
     const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
     this.setState({ rows: tmpRow })
     const gisu = this.state.gisuDefaultValue;
-    console.log(groupcd);
+    // console.log(groupcd);
     if (groupcd === undefined) {
       groupcd = "전체"
     }
-    console.log('데이터체크')
+    // console.log('데이터체크')
     const coCd= this.props.userInfo.coCd;
     const accessToken = this.props.accessToken;
     BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
@@ -189,8 +198,12 @@ class BgtCD extends Component {
         this.setState({ rows });
       })
   }
-
   /*---로우 추가 관련된 메서드 start---*/
+  disableFlag=(flag)=>{
+    console.log("bgtcd 플래그:"+flag)
+    this.BgtCDDetailInfo.current.disableFlag(flag);
+  }
+
   chkFlag = (value) => {
     this.setState({
       AddRowFlag:value,
@@ -204,7 +217,7 @@ class BgtCD extends Component {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const  coCd = this.props.userInfo.coCd;
     const accessToken= this.props.accessToken;
-    console.log("여기가아니였어 ? 맞을텐ㄷ")
+    // console.log("여기가아니였어 ? 맞을텐ㄷ")
     console.log(tDivFg)
     if(this.state.AddRowFlag ===true){
       console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
@@ -278,9 +291,6 @@ class BgtCD extends Component {
     //   CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
     //   return null ; 
     // }
-
-
-
 
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
@@ -539,7 +549,7 @@ class BgtCD extends Component {
                 name="bgtGrSearchText"
                 value={this.state.bgtGrSearchText}
                 onChange={this.handleBgtGrSearchInputChange}
-                onKeyPress={this.handleBgtGrSearchKeyDown}
+                onKeyDown={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
                 inputProps={{ maxLength: 8}}
@@ -609,6 +619,7 @@ class BgtCD extends Component {
               getDataGridRows={this.getDataGridRows}
               setClickedData={this.setClickedData}
               setClickDataPath={this.setClickDataPath}
+              disableFlag={this.disableFlag}
             />
           </Grid>
           <Grid item xs={5}>
