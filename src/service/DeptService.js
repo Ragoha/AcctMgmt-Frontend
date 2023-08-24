@@ -4,50 +4,19 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class DeptService {
 
-    getDeptList(data) {
+    getDepartment(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/dept", {
+            .get(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd + "/" + data.deptCd, {
                 headers: {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                coCd: data.coCd,
-                divCd: data.divCd,
-                deptCd: data.deptCd,
-                deptNm: data.deptNm,
-                deptZip: data.deptZip,
-                deptAddr: data.deptAddr,
-                deptAddr1: data.deptAddr1
             })
-    }
+    };
 
-    getDept(data) {
+    insertDept(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/sdept", {
-                headers: {
-                    "access-token": data.accessToken,
-                },
-                withCredentials: true,
-                params :{
-                    coCd: data.coCd
-                }
-            })
-};
-
-getDepartment(data) {
-    return axios
-        .get(ACCTMGMT_API_BASE_URL + "/ozt/sdepart", {
-            headers: {
-                "access-token": data.accessToken,
-            },
-            withCredentials: true,
-            params :{deptCd: data.deptCd}
-        })
-};
-
-insertDept(data) {
-    return axios
-            .post(ACCTMGMT_API_BASE_URL + "/ozt/idept", {
+            .post(ACCTMGMT_API_BASE_URL + "/dept", {
                 coCd: data.coCd,
                 divCd: data.divCd,
                 deptCd: data.deptCd,
@@ -56,96 +25,82 @@ insertDept(data) {
                 deptAddr: data.deptAddr,
                 deptAddr1: data.deptAddr1,
                 insertId: data.insertId
-            },{
+            }, {
                 headers: {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true
             })
-};
+    };
 
-updateDept(data) {
-    console.log(data);
-    return axios
-        .put(ACCTMGMT_API_BASE_URL + "/ozt/udept", {
-            deptCd: data.deptCd,
-            deptNm: data.deptNm,
-            deptZip: data.deptZip,
-            deptAddr: data.deptAddr,
-            deptAddr1: data.deptAddr1,
-            
-        },{
-            headers: {
-              "access-token": data.accessToken,
-            },
-            withCredentials: true
-          })
-};
+    updateDept(data) {
+        console.log(data);
+        return axios
+            .put(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd + "/" + data.deptCd, {
+                deptNm: data.deptNm,
+                deptZip: data.deptZip,
+                deptAddr: data.deptAddr,
+                deptAddr1: data.deptAddr1,
 
-deleteDept(data) {
-    return axios
-        .delete(ACCTMGMT_API_BASE_URL + "/ozt/ddept",{
-            headers: {
-              "access-token": data.accessToken,
-            },
-            withCredentials: true,
-            params :{deptCd:data.deptCd}
-          })
-};
+            }, {
+                headers: {
+                    "access-token": data.accessToken,
+                },
+                withCredentials: true
+            })
+    };
 
-getDivDept(data) {
-    return axios
-        .get(ACCTMGMT_API_BASE_URL + "/ozt/sdivdept2", {
-            headers: {
-                "access-token": data.accessToken,
-            },
-            withCredentials: true,
-            params :{
-                coCd: data.coCd
-            }
-        })
-};
+    deleteDept(data) {
+        return axios
+            .delete(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd + "/" + data.deptCd, {
+                headers: {
+                    "access-token": data.accessToken,
+                },
+                withCredentials: true,
+            })
+    };
 
-getDivCo(data) {
-    return axios
-        .get(ACCTMGMT_API_BASE_URL + "/ozt/stcocd", {
-            headers: {
-                "access-token": data.accessToken,
-            },
-            withCredentials: true,
-            params :{
-                coCd: data.coCd
-            }
-        })
-};
+    getDivDept(data) {
+        return axios
+            .get(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd, {
+                headers: {
+                    "access-token": data.accessToken,
+                },
+                withCredentials: true,
+            })
+    };
 
-getDivsDept(data) {
-    return axios
-        .get(ACCTMGMT_API_BASE_URL + "/ozt/stdivcd", {
-            headers: {
-                "access-token": data.accessToken,
-            },
-            withCredentials: true,
-            params :{
-                divCd: data.divCd
-            }
-        })
-};
 
-getDeptBydeptCdAnddeptNm(data) {
-    return axios
-        .get(ACCTMGMT_API_BASE_URL + "/ozt/dept/search", {
-            headers: {
-                "access-token": data.accessToken,
-              },
-              withCredentials: true,
-            params: {
-                coCd: data.coCd,
-                keyword: data.keyword
-            },
-        })
-        .then((response) => response.data);
-}
+    getDeptBydeptCdAnddeptNm(data) {
+        console.log(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/" + data.keyword);
+
+        if (data.keyword) {
+            return axios
+                .get(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd + "/" + data.keyword, {
+                    headers: {
+                        "access-token": data.accessToken,
+                    },
+                    withCredentials: true,
+                    params: {
+                        // coCd: data.coCd,
+                        // keyword: data.keyword
+                    },
+                })
+                .then((response) => response.data);
+        } else {
+            return axios.get(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd, {
+                headers: {
+                    "access-token": data.accessToken,
+                },
+                withCredentials: true,
+                params: {
+                    // coCd: data.coCd,
+                    // keyword: data.keyword
+                },
+            })
+                .then((response) => response.data);
+        }
+    }
 
 }
 export default new DeptService();
