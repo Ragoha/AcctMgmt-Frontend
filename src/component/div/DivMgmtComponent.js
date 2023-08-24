@@ -690,12 +690,12 @@ class DivMgmtComponent extends Component {
       .then((response) => {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
-        const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
+        // const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
         const divNmList = response.data.map((item) => item.divNm);
         const cardCount = response.data.length;
 
         const coCd = response.data[0].coCd;
-        const coNm = response.data[0].coNm;
+        // const coNm = response.data[0].coNm;
         const divCd = response.data[0].divCd;
         const divNm = response.data[0].divNm;
         const jongmok = response.data[0].jongmok;
@@ -710,13 +710,13 @@ class DivMgmtComponent extends Component {
         this.setState({
           cardCount: cardCount, //??????
           coCdList: coCdList,
-          coNmList: coNmList, // 하고나서 coNm 불러오는 것도 해야함!!
+          // coNmList: coNmList, // 하고나서 coNm 불러오는 것도 해야함!!
           divCdList: divCdList,
           divNmList: divNmList,
 
           focused: coCd,
           coCd: coCd,
-          coNm: coNm,
+          // coNm: coNm,
           divCd: divCd,
           divNm: divNm,
           jongmok: jongmok,
@@ -1184,9 +1184,7 @@ class DivMgmtComponent extends Component {
           </Grid>
           <CustomSearchButton
             variant="outlined"
-            onClick={
-              !this.state.DivdialTextField ? this.reClick : this.helpClick
-            }
+            onClick={this.reClick}
             sx={{
               minWidth: "5px",
               position: "absolute",
@@ -1216,7 +1214,7 @@ class DivMgmtComponent extends Component {
                 alignItems: "center",
                 width: "100%",
                 backgroundColor: "#FCFCFC",
-                borderBottom: "2px solid #000",
+                borderBottom: "3px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 사업장:</CustomInputLabel>
@@ -1283,7 +1281,7 @@ class DivMgmtComponent extends Component {
               </Grid>
             </Grid>
 
-            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA", borderTop: "3px solid black"  }}>
               <Grid
                 item
                 xs={2}
@@ -1291,7 +1289,6 @@ class DivMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1305,7 +1302,6 @@ class DivMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
@@ -1315,7 +1311,8 @@ class DivMgmtComponent extends Component {
                     xs={4}
                     sx={{ ml: 2 }}
                     value={coCd + " . " + coNm}
-                    InputProps={{ readOnly: true }}
+                    // InputProps={{ readOnly: true }}
+                    disabled={true}
                   ></CustomWideTextField> //disabled={true}
                 ) : (
                   <FormControl
@@ -1349,7 +1346,6 @@ class DivMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1365,7 +1361,6 @@ class DivMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
