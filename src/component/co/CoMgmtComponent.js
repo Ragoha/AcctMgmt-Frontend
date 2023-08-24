@@ -892,7 +892,7 @@ class CoMgmtComponent extends Component {
           </Grid>
           <CustomSearchButton
             variant="outlined"
-            onClick={!this.state.CodialTextField ? this.reClick : this.helpClick}
+            onClick={this.reClick}
             sx={{
               minWidth: "5px",
               position: "absolute",
@@ -922,7 +922,7 @@ class CoMgmtComponent extends Component {
                 alignItems: "center",
                 width: "100%",
                 backgroundColor: "#FCFCFC",
-                borderBottom: "2px solid #000",
+                borderBottom: "3px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
@@ -987,7 +987,7 @@ class CoMgmtComponent extends Component {
                 </CustomInputLabel>
               </Grid>
             </Grid>
-            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA",borderTop:"3px solid black" }} >
               <Grid
                 item
                 xs={2}
@@ -995,7 +995,6 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1009,7 +1008,6 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
@@ -1033,7 +1031,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
+                  
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1047,7 +1045,6 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                 }}
               >

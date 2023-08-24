@@ -4,30 +4,30 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class DivsService {
 
-    getDivsList(data) {
-        return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/div", {
-                headers: {
-                    "access-token": data.accessToken,
-                },
-                withCredentials: true,
-                coCd: data.coCd,
-                divCd: data.divCd,
-                divNm: data.divNm,
-                ceoNm: data.ceoNm,
-                jongmok: data.jongmok,
-                businessType: data.businessType,
-                divNb: data.divNb,
-                toNb: data.toNb,
-                divZip: data.divZip,
-                divAddr: data.divAddr,
-                divAddr1: data.divAddr1
-            })
-    }
+    // getDivsList(data) {
+    //     return axios
+    //         .get(ACCTMGMT_API_BASE_URL + "/ozt/div", {
+    //             headers: {
+    //                 "access-token": data.accessToken,
+    //             },
+    //             withCredentials: true,
+    //             coCd: data.coCd,
+    //             divCd: data.divCd,
+    //             divNm: data.divNm,
+    //             ceoNm: data.ceoNm,
+    //             jongmok: data.jongmok,
+    //             businessType: data.businessType,
+    //             divNb: data.divNb,
+    //             toNb: data.toNb,
+    //             divZip: data.divZip,
+    //             divAddr: data.divAddr,
+    //             divAddr1: data.divAddr1
+    //         })
+    // }
 
     getDivision(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/sdiv", {
+            .get(ACCTMGMT_API_BASE_URL + "/div", {
                 headers: {
                     "access-token": data.accessToken,
                 },
@@ -41,7 +41,7 @@ class DivsService {
 
     getDiv(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/sdivi", {
+            .get(ACCTMGMT_API_BASE_URL + "/div", {
                 headers: {
                     "access-token": data.accessToken,
                 },
@@ -54,23 +54,9 @@ class DivsService {
             )
     };
 
-    // getCoCd(data) {
-    //     return axios
-    //         .get(ACCTMGMT_API_BASE_URL + "/ozt/scodi", {
-    //             headers: {
-    //                 "access-token": data.accessToken,
-    //             },
-    //             withCredentials: true,
-    //             params: {
-    //                 divCd: data.divCd
-    //             }
-    //         }
-    //         )
-    // };
-
     insertDivs(data) {
         return axios
-            .post(ACCTMGMT_API_BASE_URL + "/ozt/idiv", {
+            .post(ACCTMGMT_API_BASE_URL + "/div", {
                 coCd: data.coCd,
                 divCd: data.divCd,
                 divNm: data.divNm,
@@ -94,7 +80,7 @@ class DivsService {
     updateDivs(data) {
         console.log(data);
         return axios
-            .put(ACCTMGMT_API_BASE_URL + "/ozt/udiv", {
+            .put(ACCTMGMT_API_BASE_URL + "/div", {
                 divCd: data.divCd,
                 divNm: data.divNm,
                 ceoNm: data.ceoNm,
@@ -117,7 +103,7 @@ class DivsService {
 
     deleteDivs(data) {
         return axios
-            .delete(ACCTMGMT_API_BASE_URL + "/ozt/ddiv",{
+            .delete(ACCTMGMT_API_BASE_URL + "/div",{
                 headers: {
                   "access-token": data.accessToken,
                 },

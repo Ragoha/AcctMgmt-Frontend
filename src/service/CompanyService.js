@@ -7,7 +7,7 @@ class CompanyService {
 
   getCoList(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
+      .get(ACCTMGMT_API_BASE_URL + "/co", {
         headers: {
           "access-token": data.accessToken,
         },
@@ -29,7 +29,7 @@ class CompanyService {
 
   insertCo(data) {
     return axios
-      .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
+      .post(ACCTMGMT_API_BASE_URL + "/co", {
         coCd: data.coCd,
         coNm: data.coNm,
         gisu: data.gisu,
@@ -66,7 +66,7 @@ class CompanyService {
 
   getCompany(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/scom", {
+      .get(ACCTMGMT_API_BASE_URL + "/co", {
         headers: {
           "access-token": data.accessToken,
         },
@@ -80,7 +80,7 @@ class CompanyService {
 
   deleteCo(data) {
     return axios
-      .delete(ACCTMGMT_API_BASE_URL + "/ozt/dco", {
+      .delete(ACCTMGMT_API_BASE_URL + "/co", {
         headers: {
           "access-token": data.accessToken,
         },
@@ -93,7 +93,7 @@ class CompanyService {
 
   updateCo(data) {
     return axios
-      .put(ACCTMGMT_API_BASE_URL + "/ozt/uco", {
+      .put(ACCTMGMT_API_BASE_URL + "/co", {
         coCd: data.coCd,
         coNm: data.coNm,
         gisu: data.gisu,
