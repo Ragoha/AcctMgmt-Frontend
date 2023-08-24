@@ -32,25 +32,6 @@ class BgtCDDetailInfoFormControl extends Component {
     }else{
       console.log('찍힘 ?:'+flag);
       this.setState({disable:flag})
-      // if(this.state.disable==false){
-      //   this.setState({defaultValue:""})
-      // }
-      // else{
-      //   var newDefaultValue ="";
-      //   if(this.props.ctlFg ===undefined){
-      //     newDefaultValue = this.props.ctlFg;
-      //   }
-      //   if(this.props.bgajustFg ===undefined){
-      //     newDefaultValue = this.props.bgajustFg;
-      //   }
-      //   if(this.props.bottomFg ===undefined){
-      //     newDefaultValue = this.props.bottomFg;
-      //   }
-      //   if(this.props.bizFg ===undefined){
-      //     newDefaultValue = this.props.bizFg;
-      //   }
-      //   this.setState({defaultValue:this.props.menuItemValues[newDefaultValue]})
-      // }  
     }
   }
   componentDidUpdate(prevProps) {

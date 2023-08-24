@@ -38,25 +38,25 @@ class BgtCDService {
     return returnData;
   }
 
-  getGridData(coCd, groupcd, gisu, accessToken) {
-    const returnData = axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgtcd", {//getGridData
-        params: {
-          coCd: coCd,
-          groupcd: groupcd,
-          gisu: gisu
-        }
-      }, {
-        headers: {
-          "access-token": accessToken,
-        },
-        withCredentials: true,
-      })
-      .then((response) => response.data);
-    console.log("BudgetReg 데이터 통신성공");
-    console.dir(returnData);
-    return returnData;
-  }
+  // getGridData(coCd, groupcd, gisu, accessToken) {
+  //   const returnData = axios
+  //     .get(ACCTMGMT_API_BASE_URL + "/bgtcd", {//getGridData
+  //       params: {
+  //         coCd: coCd,
+  //         groupcd: groupcd,
+  //         gisu: gisu
+  //       }
+  //     }, {
+  //       headers: {
+  //         "access-token": accessToken,
+  //       },
+  //       withCredentials: true,
+  //     })
+  //     .then((response) => response.data);
+  //   console.log("BudgetReg 데이터 통신성공");
+  //   console.dir(returnData);
+  //   return returnData;
+  // }
 
   getDetailInfo(bgtCd, accessToken) {//columns을 클릭했을때 해당 항목의 DetailInfo를 가져오는 코드
     console.log("2.BudgetReg 서비스의 getDetailInfo : " + bgtCd);
@@ -102,29 +102,31 @@ class BgtCDService {
     return returnData;
   }
   
-  getPath(bgtCd, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getpath", {
-      params: {
-        bgtCd: bgtCd
-      }
-    }, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    }).then((response) => response.data)
-    console.log(returnData)
-    return returnData;
-  }
+  // getPath(bgtCd, accessToken) {
+  //   const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getpath", {
+  //     params: {
+  //       bgtCd: bgtCd
+  //     }
+  //   }, {
+  //     headers: {
+  //       "access-token": accessToken,
+  //     },
+  //     withCredentials: true,
+  //   }).then((response) => response.data)
+  //   console.log(returnData)
+  //   return returnData;
+  // }
   
-  insertBgtGr(data, accessToken) {
-    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", data, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    })
-  }
+  // insertBgtGr(data, accessToken) {
+  //   const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", data, {
+  //     headers: {
+  //       "access-token": accessToken,
+  //     },
+  //     withCredentials: true,
+  //   })
+  // }
+
+
   insertAddRow(data, accessToken) {
     const returnData = axios.post(ACCTMGMT_API_BASE_URL + "/bgtcd", data, {//insertAddRow
       headers: {
@@ -135,20 +137,20 @@ class BgtCDService {
       .then((response) => response.data);
     return returnData;
   }
-  getBgtGrData(coCd, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", {
-      params: {
-        coCd: coCd
-      }
-    }, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    }).then((response) => response.data);
+  // getBgtGrData(coCd, accessToken) {
+  //   const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtgr", {
+  //     params: {
+  //       coCd: coCd
+  //     }
+  //   }, {
+  //     headers: {
+  //       "access-token": accessToken,
+  //     },
+  //     withCredentials: true,
+  //   }).then((response) => response.data);
 
-    return returnData;
-  }
+  //   return returnData;
+  // }
   getDefNmFromBGTCD_TERM(coCd, divFg, accessToken) {
     const returnData = axios(ACCTMGMT_API_BASE_URL + "/bgtcd/getdefnmfrombgtcdterm", {
       params: {
@@ -332,20 +334,20 @@ class BgtCDService {
       withCredentials: true,
     }).then((response) => response.data)
   }
-  deleteBgtGr(data, accessToken) {
-    return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd/deletebgtgr", {
-      params: {
-        coCd: data.coCd,
-        bgtGrCd: data.bgtGrCd
-      }
-    }, {
-      headers: {
-        "access-token": accessToken,
-      },
-      withCredentials: true,
-    })
+  // deleteBgtGr(data, accessToken) {
+  //   return axios.delete(ACCTMGMT_API_BASE_URL + "/bgtcd/deletebgtgr", {
+  //     params: {
+  //       coCd: data.coCd,
+  //       bgtGrCd: data.bgtGrCd
+  //     }
+  //   }, {
+  //     headers: {
+  //       "access-token": accessToken,
+  //     },
+  //     withCredentials: true,
+  //   })
 
-  }
+  // }
   /*---delete end ---*/
 }
 

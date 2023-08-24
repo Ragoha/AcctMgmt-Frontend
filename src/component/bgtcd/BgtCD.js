@@ -182,22 +182,22 @@ class BgtCD extends Component {
   }
 
   /*데이터그리드 부분 start*/
-  getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-    const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
-    this.setState({ rows: tmpRow })
-    const gisu = this.state.gisuDefaultValue;
-    // console.log(groupcd);
-    if (groupcd === undefined) {
-      groupcd = "전체"
-    }
-    // console.log('데이터체크')
-    const coCd= this.props.userInfo.coCd;
-    const accessToken = this.props.accessToken;
-    BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
-      .then(rows => {
-        this.setState({ rows });
-      })
-  }
+  // getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+  //   const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
+  //   this.setState({ rows: tmpRow })
+  //   const gisu = this.state.gisuDefaultValue;
+  //   // console.log(groupcd);
+  //   if (groupcd === undefined) {
+  //     groupcd = "전체"
+  //   }
+  //   // console.log('데이터체크')
+  //   const coCd= this.props.userInfo.coCd;
+  //   const accessToken = this.props.accessToken;
+  //   BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
+  //     .then(rows => {
+  //       this.setState({ rows });
+  //     })
+  // }
   /*---로우 추가 관련된 메서드 start---*/
   disableFlag=(flag)=>{
     console.log("bgtcd 플래그:"+flag)
@@ -353,7 +353,6 @@ class BgtCD extends Component {
     this.setState({ tDataPath: tDataPath })
   }
   changeValue = (event) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
-
     this.setState({ defaultValue: event.target.value }, () => console.log('바꾼뒤의 값? : ' + this.state.defaultValue));
     this.getDataGridRows(event.target.value);
   }
@@ -616,7 +615,7 @@ class BgtCD extends Component {
               AddRowFlag = {this.state.AddRowFlag}
               setDetailInfo={this.setDetailInfo}
               insertAddRow={this.insertAddRow}
-              getDataGridRows={this.getDataGridRows}
+              // getDataGridRows={this.getDataGridRows}
               setClickedData={this.setClickedData}
               setClickDataPath={this.setClickDataPath}
               disableFlag={this.disableFlag}
