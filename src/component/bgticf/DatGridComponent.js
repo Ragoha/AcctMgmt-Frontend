@@ -483,7 +483,7 @@ class DataGridComponent extends Component {
               alignContent="center"
               sx={{ width: "100%", height: "100%", outline: "none" }}
               onDoubleClick={() => {
-                this.pjtRef.current.handleUp();
+                this.pjtRef.current.initPjtDialog();
               }}
               onKeyDown={(event) => {
                 console.log(event.keyCode);
@@ -493,7 +493,7 @@ class DataGridComponent extends Component {
                   event.keyCode >= 40 &&
                   event.keyCode <= 90
                 ) {
-                  this.pjtRef.current.handleUp();
+                  this.pjtRef.current.initPjtDialog();
                 }
               }}
               tabIndex={0}
