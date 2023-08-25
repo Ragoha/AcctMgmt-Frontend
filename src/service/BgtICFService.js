@@ -14,7 +14,7 @@ class BtgICFService {
   }
 
   getBgtICFList(data) {
-    console.log("--------------")
+    console.log("--------------");
     console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf", {
@@ -22,7 +22,8 @@ class BtgICFService {
           coCd: data.coCd,
           bgtCd: data.bgtCd,
           gisu: data.gisu,
-          groupCd: data.groupCd
+          groupCd: data.groupCd,
+          bgtFg: data.bgtFg
         },
         headers: {
           "access-token": data.accessToken,
@@ -38,7 +39,7 @@ class BtgICFService {
 
   insertBgtICF(data) {
     console.log(data);
-    console.log("asdfasdfasdfasdf")
+    console.log("asdfasdfasdfasdf");
     return axios
       .post(
         ACCTMGMT_API_BASE_URL + "/bgticf",
@@ -134,7 +135,7 @@ class BtgICFService {
 
   findDivByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/div", {
+      .get(ACCTMGMT_API_BASE_URL + "/ozt/div/search", {
         params: {
           coCd: data.coCd,
           keyword: data.keyword,
@@ -210,7 +211,6 @@ class BtgICFService {
       bgtGrCdListString = data.bgtGrCdList.join(", ");
     }
 
-    
     let bgtCdListString = "";
     if (data.bgtCdList && data.bgtCdList.length > 0) {
       bgtCdListString = data.bgtCdList.join(", ");
@@ -254,9 +254,17 @@ class BtgICFService {
       })
       .then((response) => response.data);
   };
+
+  findDeptByCoCdAndKeyword = (data) => {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/"+data.keyword, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data);
+  };
 }
-
-
-
 
 export default new BtgICFService();

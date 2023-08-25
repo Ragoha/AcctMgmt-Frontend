@@ -72,8 +72,8 @@ class UserInfo extends Component {
     return (
       <div style={{
         position: "absolute",
-        top: "50px",
-        right: "45px",
+        top: "60px",
+        right: "220px",
         background: "white",
         padding: "10px",
         boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.3)",

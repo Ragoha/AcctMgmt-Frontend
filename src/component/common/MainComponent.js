@@ -77,8 +77,8 @@ class MainComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      drawerOpen: false,
+      open: true,
+      drawerOpen: true,
       isOnOff: false,
     };
   }

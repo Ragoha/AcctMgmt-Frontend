@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
 import SnackBarComponent from "../common/SnackBarComponent";
 import PjtDialogComponent from "./dialog/PjtDialogComponent";
+import DeptDialogComponent from "./dialog/DeptDialogComponent";
 
 class DataGridComponent extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class DataGridComponent extends Component {
       divCd: this.props.divCd,
       bgtCd: "",
       mgtCd: "",
+      bgtFg: "",
       gisu: "",
       groupCd: "",
       rows: [],
@@ -24,11 +26,271 @@ class DataGridComponent extends Component {
       selectedRowId: "",
       selectedRow: [],
       selectedRows: [],
-      pjtCd: "",
-      pjtNm: "",
-    };
+      columns: [
+        {
+          field: "confirmed",
+          width: 65,
+          headerName: "",
+          menu: false,
+          disableColumnMenu: true,
+          sortable: false,
+          filterable: false,
+          hideable: false,
+          renderHeader: (params) => (
+            <Checkbox
+              checked={
+                this.state.selectedRows.length === this.state.sqList.length
+              }
+              onClick={async (e) => {
+                if (!e.target.checked) {
+                  await this.setState({ selectedRows: [] });
+                } else {
+                  await this.setState({
+                    selectedRows: [...this.state.sqList],
+                  });
+                }
+                console.log(this.state.selectedRows);
+              }}
+            />
+          ),
+          renderCell: (params) => (
+            <Checkbox
+              checked={this.state.selectedRows.some(
+                (row) => row.sq === params.row.sq
+              )}
+              onChange={async () => {
+                // console.log(params);
+                const newSelectedRow = {
+                  sq: params.row.sq,
+                };
 
+                const isSelected = this.state.selectedRows.some(
+                  (row) => row.sq === newSelectedRow.sq
+                );
+
+                if (isSelected) {
+                  const updatedSelectedRows = this.state.selectedRows.filter(
+                    (row) => row.sq !== newSelectedRow.sq
+                  );
+                  await this.setState({ selectedRows: updatedSelectedRows });
+                } else {
+                  await this.setState((prevState) => ({
+                    selectedRows: [...prevState.selectedRows, newSelectedRow],
+                  }));
+                }
+                this.props.setSelectedRows(this.state.selectedRows);
+              }}
+            />
+          ),
+        },
+        this.props.config[0][0].sysYn === "2"
+          ? {
+              field: "mgtNm",
+              headerName: "프로젝트",
+              headerAlign: "center",
+              editable: false,
+              renderCell: (params) => {
+                return (
+                  <Grid
+                    container
+                    alignContent="center"
+                    sx={{ width: "100%", height: "100%", outline: "none" }}
+                    onDoubleClick={() => {
+                      this.pjtRef.current.initPjtDialog();
+                    }}
+                    onKeyDown={(event) => {
+                      console.log(event.keyCode);
+                      const allowedKeys = /[a-zA-Z0-9]/;
+                      if (
+                        event.key.match(allowedKeys) &&
+                        event.keyCode >= 40 &&
+                        event.keyCode <= 90
+                      ) {
+                        this.pjtRef.current.initPjtDialog();
+                      }
+                    }}
+                    tabIndex={0}
+                  >
+                    {params.row.mgtNm}
+                  </Grid>
+                );
+              },
+              cellClassName: "mgtNm",
+              flex: 1,
+            }
+          : {
+              field: "mgtNm",
+              headerName: "부서",
+              headerAlign: "center",
+              editable: false,
+              renderCell: (params) => {
+                return (
+                  <Grid
+                    container
+                    alignContent="center"
+                    sx={{ width: "100%", height: "100%", outline: "none" }}
+                    onDoubleClick={() => {
+                      this.deptRef.current.initDeptDialog();
+                    }}
+                    onKeyDown={(event) => {
+                      console.log(event.keyCode);
+                      console.log("여기 아니야?");
+                      const allowedKeys = /[a-zA-Z0-9]/;
+                      if (
+                        event.key.match(allowedKeys) &&
+                        event.keyCode >= 40 &&
+                        event.keyCode <= 90
+                      ) {
+                        this.deptRef.current.initDeptDialog();
+                      }
+                    }}
+                    tabIndex={0}
+                  >
+                    {params.row.mgtNm}
+                  </Grid>
+                );
+              },
+              cellClassName: "mgtNm",
+              flex: 1,
+            },
+        {
+          field: "carrAm",
+          headerName: "이월금액",
+          headerAlign: "center",
+          editable: false,
+          renderCell: (params) => {
+            return (
+              <Grid
+                container
+                alignContent="center"
+                justifyContent="flex-end"
+                sx={{ width: "100%", height: "100%" }}
+              >
+                {params.row.carrAm1 === "" &&
+                params.row.carrAm2 === "" &&
+                params.row.carrAm3 === ""
+                  ? ""
+                  : (
+                      (params.row.carrAm1 === ""
+                        ? 0
+                        : parseInt(params.row.carrAm1)) +
+                      (params.row.carrAm2 === ""
+                        ? 0
+                        : parseInt(params.row.carrAm2)) +
+                      (params.row.carrAm3 === ""
+                        ? 0
+                        : parseInt(params.row.carrAm3))
+                    )
+                      .toLocaleString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Grid>
+            );
+          },
+          flex: 1,
+        },
+        {
+          field: "carrAm1",
+          headerName: "사고이월금액",
+          headerAlign: "center",
+          editable: true,
+          cellClassName: "carrAm1",
+          renderCell: (params) => {
+            return (
+              <Grid
+                container
+                alignContent="center"
+                justifyContent="flex-end"
+                sx={{ width: "100%", height: "100%" }}
+              >
+                {params.row.carrAm1 === ""
+                  ? ""
+                  : params.row.carrAm1
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Grid>
+            );
+          },
+          flex: 1,
+        },
+        {
+          field: "carrAm2",
+          headerName: "명시이월금액",
+          headerAlign: "center",
+          editable: true,
+          cellClassName: "carrAm2",
+          renderCell: (params) => {
+            return (
+              <Grid
+                container
+                alignContent="center"
+                justifyContent="flex-end"
+                sx={{ width: "100%", height: "100%" }}
+              >
+                {params.row.carrAm2 === ""
+                  ? ""
+                  : params.row.carrAm2
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Grid>
+            );
+          },
+          flex: 1,
+        },
+        {
+          field: "carrAm3",
+          headerName: "예비이월금액",
+          headerAlign: "center",
+          editable: true,
+          cellClassName: "carrAm3",
+          renderCell: (params) => {
+            return (
+              <Grid
+                container
+                alignContent="center"
+                justifyContent="flex-end"
+                sx={{ width: "100%", height: "100%" }}
+              >
+                {params.row.carrAm3 === ""
+                  ? ""
+                  : params.row.carrAm3
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Grid>
+            );
+          },
+          flex: 1,
+        },
+        {
+          field: "remDc",
+          headerName: "적요",
+          headerAlign: "center",
+          editable: true,
+          flex: 1,
+        },
+        {
+          field: "bgtTy",
+          headerName: "입력구분",
+          headerAlign: "center",
+          editable: false,
+          align: "center",
+          flex: 1,
+        },
+        {
+          field: "empName",
+          headerName: "작성자",
+          headerAlign: "center",
+          editable: false,
+          align: "center",
+          flex: 1,
+        },
+      ],
+    };
+    console.log("---------------")
+    // console.log()
+    console.log("---------------");
+    console.log("---------------");
     this.pjtRef = createRef();
+    this.deptRef = createRef();
     this.footerRef = createRef();
     this.snackBarRef = createRef();
   }
@@ -40,7 +302,36 @@ class DataGridComponent extends Component {
     this.footerRef.current.sumCarrAm([]);
   };
 
-  SetPjtTextField = async (data) => {
+  SetMgtTextField = async (data) => {
+    const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
+
+    console.log("zzzzzzzzzzzzzzzzzzzzzzzzz")
+    console.log(data);
+    const updatedRows = this.state.rows.map((row) => {
+      if (row.id === this.state.selectedRowId) {
+        return { ...row, mgtCd: data.mgtCd, mgtNm: data.mgtNm }; // 클릭된 행의 mgtCd 값을 업데이트
+      }
+      return row;
+    });
+    await this.setState({ rows: updatedRows }); // rows 상태를 업데이트합니다.
+
+    const updatedRow = updatedRows.find(
+      (row) => row.id === this.state.selectedRowId
+    );
+
+    console.log(updatedRow);
+    if (updatedRow) {
+      updatedRow.mgtCd = data.mgtCd;
+      updatedRow.mgtNm = data.mgtNm;
+    }
+
+    console.log("set");
+    console.log(updatedRow);
+
+    const processedRow = this.processRowUpdate(updatedRow);
+  };
+
+  setDeptTextField = async (data) => {
     const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
 
     const updatedRows = this.state.rows.map((row) => {
@@ -57,8 +348,8 @@ class DataGridComponent extends Component {
 
     console.log(updatedRow);
     if (updatedRow) {
-      updatedRow.mgtCd = data.pjtCd;
-      updatedRow.mgtNm = data.pjtNm;
+      updatedRow.mgtCd = data.deptCd;
+      updatedRow.mgtNm = data.deptNm;
     }
 
     console.log("set");
@@ -221,6 +512,7 @@ class DataGridComponent extends Component {
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
           gisu: this.state.gisu,
+          bgtFg: this.state.bgtFg
         }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
@@ -232,6 +524,7 @@ class DataGridComponent extends Component {
             bgtCd: this.state.bgtCd,
             mgtNm: "",
             mgtCd: "",
+            bgtFg: this.state.bgtFg,
             divCd: data.divCd,
             gisu: data.gisu,
             bottomNm: "",
@@ -255,14 +548,14 @@ class DataGridComponent extends Component {
 
   getBgtICFList = async (data, parent) => {
     console.log(data);
-    console.log(parent.divCd);
+    console.log(parent);
     console.log("==============");
     await this.setState({
       bgtCd: data.bgtCd,
       divCd: parent.divCd,
       gisu: data.gisu,
       sqList: [],
-      groupCd: data.groupCd,
+      bgtFg: parent.bgtFg,
     });
     console.log(this.state);
     BgtICFService.getBgtICFList({
@@ -271,6 +564,7 @@ class DataGridComponent extends Component {
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
       groupCd: this.state.groupCd,
+      bgtFg: parent.bgtFg
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -286,6 +580,7 @@ class DataGridComponent extends Component {
           bgtCd: this.state.bgtCd,
           mgtNm: "",
           mgtCd: "",
+          bgtFg: this.state.bgtFg,
           divCd: data.divCd,
           gisu: data.gisu,
           bottomNm: "",
@@ -323,6 +618,7 @@ class DataGridComponent extends Component {
         user: this.props.user,
         row: row,
         divCd: this.state.divCd,
+        bgtFg: this.state.bgtFg,
         // gisu: this.state.gisu,
       }).then(() => {
         this.props.handleClickSerachButton();
@@ -331,6 +627,7 @@ class DataGridComponent extends Component {
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
           gisu: this.state.gisu,
+          bgtFg: this.state.bgtFg,
         }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
@@ -342,6 +639,7 @@ class DataGridComponent extends Component {
             bgtCd: this.state.bgtCd,
             mgtNm: "",
             mgtCd: "",
+            bgtFg: this.state.bgtFg,
             divCd: this.state.divCd,
             gisu: this.state.gisu,
             bottomNm: "",
@@ -375,6 +673,7 @@ class DataGridComponent extends Component {
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
         gisu: this.state.gisu,
+        bgtFg: this.state.bgtFg
       }).then(async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,
@@ -386,6 +685,7 @@ class DataGridComponent extends Component {
           bgtCd: this.state.bgtCd,
           mgtNm: "",
           mgtCd: "",
+          bgtFg: this.state.bgtFg,
           divCd: this.state.divCd,
           gisu: this.state.gisu,
           bottomNm: "",
@@ -415,227 +715,46 @@ class DataGridComponent extends Component {
     });
   };
 
+  componentDidMount() {
+    console.log(this.props.config);
+
+    const bgtFgArray = this.props.config
+      .filter((sys) => sys.sysCd === "1")
+      .map((sys) => sys.sysYn);
+    const bgtFgString = bgtFgArray.length > 0 ? bgtFgArray[0] : "";
+
+    this.setState({ bgtFg: bgtFgString }, () => {
+      console.log(this.state);
+
+      if (bgtFgString === "2") {
+        const updatedColumns = this.state.columns.map((column) => {
+          if (column.field === "mgtNm") {
+            return {
+              ...column, // 기존 열 속성 복사
+              cellClassName: "mgtNm",
+              editable: false,
+              field: "mgtNm",
+              flex: 1,
+              headerAlign: "center",
+              headerName: "부서",
+            };
+          }
+          return column; // 기존 열 유지
+        });
+
+        this.setState({ columns: updatedColumns }, () => {
+          console.log(this.state);
+          console.log("==========");
+          console.log("==========");
+          console.log("==========");
+          console.log("==========");
+        });
+      }
+    });
+  }
+
   render() {
-    const { rows, selectedRows, selectedRowId } = this.state;
-
-    const columns = [
-      {
-        field: "confirmed",
-        width: 65,
-        headerName: "",
-        menu: false,
-        disableColumnMenu: true,
-        sortable: false,
-        filterable: false,
-        hideable: false,
-        renderHeader: (params) => (
-          <Checkbox
-            checked={selectedRows.length === this.state.sqList.length}
-            onClick={async (e) => {
-              if (!e.target.checked) {
-                await this.setState({ selectedRows: [] });
-              } else {
-                await this.setState({
-                  selectedRows: [...this.state.sqList],
-                });
-              }
-              console.log(this.state.selectedRows);
-            }}
-          />
-        ),
-        renderCell: (params) => (
-          <Checkbox
-            checked={selectedRows.some((row) => row.sq === params.row.sq)}
-            onChange={async () => {
-              // console.log(params);
-              const newSelectedRow = {
-                sq: params.row.sq,
-              };
-
-              const isSelected = this.state.selectedRows.some(
-                (row) => row.sq === newSelectedRow.sq
-              );
-
-              if (isSelected) {
-                const updatedSelectedRows = this.state.selectedRows.filter(
-                  (row) => row.sq !== newSelectedRow.sq
-                );
-                await this.setState({ selectedRows: updatedSelectedRows });
-              } else {
-                await this.setState((prevState) => ({
-                  selectedRows: [...prevState.selectedRows, newSelectedRow],
-                }));
-              }
-              this.props.setSelectedRows(this.state.selectedRows);
-            }}
-          />
-        ),
-      },
-      {
-        field: "mgtNm",
-        headerName: "프로젝트",
-        headerAlign: "center",
-        editable: false,
-        renderCell: (params) => {
-          return (
-            <Grid
-              container
-              alignContent="center"
-              sx={{ width: "100%", height: "100%", outline: "none" }}
-              onDoubleClick={() => {
-                this.pjtRef.current.handleUp();
-              }}
-              onKeyDown={(event) => {
-                console.log(event.keyCode);
-                const allowedKeys = /[a-zA-Z0-9]/;
-                if (
-                  event.key.match(allowedKeys) &&
-                  event.keyCode >= 40 &&
-                  event.keyCode <= 90
-                ) {
-                  this.pjtRef.current.handleUp();
-                }
-              }}
-              tabIndex={0}
-            >
-              {params.row.mgtNm}
-            </Grid>
-          );
-        },
-        cellClassName: "mgtNm",
-        flex: 1,
-      },
-      {
-        field: "carrAm",
-        headerName: "이월금액",
-        headerAlign: "center",
-        editable: false,
-        renderCell: (params) => {
-          return (
-            <Grid
-              container
-              alignContent="center"
-              justifyContent="flex-end"
-              sx={{ width: "100%", height: "100%" }}
-            >
-              {params.row.carrAm1 === "" &&
-              params.row.carrAm2 === "" &&
-              params.row.carrAm3 === ""
-                ? ""
-                : (
-                    (params.row.carrAm1 === ""
-                      ? 0
-                      : parseInt(params.row.carrAm1)) +
-                    (params.row.carrAm2 === ""
-                      ? 0
-                      : parseInt(params.row.carrAm2)) +
-                    (params.row.carrAm3 === ""
-                      ? 0
-                      : parseInt(params.row.carrAm3))
-                  )
-                    .toLocaleString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </Grid>
-          );
-        },
-        flex: 1,
-      },
-      {
-        field: "carrAm1",
-        headerName: "사고이월금액",
-        headerAlign: "center",
-        editable: true,
-        cellClassName: "carrAm1",
-        renderCell: (params) => {
-          return (
-            <Grid
-              container
-              alignContent="center"
-              justifyContent="flex-end"
-              sx={{ width: "100%", height: "100%" }}
-            >
-              {params.row.carrAm1 === ""
-                ? ""
-                : params.row.carrAm1
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </Grid>
-          );
-        },
-        flex: 1,
-      },
-      {
-        field: "carrAm2",
-        headerName: "명시이월금액",
-        headerAlign: "center",
-        editable: true,
-        cellClassName: "carrAm2",
-        renderCell: (params) => {
-          return (
-            <Grid
-              container
-              alignContent="center"
-              justifyContent="flex-end"
-              sx={{ width: "100%", height: "100%" }}
-            >
-              {params.row.carrAm2 === ""
-                ? ""
-                : params.row.carrAm2
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </Grid>
-          );
-        },
-        flex: 1,
-      },
-      {
-        field: "carrAm3",
-        headerName: "예비이월금액",
-        headerAlign: "center",
-        editable: true,
-        cellClassName: "carrAm3",
-        renderCell: (params) => {
-          return (
-            <Grid
-              container
-              alignContent="center"
-              justifyContent="flex-end"
-              sx={{ width: "100%", height: "100%" }}
-            >
-              {params.row.carrAm3 === ""
-                ? ""
-                : params.row.carrAm3
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            </Grid>
-          );
-        },
-        flex: 1,
-      },
-      {
-        field: "remDc",
-        headerName: "적요",
-        headerAlign: "center",
-        editable: true,
-        flex: 1,
-      },
-      {
-        field: "bgtTy",
-        headerName: "입력구분",
-        headerAlign: "center",
-        editable: false,
-        align: "center",
-        flex: 1,
-      },
-      {
-        field: "empName",
-        headerName: "작성자",
-        headerAlign: "center",
-        editable: false,
-        align: "center",
-        flex: 1,
-      },
-    ];
+    const { rows, selectedRows, selectedRowId, columns } = this.state;
 
     return (
       <>
@@ -645,12 +764,6 @@ class DataGridComponent extends Component {
           onCellEditStop={this.handleCellEditStop}
           showCellVerticalBorder
           showColumnVerticalBorder
-          // checkboxSelection
-          // onRowSelectionModelChange={async (newRowSelectionModel) => {
-          //   console.log(newRowSelectionModel);
-          //   await this.setState({ selectedRows: newRowSelectionModel });
-          //   console.log(this.state.selectedRows);
-          // }}
           processRowUpdate={this.processRowUpdate}
           onRowClick={this.handleRowClick}
           components={{
@@ -736,7 +849,11 @@ class DataGridComponent extends Component {
         />
         <PjtDialogComponent
           ref={this.pjtRef}
-          SetPjtTextField={this.SetPjtTextField}
+          SetMgtTextField={this.SetMgtTextField}
+        />
+        <DeptDialogComponent
+          ref={this.deptRef}
+          SetMgtTextField={this.SetMgtTextField}
         />
 
         <SnackBarComponent ref={this.snackBarRef} />
@@ -744,11 +861,6 @@ class DataGridComponent extends Component {
     );
   }
 }
-
-const mapStateToProps = (state) => ({
-  accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {},
-});
 
 class CustomFooterStatusComponent extends Component {
   constructor(props) {
@@ -879,6 +991,12 @@ class CustomFooterStatusComponent extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken,
+  user: state.user || {},
+  config: state.config.configData,
+});
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
   DataGridComponent

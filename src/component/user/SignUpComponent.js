@@ -1,7 +1,6 @@
 import { Grid, InputLabel, Tooltip } from "@mui/material";
 import axios from "axios";
 import React, { Component } from "react";
-import validator from "validator";
 import CustomSwal from '../common/CustomSwal.js';
 import {
   CustomInputLabel,
@@ -50,9 +49,10 @@ class SignUpComponent extends Component {
     this.dialogRef.current.handleDown();
   };
   handleSetCodialTextField = async (data) => {
+    console.log("coNm : " + data.coNm);
     await this.setState({
       CodialTextField: data.coCd,
-      coCd: data.coCd, //밑에 coCd 넘겨주기
+      coCd: data.coCd + ". " + data.coNm, //밑에 coCd 넘겨주기
     });
   };
   handleChange2 = (e) => {
@@ -300,7 +300,7 @@ class SignUpComponent extends Component {
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     //api 호출
     axios
-      .get(ACCTMGMT_API_BASE_URL + "/emp/idcheck/" + id)
+      .get(ACCTMGMT_API_BASE_URL + "/emp/id/" + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
         CustomSwal.showCommonToast("success", "사용가능한 아이디 입니다");
@@ -659,7 +659,7 @@ class SignUpComponent extends Component {
                     color="secondary"
                     name="company"
                     placeholder="회사검색"
-                    value={this.state.CodialTextField}
+                    value={this.state.coCd}
                     onBlur={this.handleBlurCompany}
                     onChange={this.handleChange}
                     inputProps={{ maxLength: 5 }}

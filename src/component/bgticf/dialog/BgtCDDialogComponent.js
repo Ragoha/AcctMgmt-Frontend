@@ -61,10 +61,10 @@ class BgtCDDialogComponent extends Component {
     this.childBgtGrRef = createRef();
   }
 
-  setBgtCDDialog = (keyword) => {
+  setBgtCDDialog = async (keyword) => {
     let tmpRange = "";
 
-    this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
+    await this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
 
     if (this.state.rangeState) {
       tmpRange = this.state.rangeTextField;
