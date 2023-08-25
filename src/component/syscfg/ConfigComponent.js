@@ -1,8 +1,8 @@
 import SettingsIcon from "@mui/icons-material/Settings";
 import axios from "axios";
-import React from 'react';
-import { connect } from 'react-redux';
-import { SET_CONFIG } from '../../store/Config';
+import React from "react";
+import { connect } from "react-redux";
+import { SET_CONFIG } from "../../store/Config";
 
 import {
   FormControl,
@@ -17,54 +17,50 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
-} from '@mui/material';
-import { CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomTextField } from '../common/style/CommonStyle';
+  TableRow,
+} from "@mui/material";
+import {
+  CustomGridContainer,
+  CustomHeaderGridContainer,
+  CustomHeaderInputLabel,
+  CustomInputLabel,
+  CustomTextField,
+} from "../common/style/CommonStyle";
 
 class ConfigComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       focused: null,
-      coCd: '',
-      coNm: '',
+      coCd: "",
+      coNm: "",
       data: [
         {
           options: ["부서예산", "프로젝트예산"],
-          value: ['1', '2'],
+          value: ["1", "2"],
         },
         {
           options: ["미사용", "사용"],
-          value: ['0', '1'],
+          value: ["0", "1"],
         },
         {
-          options: [
-            "일별",
-            "월별",
-            "연도별(프로젝트별)",
-            "연도별(사업장별)",
-          ],
-          value: ['1', '2', '3', '4'],
+          options: ["일별", "월별", "연도별(프로젝트별)", "연도별(사업장별)"],
+          value: ["1", "2", "3", "4"],
         },
         {
-          options: [
-            "이월안함",
-            "사고+명시+계속비",
-            "사고이월",
-            "명시+계속비",
-          ],
-          value: ['1', '2', '3', '4'],
+          options: ["이월안함", "사고+명시+계속비", "사고이월", "명시+계속비"],
+          value: ["1", "2", "3", "4"],
         },
         {
           options: ["미사용", "사용"],
-          value: ['0', '1'],
+          value: ["0", "1"],
         },
         // ... 나머지 데이터 설정 ...
       ],
       selectedValue: "", // 선택한 라디오 버튼의 값 저장
       selectedRowId: null, // 선택한 행의 ID 저장
       selectedTab: "common", // 선택한 탭 저장 (common 또는 decision)
-      settingsKey: '', // settingsKey를 state에 추가
+      settingsKey: "", // settingsKey를 state에 추가
     };
   }
 
@@ -77,33 +73,36 @@ class ConfigComponent extends React.Component {
     console.log(option);
   };
 
-
-
-
   handleRadioChange = (e, settingsKey) => {
     const selectedValue = e.target.value;
     const selectedRowId = this.state.selectedRowId;
-    const selectedRowData = this.state.data.find((row) => row.id === selectedRowId);
+    const selectedRowData = this.state.data.find(
+      (row) => row.id === selectedRowId
+    );
 
     console.log("Selected value:", e.target.value);
     console.log("Settings key:", settingsKey);
     console.log("Radio button value:", selectedRowData[settingsKey]);
 
     try {
-      const selectedData = this.state.data.find((row) => row.id === selectedRowId);
+      const selectedData = this.state.data.find(
+        (row) => row.id === selectedRowId
+      );
 
       if (selectedData) {
         const optionsIndex = selectedData.value.indexOf(selectedValue);
         const commonSettingValue = selectedData.options[optionsIndex];
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
-        const newData = {
-          id: selectedData.id,
-          option: selectedData.option,
-          commonSettingValue: commonSettingValue,
-        };
-        this.props.setConfig(newData);
-
+        // const newData = {
+        //   coCd : this.props.userInfo.coCd,
+        //   sysCd: selectedData.id,
+        //   sysNm: selectedData.option,
+        //   sysYn: selectedValue,
+        //   cfgvalue: commonSettingValue,
+        // };
+        // const hu = this.props.setConfig(newData);
+        // console.log('Resetting', hu);
         // API 호출 및 업데이트
         const response = axios.post(
           ACCTMGMT_API_BASE_URL + '/api/config/' + selectedData.id + '/' + selectedValue + '/' + commonSettingValue + '/' + this.state.coCd,
@@ -114,8 +113,19 @@ class ConfigComponent extends React.Component {
               'Content-Type': 'application/json',
             },
           }
-        );
-
+        )
+          .then(() => {
+            // 첫 번째 호출이 완료되면 이곳에서 두 번째 axios.get 호출 수행
+            return axios.get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd);
+          })
+          .then((response) => {
+            // 두 번째 호출이 완료되면 이곳에서 원하는 작업 수행
+            const what2 = this.props.setConfig(response.data); // 환경설정 초기 데이터 리덕스 저장
+            console.log("2번 : ", what2);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         // 화면에 업데이트된 값을 표시
         this.setState((prevState) => ({
           data: prevState.data.map((row) =>
@@ -137,7 +147,6 @@ class ConfigComponent extends React.Component {
   handleTabChange = (newValue) => {
     this.setState({ selectedTab: newValue });
   };
-
   async componentDidMount() {
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
@@ -151,16 +160,16 @@ class ConfigComponent extends React.Component {
 
     try {
       // 인증된 사용자 확인
-      const responseInfo = await axios.get(ACCTMGMT_API_BASE_URL + '/info', {
+      const responseInfo = await axios.get(ACCTMGMT_API_BASE_URL + "/info", {
         headers: {
           "access-token": accessToken,
         },
         withCredentials: true,
       });
-      console.log('인증된 사용자 : ', responseInfo.data);
+      console.log("인증된 사용자 : ", responseInfo.data);
 
       // 회사 이름 찾기
-      const responseCompany = await axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
+      const responseCompany = await axios.get(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
@@ -170,8 +179,10 @@ class ConfigComponent extends React.Component {
       this.setState({ coNm: responseCompany.data });
 
       // Config Data 가져오기
-      const responseConfig = await axios.get(ACCTMGMT_API_BASE_URL + '/api/configdate/' + coCd);
-      console.log('Config Data: ', responseConfig.data);
+      const responseConfig = await axios.get(
+        ACCTMGMT_API_BASE_URL + "/api/configdate/" + coCd
+      );
+      console.log("Config Data: ", responseConfig.data);
       const userData = {
         id: responseConfig.data.map((sys) => sys.sysCd),
         option: responseConfig.data.map((sys) => sys.sysNm),
@@ -190,7 +201,9 @@ class ConfigComponent extends React.Component {
         const firstRowId = this.state.data[0].id;
         this.setState({ selectedRowId: firstRowId });
 
-        const firstRow = document.querySelector(`tr[data-row-id="${firstRowId}"]`);
+        const firstRow = document.querySelector(
+          `tr[data-row-id="${firstRowId}"]`
+        );
         if (firstRow) {
           firstRow.click();
 
@@ -208,7 +221,7 @@ class ConfigComponent extends React.Component {
   render() {
     const { selectedTab, coNm, data, selectedRowId, coCd } = this.state;
 
-    const settingsKey = 'commonSettingValue';
+    const settingsKey = "commonSettingValue";
     console.log("셋팅 키 값 : " + settingsKey);
     const selectedRowData = data.find((row) => row.id === selectedRowId);
     const comName = coCd + ". " + coNm;

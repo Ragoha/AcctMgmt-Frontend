@@ -28,3 +28,6 @@
 /* .swal2-popup {
   background: #fff !important;
 } */
+.hidden-column {
+  display: none !important;
+}

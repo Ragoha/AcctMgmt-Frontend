@@ -5,13 +5,20 @@ class Config {
         this.configSlice = createSlice({
             name: 'config',
             initialState: {
-                //SysCfg(coCd=1000, moCd=bn, sysCd=1, sysNm=예산관리구분, sysYn=1, modifyId=yhy0704, modifyDt=Tue Aug 01 10:52:25 KST 2023, modifyIp=126.18.33.2)
                 configData: [], // 초기 상태에 빈 배열로 시작합니다.
             },
             reducers: {
                 SET_CONFIG: (state, action) => {
-                    const dataList = action.payload;
-                    state.configData = dataList;
+                    const newData = action.payload;
+                    // configData 배열에서 동일한 id를 가진 항목을 찾습니다.
+                    const index = state.configData.findIndex(item => item.sysCd === newData.sysCd);
+                    if (index !== -1) {
+                        // 동일한 id를 가진 항목이 있으면 해당 항목을 업데이트합니다.
+                        state.configData[index] = newData;
+                    } else {
+                        // 항목이 없으면 배열에 추가합니다.
+                        state.configData.push(newData);
+                    }
                 },
                 DEL_CONFIG: (state) => {
                     state.configData = [];

@@ -51,7 +51,7 @@ class PjtDialogComponent extends Component {
     };
   }
 
-  initPjtDialog = () => {
+  initPjtDialog = async () => {
     this.setState({ keyword: "", divRows: [] });
     BgtICFService.findPjtByCoCdAndKeyword({
       coCd: this.props.user.coCd,
@@ -91,7 +91,7 @@ class PjtDialogComponent extends Component {
   handleClickConfirm = () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    this.props.SetPjtTextField(this.state.selectedRow);
+    this.props.SetMgtTextField({mgtCd: this.state.selectedRow.pjtCd, mgtNm: this.state.selectedRow.pjtNm});
   };
 
   handleInputChange = async (e) => {
