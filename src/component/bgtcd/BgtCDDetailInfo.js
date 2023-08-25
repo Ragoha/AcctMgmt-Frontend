@@ -34,7 +34,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       // startDate: new Date(),
       // endDate: '',
       menuItemValues: [
-        ['1.통제안함', '2.월별조회', '3.분기별조회', '4.년누적조회', '5.월별통제', '6.분기별통제', '7.년누적통계', '8.월누적통제', '9.프로젝트기간통제'],
+        ['0.통제안함', '1.월별조회', '2.분기별조회', '3.년누적조회', '4.월별통제', '5.분기별통제', '6.년누적통계', '7.월누적통제', '8.프로젝트기간통제'],
         ['0.전용가능', '1.전용불가'],
         ['0.여', '1.부'],
         ['0.없음', '1.물품', '2.용역', '3.공사'],
@@ -81,8 +81,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
           bizFg: response[0].bizFg,
           toDt : response[0].toDt,
         });
-        //여기서 redux에 response[0]의 데이터를 집어넣는다.
-        //this.props.set_detailInfo(response[0]);
+        this.ctlFgControl.current.setDetailInfo(response[0].ctlFg);
+        this.bgajustFgControl.current.setDetailInfo(response[0].bgajustFg);
+        this.bottomFgControl.current.setDetailInfo(response[0].bottomFg);
+        this.bizFgControl.current.setDetailInfo(response[0].bizFg);
       })
   }
   setDetailInfoAfterAddRow=(detailInfo)=>{//addRow시 추가된 빈 로우 값에 DetailInfo(기본 값 설정.)
@@ -97,10 +99,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   }
   selectData=()=>{
     const detailInfo={
-      ctlFg: this.ctlFgControl.state.dataindex,
-      bgajustFg: this.bgajustFgControl.state.dataindex,
-      bottomFg: this.bottomFgControl.state.dataindex,
-      bizFg: this.bizFgControl.state.dataindex,
+      ctlFg: this.ctlFgControl.current.state.dataindex,
+      bgajustFg: this.bgajustFgControl.current.state.dataindex,
+      bottomFg: this.bottomFgControl.current.state.dataindex,
+      bizFg: this.bizFgControl.current.state.dataindex,
       bgtCd: this.state.bgtCd,
       toDt: this.state.toDt
     }
@@ -110,10 +112,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   //[230810] 원래 updateDetailInfo였던것.
   getDetailInfo = () => {
     const updateData = {
-      ctlFg: this.ctlFgControl.state.dataindex,
-      bgajustFg: this.bgajustFgControl.state.dataindex,
-      bottomFg: this.bottomFgControl.state.dataindex,
-      bizFg: this.bizFgControl.state.dataindex,
+      ctlFg: this.ctlFgControl.current.state.dataindex,
+      bgajustFg: this.bgajustFgControl.current.state.dataindex,
+      bottomFg: this.bottomFgControl.current.state.dataindex,
+      bizFg: this.bizFgControl.current.state.dataindex,
       bgtCd: this.state.bgtCd,
       toDt: this.state.toDt
     }

@@ -22,7 +22,7 @@ class BgtCDService {
       bgtCdSearchText = "";
     }
     console.log("coCd" + coCd + "/gisu:" + gisu + "/bgtCdSearchText:" + bgtCdSearchText + "/groupCd:" + groupCd);
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/getsearchdata", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd", {
       params: {
         coCd: coCd,
         gisu: gisu,
