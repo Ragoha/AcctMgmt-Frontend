@@ -83,7 +83,7 @@ class DataGridComponent extends Component {
             />
           ),
         },
-        this.props.config[0].sysYn === "1"
+        this.props.config[0][0].sysYn === "2"
           ? {
               field: "mgtNm",
               headerName: "프로젝트",
@@ -130,17 +130,18 @@ class DataGridComponent extends Component {
                     alignContent="center"
                     sx={{ width: "100%", height: "100%", outline: "none" }}
                     onDoubleClick={() => {
-                      this.deptRef.current.initPjtDialog();
+                      this.deptRef.current.initDeptDialog();
                     }}
                     onKeyDown={(event) => {
                       console.log(event.keyCode);
+                      console.log("여기 아니야?");
                       const allowedKeys = /[a-zA-Z0-9]/;
                       if (
                         event.key.match(allowedKeys) &&
                         event.keyCode >= 40 &&
                         event.keyCode <= 90
                       ) {
-                        this.deptRef.current.initPjtDialog();
+                        this.deptRef.current.initDeptDialog();
                       }
                     }}
                     tabIndex={0}
@@ -284,7 +285,10 @@ class DataGridComponent extends Component {
         },
       ],
     };
-
+    console.log("---------------")
+    // console.log()
+    console.log("---------------");
+    console.log("---------------");
     this.pjtRef = createRef();
     this.deptRef = createRef();
     this.footerRef = createRef();
@@ -508,6 +512,7 @@ class DataGridComponent extends Component {
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
           gisu: this.state.gisu,
+          bgtFg: this.state.bgtFg
         }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
@@ -543,14 +548,14 @@ class DataGridComponent extends Component {
 
   getBgtICFList = async (data, parent) => {
     console.log(data);
-    console.log(parent.divCd);
+    console.log(parent);
     console.log("==============");
     await this.setState({
       bgtCd: data.bgtCd,
       divCd: parent.divCd,
       gisu: data.gisu,
       sqList: [],
-      groupCd: data.groupCd,
+      bgtFg: parent.bgtFg,
     });
     console.log(this.state);
     BgtICFService.getBgtICFList({
@@ -559,6 +564,7 @@ class DataGridComponent extends Component {
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
       groupCd: this.state.groupCd,
+      bgtFg: parent.bgtFg
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -621,6 +627,7 @@ class DataGridComponent extends Component {
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
           gisu: this.state.gisu,
+          bgtFg: this.state.bgtFg,
         }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
@@ -666,6 +673,7 @@ class DataGridComponent extends Component {
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
         gisu: this.state.gisu,
+        bgtFg: this.state.bgtFg
       }).then(async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,

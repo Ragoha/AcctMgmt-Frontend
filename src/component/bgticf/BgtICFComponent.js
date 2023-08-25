@@ -92,6 +92,7 @@ class BgtICFComponent extends Component {
       grFgText: "전체",
       bgtCd: "",
       bgtNm: "",
+      bgtFg: this.props.config[0][0].sysYn,
       bgtCdList: [],
       bgtCDTextField: "",
       bgtDTO: [],
@@ -311,6 +312,7 @@ class BgtICFComponent extends Component {
       bgtCdList: this.state.bgtCdList,
       bgtNm: this.state.bgtNm,
       bgtText: this.state.bgtCDTextField,
+      bgtFg : this.state.bgtFg
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -348,7 +350,7 @@ class BgtICFComponent extends Component {
 
   handleClickBgtCDRow = (e) => {
     this.setState({ selectedRows: [] });
-    this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd });
+    this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd, bgtFg: this.state.bgtFg });
   };
 
   handleKeyDownDivTextField = (e) => {

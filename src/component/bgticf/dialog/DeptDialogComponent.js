@@ -1,5 +1,13 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { Autocomplete, Button, Checkbox, FormControlLabel, Grid, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtICFService from "../../../service/BgtICFService";
@@ -21,25 +29,26 @@ import {
   CustomSearchButton,
   CustomTextField,
 } from "../../common/style/CommonStyle";
+import DeptService from "../../../service/DeptService";
 
 class DeptDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      selectedRow: { pjtCd: "", pjtNm: "" },
-      pjtRows: [],
+      selectedRow: { deptCd: "", deptNm: "" },
+      deptRows: [],
       keyword: "",
       data: {
         columns: [
           {
-            field: "pjtCd",
+            field: "deptCd",
             headerName: "부서코드",
             width: 180,
             headerAlign: "center",
           },
           {
-            field: "pjtNm",
+            field: "deptNm",
             headerName: "부서명",
             width: 270,
             headerAlign: "center",
@@ -51,29 +60,35 @@ class DeptDialogComponent extends Component {
     };
   }
 
-  initPjtDialog = async () => {
-    this.setState({ keyword: "", divRows: [] });
-    BgtICFService.findPjtByCoCdAndKeyword({
+  initDeptDialog = (keyword) => {
+    // this.setState({ keyword: "", divRows: [] });
+    BgtICFService.findDeptByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
+      keyword: keyword,
     }).then(async (response) => {
-      const pjtRows = response.map((row) => ({
-        id: row.pjtCd,
-        pjtCd: row.pjtCd,
-        pjtNm: row.pjtNm,
+      const DeptRows = response.map((row) => ({
+        id: row.DeptCd,
+        deptCd: row.deptCd,
+        deptNm: row.deptNm,
       }));
-      await this.setState({ pjtRows: pjtRows });
+      await this.setState({
+        DeptRows: DeptRows,
+        selectedRow: [],
+      });
     });
 
     this.handleUp();
   };
+
+
 
   handleUp = () => {
     this.setState({ open: true });
   };
 
   handleDown = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, keyword: "", divRows: [] });
   };
 
   handleClickRow = (params) => {
@@ -92,8 +107,8 @@ class DeptDialogComponent extends Component {
     console.log(this.state.selectedRow);
     this.handleDown();
     this.props.SetMgtTextField({
-      mgtCd: this.state.selectedRow.pjtCd,
-      mgtNm: this.state.selectedRow.pjtNm,
+      mgtCd: this.state.selectedRow.deptCd,
+      mgtNm: this.state.selectedRow.deptNm,
     });
   };
 
@@ -104,18 +119,18 @@ class DeptDialogComponent extends Component {
   };
 
   handleClickSearchIcon = () => {
-    BgtICFService.findPjtByCoCdAndKeyword({
+    BgtICFService.findDeptByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       keyword: this.state.keyword,
       accessToken: this.props.accessToken,
     }).then(async (response) => {
       console.log(response);
-      const pjtRows = response.map((row) => ({
-        id: row.pjtCd,
-        pjtCd: row.pjtCd,
-        pjtNm: row.pjtNm,
+      const deptRows = response.map((row) => ({
+        id: row.deptCd,
+        deptCd: row.deptCd,
+        deptNm: row.deptNm,
       }));
-      await this.setState({ pjtRows: pjtRows });
+      await this.setState({ deptRows: deptRows });
       console.log(this.state);
     });
   };
@@ -172,34 +187,7 @@ class DeptDialogComponent extends Component {
                     width: "205px !important",
                   }}
                 />
-                <Autocomplete
-                  disableClearable
-                  disablePortal
-                  options={[
-                    { label: "전체", value: "전체" },
-                    { label: "완료", value: "완료" },
-                    { label: "진행중", value: "진행중" },
-                    { label: "미사용", value: "미사용" },
-                  ]}
-                  // getOptionLabel={(option) => option.label}
-                  value={this.state.useText}
-                  onChange={this.handleChangeUseText}
-                  renderInput={(params) => (
-                    <TextField {...params} sx={{ width: 105 }} />
-                  )}
-                  sx={{
-                    width: 105,
-                    "& .MuiInputBase-root": {
-                      height: 40,
-                      paddingLeft: 1,
-                      paddingTop: 0,
-                      paddingRight: 0,
-                      paddingBottom: 0,
-                    },
-                    marginRight: 2,
-                  }}
-                />
-                <CustomSearchButton variant="outlined" sx={{ right: "-10px" }}>
+                <CustomSearchButton variant="outlined" sx={{ right: "-70px" }}>
                   <SearchIcon onClick={this.handleClickSearchIcon} />
                 </CustomSearchButton>
               </Grid>
@@ -207,7 +195,7 @@ class DeptDialogComponent extends Component {
           </CustomShortFormGridContainer>
           <CustomShortDataGridContainer container>
             <CustomDataGrid
-              rows={this.state.pjtRows}
+              rows={this.state.deptRows}
               columns={data.columns}
               showColumnVerticalBorder={true}
               showCellVerticalBorder={true} // 각 셀마다 영역주기
