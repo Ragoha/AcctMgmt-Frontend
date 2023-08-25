@@ -97,13 +97,15 @@ class ConfigComponent extends React.Component {
         const commonSettingValue = selectedData.options[optionsIndex];
         const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
-        const newData = {
-          id: selectedData.id,
-          option: selectedData.option,
-          commonSettingValue: commonSettingValue,
-        };
-        this.props.setConfig(newData);
-
+        // const newData = {
+        //   coCd : this.props.userInfo.coCd,
+        //   sysCd: selectedData.id,
+        //   sysNm: selectedData.option,
+        //   sysYn: selectedValue,
+        //   cfgvalue: commonSettingValue,
+        // };
+        // const hu = this.props.setConfig(newData);
+        // console.log('Resetting', hu);
         // API 호출 및 업데이트
         const response = axios.post(
           ACCTMGMT_API_BASE_URL + '/api/config/' + selectedData.id + '/' + selectedValue + '/' + commonSettingValue + '/' + this.state.coCd,
@@ -113,7 +115,16 @@ class ConfigComponent extends React.Component {
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
+          axios
+            .get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd)
+            .then((response) => {
+              const what2 = this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
+              console.log("2번 : ", what2);
+            })
+            .catch((error) => {
+              console.error(error);
+            }),
         );
 
         // 화면에 업데이트된 값을 표시
@@ -137,7 +148,6 @@ class ConfigComponent extends React.Component {
   handleTabChange = (newValue) => {
     this.setState({ selectedTab: newValue });
   };
-
   async componentDidMount() {
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
@@ -322,7 +332,7 @@ class ConfigComponent extends React.Component {
                           <Radio
                             checked={
                               selectedRowData.value[idx] ===
-                                selectedRowData[settingsKey] ||
+                              selectedRowData[settingsKey] ||
                               (this.state.selectedRowId ===
                                 selectedRowData.id &&
                                 optionValue === selectedRowData[settingsKey])
