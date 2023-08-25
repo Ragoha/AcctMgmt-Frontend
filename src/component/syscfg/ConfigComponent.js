@@ -115,18 +115,20 @@ class ConfigComponent extends React.Component {
             headers: {
               'Content-Type': 'application/json',
             },
-          },
-          axios
-            .get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd)
-            .then((response) => {
-              const what2 = this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
-              console.log("2번 : ", what2);
-            })
-            .catch((error) => {
-              console.error(error);
-            }),
-        );
-
+          }
+        )
+          .then(() => {
+            // 첫 번째 호출이 완료되면 이곳에서 두 번째 axios.get 호출 수행
+            return axios.get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd);
+          })
+          .then((response) => {
+            // 두 번째 호출이 완료되면 이곳에서 원하는 작업 수행
+            const what2 = this.props.setConfig(response.data); // 환경설정 초기 데이터 리덕스 저장
+            console.log("2번 : ", what2);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         // 화면에 업데이트된 값을 표시
         this.setState((prevState) => ({
           data: prevState.data.map((row) =>
@@ -170,7 +172,7 @@ class ConfigComponent extends React.Component {
       console.log('인증된 사용자 : ', responseInfo.data);
 
       // 회사 이름 찾기
-      const responseCompany = await axios.post(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
+      const responseCompany = await axios.get(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

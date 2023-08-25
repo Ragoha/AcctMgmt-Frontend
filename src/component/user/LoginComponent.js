@@ -12,7 +12,6 @@ import axios from "axios";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { CSSTransition } from 'react-transition-group';
 import Cookie from '../../storage/Cookie';
 import { SET_TOKEN } from '../../store/Auth';
 import { SET_CONFIG } from '../../store/Config';

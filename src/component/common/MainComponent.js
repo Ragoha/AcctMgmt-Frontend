@@ -101,12 +101,13 @@ class MainComponent extends Component {
       isOnOff: false,
     });
   };
+
   render() {
     const { open } = this.state;
     const isOnOff = this.state.isOnOff; // 이 부분 추가
 
     return (
-      <ThemeProvider theme={defaultTheme}>
+      <ThemeProvider theme={defaultTheme} >
         <Box
           sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
         >
@@ -149,7 +150,6 @@ class MainComponent extends Component {
                 sx={{ flexGrow: 1 }}
               >
                 DOUZONE
-                {/* <img src="/img/logo.png"></img> */}
               </Typography>
               <IconButton
                 color="inherit"
@@ -170,7 +170,7 @@ class MainComponent extends Component {
                   <UserInfo />
                 </div>
               )}
-              <SearchComponent/>
+              <SearchComponent />
             </Toolbar>
           </AppBar>
 
