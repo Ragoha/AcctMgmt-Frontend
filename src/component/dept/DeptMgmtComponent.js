@@ -339,10 +339,10 @@ class DeptMgmtComponent extends Component {
 
   addTree = () => {
     const userInfo = this.props.userInfo;
-    const { coCd, empId, empEmail } = userInfo;
+    const { coCd, coNm, empId, empEmail } = userInfo;
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-    this.setState({ coCd: coCd });
+    this.setState({ coCd: coCd , coNm: coNm });
 
     const newCardCount = this.state.cardCount + 1;
     const newDeptCdList = [...this.state.deptCdList, '0000'];
@@ -356,11 +356,11 @@ class DeptMgmtComponent extends Component {
       })
         .then((response) => {
           console.log(response.data)
-          // const divCdList = response.data.map((item) => item.divCd);
+          // const coCdList = response.data.map((item) => item.coCd);
           // const divNmList = response.data.map((item) => item.divNm);
 
-          // const divCd = response.data[0].divCd;
-          // const divNm = response.data[0].divNm;
+          // const coCd = response.data[0].coCd;
+          // const coNm = response.data[0].coNm;
 
           this.setState({
             cardCount: newCardCount,
@@ -369,6 +369,7 @@ class DeptMgmtComponent extends Component {
             // divNmList: divNmList,
             focused: null,
             // coCd: coCd,
+            // coNm: coNm,
             // divCd: divCd,
             // divNm: divNm,
             deptCd: '',
