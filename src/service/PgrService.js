@@ -8,10 +8,7 @@ class PgrService {
 
     findpgrByCoCd(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/pgr", {
-                params: {
-                    coCd: data.coCd,
-                },
+            .get(ACCTMGMT_API_BASE_URL + "/pgr/"+data.coCd, {
                 headers: {
                     "access-token": data.accessToken,
                 },
@@ -25,7 +22,7 @@ class PgrService {
             .post(
                 ACCTMGMT_API_BASE_URL + "/pgr",
                 {
-                    coCd: data.pgr.coCd,
+                    coCd: data.coCd,
                     pgrCd: data.pgr.pgrCd,
                     pgrNm: data.pgr.pgrNm,
                 },
@@ -44,11 +41,7 @@ class PgrService {
     deletePgr(data) {
         console.log(data);
         return axios
-            .delete(ACCTMGMT_API_BASE_URL + "/pgr", {
-                params: {
-                    coCd: data.coCd,
-                    pgrCd: data.pgrCd,
-                },
+            .delete(ACCTMGMT_API_BASE_URL + "/pgr/"+data.coCd+"/"+data.pgrCd, {
                 headers: {
                     "access-token": data.accessToken,
                 },
@@ -57,27 +50,15 @@ class PgrService {
             .then((response) => response.data);
     }
 
-    updateGisu(data) {
-        return axios
-            .put(
-                ACCTMGMT_API_BASE_URL + "/gisu",
-                {
-                    coCd: data.coCd,
-                    gisu: data.gisu.gisu,
-                    frDt: data.gisu.frDt,
-                    toDt: data.gisu.toDt,
-                },
-                {
-                    headers: {
-                        "access-token": data.accessToken,
-                    },
-                    withCredentials: true,
-                }
-            )
-            .then((response) => {
-                return response.data;
-            });
-    }
+    getPgrBy(data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/pgr/" + data.coCd + "/" + data.keyword, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+      })
+      .then((response) => response.data);
+  }
 }
 
 
