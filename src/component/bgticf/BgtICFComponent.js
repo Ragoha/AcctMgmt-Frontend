@@ -21,7 +21,7 @@ import {
   CustomHeaderGridContainer,
   CustomHeaderInputLabel,
   CustomInputLabel,
-  CustomSearchButton
+  CustomSearchButton,
 } from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
 import BgtCdAutocomplete from "./autocomplete/BgtCdAutocomplete";
@@ -102,7 +102,7 @@ class BgtICFComponent extends Component {
       isNew: false,
       innerHeight: window.innerHeight,
     };
-
+  
     this.bgtCdListRef = createRef();
     this.bgtICFRef = createRef();
     this.divRef = createRef();
@@ -292,7 +292,7 @@ class BgtICFComponent extends Component {
   resetBgtGr = () => {
     this.setState({ bgtCDRows: [], bgtGrCdList: [] });
     this.bgtICFRef.current.initBgtICF();
-  }
+  };
 
   handleClickSerachButton = () => {
     BgtICFService.findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd({
@@ -341,14 +341,9 @@ class BgtICFComponent extends Component {
         gisuText: gisuRows[gisuRows.length - 1],
         gisuRangeText: gisuRangeRows[gisuRangeRows.length - 1],
       });
-      const gisuLenght = gisuRows.length;
-      const test = gisuRows[gisuLenght - 1];
-      console.log(test);
-      console.log(gisuRows.length);
-      console.log(gisuRows);
-      console.log(gisuRangeRows);
-      console.log(gisuRows[gisuRows.lenght - 1]);
     });
+
+
   }
 
   handleClickBgtCDRow = (e) => {
@@ -557,8 +552,7 @@ class BgtICFComponent extends Component {
               />
             </Grid>
           </Grid>
-          <Grid item xs={4}>
-          </Grid>
+          <Grid item xs={4}></Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>
           <Grid item xs={3}>
@@ -667,6 +661,7 @@ class BgtICFComponent extends Component {
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
   user: state.user || {},
+  config: state.config.configData,
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(

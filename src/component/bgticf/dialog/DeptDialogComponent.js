@@ -22,7 +22,7 @@ import {
   CustomTextField,
 } from "../../common/style/CommonStyle";
 
-class PjtDialogComponent extends Component {
+class DeptDialogComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,13 +34,13 @@ class PjtDialogComponent extends Component {
         columns: [
           {
             field: "pjtCd",
-            headerName: "프로젝트코드",
+            headerName: "부서코드",
             width: 180,
             headerAlign: "center",
           },
           {
             field: "pjtNm",
-            headerName: "프로젝트명",
+            headerName: "부서명",
             width: 270,
             headerAlign: "center",
           },
@@ -91,7 +91,10 @@ class PjtDialogComponent extends Component {
   handleClickConfirm = () => {
     console.log(this.state.selectedRow);
     this.handleDown();
-    this.props.SetMgtTextField({mgtCd: this.state.selectedRow.pjtCd, mgtNm: this.state.selectedRow.pjtNm});
+    this.props.SetMgtTextField({
+      mgtCd: this.state.selectedRow.pjtCd,
+      mgtNm: this.state.selectedRow.pjtNm,
+    });
   };
 
   handleInputChange = async (e) => {
@@ -128,7 +131,7 @@ class PjtDialogComponent extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          프로젝트 검색
+          부서 검색
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -237,5 +240,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  PjtDialogComponent
+  DeptDialogComponent
 );
