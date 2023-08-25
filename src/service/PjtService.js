@@ -66,15 +66,6 @@ class PjtService {
       .then((response) => response.data);
   }
 
-  selPjtBy(data) {
-    return axios
-      .post(ACCTMGMT_API_BASE_URL + "/groupSel", data.selData, {
-        headers: {
-          "access-token": data.accessToken,
-        },
-      })
-  }
-
   duplication(data) {
     return axios.get(ACCTMGMT_API_BASE_URL + "/pjt/" + data.Pjt.coCd + "/pjtcd/" + data.Pjt.pjtCd, {
       headers: {

@@ -104,30 +104,19 @@ class ConfigComponent extends React.Component {
         // const hu = this.props.setConfig(newData);
         // console.log('Resetting', hu);
         // API 호출 및 업데이트
-        const response = axios
-          .post(
-            ACCTMGMT_API_BASE_URL +
-              "/api/config/" +
-              selectedData.id +
-              "/" +
-              selectedValue +
-              "/" +
-              commonSettingValue +
-              "/" +
-              this.state.coCd,
-            {},
-            {
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
+        const response = axios.post(
+          ACCTMGMT_API_BASE_URL + '/api/config/' + selectedData.id + '/' + selectedValue + '/' + commonSettingValue + '/' + this.state.coCd,
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
           .then(() => {
             // 첫 번째 호출이 완료되면 이곳에서 두 번째 axios.get 호출 수행
-            return axios.get(
-              ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd
-            );
+            return axios.get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + this.state.coCd);
           })
           .then((response) => {
             // 두 번째 호출이 완료되면 이곳에서 원하는 작업 수행
@@ -180,17 +169,13 @@ class ConfigComponent extends React.Component {
       console.log("인증된 사용자 : ", responseInfo.data);
 
       // 회사 이름 찾기
-      const responseCompany = await axios.post(
-        ACCTMGMT_API_BASE_URL + "/api/config/" + coCd,
-        {},
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("회사이름 : ", responseCompany.data);
+      const responseCompany = await axios.get(ACCTMGMT_API_BASE_URL + '/api/config/' + coCd, {}, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('회사이름 : ', responseCompany.data);
       this.setState({ coNm: responseCompany.data });
 
       // Config Data 가져오기
