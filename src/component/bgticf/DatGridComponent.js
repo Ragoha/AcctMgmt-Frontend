@@ -83,39 +83,89 @@ class DataGridComponent extends Component {
     }
   };
 
-  processRowUpdate = async (newRow) => {
-    console.log("cell");
-    console.log(newRow);
-
-    // const updatedRows = this.state.rows.map((row) => {
-    //   if (row.id === this.state.selectedRowId) {
-    //     return { ...row, newRow }; // 클릭된 행의 mgtCd 값을 업데이트
-    //   }
-    //   return row;
-    // });
-    // await this.setState({ rows: updatedRows });
-
+  processRowUpdate = (newRow) => {
     if (newRow.isNew) {
+      const updatedRow = { ...newRow };
+
+      console.log(newRow.carrAm1.length);
+
+      // if (
+      //   !/^[0-9]+$/.test(updatedRow.carrAm1) ||
+      //   updatedRow.carrAm1.length > 11
+      // ) {
+      //   updatedRow.carrAm1 = "";
+      //   this.snackBarRef.current.handleUp(
+      //     "warning",
+      //     "올바르지 않은 입력입니다."
+      //   );
+      // }
       if (
-        newRow.mgtCd !== "" &&
-        newRow.mgtNm !== "" &&
-        newRow.carrAm1 !== "" &&
-        newRow.carrAm2 !== "" &&
-        newRow.carrAm3 !== "" &&
-        newRow.remDc !== ""
+        (updatedRow.carrAm1 !== "" && !/^[0-9]+$/.test(updatedRow.carrAm1)) ||
+        updatedRow.carrAm1.length > 10
+      ) {
+        updatedRow.carrAm1 = "";
+        this.snackBarRef.current.handleUp(
+          "warning",
+          "올바르지 않은 입력입니다."
+        );
+      }
+      if (
+        (updatedRow.carrAm2 !== "" && !/^[0-9]+$/.test(updatedRow.carrAm1)) ||
+        updatedRow.carrAm2.length > 10
+      ) {
+        updatedRow.carrAm2 = "";
+        this.snackBarRef.current.handleUp(
+          "warning",
+          "올바르지 않은 입력입니다."
+        );
+      }
+      if (
+        (updatedRow.carrAm3 !== "" && !/^[0-9]+$/.test(updatedRow.carrAm1)) ||
+        updatedRow.carrAm3.length > 10
+      ) {
+        updatedRow.carrAm3 = "";
+        this.snackBarRef.current.handleUp(
+          "warning",
+          "올바르지 않은 입력입니다."
+        );
+      }
+
+      // if (!/^[0-9]+$/.test(updatedRow.carrAm2)) {
+      //   updatedRow.carrAm2 = "";
+      //   this.snackBarRef.current.handleUp(
+      //     "warning",
+      //     "올바르지않은 입력입니다."
+      //   );
+      // }
+
+      // if (!/^[0-9]+$/.test(updatedRow.carrAm3)) {
+      //   updatedRow.carrAm3 = "";
+      //   this.snackBarRef.current.handleUp(
+      //     "warning",
+      //     "올바르지않은 입력입니다."
+      //   );
+      // }
+
+      if (
+        updatedRow.mgtCd !== "" &&
+        updatedRow.mgtNm !== "" &&
+        updatedRow.carrAm1 !== "" &&
+        updatedRow.carrAm2 !== "" &&
+        updatedRow.carrAm3 !== "" &&
+        updatedRow.remDc !== ""
       ) {
         console.log("저장");
-        console.log(newRow);
-        this.insertBgtICF(newRow);
+        console.log(updatedRow);
+        this.insertBgtICF(updatedRow);
       }
 
       this.setState((prevState) => ({
         rows: prevState.rows.map((row) =>
-          row.id === newRow.id ? newRow : row
+          row.id === updatedRow.id ? updatedRow : row
         ),
       }));
 
-      return newRow;
+      return updatedRow;
     } else {
       console.log("수정");
       console.log(newRow);
@@ -228,8 +278,8 @@ class DataGridComponent extends Component {
       }));
 
       const sqList = response.map((row) => ({
-        sq: row.sq
-      }))
+        sq: row.sq,
+      }));
       if (data.bottomFg == 0) {
         rowsWithId.push({
           id: randomId(),
@@ -607,7 +657,7 @@ class DataGridComponent extends Component {
             NoRowsOverlay: () => "",
           }}
           sx={{
-            height: "calc(100vh - 362px)",
+            height: "calc(100vh - 367px)",
             borderTop: "3px solid black",
             borderLeft: "2px solid #EAEAEA",
             borderRight: "2px solid #EAEAEA",

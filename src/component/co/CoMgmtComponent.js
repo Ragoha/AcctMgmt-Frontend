@@ -140,7 +140,7 @@ class CoMgmtComponent extends Component {
       }) //db 에 아무것도 없을때 focused coCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
         // 오류 발생 시의 처리
-        console.error("뭔데이거"+error);
+        console.error("뭔데이거" + error);
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
     // }
@@ -295,7 +295,7 @@ class CoMgmtComponent extends Component {
                 focused: coCdList[cardCount - 1],
                 coCd: coCd,
                 coNm: coNm,
-                gisu: gisu? gisu : 0,
+                gisu: gisu ? gisu : 0,
                 frDt: frDt,
                 toDt: toDt,
                 dateRange: frDt && toDt ? frDt + ' ~ ' + toDt : "",
@@ -597,84 +597,84 @@ class CoMgmtComponent extends Component {
     if (userInfo.coCd === coCd) {
       CustomSwal.showCommonToast("error", "계정 회사는 <br />삭제가 불가능합니다.");
     } else {
-    if (coCd === '') {
-      CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
-        if (confirmed) {
-          CustomSwal.showCommonToast("success", "삭제되었습니다.");
-          this.componentDidMount();
-        }
-      })
-    } else {
-      DivsService.getDivision({
-        accessToken: this.props.accessToken,
-        coCd: coCd
-      })
-        .then((response) => {
-          console.log(response.data.length);
-
-          CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
-            if (response.data.length > 0) {
-              CustomSwal.showCommonToast("error", "하위에 사업장이 존재합니다.");
-            } else {
-              if (confirmed) {
-                CompanyService.deleteCo({
-                  accessToken: this.props.accessToken,
-                  coCd: coCd,
-                })
-                  .then((response) => {
-                    console.log(response.data);
-                    CustomSwal.showCommonToast("success", "삭제되었습니다.");
-                    const coCdList = response.data.map((item) => item.coCd);
-                    const coNmList = response.data.map((item) => item.coNm);
-                    const ceoNmList = response.data.map((item) => item.ceoNm);
-                    const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-                    const coCd = response.data[0].coCd;
-                    const coNm = response.data[0].coNm;
-                    const gisu = response.data[0].gisu;
-                    const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
-                    const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
-                    const jongmok = response.data[0].jongmok;
-                    const businessType = response.data[0].businessType;
-                    const coNb = response.data[0].coNb;
-                    const ceoNm = response.data[0].ceoNm;
-                    const coZip = response.data[0].coZip;
-                    const coAddr = response.data[0].coAddr;
-                    const coAddr1 = response.data[0].coAddr1;
-                    this.setState({
-                      cardCount: cardCount, // state에 값을 저장
-                      coCdList: coCdList,
-                      coNmList: coNmList,
-                      ceoNmList: ceoNmList,
-                      focused: coCdList[0],
-                      coCd: coCd,
-                      coNm: coNm,
-                      gisu: gisu,
-                      frDt: frDt,
-                      toDt: toDt,
-                      dateRange: frDt + ' ~ ' + toDt,
-                      jongmok: jongmok,
-                      businessType: businessType,
-                      coNb: coNb,
-                      ceoNm: ceoNm,
-                      coZip: coZip,
-                      coAddr: coAddr,
-                      coAddr1: coAddr1,
-                      CodialTextField: "",
-                      isCoCdEditable: false,
-                      isChanged: false
-                    });
-                  })
-                  // window.location.href="/acctmgmt/ozt/co";
-                  .catch((error) => {
-                    // 오류 발생 시의 처리
-                    CustomSwal.showCommonToast("error", "삭제실패");
-                    console.error(error);
-                  });
-              }
-            }
-          })
+      if (coCd === '') {
+        CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+          if (confirmed) {
+            CustomSwal.showCommonToast("success", "삭제되었습니다.");
+            this.componentDidMount();
+          }
         })
+      } else {
+        DivsService.getDivision({
+          accessToken: this.props.accessToken,
+          coCd: coCd
+        })
+          .then((response) => {
+            console.log(response.data.length);
+
+            CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
+              if (response.data.length > 0) {
+                CustomSwal.showCommonToast("error", "하위에 사업장이 존재합니다.");
+              } else {
+                if (confirmed) {
+                  CompanyService.deleteCo({
+                    accessToken: this.props.accessToken,
+                    coCd: coCd,
+                  })
+                    .then((response) => {
+                      console.log(response.data);
+                      CustomSwal.showCommonToast("success", "삭제되었습니다.");
+                      const coCdList = response.data.map((item) => item.coCd);
+                      const coNmList = response.data.map((item) => item.coNm);
+                      const ceoNmList = response.data.map((item) => item.ceoNm);
+                      const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
+
+                      const coCd = response.data[0].coCd;
+                      const coNm = response.data[0].coNm;
+                      const gisu = response.data[0].gisu;
+                      const frDt = dayjs(response.data[0].frDt).format("YYYY-MM-DD");
+                      const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
+                      const jongmok = response.data[0].jongmok;
+                      const businessType = response.data[0].businessType;
+                      const coNb = response.data[0].coNb;
+                      const ceoNm = response.data[0].ceoNm;
+                      const coZip = response.data[0].coZip;
+                      const coAddr = response.data[0].coAddr;
+                      const coAddr1 = response.data[0].coAddr1;
+                      this.setState({
+                        cardCount: cardCount, // state에 값을 저장
+                        coCdList: coCdList,
+                        coNmList: coNmList,
+                        ceoNmList: ceoNmList,
+                        focused: coCdList[0],
+                        coCd: coCd,
+                        coNm: coNm,
+                        gisu: gisu,
+                        frDt: frDt,
+                        toDt: toDt,
+                        dateRange: frDt + ' ~ ' + toDt,
+                        jongmok: jongmok,
+                        businessType: businessType,
+                        coNb: coNb,
+                        ceoNm: ceoNm,
+                        coZip: coZip,
+                        coAddr: coAddr,
+                        coAddr1: coAddr1,
+                        CodialTextField: "",
+                        isCoCdEditable: false,
+                        isChanged: false
+                      });
+                    })
+                    // window.location.href="/acctmgmt/ozt/co";
+                    .catch((error) => {
+                      // 오류 발생 시의 처리
+                      CustomSwal.showCommonToast("error", "삭제실패");
+                      console.error(error);
+                    });
+                }
+              }
+            })
+          })
       }
     }
   }
@@ -687,30 +687,27 @@ class CoMgmtComponent extends Component {
         toDt: data.toDt,
       }
     })
-
     this.insertDate(this.state.selectedRow);
-
   }
 
   insertDate = (selectedRow) => {
-    // console.log(this.state.selectedRow)
-    // if(this.state.selectedRow.toDt.includes('')){
-    //   console.log("뭐여이건ㅉ")
-    //   CustomSwal.showCommonToast("warning", "적용 할 기수를 선택해주세요.");
-    // }else{
-    this.setState({
-      dateRange:
-        dayjs(selectedRow.frDt).format("YYYY-MM-DD") +
-        " ~ " +
-        dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
-      gisu: selectedRow.gisu,
+    console.log(selectedRow)
+    if (selectedRow.gisu == "" || selectedRow.frDt == "" || selectedRow.toDt == "") {
+      CustomSwal.showCommonToast("warning", "적용 할 기수를 선택해주세요.");
+    } else {
+      this.setState({
+        dateRange:
+          dayjs(selectedRow.frDt).format("YYYY-MM-DD") +
+          " ~ " +
+          dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
+        gisu: selectedRow.gisu,
 
-      frDt: dayjs(selectedRow.frDt).format("YYYY-MM-DD"),
-      toDt: dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
-      open: false,
-    });
-    console.log(selectedRow);
-  // }
+        frDt: dayjs(selectedRow.frDt).format("YYYY-MM-DD"),
+        toDt: dayjs(selectedRow.toDt).format("YYYY-MM-DD"),
+        open: false,
+      });
+      console.log(selectedRow);
+    }
   };
 
   //열 클릭 시, 값 콘솔에 적용
@@ -872,9 +869,10 @@ class CoMgmtComponent extends Component {
           spacing={2}
           justifyContent="left"
           alignItems="center"
+          position = 'relative'
         >
           <Grid item xs={4}>
-            <Grid container alignItems="center">
+            <Grid container alignItems="center" >
               <CustomInputLabel>회사</CustomInputLabel>
               <CustomTextField
                 name="CodialTextField"
@@ -890,20 +888,19 @@ class CoMgmtComponent extends Component {
                   )
                 }}
               ></CustomTextField>
-
-              <CustomSearchButton
-                variant="outlined"
-                onClick={!this.state.CodialTextField ? this.reClick : this.helpClick}
-                sx={{
-                  minWidth: "5px",
-                  position: "absolute",
-                  // top: "7px",
-                  left: "1810px",
-                }}>
-                <SearchIcon fontSize="medium" />
-              </CustomSearchButton>
             </Grid>
           </Grid>
+          <CustomSearchButton
+            variant="outlined"
+            onClick={this.reClick}
+            sx={{
+              minWidth: "5px",
+              position: "absolute",
+              bottom: '25px',
+              right: "0px",
+            }}>
+            <SearchIcon fontSize="medium" />
+          </CustomSearchButton>
         </CustomGridContainer>
 
         <Grid sx={{ position: "relative", display: "flex", width: "100%" }}>
@@ -925,7 +922,7 @@ class CoMgmtComponent extends Component {
                 alignItems: "center",
                 width: "100%",
                 backgroundColor: "#FCFCFC",
-                borderBottom: "2px solid #000",
+                borderBottom: "3px solid #000",
               }}
             >
               <CustomInputLabel sx={{ ml: 1 }}>총 회사:</CustomInputLabel>
@@ -990,7 +987,7 @@ class CoMgmtComponent extends Component {
                 </CustomInputLabel>
               </Grid>
             </Grid>
-            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA" }}>
+            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA",borderTop:"3px solid black" }} >
               <Grid
                 item
                 xs={2}
@@ -998,7 +995,6 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1012,7 +1008,6 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                 }}
@@ -1036,7 +1031,7 @@ class CoMgmtComponent extends Component {
                   display: "flex",
                   justifyContent: "flex-end",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
+                  
                   borderBottom: "1px solid lightgray",
                   borderRight: "1px solid #EAEAEA",
                   backgroundColor: "#FCFCFC",
@@ -1050,7 +1045,6 @@ class CoMgmtComponent extends Component {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderTop: "2px solid #000",
                   borderBottom: "1px solid lightgray",
                 }}
               >
@@ -1306,7 +1300,7 @@ class CoMgmtComponent extends Component {
                     ),
                   }}
                 ></CustomDatePrToTextField>
-              
+
                 <Button
                   size="medium"
                   sx={{ ml: 1 }}

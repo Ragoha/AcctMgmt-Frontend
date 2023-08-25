@@ -53,7 +53,7 @@ class SearchComponent extends Component {
                   ...params.InputProps,
                   disableUnderline: true,
                   endAdornment: (
-                    <SearchIcon sx={{ fontSize: "30px" }} color="action" />
+                    <SearchIcon sx={{ fontSize: "25px" }} color="action" />
                   ),
                 }}
                 onChange={(e) => {
@@ -79,9 +79,9 @@ class SearchComponent extends Component {
             openOnFocus={true}
             sx={{
               "& .MuiInputBase-root": {
-                paddingTop: "4px !important",
+                paddingTop: "2px !important",
                 paddingLeft: "15px !important",
-                paddingRight: "20px !important",
+                paddingRight: "14px !important",
                 borderRadius: "90px",
                 background: "white",
                 height: "40px",
