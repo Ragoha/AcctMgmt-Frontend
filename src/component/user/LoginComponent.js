@@ -87,7 +87,6 @@ class LoginComponent extends Component {
 
         const user = response.data;
         const USER = this.props.setUserInfo(user);
-        this.props.setConfig(response.data.config); //환경설정 초기데이터 리덕스 저장
         console.log(response.data);
         console.log(jwtToken);
         console.log(accToken);
@@ -98,8 +97,8 @@ class LoginComponent extends Component {
           .then((response) => {
             console.log("로그인 : Config Data: ", response.data);
             // 받아온 데이터를 가공하여 userData 객체에 설정
-            this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
-            // this.props.history.push("/acctmgmt/bgt");
+            const what2 = this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
+            console.log("2번 : ", what2);
             this.setState({ isLoggingIn: false });
             CustomSwal.showCommonToast("success", user.empName+"님 환영합니다.", "1500");
             this.props.navigate("/acctmgmt/home");
