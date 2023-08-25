@@ -3,7 +3,7 @@ import { Button, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PjtService from '../../../service/PjtService';
+import PgrService from '../../../service/PgrService';
 
 import {
   CustomButtonGridContainer,
@@ -24,7 +24,7 @@ import {
 } from "../../common/style/CommonStyle";
 
 const columns = [
-  { field: 'pgrCd', headerName: '프로젝트그룹코드', width: 180, headerAlign: 'center' },
+  { field: 'pgrCd', headerName: '프로젝트그룹코드', width: 230, headerAlign: 'center' },
   { field: 'pgrNm', headerName: '프로젝트그룹명', width: 200, headerAlign: 'center' }
 ]
 
@@ -69,7 +69,7 @@ class PgrDialogComponent extends Component {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
     const {keyword}= this.state;
-    PjtService.getPgrBy({keyword, coCd,
+    PgrService.getPgrBy({keyword, coCd,
       accessToken: this.props.accessToken,
     })
       .then(

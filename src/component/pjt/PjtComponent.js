@@ -1,43 +1,19 @@
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import HelpCenterOutlinedIcon from "@mui/icons-material/HelpCenterOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  Checkbox,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Typography,
-  Tooltip,
-} from "@mui/material";
-import Grid from "@mui/material/Grid"; // 변경된 import
-import dayjs from "dayjs";
-import { Component, createRef } from "react";
-import { connect } from "react-redux";
-import PjtService from "../../service/PjtService";
-import CustomSwal from "../common/CustomSwal.js";
-import {
-  CustomDateTextField,
-  CustomGridContainer,
-  CustomHeaderGridContainer,
-  CustomHeaderInputLabel,
-  CustomInputLabel,
-  CustomSearchButton,
-  CustomSelect,
-  CustomTextField,
-  CustomWideSelect,
-  CustomWideTextField,
-} from "../common/style/CommonStyle";
-import PgrDialogComponent from "./dialog/PgrDialogComponent";
-import PjtDialogComponent from "./dialog/PjtDialogComponent";
-import PgrInsertDialogComponent from "./dialog/PgrInsertDialogComponent";
-import "./styles.css"; // 스타일시트 불러오기
-import PgrDialogComponent2 from "./dialog/PgrDialogComponent2";
-import Swal from "sweetalert2";
+import SearchIcon from '@mui/icons-material/Search';
+import { Button, Card, CardActionArea, CardContent, Checkbox, InputAdornment, InputLabel, MenuItem, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid'; // 변경된 import
+import dayjs from 'dayjs';
+import { Component, createRef } from 'react';
+import { connect } from 'react-redux';
+import PjtService from '../../service/PjtService';
+import CustomSwal from '../common/CustomSwal.js';
+import { CustomDateTextField, CustomGridContainer, CustomHeaderGridContainer, CustomHeaderInputLabel, CustomInputLabel, CustomSearchButton, CustomSelect, CustomTextField, CustomWideSelect, CustomWideTextField } from '../common/style/CommonStyle';
+import PgrDialogComponent from './dialog/PgrDialogComponent';
+import PgrDialogComponent2 from './dialog/PgrDialogComponent2';
+import PgrInsertDialogComponent from './dialog/PgrInsertDialogComponent';
+import PjtDialogComponent from './dialog/PjtDialogComponent';
+import './styles.css'; // 스타일시트 불러오기
 
 class PjtComponent extends Component {
   constructor(props) {
@@ -60,8 +36,8 @@ class PjtComponent extends Component {
       PgrdialTextField2: "",
       isChanged: false, //수정중일때 변화 감지 변수 : 바뀐게 있다면 true로 바꿔서 alert창 띄우기&&수정이 완료되면 초기화
       dateRange: [null, null], // 날짜 범위를 배열로 저장합니다.
-      coCd: 0,
-      pgrCd: 0,
+      coCd: "",
+      pgrCd: "",
       pgrNm: "",
       pjtCd: "",
       pjtNm: "",
@@ -84,7 +60,8 @@ class PjtComponent extends Component {
       isToChanged: false,
       isPrChanged: false,
       isStartChanged: false,
-    };
+      isFiled: false,
+    }
   }
   switchWindow = (e) => {
     if (this.state.isChanged) {
@@ -120,16 +97,15 @@ class PjtComponent extends Component {
     const { name, value } = e.target;
     this.setState((prevState) => ({
       selectedProgFg: value,
-      isChanged: prevState[name] !== value,
+      isChanged: false,
     }));
   };
-
   handleDateRangeChange = (newValue) => {
     this.setState({ dateRange: newValue });
   };
   componentDidMount() {
     this.renderData();
-  }
+  };
 
   renderData = () => {
     const userInfo = this.props.userInfo;
@@ -140,45 +116,73 @@ class PjtComponent extends Component {
       accessToken: this.props.accessToken,
     }) //카드리스트 전체조회 함수
       .then((response) => {
-        console.log("abc", response.data);
-        const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
-        const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
-        const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
-        const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
-        const progFgList = response.data.map((item) => item.progFg); //
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거)
-        const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
-        const pgrCd = response.data[0].pgrCd;
-        const pgrNm = response.data[0].pgrNm;
-        const pjtNm = response.data[0].pjtNm;
-        const prDt = dayjs(response.data[0].prDt).format("YYYY-MM-DD");
-        const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
-        const progFg = response.data[0].progFg;
-        const apjtNm = response.data[0].apjtNm;
-        const startDt = dayjs(response.data[0].startDt).format("YYYY-MM-DD");
-        const note = response.data[0].note;
-        console.log("프젝네임 어디갔누?", pjtNmList);
-        console.log("프젝코드는 어디갔누?", pjtCdList);
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          pjtCdList: pjtCdList,
-          pjtNmList: pjtNmList,
-          pjtPrList: pjtPrList,
-          pjtToList: pjtToList,
-          progFgList: progFgList,
-          focused: pjtCdList[0],
-          pjtCd: pjtCd,
-          pgrCd: pgrCd + ". " + pgrNm,
-          pgrNm: pgrNm,
-          pjtNm: pjtNm,
-          prDt: prDt,
-          toDt: toDt,
-          progFg: progFg,
-          apjtNm: apjtNm,
-          startDt: startDt,
-          note: note,
-          dup: true,
-        });
+        if (response.data.length === 0) {
+          this.setState({
+            isChanged: false,
+            isPrChanged: false,
+            pjtCdList: [],
+            cardCount: 0,
+            pjtCd: '',
+            pgrCd: '',
+            pgrNm: '',
+            pjtNm: '',
+            prDt: '',
+            toDt: '',
+            progFg: '',
+            apjtNm: '',
+            startDt: '',
+            note: '',
+            isFiled: true,
+          });
+        }
+        else {
+          console.log("abc", response.data);
+          const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
+          const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
+          const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
+          const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
+          const progFgList = response.data.map((item) => item.progFg); //
+          const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거) 
+          const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
+          const pgrCd = response.data[0].pgrCd;
+          const pgrNm = response.data[0].pgrNm;
+          const pjtNm = response.data[0].pjtNm;
+          const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+          const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+          const progFg = response.data[0].progFg;
+          const apjtNm = response.data[0].apjtNm;
+          const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
+          const note = response.data[0].note;
+          console.log("프젝네임 어디갔누?", pjtNmList);
+          console.log("프젝코드는 어디갔누?", pjtCdList);
+          if (pgrCd !== '') {
+            this.pgr = pgrCd + ". " + pgrNm;
+          }
+          else {
+            this.pgr = '';
+          }
+          this.setState({
+            cardCount: cardCount, // state에 값을 저장
+            pjtCdList: pjtCdList,
+            pjtNmList: pjtNmList,
+            pjtPrList: pjtPrList,
+            pjtToList: pjtToList,
+            progFgList: progFgList,
+            focused: pjtCdList[0],
+            pjtCd: pjtCd,
+            pgrCd: this.pgr,
+            pgrNm: pgrNm,
+            pjtNm: pjtNm,
+            prDt: prDt,
+            toDt: toDt,
+            progFg: progFg,
+            apjtNm: apjtNm,
+            startDt: startDt,
+            note: note,
+            dup: true,
+            isFiled: false,
+          })
+        }
       }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
         // 오류 발생 시의 처리
@@ -199,7 +203,8 @@ class PjtComponent extends Component {
         });
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
-  };
+
+  }
   //추가, 수정, 텍스트 필드애들을 변화 감지해서 값 넣어주기
   //수정 시 값 변화를 인식
   handleFix = () => {
@@ -221,6 +226,10 @@ class PjtComponent extends Component {
         startDt,
         note,
       } = this.state;
+      const parts = pgrCd.split('.');
+      // 나뉜 부분 중 첫 번째 부분을 선택합니다.
+      const firstPart = parts[0];
+      console.log("pgrCdd:", pgrNm);
       // 변경된 필드만 JSON 객체에 추가
       const changedFields = {};
 
@@ -234,7 +243,7 @@ class PjtComponent extends Component {
       if (prDt != "Invalid Date" && startDt != "Invalid Date") {
         Pjt = {
           coCd: coCd,
-          pgrCd: pgrCd,
+          pgrCd: firstPart,
           pgrNm: pgrNm,
           pjtCd: pjtCd,
           pjtNm: pjtNm,
@@ -248,7 +257,7 @@ class PjtComponent extends Component {
       } else if (prDt != "Invalid Date" && startDt == "Invalid Date") {
         Pjt = {
           coCd: coCd,
-          pgrCd: pgrCd,
+          pgrCd: firstPart,
           pgrNm: pgrNm,
           pjtCd: pjtCd,
           pjtNm: pjtNm,
@@ -261,7 +270,7 @@ class PjtComponent extends Component {
       } else if (prDt == "Invalid Date" && startDt != "Invalid Date") {
         Pjt = {
           coCd: coCd,
-          pgrCd: pgrCd,
+          pgrCd: firstPart,
           pgrNm: pgrNm,
           pjtCd: pjtCd,
           pjtNm: pjtNm,
@@ -273,7 +282,7 @@ class PjtComponent extends Component {
       } else {
         Pjt = {
           coCd: coCd,
-          pgrCd: pgrCd,
+          pgrCd: firstPart,
           pgrNm: pgrNm,
           pjtCd: pjtCd,
           pjtNm: pjtNm,
@@ -287,7 +296,6 @@ class PjtComponent extends Component {
       console.log("시작날 짜 뭐 들어감?:", startDt);
 
       PjtService.updatePjt({
-        coCd,
         Pjt,
         accessToken: this.props.accessToken,
       })
@@ -335,6 +343,7 @@ class PjtComponent extends Component {
         startDt,
         note,
       } = this.state;
+
       const Pjt = {
         coCd,
         pgrCd,
@@ -355,36 +364,41 @@ class PjtComponent extends Component {
       }
       console.log("넌 뭔값이야?", Pjt);
       //showCommonSwalYn = (title, text, icon, yesButtonText)
-      CustomSwal.showCommonSwalYn(
-        "저장",
-        "저장하시겠습니까?",
-        "info",
-        "저장",
-        (confirmed) => {
-          if (confirmed) {
-            // confirmed가 true인 경우에만 저장 로직을 실행
-            PjtService.insertPjt({
-              coCd,
-              Pjt,
-              accessToken: this.props.accessToken,
+      if (prDt > toDt) {
+        CustomSwal.showCommonToast("error", "시작일보다 클 수 없다.");
+        return;
+      }
+      CustomSwal.showCommonSwalYn("저장", "작성한 프로젝트 정보를 저장하시겠습니까?", "info", "저장", (confirmed) => {
+        if (confirmed) {
+          // confirmed가 true인 경우에만 저장 로직을 실행
+          PjtService.insertPjt({
+            coCd, Pjt,
+            accessToken: this.props.accessToken,
+          })
+            .then((response) => {
+              if (response.status === 200) {
+                this.setState({ isChanged: false, isPjtCdEditable: false, });
+                this.renderData();
+                CustomSwal.showCommonToast("success", "저장되었습니다.");
+              }
             })
-              .then((response) => {
-                if (response.status === 200) {
-                  this.setState({ isChanged: false, isPjtCdEditable: false });
-                  this.renderData();
-                  CustomSwal.showCommonToast("success", "저장되었습니다.");
-                }
-              })
-              .catch((error) => {
-                if (error.response && error.response.status === 400) {
-                  CustomSwal.showCommonToast("warning", "중복된 코드입니다.");
-                }
-                console.error(error);
-              });
-          } else {
-            CustomSwal.showCommonToast("warning", "저장이 취소되었습니다.");
-          }
+            .then((response) => {
+              if (response.status === 200) {
+                this.setState({ isChanged: false, isPjtCdEditable: false });
+                this.renderData();
+                CustomSwal.showCommonToast("success", "저장되었습니다.");
+              }
+            })
+            .catch((error) => {
+              if (error.response && error.response.status === 400) {
+                CustomSwal.showCommonToast("warning", "중복된 코드입니다.");
+              }
+              console.error(error);
+            });
+        } else {
+          CustomSwal.showCommonToast("warning", "저장이 취소되었습니다.");
         }
+      }
       );
     } else {
       CustomSwal.showCommonToast("info", "저장할 내용이 없습니다.");
@@ -410,10 +424,9 @@ class PjtComponent extends Component {
       return;
     }
     const Pjt = {
-      pjtCd,
+      pjtCd, coCd,
     };
     PjtService.duplication({
-      coCd,
       Pjt,
       accessToken: this.props.accessToken,
     })
@@ -446,7 +459,7 @@ class PjtComponent extends Component {
   handleDel = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    const { pjtCd, cardCount, pjtCdList } = this.state;
+    const { pjtCd, cardCount } = this.state;
 
     // Ensure pjtCd is set to a valid value before proceeding with deletion
     // if (!pjtCd) {
@@ -454,55 +467,68 @@ class PjtComponent extends Component {
     // }
     // console.log("이거 실행되나요2??", cardCount);
 
-    const Pjt = {
-      coCd: coCd,
-      pjtCd: pjtCd,
-    };
     if (cardCount > 0) {
-      CustomSwal.showCommonSwalYn(
-        "삭제",
-        "삭제하시겠습니까?",
-        "info",
-        "삭제",
-        (confirmed) => {
-          if (confirmed) {
-            PjtService.deletePjt({
-              Pjt,
-              accessToken: this.props.accessToken,
+      CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+        if (confirmed) {
+          PjtService.deletePjt({
+            coCd: coCd,
+            pjtCd: pjtCd,
+            accessToken: this.props.accessToken
+          })
+            .then((response) => {
+              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+              this.renderData();
+              this.setState((prevState) => ({
+                // cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
+                selectAllChecked: false,
+                isChangTed: false,
+                isPjtCdEditable: false,
+                pjtCdList: prevState.pjtCdList.filter((pjtId) => pjtId !== pjtCd),
+                pjtCd: '',
+                pgrCd: '',
+                pgrNm: '',
+                pjtNm: '',
+                prDt: '',
+                toDt: '',
+                progFg: '',
+                apjtNm: '',
+                startDt: '',
+                note: '',
+              }));
             })
-              .then((response) => {
-                CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
-                this.renderData();
-                this.setState((prevState) => ({
-                  cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
-                  selectAllChecked: false,
-                  isChangTed: false,
-                  isPjtCdEditable: false,
-                  pjtCdList: prevState.pjtCdList.filter(
-                    (pjtId) => pjtId !== pjtCd
-                  ),
-                  pjtCd: "",
-                  pgrCd: "",
-                  pgrNm: "",
-                  pjtNm: "",
-                  prDt: "",
-                  toDt: "",
-                  progFg: "",
-                  apjtNm: "",
-                  startDt: "",
-                  note: "",
-                }));
-              })
-              .catch((error) => {
-                CustomSwal.showCommonToast("error", "삭제실패");
-                console.error(error);
-              });
-          } else {
-            // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
-            // if(cardCount === 0){
-            // }
-          }
+            .then((response) => {
+              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+              this.renderData();
+              this.setState((prevState) => ({
+                cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
+                selectAllChecked: false,
+                isChangTed: false,
+                isPjtCdEditable: false,
+                pjtCdList: prevState.pjtCdList.filter(
+                  (pjtId) => pjtId !== pjtCd
+                ),
+                pjtCd: "",
+                pgrCd: "",
+                pgrNm: "",
+                pjtNm: "",
+                prDt: "",
+                toDt: "",
+                progFg: "",
+                apjtNm: "",
+                startDt: "",
+                note: "",
+              }));
+            })
+            .catch((error) => {
+              CustomSwal.showCommonToast("error", "삭제실패");
+              console.error(error);
+            });
+        } else {
+          // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
+          // if(cardCount === 0){
+          // }
         }
+      }
       );
     } else {
       CustomSwal.showCommonToast("warning", "삭제할 데이터가 없습니다.");
@@ -517,52 +543,41 @@ class PjtComponent extends Component {
     if (selectedCards.length === 0) {
       return;
     }
-    CustomSwal.showCommonSwalYn(
-      "삭제",
-      "삭제하시겠습니까?",
-      "info",
-      "삭제",
-      (confirmed) => {
-        if (confirmed) {
-          selectedCards.forEach((index) => {
-            const pjtToDelete = pjtCdList[index];
-            const Pjt = {
-              coCd: coCd,
-              pjtCd: pjtToDelete,
-            };
-            PjtService.deletePjt({
-              Pjt,
-              accessToken: this.props.accessToken,
-            });
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+      if (confirmed) {
+        selectedCards.forEach((index) => {
+          const pjtToDelete = pjtCdList[index];
+          PjtService.deletePjt({
+            coCd: coCd,
+            pjtCd: pjtToDelete,
+            accessToken: this.props.accessToken,
           });
-          CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
-          this.renderData();
-          this.setState((prevState) => ({
-            cardCount: cardCount - selectedCards.length,
-            selectedCards: [],
-            selectedCount: 0,
-            isPjtCdEditable: false,
-            selectAllChecked: false,
-            isChanged: false,
-            pjtCd: "",
-            pgrCd: "",
-            pgrNm: "",
-            pjtNm: "",
-            prDt: "",
-            toDt: "",
-            progFg: "",
-            apjtNm: "",
-            startDt: "",
-            note: "",
-            pjtCdList: prevState.pjtCdList.filter(
-              (pjtCd, index) => !selectedCards.includes(index)
-            ),
-          }));
-        } else {
-          // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
-        }
+        });
+        CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+        this.renderData();
+        this.setState((prevState) => ({
+          cardCount: cardCount - selectedCards.length,
+          selectedCards: [],
+          selectedCount: 0,
+          isPjtCdEditable: false,
+          selectAllChecked: false,
+          isChanged: false,
+          pjtCd: '',
+          pgrCd: '',
+          pgrNm: '',
+          pjtNm: '',
+          prDt: '',
+          toDt: '',
+          progFg: '',
+          apjtNm: '',
+          startDt: '',
+          note: '',
+          pjtCdList: prevState.pjtCdList.filter((pjtCd, index) => !selectedCards.includes(index)),
+        }));
+      } else {
+        // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
       }
-    );
+    });
   };
 
   handlePjt2 = (e) => {
@@ -612,42 +627,42 @@ class PjtComponent extends Component {
   };
   //카드 리스트 생성
   addCardButton = () => {
+
     //0000을 갖고있는 카드가 생기면 생성되지 않도록 막은 조건
-    if (this.state.pjtCdList.includes("000")) {
-      CustomSwal.showCommonToast("warning", "미등록 프로젝트가 존재합니다.");
+    if (this.state.pjtCdList.includes('000')) {
+      CustomSwal.showCommonToast('warning', '미등록 프로젝트가 존재합니다.');
       // alert("");
     } else {
       const newCardCount = this.state.cardCount + 1;
-      const newPjtCdList = [...this.state.pjtCdList, "000"];
+      const newPjtCdList = [...this.state.pjtCdList, '000'];
       // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
-      this.setState(
-        {
-          isPjtCdEditable: true, // 프로젝트코드 텍스트 필드 활성화
-          cardCount: newCardCount,
-          pjtCdList: newPjtCdList,
-          // coNmList: newCoNmList,
-          focused: "000",
-          pjtCd: "",
-          pgrCd: "",
-          pgrNm: "",
-          pjtNm: "",
-          prDt: "",
-          toDt: "",
-          progFg: "1.진행중",
-          apjtNm: "",
-          startDt: "",
-          note: "",
-        },
+      this.setState({
+        isFiled: false,
+        isPjtCdEditable: true, // 프로젝트코드 텍스트 필드 활성화
+        cardCount: newCardCount,
+        pjtCdList: newPjtCdList,
+        // coNmList: newCoNmList,
+        focused: '000',
+        pjtCd: '',
+        pgrCd: '',
+        pgrNm: '',
+        pjtNm: '',
+        prDt: '',
+        toDt: '',
+        progFg: "1.진행중",
+        apjtNm: '',
+        startDt: '',
+        note: '',
+      },
         () => {
           // 새로 추가된 카드로 스크롤 이동
           if (this.cardListRef.current) {
-            this.cardListRef.current.scrollTop =
-              this.cardListRef.current.scrollHeight;
+            this.cardListRef.current.scrollTop = this.cardListRef.current.scrollHeight;
           }
         }
       );
     }
-  }; //여기에 모든 state값 초기화 하면 됨 !!!!!
+  };//여기에 모든 state값 초기화 하면 됨 !!!!!
   // 저장 버튼 누르면 텍스트 필드 갑 읽어와서 저장 해주는 친구들
 
   //카드를 클릭하면 우측에 데이터 랜더링 함수
@@ -657,52 +672,44 @@ class PjtComponent extends Component {
     console.log(pjtCd);
     if (this.state.isChanged) {
       // alert('변경된 내용이 저장되지 않았습니다.');
-      CustomSwal.showCommonToast(
-        "warning",
-        "변경된 내용이 <br/> 저장되지 않았습니다."
-      );
+      CustomSwal.showCommonToast("warning", "변경된 내용이 <br/> 저장되지 않았습니다.");
     } else {
       this.setState({ focused: pjtCd });
 
-      if (pjtCd === "000") {
+      if (pjtCd === '000') {
         this.setState({
+          isFiled: false,
           isPjtCdEditable: true,
-          pjtCd: "",
-          pgrCd: "",
-          pgrNm: "",
-          pjtNm: "",
-          prDt: "",
-          toDt: "",
-          progFg: "",
-          apjtNm: "",
-          startDt: "",
-          note: "",
+          pjtCd: "", pgrCd: "", pgrNm: "", pjtNm: "",
+          prDt: "", toDt: "", progFg: "1.진행중", apjtNm: "",
+          startDt: "", note: ""
         });
       } else {
         PjtService.getSelPjtList({
-          pjtCd,
-          coCd,
-          accessToken: this.props.accessToken,
+          pjtCd, coCd
+          , accessToken: this.props.accessToken,
         })
           .then((response) => {
             const data = response.data[0];
-            const prDt = dayjs(data.prDt).format("YYYY-MM-DD");
-            const toDt = dayjs(data.toDt).format("YYYY-MM-DD");
-            const startDt = dayjs(data.startDt).format("YYYY-MM-DD");
+            const prDt = dayjs(data.prDt).format('YYYY-MM-DD');
+            const toDt = dayjs(data.toDt).format('YYYY-MM-DD');
+            const startDt = dayjs(data.startDt).format('YYYY-MM-DD');
             console.log("하나 잘 갖고오니?", response.data);
-
+            console.log("pgrCd????", data.pgrCd);
+            if (data.pgrCd !== '') {
+              this.pgr = data.pgrCd + ". " + data.pgrNm;
+            }
+            else {
+              this.pgr = '';
+            }
+            console.log("찍은 카드?:", this.pgr);
             this.setState({
+              isFiled: false,
               isPjtCdEditable: false,
-              pjtCd: data.pjtCd,
-              pgrCd: data.pgrCd + ". " + data.pgrNm,
-              pgrNm: data.pgrNm,
-              pjtNm: data.pjtNm,
-              prDt: prDt,
-              toDt: toDt,
-              progFg: data.progFg,
-              apjtNm: data.apjtNm,
-              startDt: data.startDt,
-              note: data.note,
+              pjtCd: data.pjtCd, pgrCd: this.pgr, pgrNm: data.pgrNm,
+              pjtNm: data.pjtNm, prDt: prDt, toDt: toDt,
+              progFg: data.progFg, apjtNm: data.apjtNm,
+              startDt: startDt, note: data.note
             });
           })
           .catch((error) => {
@@ -737,14 +744,9 @@ class PjtComponent extends Component {
       console.log("변한 값: " + currentValue);
     });
     this.isChanged = false;
-  };
-  // handleSetPgrTextField2 = async (data) => {
-  //   this.setState({ pgrTextFieldData2: data })
-  //   await this.setState({
-  //     PgrdialTextField2: data.pgrCd,
-  //     pgrCd: data.pgrCd  //밑에 pjtCd 넘겨주기
-  //   });
-  // };
+
+  }
+
   onClose = (data) => {
     this.setState({
       onClose: data,
@@ -760,87 +762,113 @@ class PjtComponent extends Component {
   };
   // 검색한 다음 텍스트필드 값 변경해주는거 검색한 내용으로
   handleSetPjtTextField = async (data) => {
-    console.log("넘어오는 데이터들? ", data);
-    this.setState({ pjtTextFieldData: data });
+    console.log("넘어오는 데이터들? ", data)
+    this.setState({ pjtTextFieldData: data })
     await this.setState({
-      PjtdialTextField:
-        data.pjtCd && data.pjtNm ? data.pjtCd + ". " + data.pjtNm : "",
-      pjtCd: data.pjtCd, //밑에 pjtCd 넘겨주기
+      PjtdialTextField: data.pjtCd && data.pjtNm ? data.pjtCd + ". " + data.pjtNm : "",
+      pjtCd: data.pjtCd,  //밑에 pjtCd 넘겨주기
     });
-    console.log("값이 들어잇긴 해 ?", data);
+    console.log('값이 들어잇긴 해 ?', data);
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    const { pjtCd } = this.state;
+    const {
+      pjtCd,
+    } = this.state;
     const selData = {
       pjtCd: pjtCd,
       coCd: coCd,
       pjtNm: data.pjtNm,
-    };
-    PjtService.selPjtBy({
-      selData,
-      accessToken: this.props.accessToken,
-    }) //카드리스트 전체조회 함수
-      .then((response) => {
-        console.log("abc", response.data);
-        const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
-        const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
-        const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
-        const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
-        const progFgList = response.data.map((item) => item.progFg); //
-        const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거)
-        const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
-        const pgrCd = response.data[0].pgrCd;
-        const pgrNm = response.data[0].pgrNm;
-        const pjtNm = response.data[0].pjtNm;
-        const prDt = dayjs(response.data[0].prDt).format("YYYY-MM-DD");
-        const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
-        const progFg = response.data[0].progFg;
-        const apjtNm = response.data[0].apjtNm;
-        const startDt = dayjs(response.data[0].startDt).format("YYYY-MM-DD");
-        const note = response.data[0].note;
-        console.log("프젝네임 어디갔누?", pjtNmList);
-        console.log("프젝코드는 어디갔누?", pjtCdList);
-        this.setState({
-          cardCount: cardCount, // state에 값을 저장
-          pjtCdList: pjtCdList,
-          pjtNmList: pjtNmList,
-          pjtPrList: pjtPrList,
-          pjtToList: pjtToList,
-          progFgList: progFgList,
-          focused: pjtCdList[0],
-          pjtCd: pjtCd,
-          pgrCd: pgrCd,
-          pgrNm: pgrNm,
-          pjtNm: pjtNm,
-          prDt: prDt,
-          toDt: toDt,
-          progFg: progFg,
-          apjtNm: apjtNm,
-          startDt: startDt,
-          note: note,
-        });
-      }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
-      .catch((error) => {
-        // 오류 발생 시의 처리
-        console.error(error);
-        // alert("중복된 회사 또는 모두 입력해주세요");
-      });
+    }
+    // PjtService.selPjtBy({
+    //   selData,
+    //   accessToken: this.props.accessToken,
+    // }) //카드리스트 전체조회 함수
+    //   .then((response) => {
+    //     if (response.data.length === 0) {
+    //       this.setState({
+    //         isChanged: false,
+    //         isPrChanged: false,
+    //         pjtCdList: [],
+    //         cardCount: 0,
+    //         pjtCd: '',
+    //         pgrCd: '',
+    //         pgrNm: '',
+    //         pjtNm: '',
+    //         prDt: '',
+    //         toDt: '',
+    //         progFg: '',
+    //         apjtNm: '',
+    //         startDt: '',
+    //         note: '',
+    //       });
+    //     }
+    //     else {
+    //       console.log("abc", response.data);
+    //       const pjtCdList = response.data.map((item) => item.pjtCd); //프로젝트코드 리스트
+    //       const pjtNmList = response.data.map((item) => item.pjtNm); //프로젝트 이름 리스트
+    //       const pjtPrList = response.data.map((item) => item.prDt); //프로젝트 이름 리스트
+    //       const pjtToList = response.data.map((item) => item.toDt); //프로젝트 이름 리스트
+    //       const progFgList = response.data.map((item) => item.progFg); //
+    //       const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정 (총회사 띄우는거) 
+    //       const pjtCd = response.data[0].pjtCd; //가장 먼저 저장된 pjtCd 코드 저장해서 이걸 통해서 리스트 순서를 정함
+    //       const pgrCd = response.data[0].pgrCd;
+    //       const pgrNm = response.data[0].pgrNm;
+    //       const pjtNm = response.data[0].pjtNm;
+    //       const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+    //       const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
+    //       const progFg = response.data[0].progFg;
+    //       const apjtNm = response.data[0].apjtNm;
+    //       const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
+    //       const note = response.data[0].note;
+    //       console.log("프젝네임 어디갔누?", pjtNmList);
+    //       console.log("프젝코드는 어디갔누?", pjtCdList);
+    //       this.setState({
+    //         cardCount: cardCount, // state에 값을 저장
+    //         pjtCdList: pjtCdList,
+    //         pjtNmList: pjtNmList,
+    //         pjtPrList: pjtPrList,
+    //         pjtToList: pjtToList,
+    //         progFgList: progFgList,
+    //         focused: pjtCdList[0],
+    //         pjtCd: pjtCd,
+    //         pgrCd: pgrCd,
+    //         pgrNm: pgrNm,
+    //         pjtNm: pjtNm,
+    //         prDt: prDt,
+    //         toDt: toDt,
+    //         progFg: progFg,
+    //         apjtNm: apjtNm,
+    //         startDt: startDt,
+    //         note: note,
+    //       })
+    //     }
+    //   }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
+    //   .catch((error) => {
+    //     // 오류 발생 시의 처리
+    //     console.error(error);
+    //     // alert("중복된 회사 또는 모두 입력해주세요");
+    //   });
   };
 
   handleSetPgrTextField = async (data) => {
     this.setState({ pgrTextFieldData: data });
     await this.setState({
-      PgrdialTextField:
-        data.pgrCd && data.pgrNm ? data.pgrCd + ". " + data.pgrNm : "",
-      pgrCd: data.pgrCd, //밑에 pjtCd 넘겨주기
+      PgrdialTextField: data.pgrCd && data.pgrNm ? data.pgrCd + ". " + data.pgrNm : "",
     });
   };
   handleSetPgrTextField2 = async (data) => {
-    this.setState({ pgrTextFieldData2: data });
+    this.setState({ pgrTextFieldData2: data })
+    if (data.pgrCd !== '') {
+      this.pgr = data.pgrCd + ". " + data.pgrNm;
+    }
+    else {
+      this.pgr = '';
+    }
     await this.setState({
       PgrdialTextField2: data.pgrCd + ". " + data.pgrNm,
-      pgrCd: data.pgrCd, //밑에 pjtCd 넘겨주기
+      pgrCd: this.pgr,
     });
+    console.log("뭘까?", this.state.PgrdialTextField2);
   };
   // 검색한 내용들 나오는 곳
 
@@ -876,10 +904,7 @@ class PjtComponent extends Component {
       this.setState({
         selectedCount: pjtCdList.length,
         selectAllChecked: true,
-        selectedCards: Array.from(
-          { length: pjtCdList.length },
-          (_, index) => index
-        ),
+        selectedCards: Array.from({ length: pjtCdList.length }, (_, index) => index),
       });
     }
   };
@@ -895,14 +920,14 @@ class PjtComponent extends Component {
   // };
 
   handleEnterKey = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       this.pjthelpClick();
     }
-    if (e.key === "Backspace") {
+    if (e.key === 'Backspace') {
       // 백스페이스 키를 눌렀고 텍스트 필드가 비어 있을 때
       this.setState({
-        PjtdialTextField: "",
-        pjtTextFieldData: "",
+        PjtdialTextField: '',
+        pjtTextFieldData: '',
       });
     }
   };
@@ -915,19 +940,89 @@ class PjtComponent extends Component {
       });
     }
   };
+  handleClearDate = (e) => {
+    if (e.key === 'Backspace') {
+      // 백스페이스 키를 눌렀고 텍스트 필드가 비어 있을 때
+      this.setState({
+        dateRange: '',
+      });
+    }
+  };
+  handleClearTo = () => {
+    const { prDt, toDt, startDt } = this.state;
+    if (prDt !== "") {
+      if (toDt < prDt) {
+        CustomSwal.showCommonToast("error", "시작일보다 빠를 수 없습니다", "1300", "bottom");
+        this.setState({
+          toDt: '',
+        });
+        return;
+      }
+    }
+    else {
+      CustomSwal.showCommonToast("error", "시작일을 입력해 주십시오", "1300", "bottom");
+      this.setState({
+        toDt: '',
+      });
+      return;
+    }
+  };
+  handleClearPr = () => {
+    const { prDt, toDt, startDt } = this.state;
+    if (toDt !== "") {
+      if (prDt > toDt) {
+        CustomSwal.showCommonToast("error", "종료일보다 느릴 수 없습니다", "1300", "bottom");
+        this.setState({
+          prDt: '',
+        });
+        return;
+      }
+    }
+    // else{
+    //   CustomSwal.showCommonToast("error", "시작일을 입력해 주십시오", "1300", "bottom");
+    //     this.setState({
+    //       toDt: '',
+    //     });
+    //     return;
+    // }
+  };
+  handleClearSt = (e) => {
+    if (e.key === 'Backspace') {
+      // 백스페이스 키를 눌렀고 텍스트 필드가 비어 있을 때
+      this.setState({
+        startDt: '',
+      });
+    }
+  };
   getGroupPjtData = async (data) => {
     PjtService.getGroupPjt({
       data,
       accessToken: this.props.accessToken,
     })
       .then((response) => {
+        console.log("length : ", response.data.length);
         if (response.data.length === 0) {
           this.setState({
             isChanged: false,
             isPrChanged: false,
+            pjtCdList: [],
+            cardCount: 0,
+            pjtCd: '',
+            pgrCd: '',
+            pgrNm: '',
+            pjtNm: '',
+            prDt: '',
+            toDt: '',
+            progFg: '',
+            apjtNm: '',
+            startDt: '',
+            note: '',
+            isFiled: true,
           });
-          CustomSwal.showCommonToast("error", "검색결과가 없습니다");
-        } else {
+          CustomSwal.showCommonToast("success", "검색결과가 없습니다");
+          return;
+        }
+        else {
           const pjtCdList = response.data.map((item) => item.pjtCd);
           const pjtNmList = response.data.map((item) => item.pjtNm);
           const pjtPrList = response.data.map((item) => item.prDt);
@@ -938,13 +1033,18 @@ class PjtComponent extends Component {
           const pgrCd = response.data[0].pgrCd;
           const pgrNm = response.data[0].pgrNm;
           const pjtNm = response.data[0].pjtNm;
-          const prDt = dayjs(response.data[0].prDt).format("YYYY-MM-DD");
-          const toDt = dayjs(response.data[0].toDt).format("YYYY-MM-DD");
+          const prDt = dayjs(response.data[0].prDt).format('YYYY-MM-DD');
+          const toDt = dayjs(response.data[0].toDt).format('YYYY-MM-DD');
           const progFg = response.data[0].progFg;
           const apjtNm = response.data[0].apjtNm;
-          const startDt = dayjs(response.data[0].startDt).format("YYYY-MM-DD");
+          const startDt = dayjs(response.data[0].startDt).format('YYYY-MM-DD');
           const note = response.data[0].note;
-
+          if (pgrCd !== "") {
+            this.pgr = pgrCd + ". " + pgrNm;
+          }
+          else {
+            this.pgr = "";
+          }
           this.setState({
             cardCount: cardCount,
             pjtCdList: pjtCdList,
@@ -954,7 +1054,7 @@ class PjtComponent extends Component {
             progFgList: progFgList,
             focused: pjtCdList[0],
             pjtCd: pjtCd,
-            pgrCd: pgrCd,
+            pgrCd: this.pgr,
             pgrNm: pgrNm,
             pjtNm: pjtNm,
             prDt: prDt,
@@ -965,7 +1065,9 @@ class PjtComponent extends Component {
             note: note,
             isChanged: false,
             isPrChanged: false,
+            isFiled: false,
           });
+          CustomSwal.showCommonToast("success", "검색완료");
         }
       })
       .catch((error) => {
@@ -974,9 +1076,8 @@ class PjtComponent extends Component {
   };
   handleClickSerachButton = (e) => {
     const { coCd } = this.props.userInfo;
-    const { selectedProgFg, pgrTextFieldData, dateRange, pjtTextFieldData } =
-      this.state;
-    let date = dayjs(dateRange).format("YYYY-MM-DD");
+    const { selectedProgFg, pgrTextFieldData, dateRange, pjtTextFieldData } = this.state;
+    let date = dayjs(dateRange).format("YYYY-MM-DD")
     if (date === "Invalid Date") {
       date = null;
     }
@@ -986,67 +1087,58 @@ class PjtComponent extends Component {
         coCd: coCd,
         pjtCd: pjtTextFieldData.pjtCd,
         progFg: selectedProgFg,
-        prDt: date,
-      };
-      this.getGroupPjtData(data).then(() => {
-        if (this.state.cardCount === 0) {
-          this.resetState();
-        }
-      });
-    } else if (pjtTextFieldData != null && pgrTextFieldData != null) {
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+          }
+        });
+    }
+    else if (pjtTextFieldData != null && pgrTextFieldData != null) {
       const data = {
         pjtCd: pjtTextFieldData.pjtCd,
         pgrCd: pgrTextFieldData.pgrCd,
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date,
-      };
-      this.getGroupPjtData(data).then(() => {
-        if (this.state.cardCount === 0) {
-          this.resetState();
-        }
-      });
-    } else if (pjtTextFieldData == null && pgrTextFieldData != null) {
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+          }
+        });
+    }
+    else if (pjtTextFieldData == null && pgrTextFieldData != null) {
       const data = {
         pgrCd: pgrTextFieldData.pgrCd,
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date,
-      };
-      this.getGroupPjtData(data).then(() => {
-        if (this.state.cardCount === 0) {
-          this.resetState();
-        }
-      });
-    } else {
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+          }
+        });
+    }
+    else {
       const data = {
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date,
-      };
-      this.getGroupPjtData(data).then(() => {
-        if (this.state.cardCount === 0) {
-          this.resetState();
-        }
-      });
+        prDt: date
+      }
+      this.getGroupPjtData(data)
+        .then(() => {
+          if (this.state.cardCount === 0) {
+          }
+        });
     }
   };
 
   render() {
-    const {
-      pjtCd,
-      progFg,
-      pgrNm,
-      pgrCd,
-      pjtNm,
-      prDt,
-      toDt,
-      apjtNm,
-      startDt,
-      note,
-      pjtRole,
-      isPjtCdEditable,
-    } = this.state;
+
+    const { pjtCd, progFg, pgrNm, pgrCd, pjtNm, prDt, toDt, apjtNm, startDt, note, pjtRole, isPjtCdEditable, isFiled } = this.state;
     const { successAlert, showAlert, dup } = this.state;
 
     const {
@@ -1064,13 +1156,13 @@ class PjtComponent extends Component {
     // const currentDate = prDtFormatted;
     const formattedPjtPrList = pjtPrList
       ? pjtPrList.map((date) =>
-          dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : ""
-        )
+        dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : ""
+      )
       : [];
     const formattedpjtToList = pjtToList
       ? pjtToList.map((date) =>
-          dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : ""
-        )
+        dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : ""
+      )
       : [];
 
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
@@ -1254,6 +1346,7 @@ class PjtComponent extends Component {
                 name="dateRange"
                 value={this.state.dateRange || ""}
                 onChange={this.handlePjt2}
+                onKeyDown={this.handleClearDate}
                 InputLabelProps={{ shrink: true }}
                 sx={{
                   "& input": {
@@ -1474,6 +1567,7 @@ class PjtComponent extends Component {
                 onChange={this.handlePjt}
               >
                 <CustomWideSelect
+                  disabled={isFiled}
                   sx={{
                     backgroundColor: "#FFEAEA",
                   }}
@@ -1516,6 +1610,7 @@ class PjtComponent extends Component {
                   size="small"
                   sx={{ ml: 2, backgroundColor: "#FFEAEA", width: "93%" }}
                   name="pjtNm"
+                  disabled={isFiled}
                   onChange={this.handlePjt}
                   value={pjtNm || ""}
                 />
@@ -1547,6 +1642,7 @@ class PjtComponent extends Component {
               >
                 <CustomWideTextField
                   size="small"
+                  disabled={isFiled}
                   sx={{ ml: 2, width: "93%" }}
                   name="apjtNm"
                   onChange={this.handlePjt}
@@ -1580,8 +1676,9 @@ class PjtComponent extends Component {
               >
                 <CustomWideTextField
                   name="pgrCd"
+                  disabled={isFiled}
                   onChange={(event) => this.handlePjt(event)} // handlePjt 함수를 사용하여 pgrCd 업데이트
-                  value={pgrCd || this.state.PgrdialTextField2}
+                  value={pgrCd}
                   onClick={this.pgrhelpClick2}
                   placeholder="프로젝트그룹코드"
                 />
@@ -1653,19 +1750,23 @@ class PjtComponent extends Component {
                   sx={{ ml: 1 }}
                 >
                   <CustomDateTextField
+                    disabled={isFiled}
                     type="date"
                     name="prDt"
                     value={dayjs(prDt).format("YYYY-MM-DD")}
                     onChange={this.handlePr}
+                    onBlur={this.handleClearPr}
                     mask="none"
                     sx={{ mr: 1 }}
                   />
                   ~
                   <CustomDateTextField
+                    disabled={isFiled}
                     type="date"
                     name="toDt"
                     value={dayjs(toDt).format("YYYY-MM-DD")}
                     onChange={this.handlePr}
+                    onBlur={this.handleClearTo}
                     sx={{ ml: 1 }}
                   />
                 </Grid>
@@ -1696,10 +1797,12 @@ class PjtComponent extends Component {
                 }}
               >
                 <CustomDateTextField
+                  disabled={isFiled}
                   type="date"
                   name="startDt"
                   value={dayjs(startDt).format("YYYY-MM-DD")}
                   onChange={this.handlePjt}
+                  onKeyDown={this.handleClearSt}
                   sx={{ ml: 1 }}
                 />
               </Grid>
@@ -1730,6 +1833,7 @@ class PjtComponent extends Component {
               >
                 <CustomWideTextField
                   size="small"
+                  disabled={isFiled}
                   sx={{ ml: 2, width: "80%" }}
                   name="note"
                   value={note || ""}
