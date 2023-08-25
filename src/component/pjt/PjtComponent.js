@@ -1343,6 +1343,13 @@ class PjtComponent extends Component {
               <CustomInputLabel>프로젝트기간</CustomInputLabel>
               <CustomTextField
                 type="date"
+                defaultValue={
+                  this.state.dateRange !== ""
+                    ? dayjs(this.state.dateRange).format(
+                        "DD-MMM-YYYY"
+                      )
+                    : ""
+                }
                 name="dateRange"
                 value={this.state.dateRange || ""}
                 onChange={this.handlePjt2}
@@ -1383,9 +1390,7 @@ class PjtComponent extends Component {
                 checked={this.state.selectAllChecked}
                 onChange={this.handleSelectAllChange}
               />
-              <CustomInputLabel sx={{}}>
-                총 프로젝트 :
-              </CustomInputLabel>
+              <CustomInputLabel sx={{}}>총 프로젝트 :</CustomInputLabel>
               <InputLabel
                 sx={{
                   color: "#0054FF",
