@@ -27,29 +27,22 @@ class DivsService {
 
     getDivision(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/div", {
+            .get(ACCTMGMT_API_BASE_URL + "/div/" + data.coCd, {
                 headers: {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                params: {
-                    coCd:data.coCd
-                }
             }
             )
     };
 
     getDiv(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/div", {
+            .get(ACCTMGMT_API_BASE_URL + "/div/" + data.coCd + "/" + data.divCd, {
                 headers: {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                params: {
-                    coCd:data.coCd,
-                    divCd:data.divCd
-                }
             }
             )
     };
@@ -69,7 +62,7 @@ class DivsService {
                 divAddr: data.divAddr,
                 divAddr1: data.divAddr1,
                 insertId: data.insertId
-            },{
+            }, {
                 headers: {
                     "access-token": data.accessToken,
                 },
@@ -80,8 +73,7 @@ class DivsService {
     updateDivs(data) {
         console.log(data);
         return axios
-            .put(ACCTMGMT_API_BASE_URL + "/div", {
-                divCd: data.divCd,
+            .put(ACCTMGMT_API_BASE_URL + "/div/" + data.coCd + "/" + data.divCd, {
                 divNm: data.divNm,
                 ceoNm: data.ceoNm,
                 jongmok: data.jongmok,
@@ -92,33 +84,32 @@ class DivsService {
                 divAddr: data.divAddr,
                 divAddr1: data.divAddr1,
                 modifyId: data.modifyId
-                
-            },{
+
+            }, {
                 headers: {
-                  "access-token": data.accessToken,
+                    "access-token": data.accessToken,
                 },
                 withCredentials: true
-              })
+            })
     };
 
     deleteDivs(data) {
         return axios
-            .delete(ACCTMGMT_API_BASE_URL + "/div",{
+            .delete(ACCTMGMT_API_BASE_URL + "/div/" + data.coCd + "/" + data.divCd, {
                 headers: {
-                  "access-token": data.accessToken,
+                    "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                params :{divCd:data.divCd}
-              })
+            })
     };
 
     getDivBydivCdAnddivNm(data) {
         return axios
-            .get(ACCTMGMT_API_BASE_URL + "/ozt/div/search", {
+            .get(ACCTMGMT_API_BASE_URL + "/dialog/div/" + data.coCd + "/" + data.keyword, {
                 headers: {
                     "access-token": data.accessToken,
-                  },
-                  withCredentials: true,
+                },
+                withCredentials: true,
                 params: {
                     coCd: data.coCd,
                     keyword: data.keyword
