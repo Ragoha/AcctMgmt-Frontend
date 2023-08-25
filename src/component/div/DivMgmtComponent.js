@@ -72,6 +72,7 @@ class DivMgmtComponent extends Component {
       CodialTextField: "",
       isChanged: false,
       isDivCdEditable: false,
+      isDisabled: true
     };
   }
 
@@ -86,6 +87,11 @@ class DivMgmtComponent extends Component {
       coCd: coCd,
     })
       .then((response) => {
+        if (response.data.length === 0) {
+          console.log("데이터가 없습니다.");
+          return;
+        }
+
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
         const divNmList = response.data.map((item) => item.divNm);
@@ -125,6 +131,7 @@ class DivMgmtComponent extends Component {
           insertDt: insertDt,
           DivdialTextField: "",
           isChanged: false,
+          isDisabled: true
         });
         CompanyService.getCompany({
           accessToken: this.props.accessToken,
@@ -275,6 +282,7 @@ class DivMgmtComponent extends Component {
             divAddr1: "",
             insertDt: "",
             isDivCdEditable: true,
+            isDisabled: false
           });
         })
         .catch((error) => {
@@ -454,6 +462,7 @@ class DivMgmtComponent extends Component {
                     insertDt: insertDt,
                     isDivCdEditable: false,
                     isChanged: false,
+                    isDisabled: true
                   });
                   CompanyService.getCompany({
                     accessToken: this.props.accessToken,
@@ -616,6 +625,7 @@ class DivMgmtComponent extends Component {
                 divAddr1: divAddr1,
                 insertDt: insertDt,
                 isDivCdEditable: false,
+                isDisabled: true
               });
               CompanyService.getCompany({
                 accessToken: this.props.accessToken,
@@ -727,6 +737,7 @@ class DivMgmtComponent extends Component {
           divAddr: divAddr,
           divAddr1: divAddr1,
           insertDt: insertDt,
+          isDisabled: true
         });
       })
       .catch((error) => {
@@ -827,6 +838,7 @@ class DivMgmtComponent extends Component {
             divAddr1: divAddr1,
             modifyId: modifyId,
             isChanged: false,
+            isDisabled: true
           });
           CompanyService.getCompany({
             accessToken: this.props.accessToken,
@@ -861,11 +873,18 @@ class DivMgmtComponent extends Component {
         (confirmed) => {
           if (confirmed) {
             CustomSwal.showCommonToast("success", "삭제되었습니다.");
+            this.setState((prevState) => ({
+              divCdList: prevState.divCdList.filter((divId) => divId !== prevState.divCd)
+            }))
             this.componentDidMount();
           }
         }
       );
-    } else {
+    }
+    else if (this.state.cardCount == 0) {
+      CustomSwal.showCommonToast("error", "등록된 사업장이 없습니다.");
+    }
+    else {
       DeptService.getDivDept({
         accessToken: this.props.accessToken,
         coCd: coCd,
@@ -889,6 +908,7 @@ class DivMgmtComponent extends Component {
                 })
                   .then((response) => {
                     CustomSwal.showCommonToast("success", "삭제되었습니다.");
+                    console.log(divCd);
 
                     const userInfo = this.props.userInfo;
                     const { coCd, empId, empEmail } = userInfo;
@@ -902,19 +922,42 @@ class DivMgmtComponent extends Component {
                     );
 
                     this.setState({ coCd: coCd });
-
                     DivsService.getDivision({
                       accessToken: this.props.accessToken,
                       coCd: coCd,
                     })
                       .then((response) => {
+                        if (!response.data || response.data.length === 0) {
+                          console.log("데이터가 없습니다.");
+                          CustomSwal.showCommonToast("success", "삭제되었습니다.");
+
+                          this.setState((prevState) => ({
+                            divCdList: prevState.divCdList.filter((divId) => divId !== prevState.divCd),
+                            divNmList: prevState.divNmList.filter((divName) => divName !== prevState.divNm)
+                          }), () => {
+                              this.setState({
+                                cardCount: 0,
+                                coCd: '',
+                                divCd: "",
+                                divNm: "",
+                                ceoNm: "",
+                                jongmok: "",
+                                businessType: "",
+                                divNb: "",
+                                toNb: "",
+                                divZip: "",
+                                divAddr: "",
+                                divAddr1: "",
+                                insertDt: "",
+                                DivdialTextField: "",
+                                isChanged: false,
+                              });
+                          });
+                          return;
+                        }
                         const coCdList = response.data.map((item) => item.coCd);
-                        const divCdList = response.data.map(
-                          (item) => item.divCd
-                        );
-                        const divNmList = response.data.map(
-                          (item) => item.divNm
-                        );
+                        const divCdList = response.data.map((item) => item.divCd);
+                        const divNmList = response.data.map((item) => item.divNm);
                         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
                         const coCd = response.data[0].coCd;
@@ -950,6 +993,7 @@ class DivMgmtComponent extends Component {
                           insertDt: insertDt,
                           DivdialTextField: "",
                           isChanged: false,
+                          isDisabled: true
                         });
                         CompanyService.getCompany({
                           accessToken: this.props.accessToken,
@@ -965,32 +1009,6 @@ class DivMgmtComponent extends Component {
                       .catch((error) => {
                         // 오류 발생 시의 처리
                         console.error(error);
-                        CustomSwal.showCommonToast(
-                          "error",
-                          "등록된 사업장이 없습니다."
-                        ); //여기를 고쳐야함!!
-                        this.setState((prevState) => ({
-                          divCdList: prevState.divCdList.filter(
-                            (divId) => divId !== divCd
-                          ),
-                        }));
-                        this.setState({
-                          cardCount: 0, // state에 값을 저장
-                          coCd: coCd,
-                          divCd: "",
-                          divNm: "",
-                          ceoNm: "",
-                          jongmok: "",
-                          businessType: "",
-                          divNb: "",
-                          toNb: "",
-                          divZip: "",
-                          divAddr: "",
-                          divAddr1: "",
-                          insertDt: "",
-                          DivdialTextField: "",
-                          isChanged: false,
-                        });
                       });
                   })
                   .catch((error) => {
@@ -1047,7 +1065,7 @@ class DivMgmtComponent extends Component {
       insertDt,
     } = this.state;
     const { coNm } = this.state;
-    const { cardCount, divCdList, divNmList, coCdList, coNmList } = this.state;
+    const { cardCount, divCdList, divNmList, coCdList, coNmList, isDisabled } = this.state;
 
     const currentDate = new Date();
 
@@ -1128,7 +1146,7 @@ class DivMgmtComponent extends Component {
           </Grid>
 
           <Grid item>
-            <Button sx={{ mr: 1 }} variant="outlined" onClick={this.comInfo}>
+            <Button sx={{ mr: 1 }} variant="outlined" onClick={this.comInfo} disabled={isDisabled}>
               회사정보불러오기
             </Button>
 
@@ -1281,7 +1299,7 @@ class DivMgmtComponent extends Component {
               </Grid>
             </Grid>
 
-            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA", borderTop: "3px solid black"  }}>
+            <Grid container sx={{ mt: "-4px", border: "2px solid #EAEAEA", borderTop: "3px solid black" }}>
               <Grid
                 item
                 xs={2}

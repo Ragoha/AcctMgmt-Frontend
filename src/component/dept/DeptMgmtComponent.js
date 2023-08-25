@@ -63,7 +63,8 @@ class DeptMgmtComponent extends Component {
       CodialTextField: '',
       isChanged: false,
       isDeptCdEditable: false,
-      expanded: []
+      expanded: [],
+      isDisabled: true
     }
   }
 
@@ -97,6 +98,10 @@ class DeptMgmtComponent extends Component {
       coCd: coCd
     })
       .then((response) => {
+        if (response.data.length === 0) {
+          console.log("데이터가 없습니다.");
+          return;
+        }
         console.log(response.data)
         const divCdList = response.data.map((item) => item.divCd);
         const divNmList = response.data.map((item) => item.divNm);
@@ -127,7 +132,10 @@ class DeptMgmtComponent extends Component {
         console.log("여기");
         console.log(response);
         console.log(response.data);
-
+        if (response.data.length === 0) {
+          console.log("데이터가 없습니다.");
+          return;
+        }
         this.setState({ rows: response.data });
         // console.log({ rows: response.data })
         const coCdList = response.data.map((item) => item.coCd);
@@ -152,8 +160,6 @@ class DeptMgmtComponent extends Component {
         const deptAddr = response.data[0].deptAddr;
         const deptAddr1 = response.data[0].deptAddr1;
 
-
-
         this.setState({
           cardCount: cardCount, // state에 값을 저장
           coCdList: coCdList,
@@ -177,7 +183,8 @@ class DeptMgmtComponent extends Component {
           deptAddr1: '',
           insertDt: '',
           DeptdialTextField: '',
-          isChanged: false
+          isChanged: false,
+          isDisabled: true
         })
         // if(!response.data.length){
         //     this.setState({
@@ -644,7 +651,11 @@ class DeptMgmtComponent extends Component {
             this.componentDidMount();
           }
         })
-      } else {
+      } 
+      else if(this.state.cardCount == 0 ){
+        CustomSwal.showCommonToast("error", "등록된 부서가 없습니다.");
+      } 
+      else {
         CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
           if (confirmed) {
             const userInfo = this.props.userInfo;
@@ -748,7 +759,8 @@ class DeptMgmtComponent extends Component {
                   DeptdialTextField: '',
                   insertDt: '',
                   isDeptCdEditable: false,
-                  isChanged: false
+                  isChanged: false,
+                  isDisabled: true
                 })
               })
               .catch((error) => {
@@ -775,7 +787,8 @@ class DeptMgmtComponent extends Component {
                   DeptdialTextField: '',
                   insertDt: '',
                   isDeptCdEditable: false,
-                  isChanged: false
+                  isChanged: false,
+                  isDisabled: true
                 })
               });
           }
@@ -830,7 +843,8 @@ class DeptMgmtComponent extends Component {
           deptAddr: '',
           deptAddr1: '',
           insertDt: '',
-          isDeptCdEditable: true
+          isDeptCdEditable: true,
+          isDisabled: false
         })
         if (cardCount <= 0 || !this.state.deptCdList.includes('0000')) {
           this.setState({
@@ -888,7 +902,8 @@ class DeptMgmtComponent extends Component {
               deptAddr: deptAddr,
               deptAddr1: deptAddr1,
               insertDt: insertDt,
-              isDeptCdEditable: false
+              isDeptCdEditable: false,
+              isDisabled: false
             })
             CompanyService.getCompany({
               accessToken: this.props.accessToken,
@@ -914,7 +929,8 @@ class DeptMgmtComponent extends Component {
           deptZip: '',
           deptAddr: '',
           deptAddr1: '',
-          insertDt: ''
+          insertDt: '',
+          isDisabled: true
         })
       }
     }
@@ -936,7 +952,7 @@ class DeptMgmtComponent extends Component {
   render() {
     const { open, divCd, coCd, deptCd, deptNm, divNm, ceoNm, deptZip, deptAddr, deptAddr1, rows, insertId, modifyId, insertDt } = this.state;
     const { coNm } = this.state;
-    const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList, index, focused } = this.state;
+    const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList, index, focused, isDisabled } = this.state;
 
     const currentDate = new Date();
 
@@ -1014,6 +1030,7 @@ class DeptMgmtComponent extends Component {
               sx={{ mr: 1 }}
               variant="outlined"
               onClick={this.addTree}
+              disabled={isDisabled}
             >
               추 가
             </Button>
@@ -1200,8 +1217,8 @@ class DeptMgmtComponent extends Component {
                 <CustomWideTextField
                   xs={4}
                   sx={{ ml: 2 }}
-                  value={coCd + ". " + coNm}
-                  // value={focused ? coCd + ". " + coNm : ''}
+                  // value={coCd + ". " + coNm}
+                  value={focused ? coCd + ". " + coNm : ''}
                   // InputProps={{ readOnly: true }}
                   disabled={true}
                 ></CustomWideTextField>
@@ -1311,6 +1328,7 @@ class DeptMgmtComponent extends Component {
                   onChange={this.handleCompany}
                   value={deptNm || ""}
                   inputProps={{ maxLength: 29 }}
+                  disabled={divCd? false: true}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1346,13 +1364,14 @@ class DeptMgmtComponent extends Component {
                         name="deptZip"
                         onChange={this.handleCompany}
                         value={deptZip || ""}
-                        InputProps={{ readOnly: true }}
+                        disabled={true}
                         sx={{ mt: 1, ml: 1, width: "150px" }}
                       ></TextField>
                       <Button
                         sx={{ ml: 1, mt: 1 }}
                         variant="outlined"
                         onClick={this.addrButton}
+                        disabled={isDisabled}
                       >
                         우편번호
                       </Button>
@@ -1364,7 +1383,7 @@ class DeptMgmtComponent extends Component {
                       name="deptAddr"
                       onChange={this.handleCompany}
                       value={deptAddr || ""}
-                      InputProps={{ readOnly: true }}
+                      disabled={true}
                     />
                   </Grid>
                   <Grid item>
@@ -1372,6 +1391,7 @@ class DeptMgmtComponent extends Component {
                       name="deptAddr1"
                       onChange={this.handleCompany}
                       value={deptAddr1 || ""}
+                      disabled={divCd? false: true}
                       sx={{ mt: "0px !important" }}
                     />
                   </Grid>
