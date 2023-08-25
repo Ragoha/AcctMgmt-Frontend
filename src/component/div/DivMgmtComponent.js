@@ -149,61 +149,6 @@ class DivMgmtComponent extends Component {
         console.error(error);
         // alert("중복된 회사 또는 모두 입력해주세요");
       });
-
-    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    // DivsService.getDivsList({
-    //   accessToken: this.props.accessToken})
-    //   .then((response) => {
-    //     const coCdList = response.data.map((item) => item.coCd);
-    //     const divCdList = response.data.map((item) => item.divCd);
-    //     const divNmList = response.data.map((item) => item.divNm);
-    //     const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
-
-    //     const coCd = response.data[0].coCd;
-    //     const divCd = response.data[0].divCd;
-    //     const divNm = response.data[0].divNm;
-    //     const ceoNm = response.data[0].ceoNm;
-    //     const jongmok = response.data[0].jongmok;
-    //     const businessType = response.data[0].businessType;
-    //     const divNb = response.data[0].divNb;
-    //     const toNb = response.data[0].toNb;
-    //     const divZip = response.data[0].divZip;
-    //     const divAddr = response.data[0].divAddr;
-    //     const divAddr1 = response.data[0].divAddr1;
-
-    //     this.setState({
-    //       cardCount: cardCount, // state에 값을 저장
-    //       coCdList: coCdList,
-    //       divCdList: divCdList,
-    //       divNmList: divNmList,
-
-    //       focused: divCd,
-    //       coCd: coCd,
-    //       divCd: divCd,
-    //       divNm: divNm,
-    //       ceoNm: ceoNm,
-    //       jongmok: jongmok,
-    //       businessType: businessType,
-    //       divNb: divNb,
-    //       toNb: toNb,
-    //       divZip: divZip,
-    //       divAddr: divAddr,
-    //       divAddr1: divAddr1
-    //     })
-    //     CompanyService.getCompany(coCd)
-    //       .then((response) => {
-    //         const coNm = response.data[0].coNm;
-
-    //         this.setState({
-    //           coNm: coNm
-    //         })
-    //       })
-    //   })
-    //   .catch((error) => {
-    //     // 오류 발생 시의 처리
-    //     console.error(error);
-    //     // alert("중복된 회사 또는 모두 입력해주세요");
-    //   });
   }
 
   handleCompany = (e) => {
@@ -216,7 +161,7 @@ class DivMgmtComponent extends Component {
   };
 
   handleCdChange = (e) => {
-    const numericValue = e.target.value.replace(/[^0-9]/g, ""); ///[^0-9]*$/ 둘 다 되는건가?
+    const numericValue = e.target.value.replace(/[^0-9]/g, ""); 
     this.setState({
       isChanged: true,
       [e.target.name]: numericValue,
@@ -785,10 +730,11 @@ class DivMgmtComponent extends Component {
     console.log(divNm);
 
     if (!divCd) {
-      CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요."); //이거 부서선택했다가 사업장이나 회사가면 초기화 안되는듯 insertDt가 그거 초기화해주면 사실상 필요는 없으려나 그래도 있는게
+      CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요."); 
     } else {
       DivsService.updateDivs({
         accessToken: this.props.accessToken,
+        coCd: this.props.userInfo.coCd,
         divCd: divCd,
         divNm: divNm,
         ceoNm: ceoNm,
@@ -862,9 +808,8 @@ class DivMgmtComponent extends Component {
   };
 
   deleteDivs = () => {
-    //-> 이거 index 값 건드리는게 아닌듯....ㅠ 삭제 시 index가 달라지는데 그 적은 숫자를 그대로 가지고있네 ㄷㄷ
     const { coCd, divCd } = this.state;
-    if (this.state.divCdList.includes("0000")) {
+    if (this.state.divCdList.includes('0000')) {
       CustomSwal.showCommonSwalYn(
         "삭제",
         "정말 삭제하시겠습니까?",
@@ -874,7 +819,8 @@ class DivMgmtComponent extends Component {
           if (confirmed) {
             CustomSwal.showCommonToast("success", "삭제되었습니다.");
             this.setState((prevState) => ({
-              divCdList: prevState.divCdList.filter((divId) => divId !== prevState.divCd)
+              divCdList: prevState.divCdList.filter((divId) => divId !== prevState.divCd),
+              isDivCdEditable: false
             }))
             this.componentDidMount();
           }
@@ -904,6 +850,7 @@ class DivMgmtComponent extends Component {
               if (confirmed) {
                 DivsService.deleteDivs({
                   accessToken: this.props.accessToken,
+                  coCd: this.props.userInfo.coCd,
                   divCd: divCd,
                 })
                   .then((response) => {
@@ -950,6 +897,7 @@ class DivMgmtComponent extends Component {
                                 divAddr1: "",
                                 insertDt: "",
                                 DivdialTextField: "",
+                                isDivCdEditable: false,
                                 isChanged: false,
                               });
                           });
@@ -993,6 +941,7 @@ class DivMgmtComponent extends Component {
                           insertDt: insertDt,
                           DivdialTextField: "",
                           isChanged: false,
+                          isDivCdEditable: false,
                           isDisabled: true
                         });
                         CompanyService.getCompany({
@@ -1202,7 +1151,7 @@ class DivMgmtComponent extends Component {
           </Grid>
           <CustomSearchButton
             variant="outlined"
-            onClick={this.reClick}
+            onClick={this.state.DivdialTextField ? this.helpClick : this.reClick}
             sx={{
               minWidth: "5px",
               position: "absolute",
@@ -1324,37 +1273,38 @@ class DivMgmtComponent extends Component {
                   borderRight: "1px solid #EAEAEA",
                 }}
               >
-                {divCd != 0 ? (
+                {/* {divCd != 0 ? ( */}
                   <CustomWideTextField
                     xs={4}
                     sx={{ ml: 2 }}
                     value={coCd + " . " + coNm}
                     // InputProps={{ readOnly: true }}
                     disabled={true}
-                  ></CustomWideTextField> //disabled={true}
-                ) : (
-                  <FormControl
-                    sx={{
-                      ml: 1,
-                      width: "96.5%",
-                      "& .MuiInputBase-root": {
-                        height: 40,
-                      },
-                    }}
-                  >
-                    <Select
-                      name="coNm"
-                      value={coNm}
-                      onChange={this.handleCompany}
-                    >
-                      {coNmList.map((coNm) => (
-                        <MenuItem key={coNm} value={coNm}>
-                          {coNm}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
+                  ></CustomWideTextField>
+                {/* // ) : ( */}
+                    <FormControl
+                //     sx={{
+                //       ml: 1,
+                //       width: "96.5%",
+                //       "& .MuiInputBase-root": {
+                //         height: 40,
+                //       },
+                //     }}
+                //   >
+                //     <Select
+                //       name="coNm"
+                //       value={coNm}
+                //       onChange={this.handleCompany}
+                //     >
+                //       {coNmList.map((coNm) => (
+                //         <MenuItem key={coNm} value={coNm}>
+                //           {coNm}
+                //         </MenuItem>
+                //       ))}
+                //     </Select>
+                //   </FormControl>
+                // )}
+                ></FormControl>
               </Grid>
 
               <Grid
