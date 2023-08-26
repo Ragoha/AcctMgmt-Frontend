@@ -4,16 +4,15 @@ import dayjs from "dayjs";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class BtgICFService {
-
   getBgtICFList(data) {
     console.log("--------------");
     console.log(data);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/"+data.coCd+"/"+data.bgtCd, {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/" + data.coCd + "/" + data.bgtCd, {
         params: {
           gisu: data.gisu,
           groupCd: data.groupCd,
-          bgtFg: data.bgtFg
+          bgtFg: data.bgtFg,
         },
         headers: {
           "access-token": data.accessToken,
@@ -67,15 +66,20 @@ class BtgICFService {
 
   updateBgtICF(data) {
     console.log(data);
+    console.log("zzzzzzzzzzzzzzzz");
     return axios
       .put(
-        ACCTMGMT_API_BASE_URL + "/bgticf/"+data.user.coCd+"/"+data.row.bgtCd,
+        ACCTMGMT_API_BASE_URL +
+          "/bgticf/" +
+          data.user.coCd +
+          "/" +
+          data.row.bgtCd,
         {
           gisu: data.row.gisu,
-          sq: data.row.sq,
           divCd: data.row.divCd,
           deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
+          sq: data.row.sq,
           bgtFg: data.row.bgtFg,
           bottomNm: data.row.bottomNm,
           carrAm: data.row.carrAm,
@@ -94,7 +98,7 @@ class BtgICFService {
         }
       )
       .then((response) => {
-        console.log("응답:", response.data); 
+        console.log("응답:", response.data);
         return response.data;
       })
       .catch((error) => {
@@ -106,39 +110,38 @@ class BtgICFService {
   deleteBgtICF(data) {
     console.log(data);
     return axios
-      .delete(ACCTMGMT_API_BASE_URL + "/bgticf", {
-        params: {
-          coCd: data.coCd,
-          bgtCd: data.bgtCd,
-          sq: data.sq,
-          sqList: data.sqList,
-        },
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-      })
+      .delete(
+        ACCTMGMT_API_BASE_URL + "/bgticf/" + data.coCd + "/" + data.bgtCd,
+        {
+          params: {
+            sqList: data.sqList,
+          },
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => response.data);
   }
 
   findDivByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/dialog/div/"+data.coCd+"/"+data.keyword, {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-      })
+      .get(
+        ACCTMGMT_API_BASE_URL + "/dialog/div/" + data.coCd + "/" + data.keyword,
+        {
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => response.data);
   }
 
   findBgtGrByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtgr", {
-        params: {
-          coCd: data.coCd,
-          keyword: data.keyword,
-        },
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/bgtgr/"+data.coCd +"/"+data.keyword, {
         headers: {
           "access-token": data.accessToken,
         },
@@ -241,12 +244,19 @@ class BtgICFService {
 
   findDeptByCoCdAndKeyword = (data) => {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/"+data.keyword, {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-      })
+      .get(
+        ACCTMGMT_API_BASE_URL +
+          "/dialog/dept/" +
+          data.coCd +
+          "/" +
+          data.keyword,
+        {
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => response.data);
   };
 }
