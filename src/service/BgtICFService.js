@@ -5,8 +5,6 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class BtgICFService {
   getBgtICFList(data) {
-    console.log("--------------");
-    console.log(data);
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/" + data.coCd + "/" + data.bgtCd, {
         params: {
@@ -22,13 +20,7 @@ class BtgICFService {
       .then((response) => response.data);
   }
 
-  // deleteBgtICF(sq) {
-  //   return axios.delete(ACCTMGMT_API_BASE_URL + "/bgticf/" + sq);
-  // }
-
   insertBgtICF(data) {
-    console.log(data);
-    console.log("asdfasdfasdfasdf");
     return axios
       .post(
         ACCTMGMT_API_BASE_URL + "/bgticf",
@@ -59,27 +51,26 @@ class BtgICFService {
         }
       )
       .then((response) => {
-        console.log("응답:", response.data); // 성공적으로 응답이 도착한 경우 응답 데이터 출력
-        return response.data; // 다음 처리를 위해 응답 데이터 반환
+        console.log("응답:", response.data);
+        return response.data;
       });
   }
 
   updateBgtICF(data) {
-    console.log(data);
-    console.log("zzzzzzzzzzzzzzzz");
     return axios
       .put(
         ACCTMGMT_API_BASE_URL +
           "/bgticf/" +
           data.user.coCd +
           "/" +
-          data.row.bgtCd,
+          data.row.bgtCd +
+          "/" +
+          data.row.sq,
         {
           gisu: data.row.gisu,
           divCd: data.row.divCd,
           deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
-          sq: data.row.sq,
           bgtFg: data.row.bgtFg,
           bottomNm: data.row.bottomNm,
           carrAm: data.row.carrAm,
@@ -98,11 +89,9 @@ class BtgICFService {
         }
       )
       .then((response) => {
-        console.log("응답:", response.data);
         return response.data;
       })
       .catch((error) => {
-        console.error("오류:", error);
         throw error;
       });
   }
@@ -141,12 +130,19 @@ class BtgICFService {
 
   findBgtGrByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/dialog/bgtgr/"+data.coCd +"/"+data.keyword, {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-      })
+      .get(
+        ACCTMGMT_API_BASE_URL +
+          "/dialog/bgtgr/" +
+          data.coCd +
+          "/" +
+          data.keyword,
+        {
+          headers: {
+            "access-token": data.accessToken,
+          },
+          withCredentials: true,
+        }
+      )
       .then((response) => response.data);
   }
 
@@ -158,9 +154,9 @@ class BtgICFService {
     }
     console.log(bgtGrCdListString);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd", {
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/bgticf/bgtcd/" + data.user.coCd, {
+        // .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd", {
         params: {
-          coCd: data.user.coCd,
           gisu: data.gisu,
           groupCd: data.bgtGrCd,
           keyword: data.keyword,
@@ -177,10 +173,7 @@ class BtgICFService {
 
   findGisuByCoCd(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/gisu", {
-        params: {
-          coCd: data.user.coCd,
-        },
+      .get(ACCTMGMT_API_BASE_URL + "/gisu/" + data.user.coCd, {
         headers: {
           "access-token": data.accessToken,
         },
@@ -190,9 +183,6 @@ class BtgICFService {
   }
 
   findBgtCdByGisuAndGroupCdAndGrFgAndBgtCd(data) {
-    console.log("===================");
-    console.log(data);
-
     let bgtGrCdListString = "";
     if (data.bgtGrCdList && data.bgtGrCdList.length > 0) {
       bgtGrCdListString = data.bgtGrCdList.join(", ");
@@ -204,14 +194,13 @@ class BtgICFService {
     }
 
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd/" + data.coCd, {
         params: {
           gisu: data.gisu,
           coCd: data.coCd,
           divCd: data.divCd,
           groupCd: data.bgtGrCd,
           grFg: data.grFg,
-          bgtCd: data.bgtCd,
           bgtCdList: bgtCdListString,
           bgtGrCdList: bgtGrCdListString,
           // coCd: data.coCd,
@@ -229,11 +218,7 @@ class BtgICFService {
 
   findPjtByCoCdAndKeyword = (data) => {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf/pjt", {
-        params: {
-          coCd: data.coCd,
-          keyword: data.keyword,
-        },
+      .get(ACCTMGMT_API_BASE_URL + "/pjt/" + data.coCd + "/" + data.keyword, {
         headers: {
           "access-token": data.accessToken,
         },
