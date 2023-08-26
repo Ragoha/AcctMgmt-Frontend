@@ -36,6 +36,7 @@ import AddressComponent from "./dialog/AddressComponent";
 import DivDialogComponent from "./dialog/DivDialogComponent";
 import CustomSwal from "../common/CustomSwal.js";
 import DeptService from "../../service/DeptService";
+import dayjs from "dayjs";
 
 class DivMgmtComponent extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ class DivMgmtComponent extends Component {
       coCdList: [],
       divCdList: [],
       coNmList: [],
+      ceoNmList: [],
       divNmList: [],
       CodialTextField: "",
       isChanged: false,
@@ -78,10 +80,10 @@ class DivMgmtComponent extends Component {
 
   componentDidMount() {
     const userInfo = this.props.userInfo;
-    const { coCd, empId, empEmail } = userInfo;
+    const { coCd, empId, empEmail,coNm } = userInfo;
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-    this.setState({ coCd: coCd });
+    this.setState({ coCd: coCd, coNm: coNm });
     DivsService.getDivision({
       accessToken: this.props.accessToken,
       coCd: coCd,
@@ -118,6 +120,7 @@ class DivMgmtComponent extends Component {
 
           focused: divCd,
           coCd: coCd,
+          coNm: coNm,
           divCd: divCd,
           divNm: divNm,
           ceoNm: ceoNm,
@@ -161,7 +164,7 @@ class DivMgmtComponent extends Component {
   };
 
   handleCdChange = (e) => {
-    const numericValue = e.target.value.replace(/[^0-9]/g, ""); 
+    const numericValue = e.target.value.replace(/[^0-9]/g, "");
     this.setState({
       isChanged: true,
       [e.target.name]: numericValue,
@@ -188,6 +191,12 @@ class DivMgmtComponent extends Component {
 
   addCardButton = () => {
     console.log(this.state.cardCount);
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail,coNm } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd, coNm: coNm });
+
     // const newCoNmList = [...this.state.coNmList, `coNm${newCardCount}`];
     if (this.state.divCdList.includes("0000")) {
       CustomSwal.showCommonToast("warning", "미등록 사업장이 존재합니다.");
@@ -195,8 +204,9 @@ class DivMgmtComponent extends Component {
       const newCardCount = this.state.cardCount + 1;
       const newDivCdList = [...this.state.divCdList, "0000"];
 
-      CompanyService.getCoList({
+      CompanyService.getCompany({
         accessToken: this.props.accessToken,
+        coCd: coCd
       })
         .then((response) => {
           // const newDivNmList = response.data.map((item) => item.divNm);
@@ -234,15 +244,17 @@ class DivMgmtComponent extends Component {
           // 오류 발생 시의 처리
           console.error(error);
           // alert("중복된 회사 또는 모두 입력해주세요");
-          console.log(this.state.coCdList);
-          console.log(this.state.divCdList);
-          console.log(this.state.coNmList);
         });
     }
   };
 
   comInfo = () => {
     const { coNm } = this.state;
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+
+    this.setState({ coCd: coCd });
 
     CustomSwal.showCommonSwalYn(
       "정보",
@@ -256,10 +268,6 @@ class DivMgmtComponent extends Component {
             coNm: coNm,
           })
             .then((response) => {
-              const coCd = response.data[0].coCd;
-              this.setState({
-                coCd: coCd,
-              });
               CompanyService.getCompany({
                 accessToken: this.props.accessToken,
                 coCd: coCd,
@@ -669,7 +677,7 @@ class DivMgmtComponent extends Component {
           divCdList: divCdList,
           divNmList: divNmList,
 
-          focused: coCd,
+          focused: divCd,
           coCd: coCd,
           // coNm: coNm,
           divCd: divCd,
@@ -730,7 +738,7 @@ class DivMgmtComponent extends Component {
     console.log(divNm);
 
     if (!divCd) {
-      CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요."); 
+      CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요.");
     } else {
       DivsService.updateDivs({
         accessToken: this.props.accessToken,
@@ -882,24 +890,24 @@ class DivMgmtComponent extends Component {
                             divCdList: prevState.divCdList.filter((divId) => divId !== prevState.divCd),
                             divNmList: prevState.divNmList.filter((divName) => divName !== prevState.divNm)
                           }), () => {
-                              this.setState({
-                                cardCount: 0,
-                                coCd: '',
-                                divCd: "",
-                                divNm: "",
-                                ceoNm: "",
-                                jongmok: "",
-                                businessType: "",
-                                divNb: "",
-                                toNb: "",
-                                divZip: "",
-                                divAddr: "",
-                                divAddr1: "",
-                                insertDt: "",
-                                DivdialTextField: "",
-                                isDivCdEditable: false,
-                                isChanged: false,
-                              });
+                            this.setState({
+                              cardCount: 0,
+                              coCd: '',
+                              divCd: "",
+                              divNm: "",
+                              ceoNm: "",
+                              jongmok: "",
+                              businessType: "",
+                              divNb: "",
+                              toNb: "",
+                              divZip: "",
+                              divAddr: "",
+                              divAddr1: "",
+                              insertDt: "",
+                              DivdialTextField: "",
+                              isDivCdEditable: false,
+                              isChanged: false,
+                            });
                           });
                           return;
                         }
@@ -980,7 +988,16 @@ class DivMgmtComponent extends Component {
   };
 
   reClick = () => {
-    this.componentDidMount();
+    // if (this.state.DivdialTextField) {
+      const userInfo = this.props.userInfo;
+      const { coCd, empId, empEmail } = userInfo;
+      console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+      this.setState({ coCd: coCd });
+
+      this.searchClick(this.state.DivdialTextField);
+    // } else {
+    //   this.componentDidMount();
+    // }
   };
 
   handleTextFieldChange = (e) => {
@@ -1019,11 +1036,8 @@ class DivMgmtComponent extends Component {
     const currentDate = new Date();
 
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
-    const formattedDate = `${currentDate.getFullYear()}-${(
-      currentDate.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
+    console.log(insertDt)
+    const formattedDate = dayjs(insertDt).format("YYYY-MM-DD");
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
     const cards = divCdList.map((divCd, index) => (
@@ -1052,8 +1066,13 @@ class DivMgmtComponent extends Component {
               {divCdList[index]}
             </Typography>
             <Typography
-              sx={{ fontSize: 10 }}
-              style={{ position: "absolute", left: "200px", bottom: "68px" }}
+              sx={{
+                fontSize: 10, 
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}
+              style={{ position: "absolute", right: "30px", top: "6px" }}
             >
               {formattedDate}
             </Typography>
@@ -1151,7 +1170,7 @@ class DivMgmtComponent extends Component {
           </Grid>
           <CustomSearchButton
             variant="outlined"
-            onClick={this.state.DivdialTextField ? this.helpClick : this.reClick}
+            onClick={this.reClick}
             sx={{
               minWidth: "5px",
               position: "absolute",
@@ -1222,8 +1241,8 @@ class DivMgmtComponent extends Component {
                   border: "1px solid #D5D5D5",
                   width: "100%",
                   height: "60px",
-                  marginTop: 1,
-                  padding: 0,
+                  // marginTop: 1,
+                  // padding: 0,
                   backgroundColor: "white",
                   color: "#5D5D5D",
                   display: "flex",
@@ -1274,15 +1293,15 @@ class DivMgmtComponent extends Component {
                 }}
               >
                 {/* {divCd != 0 ? ( */}
-                  <CustomWideTextField
-                    xs={4}
-                    sx={{ ml: 2 }}
-                    value={coCd + " . " + coNm}
-                    // InputProps={{ readOnly: true }}
-                    disabled={true}
-                  ></CustomWideTextField>
+                <CustomWideTextField
+                  xs={4}
+                  sx={{ ml: 2 }}
+                  value={coCd + " . " + coNm}
+                  // InputProps={{ readOnly: true }}
+                  disabled={true}
+                ></CustomWideTextField>
                 {/* // ) : ( */}
-                    <FormControl
+                <FormControl
                 //     sx={{
                 //       ml: 1,
                 //       width: "96.5%",

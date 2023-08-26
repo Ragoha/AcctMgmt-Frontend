@@ -84,10 +84,6 @@ class DeptService {
                         "access-token": data.accessToken,
                     },
                     withCredentials: true,
-                    params: {
-                        // coCd: data.coCd,
-                        // keyword: data.keyword
-                    },
                 })
                 .then((response) => response.data);
         } else {
@@ -96,10 +92,6 @@ class DeptService {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                params: {
-                    // coCd: data.coCd,
-                    // keyword: data.keyword
-                },
             })
                 .then((response) => response.data);
         }

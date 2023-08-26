@@ -90,6 +90,12 @@ class CoDialogComponent extends Component {
     this.setState({ keyword: "", selectedRow:"" });
   }
 
+  handleClickCancel = () =>{
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    this.setState({ keyword: "" });
+  }
+
   //열 클릭처리
   handleClickRow= (params) => {
     this.setState({ selectedRow: params.row }, () => {
@@ -162,7 +168,7 @@ class CoDialogComponent extends Component {
             </CustomConfirmButton>
             <Button
               variant="outlined"
-              onClick={() => this.setState({ open: false })}
+              onClick={this.handleClickCancel}
             >
               취소
             </Button>

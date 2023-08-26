@@ -729,7 +729,6 @@ class CoMgmtComponent extends Component {
         isDisabled: true
       });
     } else {
-      // this.showCommonToast("success", "사용가능한 회사코드입니다.");
       this.setState({
         coCd: newCoCd,
         isDisabled: false
@@ -737,16 +736,13 @@ class CoMgmtComponent extends Component {
     }
   }
 
-  reClick = (e) => {
-    // const CodialTextField = this.state;
-    // this.setState({ CodialTextField: e.target.value });
-    // if(CodialTextField == ""){
-    this.componentDidMount();
-    // }else{
-    //   console.log(CodialTextField);
-    //   this.helpClick();
-    // }
-  }
+  reClick = () => {
+    // if (this.state.CodialTextField) {      
+      this.searchClick(this.state.CodialTextField);
+  //   } else {
+  //     this.componentDidMount();
+  // }
+}
 
   handleTextFieldChange = (e) => {
     this.setState({ CodialTextField: e.target.value });
@@ -768,14 +764,15 @@ class CoMgmtComponent extends Component {
     const { isDisabled } = this.state;
     const { cardCount, coCdList, coNmList, ceoNmList } = this.state;
 
-    const currentDate = new Date();
+    // const currentDate = dayjs(insertDt).format("YYYY-MM-DD");
 
     //월을 0부터 시작하므로, 0부터 11까지의 값을 반환
-    const formattedDate = `${currentDate.getFullYear()}-${(
-      currentDate.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
+    const formattedDate = dayjs(insertDt).format("YYYY-MM-DD");
+    //`${currentDate.getFullYear()}-${(
+    //   currentDate.getMonth() + 1
+    // )
+    //   .toString()
+    //   .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
     //여기서의 index는 0부터의 index를 뜻하며, 카드추가버튼의 index는 cardCount와 연관
 
     const cards = coCdList.map((coCd, index) => (
@@ -808,7 +805,7 @@ class CoMgmtComponent extends Component {
                 overflow: "hidden",
                 textOverflow: "ellipsis"
               }}
-              style={{ position: "absolute", left: "232px", bottom: "68px" }}
+              style={{ position: "absolute", right: "30px", top: "6px" }}
             >
               {ceoNmList[index] && ceoNmList[index].length > 5
                 ? `${ceoNmList[index].slice(0, 5)}...`
@@ -908,7 +905,8 @@ class CoMgmtComponent extends Component {
             container
             sx={{
               width: "25%",
-              height: 670,
+              height: "calc(100vh - 309px)",
+              // height: 670,
               border: "1px solid #EAEAEA",
               backgroundColor: "#FCFCFC",
             }}
