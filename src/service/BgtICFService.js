@@ -124,10 +124,6 @@ class BtgICFService {
   findDivByCoCdAndKeyword(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/dialog/div/"+data.coCd+"/"+data.keyword, {
-        params: {
-          coCd: data.coCd,
-          keyword: data.keyword,
-        },
         headers: {
           "access-token": data.accessToken,
         },
