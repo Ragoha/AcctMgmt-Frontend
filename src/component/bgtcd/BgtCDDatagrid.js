@@ -74,6 +74,7 @@ class BgtCDDatagrid extends Component {
         console.log(params.row.bgtCd)
         if (params.row.bgtCd === "          " || params.row.bgtCd === "           " || params.row.bgtCd === undefined) {
             console.log('수입수출눌렀을때' + params.row.bgtCd + "|")
+            this.props.disableFlag(true);
             let tDataPath = "";
             if (params.row.bgtCd === undefined) {
                 console.log("수입수출이 undefine일때")
@@ -111,6 +112,8 @@ class BgtCDDatagrid extends Component {
                 bgtNm: params.row.bgtNm,
             });
         }
+        
+        this.props.disableFlag(false);
     }
     getDataPathFromDataGrid = () => { //DataPath를 전달.
         console.log('일단 getDataPathFromDataGrid는 실행되는가')

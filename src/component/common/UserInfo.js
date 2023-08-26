@@ -115,7 +115,7 @@ class UserInfo extends Component {
             <Icon />
             <div>
               <Typography variant="h6" component="div" style={{ fontFamily: 'Lora, ital' }}>
-                이름: {empName}
+                {empName}
               </Typography>
               <Typography color="textSecondary" style={{ fontFamily: 'Lora, ital' }}>
                 소속: {coNm}

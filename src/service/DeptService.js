@@ -71,7 +71,10 @@ class DeptService {
     };
 
 
-    getDeptBydeptCdAnddeptNm(data) {
+  getDeptBydeptCdAnddeptNm(data) {
+    console.log(data);
+
+    console.log("iiiiiiiiiiiiiiiiiiiiiii")
         console.log(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/" + data.keyword);
 
         if (data.keyword) {
