@@ -229,7 +229,7 @@ class BgtICFComponent extends Component {
 
   handleClickDivSearchIcon = () => {
     // this.divRef.current.initDivDialog();
-    this.divRef.current.setDivDialog(this.state.divTextField);
+    this.divRef.current.setDivDialog("");
   };
 
   handleClickBgtGrSerachIcon = () => {

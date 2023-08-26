@@ -8,10 +8,7 @@ class GisuService {
 
   findGisuByCoCd(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/gisu", {
-        params: {
-          coCd: data.coCd,
-        },
+      .get(ACCTMGMT_API_BASE_URL + "/gisu/"+data.coCd, {
         headers: {
           "access-token": data.accessToken,
         },
@@ -45,11 +42,7 @@ class GisuService {
   deleteGisu(data) {
     console.log(data);
     return axios
-      .delete(ACCTMGMT_API_BASE_URL + "/gisu", {
-        params: {
-          coCd: data.coCd,
-          gisu: data.gisu,
-        },
+      .delete(ACCTMGMT_API_BASE_URL + "/gisu/"+data.coCd+"/"+data.gisu, {
         headers: {
           "access-token": data.accessToken,
         },
@@ -61,7 +54,7 @@ class GisuService {
   updateGisu(data) {
     return axios
       .put(
-        ACCTMGMT_API_BASE_URL + "/gisu",
+        ACCTMGMT_API_BASE_URL + "/gisu/"+data.coCd+"/"+data.gisu,
         {
           coCd: data.coCd,
           gisu: data.gisu.gisu,

@@ -4,23 +4,13 @@ import dayjs from "dayjs";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class BtgICFService {
-  getBGT(formData) {
-    // const data = JSON.stringify(formData);
-    return axios.post(ACCTMGMT_API_BASE_URL + "/budget", formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
 
   getBgtICFList(data) {
     console.log("--------------");
     console.log(data);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgticf", {
+      .get(ACCTMGMT_API_BASE_URL + "/bgticf/"+data.coCd+"/"+data.bgtCd, {
         params: {
-          coCd: data.coCd,
-          bgtCd: data.bgtCd,
           gisu: data.gisu,
           groupCd: data.groupCd,
           bgtFg: data.bgtFg
@@ -79,12 +69,10 @@ class BtgICFService {
     console.log(data);
     return axios
       .put(
-        ACCTMGMT_API_BASE_URL + "/bgticf",
+        ACCTMGMT_API_BASE_URL + "/bgticf/"+data.user.coCd+"/"+data.row.bgtCd,
         {
-          coCd: data.user.coCd,
           gisu: data.row.gisu,
           sq: data.row.sq,
-          bgtCd: data.row.bgtCd,
           divCd: data.row.divCd,
           deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
@@ -135,7 +123,7 @@ class BtgICFService {
 
   findDivByCoCdAndKeyword(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/div/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/div/"+data.coCd+"/"+data.keyword, {
         params: {
           coCd: data.coCd,
           keyword: data.keyword,
