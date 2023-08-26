@@ -78,7 +78,7 @@ class BgtCDService {
     return returnData1;
   }
   getBgtCDTerm(CO_CD, accessToken) {
-    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcdterm", {
+    const returnData = axios.get(ACCTMGMT_API_BASE_URL + "/dialog/bgtcdterm/"+CO_CD, {
       params: {
         CO_CD: CO_CD
       }
@@ -91,8 +91,8 @@ class BgtCDService {
       .then((response) => response.data);
     return returnData;
   }
-  updateBgtCDTerm(data, accessToken) {
-    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcdterm", data, {
+  updateBgtCDTerm(data, coCd, accessToken) {
+    const returnData = axios.put(ACCTMGMT_API_BASE_URL + "/dialog/bgtcdterm/"+coCd, data, {
       headers: {
         "access-token": accessToken,
       },
