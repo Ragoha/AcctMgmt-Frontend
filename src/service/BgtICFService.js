@@ -94,12 +94,12 @@ class BtgICFService {
         }
       )
       .then((response) => {
-        console.log("응답:", response.data); // 성공적으로 응답이 도착한 경우 응답 데이터 출력
-        return response.data; // 다음 처리를 위해 응답 데이터 반환
+        console.log("응답:", response.data); 
+        return response.data;
       })
       .catch((error) => {
-        console.error("오류:", error); // 오류가 발생한 경우 오류 메시지 출력
-        throw error; // 오류를 다음 단계로 넘겨서 처리하도록 예외 던지기
+        console.error("오류:", error);
+        throw error;
       });
   }
 
