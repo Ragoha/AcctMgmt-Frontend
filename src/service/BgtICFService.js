@@ -98,6 +98,7 @@ class BtgICFService {
 
   deleteBgtICF(data) {
     console.log(data);
+    console.log("data");
     return axios
       .delete(
         ACCTMGMT_API_BASE_URL + "/bgticf/" + data.coCd + "/" + data.bgtCd,
