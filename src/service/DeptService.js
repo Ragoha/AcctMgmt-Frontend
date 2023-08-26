@@ -71,20 +71,19 @@ class DeptService {
     };
 
 
-    getDeptBydeptCdAnddeptNm(data) {
+  getDeptBydeptCdAnddeptNm(data) {
+    console.log(data);
+
+    console.log("iiiiiiiiiiiiiiiiiiiiiii")
         console.log(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/" + data.keyword);
 
         if (data.keyword) {
             return axios
-                .get(ACCTMGMT_API_BASE_URL + "/dept/" + data.coCd + "/" + data.keyword, {
+                .get(ACCTMGMT_API_BASE_URL + "/dialog/dept/" + data.coCd + "/" + data.keyword, {
                     headers: {
                         "access-token": data.accessToken,
                     },
                     withCredentials: true,
-                    params: {
-                        // coCd: data.coCd,
-                        // keyword: data.keyword
-                    },
                 })
                 .then((response) => response.data);
         } else {
@@ -93,10 +92,6 @@ class DeptService {
                     "access-token": data.accessToken,
                 },
                 withCredentials: true,
-                params: {
-                    // coCd: data.coCd,
-                    // keyword: data.keyword
-                },
             })
                 .then((response) => response.data);
         }

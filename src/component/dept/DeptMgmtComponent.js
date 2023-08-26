@@ -168,7 +168,6 @@ class DeptMgmtComponent extends Component {
           deptCdList: deptCdList,
           deptNmList: deptNmList,
 
-
           // focused: `co-${coCd}`,
           // coCd: coCd,
           focused: '',
@@ -261,6 +260,8 @@ class DeptMgmtComponent extends Component {
       deptCd: data.deptCd  //밑에 coCd 넘겨주기
     });
     this.searchClick(data.deptCd);
+    console.log(data)
+    console.log(data.deptCd)
   };
 
   searchClick = (deptCd) => {
@@ -278,7 +279,7 @@ class DeptMgmtComponent extends Component {
     })
       .then((response) => {
         // const coCdList = response.data.map((item) => item.coCd);
-        const divCdList = response.data.map((item) => item.divCd);
+        // const divCdList = response.data.map((item) => item.divCd);
         // const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
         // const divNmList = response.data.map((item) => item.divNm);
         const deptCdList = response.data.map((item) => item.deptCd);
@@ -799,7 +800,17 @@ class DeptMgmtComponent extends Component {
   }
 
   reClick = () => {
-    this.componentDidMount();
+    // if (this.state.DeptdialTextField) {
+      const userInfo = this.props.userInfo;
+      const { coCd, empId, empEmail } = userInfo;
+      console.log( "로그인 유저 데이터: " +coCd +"/" +empId + "/" + empEmail );
+      this.setState({ coCd: coCd });
+      
+      this.searchClick(this.state.DeptdialTextField)
+  // }
+  //   else {
+  //     this.componentDidMount();
+  //   }
   }
 
   handleSelect = (nodeId) => {

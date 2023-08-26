@@ -85,31 +85,42 @@ class BgtCdBgtGrAutocomplete extends Component {
   handleClickSearch = () => {
     console.log(this.bgtGrRef);
     // this.bgtGrRef.current.setBgtCDDialog();
-    this.bgtGrRef.current.setBgtGrDialog();
+    this.bgtGrRef.current.setBgtGrDialog("");
   };
 
   handleSetBgtGrTextField = (dataList) => {
     console.log("=================")
     console.log(dataList);
-    const bgtGrTextList = dataList.map(
-      (data) => data.bgtGrCd + ". " + data.bgtGrNm
-    );
-    const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
-    let bgtGrTextField;
-    if (bgtGrTextList.length > 1) {
-      bgtGrTextField =
-        bgtGrTextList[0] + " 외 " + (bgtGrTextList.length - 1) + "건";
+
+    if (dataList == '') {
+      this.setState({
+        bgtGrCdList: [],
+        listItems: [],
+        bgtGrTextField: "",
+      });
+
     } else {
-      bgtGrTextField = bgtGrTextList[0];
+      const bgtGrTextList = dataList.map(
+        (data) => data.bgtGrCd + ". " + data.bgtGrNm
+      );
+      const bgtGrCdList = dataList.map((data) => data.bgtGrCd);
+      let bgtGrTextField;
+      if (bgtGrTextList.length > 1) {
+        bgtGrTextField =
+          bgtGrTextList[0] + " 외 " + (bgtGrTextList.length - 1) + "건";
+      } else {
+        bgtGrTextField = bgtGrTextList[0];
+      }
+
+      this.setState({
+        bgtGrCdList: bgtGrCdList,
+        listItems: bgtGrTextList,
+        bgtGrTextField: bgtGrTextField,
+      });
+
+      this.props.changeBgtGrList(bgtGrCdList);
     }
-
-    this.setState({
-      bgtGrCdList: bgtGrCdList,
-      listItems: bgtGrTextList,
-      bgtGrTextField: bgtGrTextField,
-    });
-
-    this.props.changeBgtGrList(bgtGrCdList);
+    
   };
 
   handleKeyDownBgtCd = (e) => {

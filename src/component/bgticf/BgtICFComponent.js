@@ -196,6 +196,7 @@ class BgtICFComponent extends Component {
         divNm: "",
       });
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleSetBgtGrTextField = (dataList) => {
@@ -225,11 +226,12 @@ class BgtICFComponent extends Component {
         });
       }
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleClickDivSearchIcon = () => {
     // this.divRef.current.initDivDialog();
-    this.divRef.current.setDivDialog(this.state.divTextField);
+    this.divRef.current.setDivDialog("");
   };
 
   handleClickBgtGrSerachIcon = () => {
@@ -242,47 +244,16 @@ class BgtICFComponent extends Component {
     this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
   };
 
-  handleSetBgtCDTextField = (dataList) => {
-    if (dataList.length > 0) {
-      console.log(dataList);
-      console.log("asdf");
-      const concatenatedText = dataList
-        .map((data) => data.bgtCd + ". " + data.bgtNm)
-        .join(", ");
-
-      const bgtCdList = dataList.map((data) => data.bgtCd);
-
-      this.setState({
-        bgtCDTextField: concatenatedText,
-        bgtCdList: bgtCdList,
-      });
-    } else {
-      if (dataList.bgtCd && dataList.bgtNm) {
-        this.setState({
-          bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-          bgtCd: dataList.bgtCd,
-          bgtNm: dataList.bgtNm,
-        });
-      } else {
-        this.setState({
-          bgtCDTextField: "",
-          bgtCd: "",
-          bgtNm: "",
-        });
-      }
-    }
-  };
-
   changeBgtCdList = async (bgtCdList) => {
     console.log("zzzzzzzzzzzzzzzzzzz");
     console.log(bgtCdList);
     await this.setState({ bgtCdList: bgtCdList, bgtCDRows: [] });
-    console.log(this.state.bgtCdList);
+    this.bgtICFRef.current.initBgtICF();
   };
 
   changeBgtGrList = async (bgtGrCdList) => {
     await this.setState({ bgtGrCdList: bgtGrCdList, bgtCDRows: [] });
-    console.log(this.state);
+    this.bgtICFRef.current.initBgtICF();
   };
 
   resetBgt = () => {

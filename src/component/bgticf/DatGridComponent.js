@@ -526,7 +526,7 @@ class DataGridComponent extends Component {
             mgtCd: "",
             bgtFg: this.state.bgtFg,
             divCd: data.divCd,
-            gisu: data.gisu,
+            gisu: this.state.gisu,
             bottomNm: "",
             carrAm: "",
             carrAm1: "",
@@ -707,12 +707,14 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = async (params) => {
+    
     this.props.setSelectedRowId(params.row);
 
     await this.setState({
       selectedRowId: params.row.id,
       selectedRow: params.row,
     });
+    console.log(this.state.selectedRow);
   };
 
   componentDidMount() {

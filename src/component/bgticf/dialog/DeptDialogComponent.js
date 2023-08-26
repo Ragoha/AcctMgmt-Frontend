@@ -61,22 +61,8 @@ class DeptDialogComponent extends Component {
   }
 
   initDeptDialog = (keyword) => {
-    // this.setState({ keyword: "", divRows: [] });
-    BgtICFService.findDeptByCoCdAndKeyword({
-      coCd: this.props.user.coCd,
-      accessToken: this.props.accessToken,
-      keyword: keyword,
-    }).then(async (response) => {
-      const DeptRows = response.map((row) => ({
-        id: row.DeptCd,
-        deptCd: row.deptCd,
-        deptNm: row.deptNm,
-      }));
-      await this.setState({
-        DeptRows: DeptRows,
-        selectedRow: [],
-      });
-    });
+    this.setState({ keyword: "", divRows: [] });
+    this.handleClickSearchIcon();
 
     this.handleUp();
   };
