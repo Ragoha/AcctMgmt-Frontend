@@ -487,11 +487,11 @@ class PjtComponent extends Component {
     if (cardCount > 0) {
       CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
         if (confirmed) {
-          console.log("deldata: ", coCd + "제발 쥐랄 노:" + pjtCd);
           let pjt = '';
           if (pjtCd === '') {
             pjt = '000';
           }
+          else pjt = pjtCd;
           PjtService.deletePjt({
             coCd: coCd,
             pjtCd: pjt,
@@ -517,33 +517,6 @@ class PjtComponent extends Component {
                 apjtNm: '',
                 startDt: '',
                 note: '',
-              }, () => {
-                if (this.cardListRef.current) {
-                  this.cardListRef.current.scrollTop = 0;
-                }
-              }));
-            })
-            .then((response) => {
-              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
-              this.renderData();
-              this.setState((prevState) => ({
-                cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
-                selectAllChecked: false,
-                isChangTed: false,
-                isPjtCdEditable: false,
-                pjtCdList: prevState.pjtCdList.filter(
-                  (pjtId) => pjtId !== pjtCd
-                ),
-                pjtCd: "",
-                pgrCd: "",
-                pgrNm: "",
-                pjtNm: "",
-                prDt: "",
-                toDt: "",
-                progFg: "",
-                apjtNm: "",
-                startDt: "",
-                note: "",
               }, () => {
                 if (this.cardListRef.current) {
                   this.cardListRef.current.scrollTop = 0;
@@ -644,7 +617,7 @@ class PjtComponent extends Component {
     if (this.state.pjtCdList.includes('000')) {
       CustomSwal.showCommonToast('warning', '미등록 프로젝트가 존재합니다.');
     } else {
-      const newCardCount = this.state.cardCount + 1;
+      const newCardCount = this.state.cardCount;
       const newPjtCdList = [...this.state.pjtCdList, '000'];
       // 상태를 업데이트하여 카드를 추가하고 컴포넌트를 다시 렌더링
       this.setState({
@@ -1289,8 +1262,8 @@ class PjtComponent extends Component {
                 defaultValue={
                   this.state.dateRange !== ""
                     ? dayjs(this.state.dateRange).format(
-                        "DD-MMM-YYYY"
-                      )
+                      "DD-MMM-YYYY"
+                    )
                     : ""
                 }
                 name="dateRange"
@@ -1629,9 +1602,15 @@ class PjtComponent extends Component {
                   value={pgrCd}
                   onClick={this.pgrhelpClick2}
                   placeholder="프로젝트그룹코드"
-                />
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SearchIcon onClick={this.pgrhelpClick2} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  />
               </Grid>
-
               <Grid
                 item
                 xs={2}
@@ -1793,27 +1772,26 @@ class PjtComponent extends Component {
           </Grid>
           {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
         </Grid>{" "}
-        {/*  전체화면 닫는 곳*/}
         <Grid
           container
           sx={{
-            display: this.state.selectedCount > 0 ? "flex" : "none", // 선택된 항목이 있을 때만 보이도록 설정
-            position: "fixed", // 네비게이션 바를 고정 위치로 설정합니다.
-            bottom: 0, // 아래쪽에 위치합니다.
-            zIndex: 100, // 다른 요소 위에 나타나도록 z-index를 설정합니다.
+            display: this.state.selectedCount > 0 ? "flex" : "none",
+            position: "relative", // position: fixed 대신 position: relative로 변경
+            bottom: 0,
+            zIndex: 100,
             width: "100%",
-            padding: "10px 0",
-            borderTop: "1px solid #ccc",
-            backgroundColor: "white",
-            transition: "bottom 0.3s", // 슬라이드 효과를 위한 transition을 추가합니다.
+            padding: "20px 0",
+            borderTop: "1px solid #000000",
+            backgroundColor: "#FCFCFC",
+            transition: "bottom 0.3s",
           }}
           justifyContent="space-between"
         >
           <Grid item xs={5}>
             {this.state.selectedCount > 0 && (
-              <InputLabel>
+              <InputLabel sx={{ fontSize: 20 }}>
                 선택됨:
-                <span style={{ color: "red", fontWeight: "bold" }}>
+                <span style={{ color: "red", fontWeight: "bold", fontSize: 20 }}>
                   &nbsp;{this.state.selectedCount}
                 </span>
                 건
@@ -1824,7 +1802,7 @@ class PjtComponent extends Component {
             item
             xs={6}
             align="right"
-            style={{ position: "relative", right: "300px" }}
+            style={{ position: "relative", paddingRight: "5px" }} // right 대신 margin-right 사용
           >
             {this.state.selectedCount > 0 && (
               <Button variant="outlined" onClick={this.handleDeleteSelected}>
