@@ -718,6 +718,7 @@ class DivMgmtComponent extends Component {
       divAddr,
       divAddr1,
       modifyId,
+      isChanged
     } = this.state;
     const userInfo = this.props.userInfo;
     const { coCd, empId, empEmail } = userInfo;
@@ -739,7 +740,9 @@ class DivMgmtComponent extends Component {
 
     if (!divCd) {
       CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요.");
-    } else {
+    } else if(!isChanged){
+      CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
+    }else {
       DivsService.updateDivs({
         accessToken: this.props.accessToken,
         coCd: this.props.userInfo.coCd,
@@ -893,6 +896,7 @@ class DivMgmtComponent extends Component {
                             this.setState({
                               cardCount: 0,
                               coCd: '',
+                              coNm:'',
                               divCd: "",
                               divNm: "",
                               ceoNm: "",
@@ -1124,7 +1128,7 @@ class DivMgmtComponent extends Component {
                 variant="outlined"
                 onClick={this.updateDivs}
               >
-                수 정
+                저 장
               </Button>
             ) : (
               <Button
