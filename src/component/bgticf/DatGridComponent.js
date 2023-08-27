@@ -50,6 +50,7 @@ class DataGridComponent extends Component {
                   });
                 }
                 console.log(this.state.selectedRows);
+                this.props.setSelectedRows(this.state.selectedRows);
               }}
             />
           ),
@@ -285,7 +286,7 @@ class DataGridComponent extends Component {
         },
       ],
     };
-    console.log("---------------")
+    console.log("---------------");
     // console.log()
     console.log("---------------");
     console.log("---------------");
@@ -305,7 +306,7 @@ class DataGridComponent extends Component {
   SetMgtTextField = async (data) => {
     const { mgtCd, mgtNm } = this.state; // 현재 상태의 값 저장
 
-    console.log("zzzzzzzzzzzzzzzzzzzzzzzzz")
+    console.log("zzzzzzzzzzzzzzzzzzzzzzzzz");
     console.log(data);
     const updatedRows = this.state.rows.map((row) => {
       if (row.id === this.state.selectedRowId) {
@@ -491,11 +492,12 @@ class DataGridComponent extends Component {
 
   handleDeleteClick = (data) => {
     console.log("================");
-    console.log(data.sqList.length);
+    console.log(data);
     console.log(this.state);
+    console.log(data.sqList.length);
 
-    if (data.sqList.length >= 1) {
-      const sqList = data.sqList.map((sq) => sq.sq).join(",");
+    if (this.state.selectedRows.length >= 1) {
+      const sqList = this.state.selectedRows.map((sq) => sq.sq).join(",");
 
       console.log(sqList);
 
@@ -512,7 +514,52 @@ class DataGridComponent extends Component {
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
           gisu: this.state.gisu,
-          bgtFg: this.state.bgtFg
+          bgtFg: this.state.bgtFg,
+        }).then(async (response) => {
+          const rowsWithId = response.map((row) => ({
+            ...row,
+            id: row.sq,
+          }));
+
+          rowsWithId.push({
+            id: randomId(),
+            bgtCd: this.state.bgtCd,
+            mgtNm: "",
+            mgtCd: "",
+            bgtFg: this.state.bgtFg,
+            divCd: data.divCd,
+            gisu: this.state.gisu,
+            bottomNm: "",
+            carrAm: "",
+            carrAm1: "",
+            carrAm2: "",
+            carrAm3: "",
+            remDc: "",
+            bgtTy: "",
+            modifyId: "",
+            isNew: true,
+          });
+
+          await this.setState({ rows: rowsWithId });
+          this.footerRef.current.sumCarrAm(rowsWithId);
+          this.snackBarRef.current.handleUp("success", "삭제되었습니다.");
+        });
+      });
+    } else {
+      BgtICFService.deleteBgtICF({
+        accessToken: this.props.accessToken,
+        coCd: this.props.user.coCd,
+        bgtCd: data.bgtCd,
+        sq: data.sq,
+        sqList: this.state.selectedRow.sq,
+      }).then(() => {
+        this.props.handleClickSerachButton();
+        BgtICFService.getBgtICFList({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
+          bgtCd: this.state.bgtCd,
+          gisu: this.state.gisu,
+          bgtFg: this.state.bgtFg,
         }).then(async (response) => {
           const rowsWithId = response.map((row) => ({
             ...row,
@@ -564,7 +611,7 @@ class DataGridComponent extends Component {
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
       groupCd: this.state.groupCd,
-      bgtFg: parent.bgtFg
+      bgtFg: parent.bgtFg,
     }).then(async (response) => {
       const rowsWithId = response.map((row) => ({
         ...row,
@@ -673,7 +720,7 @@ class DataGridComponent extends Component {
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
         gisu: this.state.gisu,
-        bgtFg: this.state.bgtFg
+        bgtFg: this.state.bgtFg,
       }).then(async (response) => {
         const rowsWithId = response.map((row) => ({
           ...row,
@@ -707,7 +754,6 @@ class DataGridComponent extends Component {
   };
 
   handleRowClick = async (params) => {
-    
     this.props.setSelectedRowId(params.row);
 
     await this.setState({

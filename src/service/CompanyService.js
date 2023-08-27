@@ -27,6 +27,17 @@ class CompanyService {
       })
   }
 
+  getCompany(data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/co/"+ data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      }
+      )
+  };
+
   insertCo(data) {
     return axios
       .post(ACCTMGMT_API_BASE_URL + "/co", {
@@ -53,20 +64,6 @@ class CompanyService {
   getCo(data) {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/ozt/sco", {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-        params: {
-          coCd: data.coCd
-        }
-      }
-      )
-  };
-
-  getCompany(data) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/co", {
         headers: {
           "access-token": data.accessToken,
         },

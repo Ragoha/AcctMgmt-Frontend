@@ -181,6 +181,7 @@ class GisuDialogComponent extends Component {
     if (newRow.isNew) { 
       if (newRow.frDt !== "" && newRow.toDt !== "") {
         console.log("저장");
+        CustomSwal.showCommonToast("success", "등록되었습니다.");
         this.insertGisu(newRow);
       }
       this.setState({selectedRow : newRow});

@@ -48,8 +48,8 @@ class DivDialogComponent extends Component {
   }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchDivDial();
+    this.setState({ open: true });
   }
 
   setDivKeyword = (data) => {
@@ -123,7 +123,7 @@ class DivDialogComponent extends Component {
           사업장검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>
