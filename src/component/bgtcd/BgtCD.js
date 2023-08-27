@@ -39,6 +39,7 @@ class BgtCD extends Component {
       gisuList: [],
       gisuDefaultValue: '8',
       bgtGrSearchText: '',
+      bgtCdSearchText: '',
       toDt:dayjs(new Date()).format("YYYY-MM-DD"),
       AddRowFlag : false , //예산과목을 추가하면, bgtNm을 정해야하기 때문에 true, 추가하고 업데이트 완료하면 false가 들어간다. 
     }
@@ -217,16 +218,14 @@ class BgtCD extends Component {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const  coCd = this.props.userInfo.coCd;
     const accessToken= this.props.accessToken;
-    // console.log("여기가아니였어 ? 맞을텐ㄷ")
     console.log(tDivFg)
     if(this.state.AddRowFlag ===true){
       console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
       CustomSwal.showCommonToast("error", "작성중인 예산과목이 있습니다");
-      // CustomSwal.showCommonSwal('과목을 추가할 수 없습니다', '작성중인 예산과목이 있습니다');
       return null;
     }
     if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
-      console.log(tBgtCd) //undefined 
+      console.log(tBgtCd) 
       CustomSwal.showCommonToast('error', '신규 예산품목 추가 위치를 지정해주세요');
       return null;
     }
@@ -278,6 +277,20 @@ class BgtCD extends Component {
       }
     }
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+
+
+
+    // 9를 포함하면 ( 표현 한도를 넘어가면 추가할 수 없게 )
+    console.log("쿵쾅bgtCd : " + bgtCd)
+    let strTbgtCd = String(bgtCd);
+    const last7Digits = strTbgtCd.slice(-7);
+    // 추출한 값 중에 9가 있는지 확인
+    console.log(" 7dig "+ last7Digits)
+    if (last7Digits.includes('9')) {
+      CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
+      return null ; 
+    }
+
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
     BgtCDService.getAddRowData(data, accessToken)
@@ -372,7 +385,7 @@ class BgtCD extends Component {
     this[openWhat]();
   }
   handleClickBgtCdSerachIcon = () => {
-    this.BgtCDSubSearch.current.initBgtCDDialog(this.state.bgtCdSearchText);
+    this.BgtCDSubSearch.current.initBgtCDDialog();
   }
   handleClickSubCodeSearchIcon = () => {
     this.BgtCDAddSubDialog.current.handleUp();

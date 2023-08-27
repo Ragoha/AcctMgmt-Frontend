@@ -54,6 +54,7 @@ class BgtGrSearch extends Component {
       keyword : bgtGrSearchText,
     }
     this.setState({keyword:bgtGrSearchText}) //여기는 텍스트 필드만 조회해올것, 아래는 데이터 그리드를 조회해서 변경할 것 .
+    
     BgtCDService.getbgtGrSearchKeywordData(data).then(
       (response)=>{
         this.setState({rows:response})
