@@ -66,7 +66,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   setDetailInfo = (bgtCd) => {
     this.setState({ bgtCd: bgtCd })
     const { accessToken } = this.props;
-    BgtCDService.getDetailInfo(bgtCd, accessToken)
+    BgtCDService.getDetailInfo({ coCd: this.props.userInfo.coCd, bgtCd : bgtCd, accessToken:accessToken })
       .then(response => {
         // console.log('ctlFg 값은 ? ' + response[0].ctlFg);
         // console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
