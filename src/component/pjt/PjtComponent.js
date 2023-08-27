@@ -322,7 +322,7 @@ class PjtComponent extends Component {
       })
         .then((response) => {
           // 수정 완료 시 변경 감지 변수(isChanged)를 초기화하고 알림창 띄우기
-          CustomSwal.showCommonToast("success", "수정되었습니다.");
+          CustomSwal.showCommonToast("success", "변경되었습니다.");
           this.renderData();
           this.setState((prevState) => ({
             isChanged: false,
@@ -335,7 +335,7 @@ class PjtComponent extends Component {
         .catch((error) => {
           // 오류 발생 시의 처리
           console.error(error);
-          CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
+          CustomSwal.showCommonToast("warning", "변경에 실패하였습니다.");
           this.setState({
             isChanged: false,
             isPrChanged: false,
@@ -343,11 +343,11 @@ class PjtComponent extends Component {
           });
         });
     } else if (this.state.isChanged === false && this.state.cardCount === 0) {
-      CustomSwal.showCommonToast("info", "저장할 내용이 없습니다");
+      CustomSwal.showCommonToast("info", "변경할 내용이 없습니다");
     } else {
       // 수정된 내용이 없는 경우 알림창 띄우기
       // alert("수정된 내용이 없습니다.");
-      CustomSwal.showCommonToast("info", "수정된 내용이 없습니다");
+      CustomSwal.showCommonToast("info", "변경된 내용이 없습니다");
     }
   };
 
@@ -403,14 +403,7 @@ class PjtComponent extends Component {
               if (response.status === 200) {
                 this.setState({ isChanged: false, isPjtCdEditable: false, selectAllChecked: false, });
                 this.renderData();
-                CustomSwal.showCommonToast("success", "저장되었습니다.");
-              }
-            })
-            .then((response) => {
-              if (response.status === 200) {
-                this.setState({ isChanged: false, isPjtCdEditable: false, selectAllChecked: false, });
-                this.renderData();
-                CustomSwal.showCommonToast("success", "저장되었습니다.");
+                CustomSwal.showCommonToast("success", "저장 되었습니다.");
               }
             })
             .catch((error) => {

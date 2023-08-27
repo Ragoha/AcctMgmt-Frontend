@@ -85,6 +85,7 @@ class LoginComponent extends Component {
         const accToken = response.data.accessToken;
         const acwte = this.props.setAccessToken(accToken);
         const user = response.data;
+        const USER = this.props.setUserInfo(user);
         console.log(response.data);
         console.log(jwtToken);
         console.log(accToken);
@@ -253,7 +254,7 @@ class LoginComponent extends Component {
                 </Grid> */}
                 <Grid>
                   <a></a>
-                  </Grid>
+                </Grid>
                 <Grid item sx={{ "&:hover": { cursor: "pointer" } }}>
                   <SignUpDialog />
                 </Grid>

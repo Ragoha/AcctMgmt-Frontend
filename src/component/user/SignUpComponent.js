@@ -56,21 +56,6 @@ class SignUpComponent extends Component {
     });
   };
   handleChange2 = (e) => {
-    // const { value } = e.target;
-    // const isIdValid =
-    //   validator.matches(value, /^[a-zA-Z0-9]+$/) || value === "" && value.length >= 4; // 알파벳 대소문자와 숫자만 사용 가능하거나 값이 비어있을 경우에 유효한 값으로 간주합니다.
-    // const isKoreanInput = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(value); // 입력된 값에 한글이 포함되어 있는지 확인합니다.
-    // this.setState({ isIdDuplicated: false });
-    // this.setState({
-    //   id: isIdValid ? value : "",
-    //   // error: !isIdValid,
-    //   errorMessage: isKoreanInput
-    //     ? "알파벳 대소문자와 숫자만 사용 가능합니다."
-    //     : !isIdValid
-    //       ? "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다."
-    //       : "",
-    //   isIdValid: isIdValid && !isKoreanInput,
-    // });
     this.setState({ [e.target.name]: e.target.value });
     this.setState({ isIdDuplicated: false });
 
@@ -89,13 +74,23 @@ class SignUpComponent extends Component {
 
   handleBlur = () => {
     const { id } = this.state;
-    const isIdValid = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9_-]{4,12}$/.test(id);
+    const isIdValid = /^(?=.*[a-zA-Z])[a-zA-Z0-9_-]{4,12}$/.test(id);
     const borderColor = id === '' ? 'error.main' : isIdValid ? 'success.main' : 'error.main';
     const errorMessage = id === ''
       ? '아이디를 입력해주세요.' // 빈 값일 때의 에러 메시지
       : !isIdValid
         ? '알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다.'
         : '';
+    if (isIdValid) {
+      this.setState({
+        isIdValid: true,
+      })
+    }
+    else {
+      this.setState({
+        isIdValid: false,
+      })
+    }
 
     this.setState({
       error: id === '' || !isIdValid, // ID가 빈 값이거나 유효하지 않으면 에러 상태로 설정
@@ -119,9 +114,6 @@ class SignUpComponent extends Component {
       borderPass,
     });
   }
-  // {confirmPassword  !== password
-  //   ? "비밀번호가 일치하지 않습니다."
-  //   : "비밀번호가 일치합니다."}
   handleBlurconfirmPassword = () => {
     const { confirmPassword, password } = this.state;
 
@@ -299,13 +291,24 @@ class SignUpComponent extends Component {
     const { id } = this.state;
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     //api 호출
+    console.log("wathd? 1: ", this.state.isIdValid);
     axios
       .get(ACCTMGMT_API_BASE_URL + "/emp/id/" + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
-        CustomSwal.showCommonToast("success", "사용가능한 아이디 입니다");
-        console.error(response);
-        this.setState({ isIdDuplicated: true });
+        console.log("wathd? : ", this.state.isIdValid);
+        if (this.state.isIdValid) {
+          CustomSwal.showCommonToast("success", "사용가능한 아이디 입니다");
+          console.error(response);
+          this.setState({ isIdDuplicated: true });
+          return;
+        }
+        else {
+          CustomSwal.showCommonToast("warning", "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다.");
+          console.error(response);
+          this.setState({ isIdDuplicated: false });
+          return;
+        }
       })
       .catch((error) => {
         // 아이디 중복 없을 때 처리 로직
