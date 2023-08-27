@@ -77,7 +77,7 @@ class BgtCDDevFgCustom extends Component {
     const { accessToken } = this.props;
     console.log("업데이트된 목록은 ? ");
     console.log(data);
-    BgtCDService.updateBgtCDTerm(data, accessToken).then(
+    BgtCDService.updateBgtCDTerm(data, this.props.user.coCd , accessToken).then(
       this.handleDown()
     );
   };

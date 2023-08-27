@@ -48,8 +48,8 @@ class DivDialogComponent extends Component {
   }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchDivDial();
+    this.setState({ open: true });
   }
 
   setDivKeyword = (data) => {
@@ -100,6 +100,12 @@ class DivDialogComponent extends Component {
     this.setState({ keyword: "", selectedRow:"" });
   }
 
+  handleClickCancel = () =>{
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    this.setState({ keyword: "" });
+  }
+
   //열 클릭처리
   handleClickRow = (params) => {
     this.setState({ selectedRow: params.row }, () => {
@@ -117,7 +123,7 @@ class DivDialogComponent extends Component {
           사업장검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>
@@ -167,7 +173,7 @@ class DivDialogComponent extends Component {
             <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
               확인
             </CustomConfirmButton>
-            <Button variant="outlined" onClick={() => this.setState({ open: false })}>
+            <Button variant="outlined" onClick={this.handleClickCancel}>
               취소
             </Button>
           </CustomButtonGridContainer>

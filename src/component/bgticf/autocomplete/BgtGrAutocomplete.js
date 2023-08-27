@@ -86,7 +86,7 @@ class BgtGrAutocomplete extends Component {
   handleClickSearch = () => {
     console.log(this.bgtGrRef);
     // this.bgtGrRef.current.setBgtCDDialog();
-    this.bgtGrRef.current.setBgtGrDialog();
+    this.bgtGrRef.current.setBgtGrDialog("");
   };
 
   handleSetBgtGrTextField = (dataList) => {

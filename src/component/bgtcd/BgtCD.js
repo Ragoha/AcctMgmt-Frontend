@@ -39,6 +39,7 @@ class BgtCD extends Component {
       gisuList: [],
       gisuDefaultValue: '8',
       bgtGrSearchText: '',
+      bgtCdSearchText: '',
       toDt:dayjs(new Date()).format("YYYY-MM-DD"),
       AddRowFlag : false , //예산과목을 추가하면, bgtNm을 정해야하기 때문에 true, 추가하고 업데이트 완료하면 false가 들어간다. 
     }
@@ -83,26 +84,32 @@ class BgtCD extends Component {
     this.setState({ rows: row })
   }
   /* 예산그룹검색쪽  */
-  handleBgtGrSearchInputChange = async (event) => {
+  handleBgtGrSearchInputChange =  (event) => {
     // console.log('handleBgtGrSearchInputChange')
     const { name, value } = event.target;
     // console.log('name : ' + name);
-    // console.log('value : ' + value);
-    this.setState({ [name]: "" });
-    await this.setState({ [name]: value });
+    this.setState({ [name]: value });
   }
   handleBgtGrSearchKeyDown = (params) => {
     console.log('bgtGrSearchText...')
+    // console.log(params)
+    // console.log(this.state.bgtGrSearchText)
     if (params.code === "Enter") {
-      this.BgtGrSearch.current.initBgtGrSearch();
+      // console.log("엔터엔터엔터엔터엔터엔터엔터엔터엔터엔터")
+      this.setState({bgtGrSearchText:this.state.bgtGrSearchText})
+      this.BgtGrSearch.current.searchIconClick();
       this.BgtGrSearch.current.setTextFieldAndDataGrid(this.state.bgtGrSearchText);
       this.BgtGrSearchOpen();
     }
-    
+    if(params.code==="Backspace"){
+      this.setState({bgtGrSearchText:""})
+    }
+    //console.log(this.state.bgtGrSearchText)
   }
   /* 예산과목검색 */
   handleInputChange = async (event) => {
     console.log('handleInputChange')
+    // console.log(event)
     const { name, value } = event.target;
     // console.log('name : ' + name);
     // console.log('value : ' + value);
@@ -122,6 +129,9 @@ class BgtCD extends Component {
     if (params.code === "Enter") {
       this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
       this.BgtCDSubSearch.current.handleUp();
+    } 
+    if(params.code ==="Backspace"){
+      this.setState({bgtCdSearchText:""})
     }
   }
   /*--기수 start --*/
@@ -144,11 +154,11 @@ class BgtCD extends Component {
       
   }
   changeGisuValue = async (event, child) => {
-    console.log(event)
-    console.log(child)
+    // console.log(event)
+    // console.log(child)
     const index = event.target.value-1;
     // const index = this.state.gisuList.findIndex((value) => value === child);
-    console.log("indxd가 ? : " + index)
+    // console.log("indxd가 ? : " + index)
     await this.setState({ gisuDefaultValue: event.target.value, dataindex: index});
     this.setState({gisuRangeText: this.state.gisuRangeRows[index]});
   }
@@ -173,24 +183,28 @@ class BgtCD extends Component {
   }
 
   /*데이터그리드 부분 start*/
-  getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-    const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
-    this.setState({ rows: tmpRow })
-    const gisu = this.state.gisuDefaultValue;
-    console.log(groupcd);
-    if (groupcd === undefined) {
-      groupcd = "전체"
-    }
-    console.log('데이터체크')
-    const coCd= this.props.userInfo.coCd;
-    const accessToken = this.props.accessToken;
-    BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
-      .then(rows => {
-        this.setState({ rows });
-      })
+  // getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+  //   const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
+  //   this.setState({ rows: tmpRow })
+  //   const gisu = this.state.gisuDefaultValue;
+  //   // console.log(groupcd);
+  //   if (groupcd === undefined) {
+  //     groupcd = "전체"
+  //   }
+  //   // console.log('데이터체크')
+  //   const coCd= this.props.userInfo.coCd;
+  //   const accessToken = this.props.accessToken;
+  //   BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
+  //     .then(rows => {
+  //       this.setState({ rows });
+  //     })
+  // }
+  /*---로우 추가 관련된 메서드 start---*/
+  disableFlag=(flag)=>{
+    console.log("bgtcd 플래그:"+flag)
+    this.BgtCDDetailInfo.current.disableFlag(flag);
   }
 
-  /*---로우 추가 관련된 메서드 start---*/
   chkFlag = (value) => {
     this.setState({
       AddRowFlag:value,
@@ -204,16 +218,14 @@ class BgtCD extends Component {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const  coCd = this.props.userInfo.coCd;
     const accessToken= this.props.accessToken;
-    console.log("여기가아니였어 ? 맞을텐ㄷ")
     console.log(tDivFg)
     if(this.state.AddRowFlag ===true){
       console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
       CustomSwal.showCommonToast("error", "작성중인 예산과목이 있습니다");
-      // CustomSwal.showCommonSwal('과목을 추가할 수 없습니다', '작성중인 예산과목이 있습니다');
       return null;
     }
     if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
-      console.log(tBgtCd) //undefined 
+      console.log(tBgtCd) 
       CustomSwal.showCommonToast('error', '신규 예산품목 추가 위치를 지정해주세요');
       return null;
     }
@@ -269,18 +281,15 @@ class BgtCD extends Component {
 
 
     // 9를 포함하면 ( 표현 한도를 넘어가면 추가할 수 없게 )
-    // console.log("쿵쾅bgtCd : " + bgtCd)
-    // let strTbgtCd = String(bgtCd);
-    // const last7Digits = strTbgtCd.slice(-7);
-    // // 추출한 값 중에 9가 있는지 확인
-    // console.log(" 7dig "+ last7Digits)
-    // if (last7Digits.includes('9')) {
-    //   CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
-    //   return null ; 
-    // }
-
-
-
+    console.log("쿵쾅bgtCd : " + bgtCd)
+    let strTbgtCd = String(bgtCd);
+    const last7Digits = strTbgtCd.slice(-7);
+    // 추출한 값 중에 9가 있는지 확인
+    console.log(" 7dig "+ last7Digits)
+    if (last7Digits.includes('9')) {
+      CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
+      return null ; 
+    }
 
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
@@ -343,7 +352,6 @@ class BgtCD extends Component {
     this.setState({ tDataPath: tDataPath })
   }
   changeValue = (event) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
-
     this.setState({ defaultValue: event.target.value }, () => console.log('바꾼뒤의 값? : ' + this.state.defaultValue));
     this.getDataGridRows(event.target.value);
   }
@@ -539,7 +547,7 @@ class BgtCD extends Component {
                 name="bgtGrSearchText"
                 value={this.state.bgtGrSearchText}
                 onChange={this.handleBgtGrSearchInputChange}
-                onKeyPress={this.handleBgtGrSearchKeyDown}
+                onKeyDown={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
                 inputProps={{ maxLength: 8}}
@@ -606,9 +614,10 @@ class BgtCD extends Component {
               AddRowFlag = {this.state.AddRowFlag}
               setDetailInfo={this.setDetailInfo}
               insertAddRow={this.insertAddRow}
-              getDataGridRows={this.getDataGridRows}
+              // getDataGridRows={this.getDataGridRows}
               setClickedData={this.setClickedData}
               setClickDataPath={this.setClickDataPath}
+              disableFlag={this.disableFlag}
             />
           </Grid>
           <Grid item xs={5}>

@@ -25,15 +25,20 @@ class BgtCDSubSearch extends Component {
       ]
     };
   }
-  initBgtCDDialog=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
+  initBgtCDDialog=(bgtCdSearchText)=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
-    const keyword = null;
-    console.log("이개ㅔ 무한실행 ?")
-    BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+    const keyword = bgtCdSearchText;
+    const data ={
+      coCd:coCd,
+      keyword:keyword
+    }
+    BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog
         (response)=>{
             this.setState({rows:response})
+            this.setState({keyword:bgtCdSearchText})
         })
+   
     this.handleUp();
   }
   getBgtCdLikeSearchDataToRows=(data)=>{ //다이얼로그를 조건으로 검색하고 enter로 열었을때 초기 세팅 
@@ -56,7 +61,11 @@ class BgtCDSubSearch extends Component {
     const keyword = this.state.keyword;
     if (params.code === "Enter") {
       console.log('엔터야 ')
-      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+      const data = {
+        coCd:coCd,
+        keyword:keyword
+      }
+      BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog 닻
         (response)=>{this.setState({rows:response})}
       )
     }
@@ -66,7 +75,11 @@ class BgtCDSubSearch extends Component {
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
     const keyword = this.state.keyword;
-      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+    const data = {
+      coCd : coCd,
+      keyword: keyword
+    }
+      BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog 닻
         (response)=>{this.setState({rows:response})}
       )
   }

@@ -49,8 +49,8 @@ class DeptDialogComponent extends Component {
   }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchDeptDial();
+    this.setState({ open: true });
   }
 
   setDeptKeyword = (data) => {
@@ -102,6 +102,12 @@ class DeptDialogComponent extends Component {
     this.setState({ keyword: "", selectedRow:"" });
   }
 
+  handleClickCancel = () =>{
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    this.setState({ keyword: "" });
+  }
+
   //열 클릭처리
   handleClickRow = (params) => {
     this.setState({ selectedRow: params.row }, () => {
@@ -119,7 +125,7 @@ class DeptDialogComponent extends Component {
           부서검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>
@@ -174,7 +180,7 @@ class DeptDialogComponent extends Component {
             </CustomConfirmButton>
             <Button
               variant="outlined"
-              onClick={() => this.setState({ open: false })}
+              onClick={this.handleClickCancel}
             >
               취소
             </Button>
