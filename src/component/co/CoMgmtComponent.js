@@ -529,11 +529,14 @@ class CoMgmtComponent extends Component {
       coZip,
       coAddr,
       coAddr1,
+      isChanged
     } = this.state;
 
     if (!coCd) {
       CustomSwal.showCommonToast("error", "수정 할 회사를 선택해주세요.");
-    } else {
+    } else if(!isChanged){
+      CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
+    }else {
       console.log(coNm);
       CompanyService.updateCo({
         accessToken: this.props.accessToken,
