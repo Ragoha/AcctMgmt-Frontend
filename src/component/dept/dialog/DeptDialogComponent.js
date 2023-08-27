@@ -49,8 +49,8 @@ class DeptDialogComponent extends Component {
   }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchDeptDial();
+    this.setState({ open: true });
   }
 
   setDeptKeyword = (data) => {
@@ -125,7 +125,7 @@ class DeptDialogComponent extends Component {
           부서검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>

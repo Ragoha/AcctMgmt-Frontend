@@ -39,8 +39,8 @@ class CoDialogComponent extends Component {
 // }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchCoDial();
+    this.setState({ open: true });
   }
 
   setCoKeyword = (data) => {
@@ -113,7 +113,7 @@ class CoDialogComponent extends Component {
           회사검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>

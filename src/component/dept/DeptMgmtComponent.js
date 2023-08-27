@@ -64,7 +64,8 @@ class DeptMgmtComponent extends Component {
       isChanged: false,
       isDeptCdEditable: false,
       expanded: [],
-      isDisabled: true
+      isDisabled: true,
+      isInit: true
     }
   }
 
@@ -170,6 +171,7 @@ class DeptMgmtComponent extends Component {
 
           // focused: `co-${coCd}`,
           // coCd: coCd,
+          isInit: true,
           focused: '',
           coCd: coCd,
           divCd: '',
@@ -264,13 +266,13 @@ class DeptMgmtComponent extends Component {
     console.log(data.deptCd)
   };
 
-  searchClick = (deptCd) => {
+  searchClick = async (deptCd) => {
     const userInfo = this.props.userInfo;
     const { coCd, empId, empEmail } = userInfo;
 
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-    this.setState({ coCd: coCd });
+    await this.setState({ coCd: coCd });
     const row = this.state;
     DeptService.getDepartment({
       accessToken: this.props.accessToken,
@@ -316,7 +318,8 @@ class DeptMgmtComponent extends Component {
           deptZip: deptZip,
           deptAddr: deptAddr,
           deptAddr1: deptAddr1,
-          insertDt: insertDt
+          insertDt: insertDt,
+          isInit: false
         })
       })
       .catch((error) => {
@@ -343,7 +346,7 @@ class DeptMgmtComponent extends Component {
     const { coCd, coNm, empId, empEmail } = userInfo;
     console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
-    this.setState({ coCd: coCd , coNm: coNm });
+    this.setState({ coCd: coCd, coNm: coNm });
 
     const newCardCount = this.state.cardCount + 1;
     const newDeptCdList = [...this.state.deptCdList, '0000'];
@@ -379,7 +382,8 @@ class DeptMgmtComponent extends Component {
             deptAddr: '',
             deptAddr1: '',
             insertDt: '',
-            isDeptCdEditable: true
+            isDeptCdEditable: true,
+            isInit: false
           })
         })
     }
@@ -504,7 +508,8 @@ class DeptMgmtComponent extends Component {
                 deptAddr1: deptAddr1,
                 insertDt: insertDt,
                 isDeptCdEditable: false,
-                isChanged: false
+                isChanged: false,
+                isInit: false
               })
             }).catch((error) => {
               // 오류 발생 시의 처리
@@ -530,14 +535,16 @@ class DeptMgmtComponent extends Component {
   }
 
   updateDept = () => {
-    const { deptCd, deptNm, deptZip, deptAddr, deptAddr1 } = this.state;
+    const { deptCd, deptNm, deptZip, deptAddr, deptAddr1,isChanged } = this.state;
     const userInfo = this.props.userInfo;
     const { coCd, empId, empEmail } = userInfo;
     const row = this.state;
 
     if (!deptCd) {
       CustomSwal.showCommonToast("error", "수정 할 부서를 선택해주세요."); //이거 부서선택했다가 사업장이나 회사가면 초기화 안되는듯 insertDt가 그거 초기화해주면 사실상 필요는 없으려나 그래도 있는게
-    } else {
+    } else if(!isChanged){
+      CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
+    }else {
       DeptService.updateDept({
         accessToken: this.props.accessToken,
         coCd: this.props.userInfo.coCd,
@@ -563,13 +570,13 @@ class DeptMgmtComponent extends Component {
               const divCdList = response.data.map((item) => item.divCd);
               const divNmList = response.data.map((item) => item.divNm);
 
-              const divCd = response.data[0].divCd;
-              const divNm = response.data[0].divNm;
+              // const divCd = response.data[0].divCd;
+              // const divNm = response.data[0].divNm;
               this.setState({
                 divCdList: divCdList,
                 divNmList: divNmList,
-                divCd: divCd,
-                divNm: divNm
+                // divCd: divCd,
+                // divNm: divNm
               })
               DeptService.getDivDept({
                 accessToken: this.props.accessToken,
@@ -610,15 +617,16 @@ class DeptMgmtComponent extends Component {
 
                     focused: `dept-${row.deptCd}`,
                     coCd: coCd,
-                    divCd: divCd,
-                    divNm: divNm,
+                    // divCd: divCd,
+                    // divNm: divNm,
                     deptCd: deptCd,
                     deptNm: deptNm,
                     // ceoNm: ceoNm,
                     deptZip: deptZip,
                     deptAddr: deptAddr,
                     deptAddr1: deptAddr1,
-                    isChanged: false
+                    isChanged: false,
+                    isInit: false
                   })
                   CompanyService.getCompany({
                     accessToken: this.props.accessToken,
@@ -653,10 +661,10 @@ class DeptMgmtComponent extends Component {
             this.componentDidMount();
           }
         })
-      } 
-      else if(this.state.cardCount == 0 ){
-        CustomSwal.showCommonToast("error", "등록된 부서가 없습니다.");
-      } 
+      }
+      else if (this.state.cardCount == 0) {
+        CustomSwal.showCommonToast("success", "삭제되었습니다.");
+      }
       else {
         CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
           if (confirmed) {
@@ -762,13 +770,14 @@ class DeptMgmtComponent extends Component {
                   insertDt: '',
                   isDeptCdEditable: false,
                   isChanged: false,
-                  isDisabled: true
+                  isDisabled: true,
+                  isInit: false
                 })
               })
               .catch((error) => {
                 // 오류 발생 시의 처리
                 console.error(error);
-                CustomSwal.showCommonToast("error", "등록된 부서가 없습니다.");
+                CustomSwal.showCommonToast("success", "삭제되었습니다.");
                 this.setState({
                   cardCount: 0, // state에 값을 저장
                   coCdList: '',
@@ -790,7 +799,8 @@ class DeptMgmtComponent extends Component {
                   insertDt: '',
                   isDeptCdEditable: false,
                   isChanged: false,
-                  isDisabled: true
+                  isDisabled: true,
+                  isInit: false
                 })
               });
           }
@@ -800,17 +810,17 @@ class DeptMgmtComponent extends Component {
   }
 
   reClick = () => {
-    // if (this.state.DeptdialTextField) {
-      const userInfo = this.props.userInfo;
-      const { coCd, empId, empEmail } = userInfo;
-      console.log( "로그인 유저 데이터: " +coCd +"/" +empId + "/" + empEmail );
-      this.setState({ coCd: coCd });
-      
-      this.searchClick(this.state.DeptdialTextField)
-  // }
-  //   else {
-  //     this.componentDidMount();
-  //   }
+    if (this.state.DeptdialTextField) {
+    const userInfo = this.props.userInfo;
+    const { coCd, empId, empEmail } = userInfo;
+    console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
+    this.setState({ coCd: coCd });
+
+    this.searchClick(this.state.DeptdialTextField)
+    }
+      else {
+        this.componentDidMount();
+      }
   }
 
   handleSelect = (nodeId) => {
@@ -832,11 +842,6 @@ class DeptMgmtComponent extends Component {
             this.insertDept();
           }
         }
-        // else {
-        //     this.setState({
-        //         isChanged: false
-        //     })
-        // }
       })
     }
     else {
@@ -856,7 +861,8 @@ class DeptMgmtComponent extends Component {
           deptAddr1: '',
           insertDt: '',
           isDeptCdEditable: true,
-          isDisabled: false
+          isDisabled: false,
+          isInit: false
         })
         if (cardCount <= 0 || !this.state.deptCdList.includes('0000')) {
           this.setState({
@@ -915,7 +921,8 @@ class DeptMgmtComponent extends Component {
               deptAddr1: deptAddr1,
               insertDt: insertDt,
               isDeptCdEditable: false,
-              isDisabled: false
+              isDisabled: false,
+              isInit: false
             })
             CompanyService.getCompany({
               accessToken: this.props.accessToken,
@@ -942,7 +949,8 @@ class DeptMgmtComponent extends Component {
           deptAddr: '',
           deptAddr1: '',
           insertDt: '',
-          isDisabled: true
+          isDisabled: true,
+          isInit: false
         })
       }
     }
@@ -964,7 +972,7 @@ class DeptMgmtComponent extends Component {
   render() {
     const { open, divCd, coCd, deptCd, deptNm, divNm, ceoNm, deptZip, deptAddr, deptAddr1, rows, insertId, modifyId, insertDt } = this.state;
     const { coNm } = this.state;
-    const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList, index, focused, isDisabled } = this.state;
+    const { cardCount, divCdList, divNmList, coCdList, coNmList, deptCdList, deptNmList, index, focused, isDisabled, isInit } = this.state;
 
     const currentDate = new Date();
 
@@ -1053,7 +1061,7 @@ class DeptMgmtComponent extends Component {
                 variant="outlined"
                 onClick={this.updateDept}
               >
-                수 정
+                저 장
               </Button>
             ) : (
               <Button
@@ -1078,20 +1086,6 @@ class DeptMgmtComponent extends Component {
           alignItems="center"
           position='relative'
         >
-          {/* <Grid item xs={3}>
-                        <Grid container alignItems="center">
-                            <CustomInputLabel>회사</CustomInputLabel>
-                            <CustomTextField name='DivdialTextField' value={this.state.DivdialTextField} placeholder="회사코드/회사명 "
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <SearchIcon onClick={this.helpClick} /></InputAdornment>
-                                    ),
-                                }}
-                            ></CustomTextField>
-                        </Grid>
-                    </Grid> */}
-
           <Grid item xs={4}>
             <Grid container alignItems="center">
               <CustomInputLabel>부서</CustomInputLabel>
@@ -1113,11 +1107,6 @@ class DeptMgmtComponent extends Component {
           </Grid>
           <CustomSearchButton
             variant="outlined"
-            // onClick={
-            //   !this.state.DeptdialTextField
-            //     ? this.reClick
-            //     : this.helpClick
-            // }
             onClick={this.reClick}
             sx={{
               minWidth: "5px",
@@ -1229,9 +1218,7 @@ class DeptMgmtComponent extends Component {
                 <CustomWideTextField
                   xs={4}
                   sx={{ ml: 2 }}
-                  // value={coCd + ". " + coNm}
-                  value={focused ? coCd + ". " + coNm : ''}
-                  // InputProps={{ readOnly: true }}
+                  value={isInit ? '' : coCd + ". " + coNm}
                   disabled={true}
                 ></CustomWideTextField>
               </Grid>
@@ -1340,7 +1327,7 @@ class DeptMgmtComponent extends Component {
                   onChange={this.handleCompany}
                   value={deptNm || ""}
                   inputProps={{ maxLength: 29 }}
-                  disabled={divCd? false: true}
+                  disabled={divCd ? false : true}
                 ></CustomWideTextField>
               </Grid>
 
@@ -1403,7 +1390,7 @@ class DeptMgmtComponent extends Component {
                       name="deptAddr1"
                       onChange={this.handleCompany}
                       value={deptAddr1 || ""}
-                      disabled={divCd? false: true}
+                      disabled={divCd ? false : true}
                       sx={{ mt: "0px !important" }}
                     />
                   </Grid>
