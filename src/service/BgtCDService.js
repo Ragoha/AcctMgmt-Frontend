@@ -294,6 +294,7 @@ class BgtCDService {
         gisu: data.gisu,
         tDataPath: data.tDataPath,
         keyword: data.keyword,
+        groupCd : data.groupCd
       }
     }, {
       headers: {
