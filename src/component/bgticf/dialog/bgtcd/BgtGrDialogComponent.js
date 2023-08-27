@@ -121,10 +121,9 @@ class BgtGrDialogComponent extends Component {
 
   handleClickConfirm = async () => {
     if (this.state.selectedRows.length == 0) {
-      console.log(this.state.selectedRow);
+      console.log([this.state.selectedRow]);
       await this.props.handleSetBgtGrTextField([this.state.selectedRow]);
     } else {
-      console.log("22222222");
       let sortedSelectedRows = [...this.state.selectedRows];
       sortedSelectedRows.sort((a, b) => a.bgtGrCd - b.bgtGrCd);
       await this.props.handleSetBgtGrTextField(sortedSelectedRows);

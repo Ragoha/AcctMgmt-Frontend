@@ -6,9 +6,9 @@ const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 class BgtGrService {
   findBgtGrByCoCd(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/bgtgr", {
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/bgtgr/"+data.coCd, {
         params: {
-          coCd: data.coCd,
+          keyword: data.keyword,
         },
         headers: {
           "access-token": data.accessToken,
@@ -25,7 +25,7 @@ class BgtGrService {
     console.log('뚜 우 따 따 띠 띠 띠 띠 ')
     return axios
       .post(
-        ACCTMGMT_API_BASE_URL + "/bgtgr",
+        ACCTMGMT_API_BASE_URL + "/dialog/bgtgr",
         {
           coCd: data.coCd,
           insertId:data.insertId,
@@ -47,11 +47,7 @@ class BgtGrService {
 
   deleteBgtGr(data) {
     return axios
-      .delete(ACCTMGMT_API_BASE_URL + "/bgtgr", {
-        params: {
-          coCd: data.coCd,
-          bgtGrCd: data.bgtGrCd,
-        },
+      .delete(ACCTMGMT_API_BASE_URL + "/dialog/bgtgr/"+data.coCd+"/"+data.bgtGrCd, {
         headers: {
           "access-token": data.accessToken,
         },
@@ -69,10 +65,8 @@ class BgtGrService {
     console.log("========");
     return axios
       .put(
-        ACCTMGMT_API_BASE_URL + "/bgtgr",
+        ACCTMGMT_API_BASE_URL + "/dialog/bgtgr/"+data.coCd+"/"+data.bgtGr.bgtGrCd,
         {
-          coCd: data.coCd,
-          bgtGrCd: data.bgtGr.bgtGrCd,
           bgtGrNm: data.bgtGr.bgtGrNm,
         },
         {

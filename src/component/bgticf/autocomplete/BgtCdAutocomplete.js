@@ -88,25 +88,41 @@ class BgtCdAutocomplete extends Component {
 
   handleSetBgtCDTextField = (dataList) => {
     console.log(dataList);
-    const bgtCDTextList = dataList.map(
-      (data) => data.bgtCd + ". " + data.bgtNm
-    );
-    const bgtCdList = dataList.map((data) => data.bgtCd);
-    let bgtCDTextField;
-    if (bgtCDTextList.length > 1) {
-      bgtCDTextField =
-        bgtCDTextList[0] + " 외 " + (bgtCDTextList.length - 1) + "건";
+    console.log("==========");
+
+    if (dataList.length === 0) {
+      this.setState({
+        bgtCdList: [],
+        listItems: [],
+        bgtCDTextField: "",
+      });
+      
+    this.props.changeBgtCdList([]);
     } else {
-      bgtCDTextField = bgtCDTextList[0];
+      
+      const bgtCDTextList = dataList.map(
+        (data) => data.bgtCd + ". " + data.bgtNm
+      );
+      const bgtCdList = dataList.map((data) => data.bgtCd);
+      let bgtCDTextField;
+      if (bgtCDTextList.length > 1) {
+        bgtCDTextField =
+          bgtCDTextList[0] + " 외 " + (bgtCDTextList.length - 1) + "건";
+      } else {
+        console.log(bgtCDTextList);
+        console.log(bgtCDTextList[0]);
+        bgtCDTextField = bgtCDTextList[0];
+      }
+
+      this.setState({
+        bgtCdList: bgtCdList,
+        listItems: bgtCDTextList,
+        bgtCDTextField: bgtCDTextField,
+      });
+
+      this.props.changeBgtCdList(bgtCdList);
     }
-
-    this.setState({
-      bgtCdList: bgtCdList,
-      listItems: bgtCDTextList,
-      bgtCDTextField: bgtCDTextField,
-    });
-
-    this.props.changeBgtCdList(bgtCdList);
+    
 
   };
 

@@ -116,22 +116,53 @@ class BgtICFComponent extends Component {
   };
 
   handleRowDelete = () => {
-    console.log("Asdf");
-    CustomSwal.showCommonSwalYn(
-      "삭제",
-      "삭제하시겠습니까?",
-      "info",
-      "삭제",
-      (confirm) => {
-        if (confirm) {
-          this.bgtICFRef.current.handleDeleteClick({
-            bgtCd: this.state.selectedRowId,
-            sq: this.state.selectedRowSq,
-            sqList: this.state.selectedRows,
-          });
+    console.log(this.state);
+    if (this.state.selectedRows.length !== 0) {
+      CustomSwal.showCommonSwalYn(
+        "삭제",
+        "삭제하시겠습니까?",
+        "info",
+        "삭제",
+        (confirm) => {
+          if (confirm) {
+            this.bgtICFRef.current.handleDeleteClick({
+              bgtCd: this.state.selectedRowId,
+              sq: this.state.selectedRowSq,
+              sqList: this.state.selectedRows,
+            });
+            this.setState({
+              selectedRowId: "",
+              selectedRowSq: "",
+              selectedRows: [],
+            });
+          }
         }
-      }
-    );
+      );
+    } else if(this.state.selectedRowSq !== "") {
+      CustomSwal.showCommonSwalYn(
+        "삭제",
+        "삭제하시겠습니까?",
+        "info",
+        "삭제",
+        (confirm) => {
+          if (confirm) {
+            this.bgtICFRef.current.handleDeleteClick({
+              bgtCd: this.state.selectedRowId,
+              sq: this.state.selectedRowSq,
+              sqList: [{ sq: this.state.selectedRowSq }],
+            });
+            this.setState({
+              selectedRowId: "",
+              selectedRowSq: "",
+              selectedRows: [],
+            });
+          }
+        }
+      );
+      
+    } else {
+       CustomSwal.showCommonToast("error", "선택된 예산과목이 없습니다.");
+    }
   };
 
   setSelectedRows = async (selectedRows) => {
@@ -196,6 +227,7 @@ class BgtICFComponent extends Component {
         divNm: "",
       });
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleSetBgtGrTextField = (dataList) => {
@@ -225,6 +257,7 @@ class BgtICFComponent extends Component {
         });
       }
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleClickDivSearchIcon = () => {
@@ -242,47 +275,16 @@ class BgtICFComponent extends Component {
     this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
   };
 
-  handleSetBgtCDTextField = (dataList) => {
-    if (dataList.length > 0) {
-      console.log(dataList);
-      console.log("asdf");
-      const concatenatedText = dataList
-        .map((data) => data.bgtCd + ". " + data.bgtNm)
-        .join(", ");
-
-      const bgtCdList = dataList.map((data) => data.bgtCd);
-
-      this.setState({
-        bgtCDTextField: concatenatedText,
-        bgtCdList: bgtCdList,
-      });
-    } else {
-      if (dataList.bgtCd && dataList.bgtNm) {
-        this.setState({
-          bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-          bgtCd: dataList.bgtCd,
-          bgtNm: dataList.bgtNm,
-        });
-      } else {
-        this.setState({
-          bgtCDTextField: "",
-          bgtCd: "",
-          bgtNm: "",
-        });
-      }
-    }
-  };
-
   changeBgtCdList = async (bgtCdList) => {
     console.log("zzzzzzzzzzzzzzzzzzz");
     console.log(bgtCdList);
     await this.setState({ bgtCdList: bgtCdList, bgtCDRows: [] });
-    console.log(this.state.bgtCdList);
+    this.bgtICFRef.current.initBgtICF();
   };
 
   changeBgtGrList = async (bgtGrCdList) => {
     await this.setState({ bgtGrCdList: bgtGrCdList, bgtCDRows: [] });
-    console.log(this.state);
+    this.bgtICFRef.current.initBgtICF();
   };
 
   resetBgt = () => {
@@ -349,7 +351,7 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
-    this.setState({ selectedRows: [] });
+    this.setState({ selectedRows: [], selectedRowId: "", selectedRowSq:"" });
     this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd, bgtFg: this.state.bgtFg });
   };
 
