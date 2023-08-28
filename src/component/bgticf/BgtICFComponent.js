@@ -138,7 +138,7 @@ class BgtICFComponent extends Component {
           }
         }
       );
-    } else if(this.state.selectedRowSq !== "") {
+    } else if (this.state.selectedRowSq !== "") {
       CustomSwal.showCommonSwalYn(
         "삭제",
         "삭제하시겠습니까?",
