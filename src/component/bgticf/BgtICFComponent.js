@@ -219,12 +219,14 @@ class BgtICFComponent extends Component {
         divTextField: data.divCd + ". " + data.divNm,
         divCd: data.divCd,
         divNm: data.divNm,
+        bgtCDRows: []
       });
     } else {
       this.setState({
         divTextField: "",
         divCd: "",
         divNm: "",
+        bgtCDRows: [],
       });
     }
     this.bgtICFRef.current.initBgtICF();
