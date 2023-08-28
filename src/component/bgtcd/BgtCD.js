@@ -69,6 +69,7 @@ class BgtCD extends Component {
       }
     }
     const accessToken = this.props.accessToken;
+    console.log("최상단 검색버ㅡㄴ 눌렀을때")
     BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
       (response) => {
         console.log("response?")
@@ -270,26 +271,13 @@ class BgtCD extends Component {
         console.log('bgtCd와 일치하는 값이 없을때 ');
         // tBgtCd와 일치하는 parentCd를 갖는 row가 없을 때의 처리를 여기에 추가할 수 있습니다.
         BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then(async (result) => {
-          console.log(result)
+          console.log( "결과 " +  result)
           const bbb = tDataPath + "," + result;
           await this.setState({ tDataPath: bbb })
         })
       }
     }
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-
-
-
-    // 9를 포함하면 ( 표현 한도를 넘어가면 추가할 수 없게 )
-    console.log("쿵쾅bgtCd : " + bgtCd)
-    let strTbgtCd = String(bgtCd);
-    const last7Digits = strTbgtCd.slice(-7);
-    // 추출한 값 중에 9가 있는지 확인
-    console.log(" 7dig "+ last7Digits)
-    if (last7Digits.includes('9')) {
-      CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
-      return null ; 
-    }
 
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
