@@ -351,6 +351,7 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
+    console.log(this.state.bgtCDRows)
     this.setState({ selectedRows: [], selectedRowId: "", selectedRowSq:"" });
     this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd, bgtFg: this.state.bgtFg });
   };
