@@ -71,6 +71,7 @@ class BgtCDDatagrid extends Component {
 
     };
     clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+      console.log('00000000000000000000000')
         console.log(params.row.bgtCd)
         if (params.row.bgtCd === "          " || params.row.bgtCd === "           " || params.row.bgtCd === undefined) {
             console.log('수입수출눌렀을때' + params.row.bgtCd + "|")
