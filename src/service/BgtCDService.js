@@ -63,15 +63,10 @@ class BgtCDService {
     return returnData;
   }
 
+
   getDefNmFromBGTCD_TERM(coCd, divFg, accessToken) {
     const returnData = axios(
-      ACCTMGMT_API_BASE_URL + "/bgtcd/getdefnmfrombgtcdterm",
-      {
-        params: {
-          coCd: coCd,
-          divFg: divFg,
-        },
-      },
+      ACCTMGMT_API_BASE_URL + "/bgtcd/defnm/"+coCd+"/"+divFg,
       {
         headers: {
           "access-token": accessToken,
@@ -86,11 +81,9 @@ class BgtCDService {
     console.log("getAddRowData서비스 !");
     const returnData = axios
       .get(
-        ACCTMGMT_API_BASE_URL + "/bgtcd/getaddrowdata",
+        ACCTMGMT_API_BASE_URL + "/bgtcd/tmp/"+data.coCd+"/"+data.bgtCd,
         {
           params: {
-            bgtCd: data.bgtCd,
-            coCd: data.coCd,
             groupCd: data.groupCd,
             gisu: data.gisu,
           },
@@ -109,13 +102,7 @@ class BgtCDService {
   getBgtCDdialog(coCd, keyword, accessToken) {
     const returnData = axios
       .get(
-        ACCTMGMT_API_BASE_URL + "/bgtcd/bgtcddialog",
-        {
-          params: {
-            coCd: coCd,
-            keyword: keyword,
-          },
-        },
+        ACCTMGMT_API_BASE_URL + "/dialog/bgtcd/"+coCd+"/"+keyword,
         {
           headers: {
             "access-token": accessToken,
@@ -129,13 +116,7 @@ class BgtCDService {
   getBgtCdLikeSearch(data, accessToken) {
     const returnData = axios
       .get(
-        ACCTMGMT_API_BASE_URL + "/bgtcd/getbgtcdlikesearch",
-        {
-          params: {
-            coCd: data.coCd,
-            keyword: data.keyword,
-          },
-        },
+        ACCTMGMT_API_BASE_URL + "/dialog/bgtcd/" + data.coCd + "/" + data.keyword,
         {
           headers: {
             "access-token": accessToken,
@@ -146,6 +127,7 @@ class BgtCDService {
       .then((response) => response.data);
     return returnData;
   }
+  
   getinitGisuList(coCd, accessToken) {
     const returnData = axios
       .get(
@@ -214,30 +196,30 @@ class BgtCDService {
     return returnData;
   }
 
-  checkTopData(data, accessToken) {
-    const returnData = axios
-      .get(
-        ACCTMGMT_API_BASE_URL + "/bgtcd/checktopdata",
-        {
-          params: {
-            coCd: data.coCd,
-            gisu: data.gisu,
-            tDataPath: data.tDataPath,
-            keyword: data.keyword,
-            groupCd: data.groupCd,
-          },
-        },
-        {
-          headers: {
-            "access-token": accessToken,
-          },
-          withCredentials: true,
-        }
-      )
-      .then((response) => response.data);
+  // checkTopData(data, accessToken) {
+  //   const returnData = axios
+  //     .get(
+  //       ACCTMGMT_API_BASE_URL + "/bgtcd/checktopdata",
+  //       {
+  //         params: {
+  //           coCd: data.coCd,
+  //           gisu: data.gisu,
+  //           tDataPath: data.tDataPath,
+  //           keyword: data.keyword,
+  //           groupCd: data.groupCd,
+  //         },
+  //       },
+  //       {
+  //         headers: {
+  //           "access-token": accessToken,
+  //         },
+  //         withCredentials: true,
+  //       }
+  //     )
+  //     .then((response) => response.data);
 
-    return returnData;
-  }
+  //   return returnData;
+  // }
 
   updateBgtNm(data, accessToken) {
     console.log("updateBgtNm");
