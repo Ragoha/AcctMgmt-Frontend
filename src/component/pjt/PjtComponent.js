@@ -132,6 +132,9 @@ class PjtComponent extends Component {
             selectedCount: 0,
             isPrChanged: false,
             pjtCdList: [],
+            pjtNmList: [],
+            pjtPrList: [],
+            pjtToList: [],
             cardCount: 0,
             pjtCd: '',
             pgrCd: '',
@@ -489,19 +492,21 @@ class PjtComponent extends Component {
     if (cardCount > 0) {
       CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
         if (confirmed) {
-          let pjt = '';
+          let pjt1 = '';
           if (pjtCd === '') {
-            pjt = '000';
+            pjt1 = '000';
           }
-          else pjt = pjtCd;
+          else {
+            pjt1 = pjtCd;
+          }
+          console.log(pjt1);
           PjtService.deletePjt({
             coCd: coCd,
-            pjtCd: pjt,
+            pjtCd: pjt1,
             accessToken: this.props.accessToken,
           })
             .then((response) => {
               CustomSwal.showCommonToast("success", "삭제되었습니다.", 1300);
-              this.renderData();
               this.setState((prevState) => ({
                 // cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
                 selectAllChecked: false,
@@ -524,6 +529,7 @@ class PjtComponent extends Component {
                   this.cardListRef.current.scrollTop = 0;
                 }
               }));
+              this.renderData();
             })
             .catch((error) => {
               CustomSwal.showCommonToast("error", "삭제실패");
@@ -1131,10 +1137,10 @@ class PjtComponent extends Component {
               gutterBottom
               style={{ position: "relative", top: "-49px", left: "25px" }}
             >
-              {pjtNmList[index] && pjtNmList[index].length > 12
+              {/* {pjtNmList[index] && pjtNmList[index].length > 12
                 ? `${pjtCdList[index]}.${pjtNmList[index].slice(0, 12)}...`
-                : `${pjtCdList[index]}.${pjtNmList[index]}`}
-              
+                : `${pjtCdList[index]}.${pjtNmList[index]}`} */}
+                {pjtCdList[index]}.{pjtNmList[index]}
             </Typography>
             {/* 날짜 찍는 곳 */}
             <Typography
