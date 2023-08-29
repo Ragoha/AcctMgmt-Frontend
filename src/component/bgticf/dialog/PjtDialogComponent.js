@@ -52,20 +52,22 @@ class PjtDialogComponent extends Component {
   }
 
   initPjtDialog = async () => {
-    this.setState({ keyword: "", divRows: [] });
+    // this.setState({ keyword: "", divRows: [] });
     BgtICFService.findPjtByCoCdAndKeyword({
       coCd: this.props.user.coCd,
       accessToken: this.props.accessToken,
+      keyword:""
     }).then(async (response) => {
       const pjtRows = response.map((row) => ({
         id: row.pjtCd,
         pjtCd: row.pjtCd,
         pjtNm: row.pjtNm,
       }));
-      await this.setState({ pjtRows: pjtRows });
+      await this.setState({ pjtRows: pjtRows, keyword:"" });
+       this.handleUp();
     });
 
-    this.handleUp();
+   
   };
 
   handleUp = () => {
@@ -161,7 +163,7 @@ class PjtDialogComponent extends Component {
                   variant="outlined"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      console.log(`Pressed keyCode ${e.key}`);
+                      this.handleClickSearchIcon()
                     }
                   }}
                   sx={{
