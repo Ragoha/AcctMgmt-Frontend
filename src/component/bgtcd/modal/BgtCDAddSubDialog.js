@@ -162,7 +162,7 @@ class BgtCDADDSubDialog extends Component {
         PaperProps={{ sx: { width: 500, height: 600 } }}
       >
         <CustomDialogTitle sx={{ fontWeight: "bold" }}>
-          예산과목그룹 등록
+          예산그룹등록
           <IconButton
             size="small"
             onClick={() => this.setState({ open: false })}

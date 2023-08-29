@@ -482,7 +482,7 @@ class BgtCD extends Component {
             <Grid container direction="row" alignItems="center" >
                 <CustomInputLabel> 기수 </CustomInputLabel>
                 <Select
-                  sx={{ width: "100px" ,height: "40px"}}
+                  sx={{ width: "100px" ,height: "40px",backgroundColor: "#FFEAEA" }}
                   value={this.state.gisuDefaultValue}
                   onChange={this.changeGisuValue}
                   >
@@ -501,6 +501,7 @@ class BgtCD extends Component {
                     marginTop: "8px",
                     marginBottom: "8px",
                     width: 182,
+                    backgroundColor: "#FFEAEA" ,
                   "& .MuiInputBase-root": { fontSize: "13px", height: "40px" },
                 }}
               />
@@ -543,6 +544,7 @@ class BgtCD extends Component {
                 onKeyDown={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
+                sx={{backgroundColor: "#FFEAEA" }}
                 inputProps={{ maxLength: 8}}
                 InputProps={{ 
                   endAdornment: (
