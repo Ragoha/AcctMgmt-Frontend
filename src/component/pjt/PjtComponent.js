@@ -380,15 +380,15 @@ class PjtComponent extends Component {
         startDt,
         note,
       } = this.state;
-      const parts = pgrCd.split('.');
-      // 나뉜 부분 중 첫 번째 부분을 선택합니다.
-      const firstPart = parts[0];
-      const secondPart = parts[1];
-      console.log("firstPart: " + firstPart);
+      // const parts = pgrCd.split('.');
+      // // 나뉜 부분 중 첫 번째 부분을 선택합니다.
+      // const firstPart = parts[0];
+      // const secondPart = parts[1];
+      // console.log("firstPart: " + firstPart);
       const Pjt = {
         coCd,
-        pgrCd : firstPart,
-        pgrNm : secondPart,
+        pgrCd,
+        pgrNm,
         pjtCd,
         pjtNm,
         prDt,
