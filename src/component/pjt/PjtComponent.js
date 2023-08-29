@@ -587,6 +587,7 @@ class PjtComponent extends Component {
           }
         }));
       }
+      else{}
     });
   };
 
