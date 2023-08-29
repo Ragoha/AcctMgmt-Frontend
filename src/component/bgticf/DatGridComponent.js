@@ -443,8 +443,8 @@ class DataGridComponent extends Component {
         updatedRow.mgtNm !== "" &&
         updatedRow.carrAm1 !== "" &&
         updatedRow.carrAm2 !== "" &&
-        updatedRow.carrAm3 !== ""
-        // && updatedRow.remDc !== ""
+        updatedRow.carrAm3 !== "" &&
+        updatedRow.remDc !== ""
       ) {
         console.log("저장");
         console.log(updatedRow);
