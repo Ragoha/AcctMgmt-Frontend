@@ -66,7 +66,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   setDetailInfo = (bgtCd) => {
     this.setState({ bgtCd: bgtCd })
     const { accessToken } = this.props;
-    BgtCDService.getDetailInfo(bgtCd, accessToken)
+    BgtCDService.getDetailInfo({ coCd: this.props.userInfo.coCd, bgtCd : bgtCd, accessToken:accessToken })
       .then(response => {
         // console.log('ctlFg 값은 ? ' + response[0].ctlFg);
         // console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
@@ -153,7 +153,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
         BgtCDService.deleteRow(data, accessToken)
           .then(response => {
             if (response === 2) {
-              this.snackBarRef.current.handleUp("success" , "삭제완료")
+              this.snackBarRef.current.handleUp("success" , "삭제되었습니다")
               this.props.getRecallDataGrid();
               // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(////
               //   (response) => {

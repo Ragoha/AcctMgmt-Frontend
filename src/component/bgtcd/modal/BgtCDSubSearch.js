@@ -109,7 +109,7 @@ class BgtCDSubSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산코드검색 
+          예산과목검색 
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>

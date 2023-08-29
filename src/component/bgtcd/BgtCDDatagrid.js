@@ -1,4 +1,3 @@
-
 import { Box } from '@mui/material';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import React, { Component } from 'react';
@@ -36,8 +35,8 @@ class BgtCDDatagrid extends Component {
         const gisu = this.props.gisuDefaultValue;
         const keyword = this.props.keyword;
         const groupCd = this.props.groupCd;
-        console.log('data--')
-        console.log("gisu: " +gisu +"/keyword : "+ keyword + "/groupCd :" +groupCd);
+        // console.log('data--')
+        // console.log("gisu: " +gisu +"/keyword : "+ keyword + "/groupCd :" +groupCd);
         if (newRow.isNew === true) {
           console.log("isNew가 들어온다고 ?")
             const data = {
@@ -48,6 +47,7 @@ class BgtCDDatagrid extends Component {
                 parentCd: newRow.parentCd
             }
             this.props.insertAddRow(data);
+            this.snackBarRef.current.handleUp("success" , "추가 되었습니다")
             const updatedRow = { ...newRow, isNew: false };
             this.setState((prevState) => ({
                 rows: prevState.rows.map((row) =>
@@ -64,35 +64,39 @@ class BgtCDDatagrid extends Component {
             }
             BgtCDService.updateBgtNm(data, accessToken);
             // this.props.chkFlag(false);
-            this.snackBarRef.current.handleUp("success" , "수정 완료")
-           
+            this.snackBarRef.current.handleUp("success" , "수정 되었습니다")
+           this.props.chkFlag(false);
           return newRow;
         }
 
     };
     clickedRow = (params) => {//데이터 그리드를 클릭했을때 해당 row의 데이터를 가져오는 로직
+      console.log('00000000000000000000000')
         console.log(params.row.bgtCd)
         if (params.row.bgtCd === "          " || params.row.bgtCd === "           " || params.row.bgtCd === undefined) {
             console.log('수입수출눌렀을때' + params.row.bgtCd + "|")
             this.props.disableFlag(true);
             let tDataPath = "";
-            if (params.row.bgtCd === undefined) {
+            let bgtCDA = "";
+            if (params.row.bgtCd === undefined) { //데이터를 조회한 상태에서 추가할때
                 console.log("수입수출이 undefine일때")
                 tDataPath = params.id
+                console.log("파람아이디 : " + params.id)
                 tDataPath = tDataPath.split("/");
                 tDataPath = tDataPath[tDataPath.length - 1] +","; 
                 console.log(tDataPath);
             }
-            if(params.row.bgtCd==="          "){
+            
+            if(params.row.bgtCd==="          "){ //아무것도 없는 화면에서 찍었을때 
                 console.log('수입 공백 ')
                 tDataPath = '수입,'
             }
             if(params.row.bgtCd==="           "){
               console.log('수출 공백 ')
-                tDataPath = '수출,'
+              tDataPath = '수출,'
             }
             console.log('그럼 tDataPath 가 :' + tDataPath)
-            this.props.setClickDataPath(tDataPath)
+            this.props.setClickDataPath(tDataPath,null)
             return null;
         }
         console.log(params.row)

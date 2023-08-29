@@ -8,8 +8,8 @@ class BtgICFService {
     return axios
       .get(ACCTMGMT_API_BASE_URL + "/bgticf/" + data.coCd + "/" + data.bgtCd, {
         params: {
+          divCd: data.divCd,
           gisu: data.gisu,
-          groupCd: data.groupCd,
           bgtFg: data.bgtFg,
         },
         headers: {
@@ -30,7 +30,7 @@ class BtgICFService {
           sq: data.row.sq,
           bgtCd: data.row.bgtCd,
           divCd: data.divCd,
-          deptCd: data.row.deptCd,
+          deptCd: data.user.deptCd,
           mgtCd: data.row.mgtCd,
           bgtFg: data.row.bgtFg,
           bottomNm: data.row.bottomNm,
@@ -40,7 +40,6 @@ class BtgICFService {
           carrAm3: data.row.carrAm3,
           empCd: data.user.empCd,
           remDc: data.row.remDc,
-          insertId: data.user.empId,
           modifyId: data.user.empId,
         },
         {
@@ -68,11 +67,8 @@ class BtgICFService {
           data.row.sq,
         {
           gisu: data.row.gisu,
-          divCd: data.row.divCd,
-          deptCd: data.row.deptCd,
           mgtCd: data.row.mgtCd,
           bgtFg: data.row.bgtFg,
-          bottomNm: data.row.bottomNm,
           carrAm: data.row.carrAm,
           carrAm1: data.row.carrAm1,
           carrAm2: data.row.carrAm2,
@@ -148,7 +144,7 @@ class BtgICFService {
   }
 
   findBgcCDByGisuAndGroupCdAndToDtAndKeyword(data) {
-    console.log(data);
+    console.log(dayjs(data.range));
     let bgtGrCdListString = "";
     if (data.bgtGrCdList && data.bgtGrCdList.length > 0) {
       bgtGrCdListString = data.bgtGrCdList.join(", ");
@@ -159,7 +155,6 @@ class BtgICFService {
         // .get(ACCTMGMT_API_BASE_URL + "/bgticf/bgtcd", {
         params: {
           gisu: data.gisu,
-          groupCd: data.bgtGrCd,
           keyword: data.keyword,
           toDt: dayjs(data.range),
           bgtGrCdList: bgtGrCdListString,

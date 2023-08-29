@@ -39,6 +39,7 @@ class BgtCD extends Component {
       gisuList: [],
       gisuDefaultValue: '8',
       bgtGrSearchText: '',
+      bgtCdSearchText: '',
       toDt:dayjs(new Date()).format("YYYY-MM-DD"),
       AddRowFlag : false , //예산과목을 추가하면, bgtNm을 정해야하기 때문에 true, 추가하고 업데이트 완료하면 false가 들어간다. 
     }
@@ -68,6 +69,7 @@ class BgtCD extends Component {
       }
     }
     const accessToken = this.props.accessToken;
+    console.log("최상단 검색버ㅡㄴ 눌렀을때")
     BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
       (response) => {
         console.log("response?")
@@ -213,20 +215,18 @@ class BgtCD extends Component {
   setClickedData = (dataPath, bgtCd, divFg) => {
     this.setState({ tDataPath: dataPath, tBgtCd: bgtCd, tDivFg: divFg })
   }
-  handleRowAdd = () => {
+  handleRowAdd = async () => {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const  coCd = this.props.userInfo.coCd;
     const accessToken= this.props.accessToken;
-    // console.log("여기가아니였어 ? 맞을텐ㄷ")
-    console.log(tDivFg)
+    console.log(tDivFg+"=1=1=1=1==1=1=1=1=1==1====")
     if(this.state.AddRowFlag ===true){
       console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
       CustomSwal.showCommonToast("error", "작성중인 예산과목이 있습니다");
-      // CustomSwal.showCommonSwal('과목을 추가할 수 없습니다', '작성중인 예산과목이 있습니다');
       return null;
     }
     if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
-      console.log(tBgtCd) //undefined 
+      console.log(tBgtCd) 
       CustomSwal.showCommonToast('error', '신규 예산품목 추가 위치를 지정해주세요');
       return null;
     }
@@ -260,6 +260,7 @@ class BgtCD extends Component {
       return null;
     }
     //rows들 중 내가 클릭한 로우를 부모로 갖는 row들 중 가장 마지막 row의 dataPath값을 갖고온 뒤 
+    console.log("1------------------------------------------------------")
     if (rows && rows.length) {
       const matchedRows = rows.filter(row => row.parentCd === tBgtCd);
       if (matchedRows.length) {
@@ -270,14 +271,17 @@ class BgtCD extends Component {
       } else {
         console.log('bgtCd와 일치하는 값이 없을때 ');
         // tBgtCd와 일치하는 parentCd를 갖는 row가 없을 때의 처리를 여기에 추가할 수 있습니다.
-        BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then(async (result) => {
-          console.log(result)
+        await BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then((result) => {
+          console.log( "결과 " +  result)
           const bbb = tDataPath + "," + result;
-          await this.setState({ tDataPath: bbb })
+          this.setState({ tDataPath: bbb },()=>console.log(this.state.tDataPath))
+          console.log("3333------------------------------------------------------")
         })
       }
-    }
+    
+    console.log("2------------------------------------------------------")
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
     BgtCDService.getAddRowData(data, accessToken)
@@ -290,6 +294,7 @@ class BgtCD extends Component {
         }
         this.chkFlag(true);
         // this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
+        console.log('this.state.tdataPath ' + this.state.tDataPath);
         const newRows = [
           ...this.state.rows,
           { dataPath: this.state.tDataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: a, parentCd: this.state.tBgtCd },
@@ -297,6 +302,7 @@ class BgtCD extends Component {
         this.setState({ rows: newRows },()=>this.state.rows);
         this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
       })
+    }////////////////////////
   };
   updateDetailInfo = () => {
     const { accessToken } = this.props;
@@ -372,7 +378,7 @@ class BgtCD extends Component {
     this[openWhat]();
   }
   handleClickBgtCdSerachIcon = () => {
-    this.BgtCDSubSearch.current.initBgtCDDialog(this.state.bgtCdSearchText);
+    this.BgtCDSubSearch.current.initBgtCDDialog();
   }
   handleClickSubCodeSearchIcon = () => {
     this.BgtCDAddSubDialog.current.handleUp();
@@ -476,7 +482,7 @@ class BgtCD extends Component {
             <Grid container direction="row" alignItems="center" >
                 <CustomInputLabel> 기수 </CustomInputLabel>
                 <Select
-                  sx={{ width: "100px" ,height: "40px"}}
+                  sx={{ width: "100px" ,height: "40px",backgroundColor: "#FFEAEA" }}
                   value={this.state.gisuDefaultValue}
                   onChange={this.changeGisuValue}
                   >
@@ -495,6 +501,7 @@ class BgtCD extends Component {
                     marginTop: "8px",
                     marginBottom: "8px",
                     width: 182,
+                    backgroundColor: "#FFEAEA" ,
                   "& .MuiInputBase-root": { fontSize: "13px", height: "40px" },
                 }}
               />
@@ -537,6 +544,7 @@ class BgtCD extends Component {
                 onKeyDown={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
+                sx={{backgroundColor: "#FFEAEA" }}
                 inputProps={{ maxLength: 8}}
                 InputProps={{ 
                   endAdornment: (
