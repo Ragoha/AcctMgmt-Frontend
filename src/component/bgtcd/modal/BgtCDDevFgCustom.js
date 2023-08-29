@@ -96,7 +96,7 @@ class BgtCDDevFgCustom extends Component {
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          그룹레벨설정
+          과목분류명
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
