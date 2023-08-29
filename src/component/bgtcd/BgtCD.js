@@ -69,6 +69,7 @@ class BgtCD extends Component {
       }
     }
     const accessToken = this.props.accessToken;
+    console.log("최상단 검색버ㅡㄴ 눌렀을때")
     BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
       (response) => {
         console.log("response?")
@@ -214,11 +215,11 @@ class BgtCD extends Component {
   setClickedData = (dataPath, bgtCd, divFg) => {
     this.setState({ tDataPath: dataPath, tBgtCd: bgtCd, tDivFg: divFg })
   }
-  handleRowAdd = () => {
+  handleRowAdd = async () => {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
     const  coCd = this.props.userInfo.coCd;
     const accessToken= this.props.accessToken;
-    console.log(tDivFg)
+    console.log(tDivFg+"=1=1=1=1==1=1=1=1=1==1====")
     if(this.state.AddRowFlag ===true){
       console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
       CustomSwal.showCommonToast("error", "작성중인 예산과목이 있습니다");
@@ -259,6 +260,7 @@ class BgtCD extends Component {
       return null;
     }
     //rows들 중 내가 클릭한 로우를 부모로 갖는 row들 중 가장 마지막 row의 dataPath값을 갖고온 뒤 
+    console.log("1------------------------------------------------------")
     if (rows && rows.length) {
       const matchedRows = rows.filter(row => row.parentCd === tBgtCd);
       if (matchedRows.length) {
@@ -269,27 +271,16 @@ class BgtCD extends Component {
       } else {
         console.log('bgtCd와 일치하는 값이 없을때 ');
         // tBgtCd와 일치하는 parentCd를 갖는 row가 없을 때의 처리를 여기에 추가할 수 있습니다.
-        BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then(async (result) => {
-          console.log(result)
+        await BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then((result) => {
+          console.log( "결과 " +  result)
           const bbb = tDataPath + "," + result;
-          await this.setState({ tDataPath: bbb })
+          this.setState({ tDataPath: bbb },()=>console.log(this.state.tDataPath))
+          console.log("3333------------------------------------------------------")
         })
       }
-    }
+    
+    console.log("2------------------------------------------------------")
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
-
-
-
-    // 9를 포함하면 ( 표현 한도를 넘어가면 추가할 수 없게 )
-    console.log("쿵쾅bgtCd : " + bgtCd)
-    let strTbgtCd = String(bgtCd);
-    const last7Digits = strTbgtCd.slice(-7);
-    // 추출한 값 중에 9가 있는지 확인
-    console.log(" 7dig "+ last7Digits)
-    if (last7Digits.includes('9')) {
-      CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
-      return null ; 
-    }
 
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
     const a = (parseInt(tDivFg) + 1).toString();
@@ -303,6 +294,7 @@ class BgtCD extends Component {
         }
         this.chkFlag(true);
         // this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
+        console.log('this.state.tdataPath ' + this.state.tDataPath);
         const newRows = [
           ...this.state.rows,
           { dataPath: this.state.tDataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: a, parentCd: this.state.tBgtCd },
@@ -310,6 +302,7 @@ class BgtCD extends Component {
         this.setState({ rows: newRows },()=>this.state.rows);
         this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
       })
+    }////////////////////////
   };
   updateDetailInfo = () => {
     const { accessToken } = this.props;

@@ -138,7 +138,7 @@ class BgtICFComponent extends Component {
           }
         }
       );
-    } else if(this.state.selectedRowSq !== "") {
+    } else if (this.state.selectedRowSq !== "") {
       CustomSwal.showCommonSwalYn(
         "삭제",
         "삭제하시겠습니까?",
@@ -219,12 +219,14 @@ class BgtICFComponent extends Component {
         divTextField: data.divCd + ". " + data.divNm,
         divCd: data.divCd,
         divNm: data.divNm,
+        bgtCDRows: []
       });
     } else {
       this.setState({
         divTextField: "",
         divCd: "",
         divNm: "",
+        bgtCDRows: [],
       });
     }
     this.bgtICFRef.current.initBgtICF();
@@ -351,6 +353,7 @@ class BgtICFComponent extends Component {
   }
 
   handleClickBgtCDRow = (e) => {
+    console.log(this.state.bgtCDRows)
     this.setState({ selectedRows: [], selectedRowId: "", selectedRowSq:"" });
     this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd, bgtFg: this.state.bgtFg });
   };

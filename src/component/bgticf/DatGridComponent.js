@@ -443,8 +443,8 @@ class DataGridComponent extends Component {
         updatedRow.mgtNm !== "" &&
         updatedRow.carrAm1 !== "" &&
         updatedRow.carrAm2 !== "" &&
-        updatedRow.carrAm3 !== "" &&
-        updatedRow.remDc !== ""
+        updatedRow.carrAm3 !== ""
+        // && updatedRow.remDc !== ""
       ) {
         console.log("저장");
         console.log(updatedRow);
@@ -513,6 +513,7 @@ class DataGridComponent extends Component {
           accessToken: this.props.accessToken,
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
+          divCd: this.state.divCd,
           gisu: this.state.gisu,
           bgtFg: this.state.bgtFg,
         }).then(async (response) => {
@@ -558,6 +559,7 @@ class DataGridComponent extends Component {
           accessToken: this.props.accessToken,
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
+          divCd: this.state.divCd,
           gisu: this.state.gisu,
           bgtFg: this.state.bgtFg,
         }).then(async (response) => {
@@ -608,6 +610,7 @@ class DataGridComponent extends Component {
     BgtICFService.getBgtICFList({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
+      divCd: this.state.divCd,
       bgtCd: this.state.bgtCd,
       gisu: this.state.gisu,
       groupCd: this.state.groupCd,
@@ -673,6 +676,7 @@ class DataGridComponent extends Component {
           accessToken: this.props.accessToken,
           coCd: this.props.user.coCd,
           bgtCd: this.state.bgtCd,
+          divCd: this.state.divCd,
           gisu: this.state.gisu,
           bgtFg: this.state.bgtFg,
         }).then(async (response) => {
@@ -719,6 +723,7 @@ class DataGridComponent extends Component {
         accessToken: this.props.accessToken,
         coCd: this.props.user.coCd,
         bgtCd: this.state.bgtCd,
+        divCd: this.state.divCd,
         gisu: this.state.gisu,
         bgtFg: this.state.bgtFg,
       }).then(async (response) => {
