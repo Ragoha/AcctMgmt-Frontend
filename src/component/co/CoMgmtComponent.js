@@ -251,11 +251,11 @@ class CoMgmtComponent extends Component {
     const { coCd, coNm, gisu, frDt, toDt, jongmok, businessType, coNb, ceoNm, coZip, coAddr, coAddr1, insertDt } = this.state;
 
     if (!this.state.coCdList.includes('0000')) {
-      CustomSwal.showCommonToast("error", "등록할 회사를 추가해주세요");
+      CustomSwal.showCommonToast("error", "등록할 회사를 추가해주세요.");
     } else {
-      const impValues = { coCd };
+      const impValues = { coCd, gisu, frDt, toDt, };
       if (Object.values(impValues).some((value) => value === "")) {
-        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요");
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
         return;
       }
       //showCommonSwalYn = (title, text, icon, yesButtonText)
@@ -338,7 +338,7 @@ class CoMgmtComponent extends Component {
     // this.setState({ coCd: coCdList[index] });
     // console.log(index)
     if (this.state.isChanged) {
-      CustomSwal.showCommonSwalYn("저장", "수정중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
+      CustomSwal.showCommonSwalYn("저장", "변경중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
         if (confirmed) {
           if (this.state.insertDt) {
             this.updateCo();
@@ -533,7 +533,7 @@ class CoMgmtComponent extends Component {
     } = this.state;
 
     if (!coCd) {
-      CustomSwal.showCommonToast("error", "수정 할 회사를 선택해주세요.");
+      CustomSwal.showCommonToast("error", "변경 할 회사를 선택해주세요.");
     } else if(!isChanged){
       CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
     }else {
@@ -555,7 +555,7 @@ class CoMgmtComponent extends Component {
       })
         .then((response) => {
           console.log(response.data);
-          CustomSwal.showCommonToast("success", "수정되었습니다.");
+          CustomSwal.showCommonToast("success", "변경되었습니다.");
           // this.componentDidMount()
           const coCdList = response.data.map((item) => item.coCd);
           const coNmList = response.data.map((item) => item.coNm);
@@ -586,7 +586,7 @@ class CoMgmtComponent extends Component {
         })
         .catch((error) => {
           // 오류 발생 시의 처리
-          CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
+          CustomSwal.showCommonToast("warning", "변경에 실패하였습니다.");
           console.error(error);
         })
     }
@@ -604,6 +604,9 @@ class CoMgmtComponent extends Component {
         CustomSwal.showCommonSwalYn("삭제", "정말 삭제하시겠습니까?", "info", "확인", (confirmed) => {
           if (confirmed) {
             CustomSwal.showCommonToast("success", "삭제되었습니다.");
+            this.setState({
+              isDisabled: false
+            })
             this.componentDidMount();
           }
         })
@@ -665,13 +668,14 @@ class CoMgmtComponent extends Component {
                         coAddr1: coAddr1,
                         CodialTextField: "",
                         isCoCdEditable: false,
-                        isChanged: false
+                        isChanged: false,
+                        isDisabled: false
                       });
                     })
                     // window.location.href="/acctmgmt/ozt/co";
                     .catch((error) => {
                       // 오류 발생 시의 처리
-                      CustomSwal.showCommonToast("error", "삭제실패");
+                      CustomSwal.showCommonToast("error", "삭제에 실패하였습니다.");
                       console.error(error);
                     });
                 }
@@ -1288,6 +1292,7 @@ class CoMgmtComponent extends Component {
                 <CustomDatePrToTextField
                   name="dateRange"
                   disabled={true}
+                  sx={{ backgroundColor: "#FFEAEA" }}
                   value={this.state.dateRange || ""}
                   onChange={this.handleCompany}
                   InputProps={{

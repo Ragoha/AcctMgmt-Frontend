@@ -220,7 +220,6 @@ class DeptMgmtComponent extends Component {
     const { deptCd } = this.state;
     const newDeptCd = e.target.value;
     const { deptCdList } = this.state;
-
     if (deptCdList.includes(newDeptCd)) {
       CustomSwal.showCommonToast("warning", "사용중인 부서코드입니다.");
       this.setState({
@@ -233,6 +232,7 @@ class DeptMgmtComponent extends Component {
       });
     }
   }
+
 
   addrButton = () => {
     this.addrRef.current.handleUp();
@@ -259,7 +259,7 @@ class DeptMgmtComponent extends Component {
   handleSetDeptdialTextField = async (data) => {
     await this.setState({
       DeptdialTextField: data.deptCd && data.deptNm ? data.deptCd + ". " + data.deptNm : "",
-      deptCd: data.deptCd  //밑에 coCd 넘겨주기
+      deptCd: data.deptCd  
     });
     this.searchClick(data.deptCd);
     console.log(data)
@@ -400,11 +400,11 @@ class DeptMgmtComponent extends Component {
     const { divCd, deptCd, deptNm, deptZip, deptAddr, deptAddr1, insertId, insertDt } = this.state;
 
     if (!this.state.deptCdList.includes('0000')) {
-      CustomSwal.showCommonToast("error", "등록할 부서를 추가해주세요");
+      CustomSwal.showCommonToast("error", "등록할 부서를 추가해주세요.");
     } else {
       const impValues = { coCd, divCd, deptCd };
       if (Object.values(impValues).some((value) => value === "")) {
-        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요");
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
         return;
       }
       //showCommonSwalYn = (title, text, icon, yesButtonText)
@@ -541,7 +541,7 @@ class DeptMgmtComponent extends Component {
     const row = this.state;
 
     if (!deptCd) {
-      CustomSwal.showCommonToast("error", "수정 할 부서를 선택해주세요."); //이거 부서선택했다가 사업장이나 회사가면 초기화 안되는듯 insertDt가 그거 초기화해주면 사실상 필요는 없으려나 그래도 있는게
+      CustomSwal.showCommonToast("error", "변경 할 부서를 선택해주세요."); //이거 부서선택했다가 사업장이나 회사가면 초기화 안되는듯 insertDt가 그거 초기화해주면 사실상 필요는 없으려나 그래도 있는게
     } else if(!isChanged){
       CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
     }else {
@@ -556,7 +556,7 @@ class DeptMgmtComponent extends Component {
       })
         .then((response) => {
           console.log(response.data);
-          CustomSwal.showCommonToast("success", "수정되었습니다.");
+          CustomSwal.showCommonToast("success", "변경되었습니다.");
 
           console.log("로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail);
 
@@ -644,7 +644,7 @@ class DeptMgmtComponent extends Component {
         }).catch((error) => {
           // 오류 발생 시의 처리
           console.error(error);
-          CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
+          CustomSwal.showCommonToast("warning", "변경에 실패하였습니다.");
         });
     }
   }
@@ -833,7 +833,7 @@ class DeptMgmtComponent extends Component {
       cardCount: cardCount
     })
     if (this.state.isChanged) {
-      CustomSwal.showCommonSwalYn("저장", "수정중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
+      CustomSwal.showCommonSwalYn("저장", "변경중인 내용이 있습니다. 저장하시겠습니까?", "info", "저장", (confirmed) => {
         if (confirmed) {
           if (this.state.insertDt) {
             this.updateDept();
@@ -1007,7 +1007,11 @@ class DeptMgmtComponent extends Component {
                 <TreeItem
                   key={`dept-${subIndex}`}
                   nodeId={`dept-${row.deptCd}`}
-                  label={<Grid sx={{ display: 'flex', alignItems: 'center', backgroundColor: this.state.focused === `dept-${row.deptCd}` ? '#E8D9FF' : 'white' }}><GroupIcon sx={{ color: 'gray', mt: -0.2, mr: 0.5 }} />{row.deptCd + '. ' + row.deptNm}</Grid>}
+                  label={<Grid sx={{ display: 'flex', alignItems: 'center', backgroundColor: this.state.focused === `dept-${row.deptCd}` ? '#E8D9FF' : 'white' }}><GroupIcon sx={{ color: 'gray', mt: -0.2, mr: 0.5 }} />
+                  {/* {row.deptCd + '. ' + row.deptNm}</Grid>} */}
+                   {row.deptCd && row.deptNm && row.deptNm.length > 6
+                    ? `${row.deptCd + '. ' + row.deptNm.slice(0, 6)}...`
+                    : row.deptCd + '. ' + row.deptNm}</Grid>}
                   onClick={() => this.handleSelect(`dept-${row.deptCd}`)}
                 />
                 : null
