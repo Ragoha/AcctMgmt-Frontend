@@ -97,6 +97,7 @@ class DivMgmtComponent extends Component {
         const coCdList = response.data.map((item) => item.coCd);
         const divCdList = response.data.map((item) => item.divCd);
         const divNmList = response.data.map((item) => item.divNm);
+        const ceoNmList = response.data.map((item) => item.ceoNm);
         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
         const coCd = response.data[0].coCd;
@@ -117,6 +118,7 @@ class DivMgmtComponent extends Component {
           coCdList: coCdList,
           divCdList: divCdList,
           divNmList: divNmList,
+          ceoNmList: ceoNmList,
 
           focused: divCd,
           coCd: coCd,
@@ -342,11 +344,11 @@ class DivMgmtComponent extends Component {
     } = this.state;
 
     if (!this.state.divCdList.includes("0000")) {
-      CustomSwal.showCommonToast("error", "등록할 사업장을 추가해주세요");
+      CustomSwal.showCommonToast("error", "등록할 사업장을 추가해주세요.");
     } else {
       const impValues = { divCd };
       if (Object.values(impValues).some((value) => value === "")) {
-        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요");
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
         return;
       }
       //showCommonSwalYn = (title, text, icon, yesButtonText)
@@ -390,6 +392,7 @@ class DivMgmtComponent extends Component {
                   const coCdList = response.data.map((item) => item.coCd);
                   const divCdList = response.data.map((item) => item.divCd);
                   const divNmList = response.data.map((item) => item.divNm);
+                  const ceoNmList = response.data.map((item) => item.ceoNm);
                   const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
                   const insertDt = response.data[0].insertDt;
@@ -398,6 +401,7 @@ class DivMgmtComponent extends Component {
                     coCdList: coCdList,
                     divCdList: divCdList,
                     divNmList: divNmList,
+                    ceoNmList: ceoNmList,
 
                     focused: divCdList[cardCount - 1],
                     coCd: coCd,
@@ -506,7 +510,7 @@ class DivMgmtComponent extends Component {
     if (this.state.isChanged) {
       CustomSwal.showCommonSwalYn(
         "저장",
-        "수정중인 내용이 있습니다. 저장하시겠습니까?",
+        "변경중인 내용이 있습니다. 저장하시겠습니까?",
         "info",
         "저장",
         (confirmed) => {
@@ -655,6 +659,7 @@ class DivMgmtComponent extends Component {
         const divCdList = response.data.map((item) => item.divCd);
         // const coNmList = response.data.map((item) => item.coNm); //? 이게되네 , 이건 돋보기 클릭 후, 해당하는 카드컴포넌트 보여주기
         const divNmList = response.data.map((item) => item.divNm);
+        const ceoNmList = response.data.map((item) => item.ceoNm);
         const cardCount = response.data.length;
 
         const coCd = response.data[0].coCd;
@@ -673,7 +678,7 @@ class DivMgmtComponent extends Component {
         this.setState({
           cardCount: cardCount, //??????
           coCdList: coCdList,
-          // coNmList: coNmList, // 하고나서 coNm 불러오는 것도 해야함!!
+          ceoNmList: ceoNmList, // 하고나서 coNm 불러오는 것도 해야함!!
           divCdList: divCdList,
           divNmList: divNmList,
 
@@ -739,7 +744,7 @@ class DivMgmtComponent extends Component {
     console.log(divNm);
 
     if (!divCd) {
-      CustomSwal.showCommonToast("error", "수정 할 사업장을 선택해주세요.");
+      CustomSwal.showCommonToast("error", "변경 할 사업장을 선택해주세요.");
     } else if(!isChanged){
       CustomSwal.showCommonToast("warning", "변경된 내용이 없습니다.");
     }else {
@@ -759,7 +764,7 @@ class DivMgmtComponent extends Component {
         modifyId: empId,
       }).then((response) => {
         console.log(response.data);
-        CustomSwal.showCommonToast("success", "수정되었습니다.");
+        CustomSwal.showCommonToast("success", "변경되었습니다.");
 
         console.log(
           "로그인 유저 데이터: " + coCd + "/" + empId + "/" + empEmail
@@ -773,6 +778,7 @@ class DivMgmtComponent extends Component {
           const coCdList = response.data.map((item) => item.coCd);
           const divCdList = response.data.map((item) => item.divCd);
           const divNmList = response.data.map((item) => item.divNm);
+          const ceoNmList = response.data.map((item) => item.ceoNm);
           const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
           this.setState({
@@ -780,6 +786,7 @@ class DivMgmtComponent extends Component {
             coCdList: coCdList,
             divCdList: divCdList,
             divNmList: divNmList,
+            ceoNmList: ceoNmList,
 
             focused: divCd,
             coCd: coCd,
@@ -811,7 +818,7 @@ class DivMgmtComponent extends Component {
             .catch((error) => {
               // 오류 발생 시의 처리
               console.error(error);
-              CustomSwal.showCommonToast("warning", "수정에 실패하였습니다.");
+              CustomSwal.showCommonToast("warning", "변경에 실패하였습니다.");
             });
         });
       });
@@ -918,6 +925,7 @@ class DivMgmtComponent extends Component {
                         const coCdList = response.data.map((item) => item.coCd);
                         const divCdList = response.data.map((item) => item.divCd);
                         const divNmList = response.data.map((item) => item.divNm);
+                        const ceoNmList = response.data.map((item) => item.ceoNm);
                         const cardCount = response.data.length; // 받아온 데이터의 개수로 cardCount 설정
 
                         const coCd = response.data[0].coCd;
@@ -938,6 +946,7 @@ class DivMgmtComponent extends Component {
                           coCdList: coCdList,
                           divCdList: divCdList,
                           divNmList: divNmList,
+                          ceoNmList: ceoNmList,
                           focused: divCdList[0],
                           coCd: coCd,
                           divCd: divCd,
@@ -975,7 +984,7 @@ class DivMgmtComponent extends Component {
                   .catch((error) => {
                     // 오류 발생 시의 처리
                     console.error(error);
-                    CustomSwal.showCommonToast("error", "삭제실패");
+                    CustomSwal.showCommonToast("error", "삭제에 실패했습니다.");
                   });
               }
             }
@@ -1035,7 +1044,7 @@ class DivMgmtComponent extends Component {
       insertDt,
     } = this.state;
     const { coNm } = this.state;
-    const { cardCount, divCdList, divNmList, coCdList, coNmList, isDisabled } = this.state;
+    const { cardCount, divCdList, divNmList, coCdList, coNmList, ceoNmList, isDisabled } = this.state;
 
     const currentDate = new Date();
 
@@ -1078,11 +1087,10 @@ class DivMgmtComponent extends Component {
               }}
               style={{ position: "absolute", right: "30px", top: "6px" }}
             >
-              {formattedDate}
+               {ceoNmList[index] && ceoNmList[index].length > 5
+                ? `${ceoNmList[index].slice(0, 5)}...`
+                : ceoNmList[index]}
             </Typography>
-            {/* <Typography sx={{ fontSize: 15 }} style={{ position: 'absolute', right: "8px", top:'0px' }}>
-              {index + 1}
-            </Typography> */}
             <Typography
               sx={{
                 fontSize: 14,
@@ -1096,6 +1104,19 @@ class DivMgmtComponent extends Component {
               {divNmList[index] && divNmList[index].length > 8
                 ? `${divNmList[index].slice(0, 8)}...`
                 : divNmList[index]}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 14, 
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}
+              style={{ position: "absolute", right: "30px", bottom: "30px" }}
+            >
+               {coNm && coNm.length > 8
+                ? `${coNm.slice(0, 8)}...`
+                : coNm}
             </Typography>
           </CardContent>
         </CardActionArea>
