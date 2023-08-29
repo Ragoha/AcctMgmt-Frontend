@@ -318,7 +318,11 @@ class PjtComponent extends Component {
           note: note,
         };
       }
-
+      const impValues = { pjtNm };
+      if (Object.values(impValues).some((value) => value === "")) {
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
+        return;
+      }
       console.log("변경된 값:", Pjt);
       console.log("시작날 짜 뭐 들어감?:", startDt);
 
