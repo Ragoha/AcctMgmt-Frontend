@@ -16,7 +16,6 @@ import Cookie from '../../storage/Cookie';
 import { SET_TOKEN } from '../../store/Auth';
 import { SET_CONFIG } from '../../store/Config';
 import { SET_USER } from '../../store/User';
-import ForgotPasswordDialog from '../dialog/ForgotPasswordDialog';
 import SignUpDialog from '../dialog/SignUpDialog';
 import Image4 from './back4.jpg';
 import CustomSwal from '../common/CustomSwal';

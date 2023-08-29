@@ -67,14 +67,14 @@ class PjtService {
   }
 
   duplication(data) {
-    return axios.get(ACCTMGMT_API_BASE_URL + "/pjt/" + data.Pjt.coCd + "/pjtcd/" + data.Pjt.pjtCd, {
+    return axios.get(ACCTMGMT_API_BASE_URL + "/pjt/pjtcd/" + data.Pjt.coCd + "/" +data.Pjt.pjtCd, {
       headers: {
         "access-token": data.accessToken,
       },
     });
   }
   getGroupPjt(data) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjt/groupSel/", data.data, {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjt/groupSel", data.data, {
       headers: {
         "access-token": data.accessToken,
       },

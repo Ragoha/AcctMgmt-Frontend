@@ -4,7 +4,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Li
 import Button from '@mui/material/Button';
 import React, { Component } from 'react';
 import SignUpComponent from '../user/SignUpComponent';
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogTitle } from '../common/style/CommonDialogStyle';
+import { CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogTitle } from '../common/style/CommonDialogStyle';
 
 class SignUpDialog extends Component {
   constructor(props) {

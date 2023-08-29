@@ -91,7 +91,6 @@ class PgrInsertDialogComponent extends Component {
     }
 
     handleClickDelete = (data) => {
-        console.log(this.state.selectedRow.gisu);
         CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
             if (confirmed) {
                 PgrService.deletePgr({
@@ -112,22 +111,18 @@ class PgrInsertDialogComponent extends Component {
 
     handleClickRow = (params) => {
         this.setState({ selectedRow: params.row }, () => {
-            console.log(this.state.selectedRow);
         });
     };
     processRowUpdate = (newRow) => {
 
         if (newRow.isNew) {
             if (newRow.pgrCd !== "" && newRow.pgrNm !== "") {
-                console.log("저장");
                 this.insertPgr(newRow);
             }
             this.setState({ selectedRow: newRow });
 
             return newRow;
         } else {
-            console.log(newRow);
-            console.log(this.state.selectedRow);
             const updatedRow = { ...newRow, isNew: false };
 
             CustomSwal.showCommonToast("warning", "그룹은 수정이 불가능합니다.");

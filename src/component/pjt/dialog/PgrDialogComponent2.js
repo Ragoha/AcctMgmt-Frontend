@@ -136,7 +136,7 @@ class PgrDialogComponent2 extends Component {
             //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
             <CustomShortDialog open={open}>
                 <CustomDialogTitle>
-                    프로젝트그룹코드
+                    프로젝트그룹검색
                     <IconButton
                         size="small"
                         onClick={() => this.setState({ open: false })}

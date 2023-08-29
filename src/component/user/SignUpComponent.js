@@ -65,8 +65,8 @@ class SignUpComponent extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleChange3 = (event) => {
-    const inputValue = event.target.value;
+  handleChange3 = (e) => {
+    const inputValue = e.target.value;
 
     // 입력 값을 필터링하여 원하는 값 이외의 입력은 무시하지 않고, 그대로 상태에 저장합니다.
     this.setState({ position: inputValue });
@@ -291,12 +291,14 @@ class SignUpComponent extends Component {
     const { id } = this.state;
     const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     //api 호출
-    console.log("wathd? 1: ", this.state.isIdValid);
+    if(id === ''){
+      CustomSwal.showCommonToast("error", "아이디를 입력해 주세요.");
+      return;
+    }
     axios
       .get(ACCTMGMT_API_BASE_URL + "/emp/id/" + id)
       .then((response) => {
         // 아이디 중복일 때 처리 로직
-        console.log("wathd? : ", this.state.isIdValid);
         if (this.state.isIdValid) {
           CustomSwal.showCommonToast("success", "사용가능한 아이디 입니다");
           console.error(response);
@@ -304,7 +306,7 @@ class SignUpComponent extends Component {
           return;
         }
         else {
-          CustomSwal.showCommonToast("warning", "알파벳 대소문자와 숫자만 사용 가능하며, 4자리 이상 12자리 이하여야 합니다.");
+          CustomSwal.showCommonToast("warning", "알파벳 대소문자와 숫자만 사용 가능하며, <br/>4자리 이상 12자리 이하여야 합니다.");
           console.error(response);
           this.setState({ isIdDuplicated: false });
           return;
@@ -321,11 +323,6 @@ class SignUpComponent extends Component {
         });
       });
   };
-
-  // validatePassword = (password) => {
-  //   const passwordRegex = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-  //   return passwordRegex.test(password);
-  // };
 
   render() {
     const {
@@ -501,7 +498,6 @@ class SignUpComponent extends Component {
                       borderWidth: 2,
                     },
                   }}
-                // error={confirmPassword && password !== confirmPassword}
                 />
               </Grid>
             </Grid>
