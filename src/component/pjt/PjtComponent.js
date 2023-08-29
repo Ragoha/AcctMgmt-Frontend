@@ -47,6 +47,7 @@ class PjtComponent extends Component {
       apjtNm: "",
       startDt: "",
       note: "",
+      pjtRole: "",
       insertDT: new Date(),
       progFgOptions: ["0.완료", "1.진행중", "9.미사용"],
       searchProgFgOptions: ["전체", "완료", "진행중", "미사용"],
@@ -110,7 +111,14 @@ class PjtComponent extends Component {
   renderData = () => {
     const userInfo = this.props.userInfo;
     const { coCd } = userInfo;
-    console.log("랜더링 회사 : " + coCd);
+    const sysYn = this.props.config[0][4].sysYn;
+    const sys = sysYn;
+    if(sys === '0'){
+      this.state.pjtRole = "모든 사원에 허용";
+    }
+    else{
+      this.state.pjtRole = "일부 사원에 허용";
+    }
     PjtService.getPjtList({
       coCd,
       accessToken: this.props.accessToken,
@@ -204,9 +212,7 @@ class PjtComponent extends Component {
       }) //db 에 아무것도 없을때 focused pjtCd 잡히는 것 에러 남 이거 잡아야함!
       .catch((error) => {
         // 오류 발생 시의 처리
-        console.log("설마 여기 실행되고있누?");
         console.error(error);
-        console.log("실행되나요?");
         this.setState({
           selectAllChecked: false,
           selectedCards: [],
@@ -312,7 +318,11 @@ class PjtComponent extends Component {
           note: note,
         };
       }
-
+      const impValues = { pjtNm };
+      if (Object.values(impValues).some((value) => value === "")) {
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
+        return;
+      }
       console.log("변경된 값:", Pjt);
       console.log("시작날 짜 뭐 들어감?:", startDt);
 
@@ -343,11 +353,11 @@ class PjtComponent extends Component {
           });
         });
     } else if (this.state.isChanged === false && this.state.cardCount === 0) {
-      CustomSwal.showCommonToast("info", "변경할 내용이 없습니다");
+      CustomSwal.showCommonToast("info", "변경된 내용이 없습니다.");
     } else {
       // 수정된 내용이 없는 경우 알림창 띄우기
       // alert("수정된 내용이 없습니다.");
-      CustomSwal.showCommonToast("info", "변경된 내용이 없습니다");
+      CustomSwal.showCommonToast("info", "변경된 내용이 없습니다.");
     }
   };
 
@@ -383,7 +393,7 @@ class PjtComponent extends Component {
       };
       const impValues = { pjtCd, pjtNm, progFg };
       if (Object.values(impValues).some((value) => value === "")) {
-        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요");
+        CustomSwal.showCommonToast("warning", "필수 값을 입력하세요.");
         return;
       }
       console.log("넌 뭔값이야?", Pjt);
@@ -449,7 +459,6 @@ class PjtComponent extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
-          // CustomSwal.showCommonToast('success', '사용 가능한 코드입니다');
           this.setState({
             dup: true,
           });
@@ -491,7 +500,7 @@ class PjtComponent extends Component {
             accessToken: this.props.accessToken,
           })
             .then((response) => {
-              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+              CustomSwal.showCommonToast("success", "삭제되었습니다.", 1300);
               this.renderData();
               this.setState((prevState) => ({
                 // cardCount: prevState.cardCount - 1, // 카드 개수 줄이기
@@ -520,10 +529,6 @@ class PjtComponent extends Component {
               CustomSwal.showCommonToast("error", "삭제실패");
               console.error(error);
             });
-        } else {
-          // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
-          // if(cardCount === 0){
-          // }
         }
       }
       );
@@ -550,7 +555,7 @@ class PjtComponent extends Component {
             accessToken: this.props.accessToken,
           });
         });
-        CustomSwal.showCommonToast("success", "삭제되었습니다.", 1000);
+        CustomSwal.showCommonToast("success", "삭제되었습니다.", 1300);
         this.renderData();
         this.setState((prevState) => ({
           cardCount: cardCount - selectedCards.length,
@@ -575,8 +580,6 @@ class PjtComponent extends Component {
             this.cardListRef.current.scrollTop = 0;
           }
         }));
-      } else {
-        // CustomSwal.showCommonToast('warning', '삭제가 취소되었습니다.', 1000);
       }
     });
   };
@@ -855,7 +858,7 @@ class PjtComponent extends Component {
     const { prDt, toDt, startDt } = this.state;
     if (prDt !== "") {
       if (toDt < prDt) {
-        CustomSwal.showCommonToast("error", "시작일보다 빠를 수 없습니다", "1300", "bottom");
+        CustomSwal.showCommonToast("error", "시작일보다 빠를 수 없습니다.", "1300", "bottom");
         this.setState({
           toDt: '',
         });
@@ -863,7 +866,7 @@ class PjtComponent extends Component {
       }
     }
     else {
-      CustomSwal.showCommonToast("error", "시작일을 입력해 주십시오", "1300", "bottom");
+      CustomSwal.showCommonToast("error", "시작일을 입력해 주십시오.", "1300", "bottom");
       this.setState({
         toDt: '',
       });
@@ -874,7 +877,7 @@ class PjtComponent extends Component {
     const { prDt, toDt, startDt } = this.state;
     if (toDt !== "") {
       if (prDt > toDt) {
-        CustomSwal.showCommonToast("error", "종료일보다 느릴 수 없습니다", "1300", "bottom");
+        CustomSwal.showCommonToast("error", "종료일보다 느릴 수 없습니다.", "1300", "bottom");
         this.setState({
           prDt: '',
         });
@@ -918,7 +921,7 @@ class PjtComponent extends Component {
             note: '',
             isFiled: true,
           });
-          CustomSwal.showCommonToast("success", "검색결과가 없습니다");
+          CustomSwal.showCommonToast("info", "검색결과가 없습니다.");
           return;
         }
         else {
@@ -976,7 +979,7 @@ class PjtComponent extends Component {
               }
             }
           );
-          CustomSwal.showCommonToast("success", "검색완료");
+          CustomSwal.showCommonToast("success", "검색을 완료했습니다.");
         }
       })
       .catch((error) => {
@@ -996,7 +999,7 @@ class PjtComponent extends Component {
         coCd: coCd,
         pjtCd: pjtTextFieldData.pjtCd,
         progFg: selectedProgFg,
-        prDt: date
+        toDt: date
       }
       this.getGroupPjtData(data)
         .then(() => {
@@ -1010,7 +1013,7 @@ class PjtComponent extends Component {
         pgrCd: pgrTextFieldData.pgrCd,
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date
+        toDt: date
       }
       this.getGroupPjtData(data)
         .then(() => {
@@ -1023,7 +1026,7 @@ class PjtComponent extends Component {
         pgrCd: pgrTextFieldData.pgrCd,
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date
+        toDt: date
       }
       this.getGroupPjtData(data)
         .then(() => {
@@ -1035,7 +1038,7 @@ class PjtComponent extends Component {
       const data = {
         coCd: coCd,
         progFg: selectedProgFg,
-        prDt: date
+        toDt: date
       }
       this.getGroupPjtData(data)
         .then(() => {
@@ -1094,6 +1097,17 @@ class PjtComponent extends Component {
             this.state.focused === pjtCd ? "rgba(160, 210, 255, 0.2)" : "white",
         }}
       >
+        {/* sx={{
+                fontSize: 10,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}
+              style={{ position: "absolute", right: "30px", top: "6px" }}
+            >
+              {ceoNmList[index] && ceoNmList[index].length > 5
+                ? `${ceoNmList[index].slice(0, 5)}...`
+                : ceoNmList[index]} */}
         <CardActionArea onClick={() => this.cardClick(pjtCd)}>
           <CardContent sx={{ height: 90 }}>
             <Typography
@@ -1110,11 +1124,17 @@ class PjtComponent extends Component {
               />
             </Typography>
             <Typography
-              sx={{ fontSize: 14 }}
+              sx={{ fontSize: 14,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis" }}
               gutterBottom
               style={{ position: "relative", top: "-49px", left: "25px" }}
             >
-              {pjtCdList[index]}.{pjtNmList[index]}
+              {pjtNmList[index] && pjtNmList[index].length > 12
+                ? `${pjtCdList[index]}.${pjtNmList[index].slice(0, 12)}...`
+                : `${pjtCdList[index]}.${pjtNmList[index]}`}
+              
             </Typography>
             {/* 날짜 찍는 곳 */}
             <Typography
@@ -1180,7 +1200,7 @@ class PjtComponent extends Component {
         >
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
-              <CustomInputLabel sx={{ ml: 4 }}>프로젝트</CustomInputLabel>
+              <CustomInputLabel sx={{ ml: 4 }}>프로젝트&nbsp;&nbsp;&nbsp;&nbsp;</CustomInputLabel>
               <CustomTextField
                 name="PjtTextField"
                 value={this.state.PjtdialTextField} // 빈 값일 때 빈 문자열 할당
@@ -1249,7 +1269,7 @@ class PjtComponent extends Component {
 
           <Grid item xs={4}>
             <Grid container direction="row">
-              <CustomInputLabel>프로젝트기간</CustomInputLabel>
+              <CustomInputLabel>프로젝트종료일</CustomInputLabel>
               <CustomTextField
                 type="date"
                 defaultValue={
@@ -1524,6 +1544,7 @@ class PjtComponent extends Component {
                   size="small"
                   sx={{ ml: 2, backgroundColor: "#FFEAEA", width: "93%" }}
                   name="pjtNm"
+                  inputProps={{ maxLength: 15 }}
                   disabled={isFiled}
                   onChange={this.handlePjt}
                   value={pjtNm || ""}
@@ -1591,8 +1612,9 @@ class PjtComponent extends Component {
                 <CustomWideTextField
                   name="pgrCd"
                   disabled={isFiled}
-                  onChange={(event) => this.handlePjt(event)} // handlePjt 함수를 사용하여 pgrCd 업데이트
+                  onChange={(e) => this.handlePjt(e)} // handlePjt 함수를 사용하여 pgrCd 업데이트
                   value={pgrCd}
+                  inputProps={{ maxLength: 10 }}
                   onClick={this.pgrhelpClick2}
                   placeholder="프로젝트그룹코드"
                   InputProps={{
@@ -1825,6 +1847,7 @@ class PjtComponent extends Component {
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
   userInfo: state.user || {}, //  userInfo 정보 매핑해주기..
+  config: state.config.configData,
 });
 
 export default connect(mapStateToProps)(PjtComponent);

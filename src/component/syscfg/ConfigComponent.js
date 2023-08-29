@@ -51,7 +51,7 @@ class ConfigComponent extends React.Component {
           value: ["1", "2", "3", "4"],
         },
         {
-          options: ["미사용", "사용"],
+          options: ["모든사원에 허용", "일부 사원에 허용"],
           value: ["0", "1"],
         },
         // ... 나머지 데이터 설정 ...
@@ -132,27 +132,19 @@ class ConfigComponent extends React.Component {
   };
   async componentDidMount() {
     const userInfo = this.props.userInfo;
-    const { coCd } = userInfo;
+    const { coCd, coNm } = userInfo;
 
     console.log("로그인 유저 데이터: " + coCd);
 
     this.setState({ coCd: coCd });
 
     try {
-      SyscfgService.getCoNm({
-        accessToken: this.props.accessToken,
-        coCd: coCd,
-      })
-        .then((response) => {
-          console.log('회사이름 : ', response.data);
-          this.setState({ coNm: response.data });
-        })
+      this.setState({ coNm: coNm });
       SyscfgService.config({
         accessToken: this.props.accessToken,
         coCd: coCd,
       })
         .then((response) => {
-          console.log("ummmmmmmmmmmmm", this.state.data.length);
           console.log("Config Data: ", response.data);
           const userData = {
             id: response.data.map((sys) => sys.sysCd),
@@ -226,7 +218,7 @@ class ConfigComponent extends React.Component {
           >
             <Grid item xs={4}>
               <Grid container alignItems="center">
-                <CustomInputLabel>부서</CustomInputLabel>
+                <CustomInputLabel>회사명</CustomInputLabel>
                 <CustomTextField value={comName} disabled />
               </Grid>
             </Grid>
@@ -260,7 +252,7 @@ class ConfigComponent extends React.Component {
                         fontWeight: "bold",
                       }}
                     >
-                      설정값(SettingValue)
+                      옵션값(OptionValue)
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -297,7 +289,7 @@ class ConfigComponent extends React.Component {
                 }}
               >
                 <FormControl component="fieldset" sx={{ width: "30vh" }}>
-                  <FormLabel component="label">설정</FormLabel>
+                  <FormLabel component="label">옵션</FormLabel>
                   <RadioGroup
                     name={`radio-group-${selectedRowData.id}`}
                     value={selectedRowData[settingsKey]}
