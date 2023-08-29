@@ -1,4 +1,3 @@
-
 import { Box } from '@mui/material';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import React, { Component } from 'react';
@@ -48,6 +47,7 @@ class BgtCDDatagrid extends Component {
                 parentCd: newRow.parentCd
             }
             this.props.insertAddRow(data);
+            this.snackBarRef.current.handleUp("success" , "추가 되었습니다")
             const updatedRow = { ...newRow, isNew: false };
             this.setState((prevState) => ({
                 rows: prevState.rows.map((row) =>
@@ -64,7 +64,7 @@ class BgtCDDatagrid extends Component {
             }
             BgtCDService.updateBgtNm(data, accessToken);
             // this.props.chkFlag(false);
-            this.snackBarRef.current.handleUp("success" , "수정 완료")
+            this.snackBarRef.current.handleUp("success" , "수정 되었습니다")
            this.props.chkFlag(false);
           return newRow;
         }
