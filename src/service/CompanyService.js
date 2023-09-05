@@ -7,7 +7,7 @@ class CompanyService {
 
   getCoList(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/co", {
+      .get(ACCTMGMT_API_BASE_URL + "/co", {
         headers: {
           "access-token": data.accessToken,
         },
@@ -27,9 +27,20 @@ class CompanyService {
       })
   }
 
+  getCompany(data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/co/"+ data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      }
+      )
+  };
+
   insertCo(data) {
     return axios
-      .post(ACCTMGMT_API_BASE_URL + "/ozt/ico", {
+      .post(ACCTMGMT_API_BASE_URL + "/co", {
         coCd: data.coCd,
         coNm: data.coNm,
         gisu: data.gisu,
@@ -64,37 +75,20 @@ class CompanyService {
       )
   };
 
-  getCompany(data) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/scom", {
-        headers: {
-          "access-token": data.accessToken,
-        },
-        withCredentials: true,
-        params: {
-          coCd: data.coCd
-        }
-      }
-      )
-  };
-
   deleteCo(data) {
     return axios
-      .delete(ACCTMGMT_API_BASE_URL + "/ozt/dco", {
+      .delete(ACCTMGMT_API_BASE_URL + "/co/"+data.coCd, {
+
         headers: {
           "access-token": data.accessToken,
         },
         withCredentials: true,
-        params: {
-        coCd: data.coCd
-        }
       })
   };
 
   updateCo(data) {
     return axios
-      .put(ACCTMGMT_API_BASE_URL + "/ozt/uco", {
-        coCd: data.coCd,
+      .put(ACCTMGMT_API_BASE_URL + "/co/"+data.coCd, {
         coNm: data.coNm,
         gisu: data.gisu,
         frDt: data.frDt,
@@ -130,14 +124,11 @@ class CompanyService {
 
   getCoBycoCdAndcoNm(data) {
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/ozt/co/search", {
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/co/" + data.keyword, {
         headers: {
           "access-token": data.accessToken,
         },
         withCredentials: true,
-        params: {
-          keyword: data.keyword
-        }
       })
       .then((response) => response.data);
   };

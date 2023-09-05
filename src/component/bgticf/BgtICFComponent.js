@@ -8,11 +8,13 @@ import {
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { randomId } from "@mui/x-data-grid-generator";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import BgtICFService from "../../service/BgtICFService";
+import CustomSwal from "../common/CustomSwal";
 import {
   CustomAutoComplete,
   CustomGridContainer,
@@ -20,17 +22,11 @@ import {
   CustomHeaderInputLabel,
   CustomInputLabel,
   CustomSearchButton,
-  CustomTextField,
 } from "../common/style/CommonStyle";
 import DataGridComponent from "./DatGridComponent";
-import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+import BgtCdAutocomplete from "./autocomplete/BgtCdAutocomplete";
+import BgtGrAutocomplete from "./autocomplete/BgtGrAutocomplete";
 import DivDialogComponent from "./dialog/DivDialogComponent";
-import BgtCDDialogComponent from "./dialog/bgtcd/BgtCDDialogComponent";
-import SnackBarComponentWrapper from "../common/SnackBarComponent";
-import SnackBarComponent from "../common/SnackBarComponent";
-import CustomSwal from "../common/CustomSwal";
-import { randomId } from "@mui/x-data-grid-generator";
-import ListDisplay from "./test";
 
 const currencyFormatter = new Intl.NumberFormat("ko-KR", {
   /* style: "currency", currency: "KRW", */
@@ -84,7 +80,7 @@ class BgtICFComponent extends Component {
       divTextField: this.props.user.divCd + ". " + this.props.user.divNm,
       bgtGrCd: "",
       bgtGrNm: "",
-      bgtGrList: [],
+      bgtGrCdList: [],
       bgtGrTextField: "",
       gisuText: "",
       gisuRows: [],
@@ -96,6 +92,7 @@ class BgtICFComponent extends Component {
       grFgText: "전체",
       bgtCd: "",
       bgtNm: "",
+      bgtFg: this.props.config[0][0].sysYn,
       bgtCdList: [],
       bgtCDTextField: "",
       bgtDTO: [],
@@ -106,7 +103,7 @@ class BgtICFComponent extends Component {
       isNew: false,
       innerHeight: window.innerHeight,
     };
-
+  
     this.bgtCdListRef = createRef();
     this.bgtICFRef = createRef();
     this.divRef = createRef();
@@ -119,22 +116,53 @@ class BgtICFComponent extends Component {
   };
 
   handleRowDelete = () => {
-    console.log("Asdf");
-    CustomSwal.showCommonSwalYn(
-      "삭제",
-      "삭제하시겠습니까?",
-      "info",
-      "삭제",
-      (confirm) => {
-        if (confirm) {
-          this.bgtICFRef.current.handleDeleteClick({
-            bgtCd: this.state.selectedRowId,
-            sq: this.state.selectedRowSq,
-            sqList: this.state.selectedRows,
-          });
+    console.log(this.state);
+    if (this.state.selectedRows.length !== 0) {
+      CustomSwal.showCommonSwalYn(
+        "삭제",
+        "삭제하시겠습니까?",
+        "info",
+        "삭제",
+        (confirm) => {
+          if (confirm) {
+            this.bgtICFRef.current.handleDeleteClick({
+              bgtCd: this.state.selectedRowId,
+              sq: this.state.selectedRowSq,
+              sqList: this.state.selectedRows,
+            });
+            this.setState({
+              selectedRowId: "",
+              selectedRowSq: "",
+              selectedRows: [],
+            });
+          }
         }
-      }
-    );
+      );
+    } else if (this.state.selectedRowSq !== "") {
+      CustomSwal.showCommonSwalYn(
+        "삭제",
+        "삭제하시겠습니까?",
+        "info",
+        "삭제",
+        (confirm) => {
+          if (confirm) {
+            this.bgtICFRef.current.handleDeleteClick({
+              bgtCd: this.state.selectedRowId,
+              sq: this.state.selectedRowSq,
+              sqList: [{ sq: this.state.selectedRowSq }],
+            });
+            this.setState({
+              selectedRowId: "",
+              selectedRowSq: "",
+              selectedRows: [],
+            });
+          }
+        }
+      );
+      
+    } else {
+       CustomSwal.showCommonToast("error", "선택된 예산과목이 없습니다.");
+    }
   };
 
   setSelectedRows = async (selectedRows) => {
@@ -191,14 +219,17 @@ class BgtICFComponent extends Component {
         divTextField: data.divCd + ". " + data.divNm,
         divCd: data.divCd,
         divNm: data.divNm,
+        bgtCDRows: []
       });
     } else {
       this.setState({
         divTextField: "",
         divCd: "",
         divNm: "",
+        bgtCDRows: [],
       });
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleSetBgtGrTextField = (dataList) => {
@@ -228,11 +259,12 @@ class BgtICFComponent extends Component {
         });
       }
     }
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleClickDivSearchIcon = () => {
     // this.divRef.current.initDivDialog();
-    this.divRef.current.setDivDialog(this.state.divTextField);
+    this.divRef.current.setDivDialog("");
   };
 
   handleClickBgtGrSerachIcon = () => {
@@ -245,39 +277,26 @@ class BgtICFComponent extends Component {
     this.bgtCDRef.current.setBgtCDDialog(this.state.bgtCDTextField);
   };
 
-  handleSetBgtCDTextField = (dataList) => {
-    if (dataList.length > 0) {
-      console.log(dataList);
-      console.log("asdf");
-      const concatenatedText = dataList
-        .map((data) => data.bgtCd + ". " + data.bgtNm)
-        .join(", ");
-
-      const bgtCdList = dataList.map((data) => data.bgtCd);
-
-      this.setState({
-        bgtCDTextField: concatenatedText,
-        bgtCdList: bgtCdList,
-      });
-    } else {
-      if (dataList.bgtCd && dataList.bgtNm) {
-        this.setState({
-          bgtCDTextField: dataList.bgtCd + ". " + dataList.bgtNm,
-          bgtCd: dataList.bgtCd,
-          bgtNm: dataList.bgtNm,
-        });
-      } else {
-        this.setState({
-          bgtCDTextField: "",
-          bgtCd: "",
-          bgtNm: "",
-        });
-      }
-    }
+  changeBgtCdList = async (bgtCdList) => {
+    console.log("zzzzzzzzzzzzzzzzzzz");
+    console.log(bgtCdList);
+    await this.setState({ bgtCdList: bgtCdList, bgtCDRows: [] });
+    this.bgtICFRef.current.initBgtICF();
   };
 
-  changeBgtCdList = (bgtCdList) => {
-    this.setState({ bgtCdList: bgtCdList });
+  changeBgtGrList = async (bgtGrCdList) => {
+    await this.setState({ bgtGrCdList: bgtGrCdList, bgtCDRows: [] });
+    this.bgtICFRef.current.initBgtICF();
+  };
+
+  resetBgt = () => {
+    this.setState({ bgtCDRows: [], bgtCdList: [] });
+    this.bgtICFRef.current.initBgtICF();
+  };
+
+  resetBgtGr = () => {
+    this.setState({ bgtCDRows: [], bgtGrCdList: [] });
+    this.bgtICFRef.current.initBgtICF();
   };
 
   handleClickSerachButton = () => {
@@ -297,6 +316,7 @@ class BgtICFComponent extends Component {
       bgtCdList: this.state.bgtCdList,
       bgtNm: this.state.bgtNm,
       bgtText: this.state.bgtCDTextField,
+      bgtFg : this.state.bgtFg
     }).then((response) => {
       console.log(response);
       const rowsWithId = response.map((row) => ({
@@ -327,24 +347,15 @@ class BgtICFComponent extends Component {
         gisuText: gisuRows[gisuRows.length - 1],
         gisuRangeText: gisuRangeRows[gisuRangeRows.length - 1],
       });
-      const gisuLenght = gisuRows.length;
-      const test = gisuRows[gisuLenght - 1];
-      console.log(test);
-      console.log(gisuRows.length);
-      console.log(gisuRows);
-      console.log(gisuRangeRows);
-      console.log(gisuRows[gisuRows.lenght - 1]);
     });
+
+
   }
 
   handleClickBgtCDRow = (e) => {
-    console.log("zzzzzzzzzzzzzzz");
-    console.log(e.row);
-    console.log(this.state.divCd);
-    // BgtICFService.findBgtICFByCoCdAndBgtCd
-    // this.bgtICFRef.current.handleGetBgtICFList();
-    this.setState({ selectedRows: [] });
-    this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd });
+    console.log(this.state.bgtCDRows)
+    this.setState({ selectedRows: [], selectedRowId: "", selectedRowSq:"" });
+    this.bgtICFRef.current.getBgtICFList(e.row, { divCd: this.state.divCd, bgtFg: this.state.bgtFg });
   };
 
   handleKeyDownDivTextField = (e) => {
@@ -504,20 +515,10 @@ class BgtICFComponent extends Component {
               justifyContent="flex-start"
             >
               <CustomInputLabel>예산그룹</CustomInputLabel>
-              <CustomTextField
-                name="bgtGrTextField"
-                value={this.state.bgtGrTextField}
-                onChange={this.handleInputChange}
-                onKeyDown={this.handleKeyDownBgtGrTextField}
-                placeholder="예산그룹코드/예산그룹명"
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleClickBgtGrSerachIcon} />
-                    </InputAdornment>
-                  ),
-                }}
+              <BgtGrAutocomplete
+                ref={this.bgtGrRef}
+                changeBgtGrList={this.changeBgtGrList}
+                resetBgtGr={this.resetBgtGr}
               />
               <CustomSearchButton
                 variant="outlined"
@@ -550,36 +551,21 @@ class BgtICFComponent extends Component {
           <Grid item xs={4}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목</CustomInputLabel>
-              <ListDisplay
+              <BgtCdAutocomplete
                 bgtCdList={this.state.bgtCdList}
                 changeBgtCdList={this.changeBgtCdList}
+                resetBgt={this.resetBgt}
                 ref={this.bgtCdListRef}
               />
-              {/* <CustomTextField
-                name="bgtCDTextField"
-                value={this.state.bgtCDTextField}
-                onChange={this.handleInputChange}
-                onKeyDown={this.handleKeyDownBgtCDTextField}
-                placeholder="예산과목코드/예산과목명"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.handleSearchBgtCD} />
-                    </InputAdornment>
-                  ),
-                }}
-              ></CustomTextField> */}
             </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <SnackBarComponent severity="success" message="저장되었습니다." />
-          </Grid>
+          <Grid item xs={4}></Grid>
         </CustomGridContainer>
         <Grid container spacing={2} sx={{}}>
           <Grid item xs={3}>
             <DataGrid
               sx={{
-                height: "calc(100vh - 292px)",
+                height: "calc(100vh - 296px)",
                 "& .MuiDataGrid-columnHeaderTitle": {
                   fontWeight: "bold",
                 },
@@ -664,16 +650,16 @@ class BgtICFComponent extends Component {
           handleSetDivTextField={this.handleSetDivTextField}
         />
 
-        <BgtGrDialogComponent
+        {/* <BgtGrDialogComponent
           ref={this.bgtGrRef}
           handleSetBgtGrTextField={this.handleSetBgtGrTextField}
-        />
+        /> */}
 
-        <BgtCDDialogComponent
+        {/* <BgtCDDialogComponent
           ref={this.bgtCDRef}
           handleSetBgtCDTextField={this.handleSetBgtCDTextField}
           handleTest={this.handleTest}
-        />
+        /> */}
       </>
     );
   }
@@ -682,6 +668,7 @@ class BgtICFComponent extends Component {
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
   user: state.user || {},
+  config: state.config.configData,
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(

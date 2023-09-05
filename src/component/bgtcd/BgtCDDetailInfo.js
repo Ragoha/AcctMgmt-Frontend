@@ -23,13 +23,18 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   constructor(props) {
     super(props);
     this.snackBarRef = React.createRef();
+    this.ctlFgControl = React.createRef();
+    this.bgajustFgControl = React.createRef();
+    this.bottomFgControl = React.createRef();
+    this.bizFgControl = React.createRef();
+
     this.state = {
       // Detail_Info_FormControle 의 menuValues
       detailInfo: props.detailInfo,
       // startDate: new Date(),
       // endDate: '',
       menuItemValues: [
-        ['1.통제안함', '2.월별조회', '3.분기별조회', '4.년누적조회', '5.월별통제', '6.분기별통제', '7.년누적통계', '8.월누적통제', '9.프로젝트기간통제'],
+        ['0.통제안함', '1.월별조회', '2.분기별조회', '3.년누적조회', '4.월별통제', '5.분기별통제', '6.년누적통계', '7.월누적통제', '8.프로젝트기간통제'],
         ['0.전용가능', '1.전용불가'],
         ['0.여', '1.부'],
         ['0.없음', '1.물품', '2.용역', '3.공사'],
@@ -44,18 +49,24 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       bizFg: null,
       bgtCd: null,
       toDt : dayjs(new Date()).format("YYYY-MM-DD"),
+      // disabled: false
       /*업데이트 하기위해 조회조건의 bgt_cd값이 필요함 */
       //prevBgtCd: props.prevBgtCd,
     }
   }
-
+  disableFlag=(flag)=>{
+    this.ctlFgControl.current.disableFlag(flag);
+    this.bgajustFgControl.current.disableFlag(flag);
+    this.bottomFgControl.current.disableFlag(flag);
+    this.bizFgControl.current.disableFlag(flag);
+  }
   getBgtCd = () => {
     return this.state.bgtCd;
   }
   setDetailInfo = (bgtCd) => {
     this.setState({ bgtCd: bgtCd })
     const { accessToken } = this.props;
-    BgtCDService.getDetailInfo(bgtCd, accessToken)
+    BgtCDService.getDetailInfo({ coCd: this.props.userInfo.coCd, bgtCd : bgtCd, accessToken:accessToken })
       .then(response => {
         // console.log('ctlFg 값은 ? ' + response[0].ctlFg);
         // console.log('bgajustFg 값은 ? ' + response[0].bgajustFg);
@@ -70,8 +81,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
           bizFg: response[0].bizFg,
           toDt : response[0].toDt,
         });
-        //여기서 redux에 response[0]의 데이터를 집어넣는다.
-        //this.props.set_detailInfo(response[0]);
+        this.ctlFgControl.current.setDetailInfo(response[0].ctlFg);
+        this.bgajustFgControl.current.setDetailInfo(response[0].bgajustFg);
+        this.bottomFgControl.current.setDetailInfo(response[0].bottomFg);
+        this.bizFgControl.current.setDetailInfo(response[0].bizFg);
       })
   }
   setDetailInfoAfterAddRow=(detailInfo)=>{//addRow시 추가된 빈 로우 값에 DetailInfo(기본 값 설정.)
@@ -86,10 +99,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   }
   selectData=()=>{
     const detailInfo={
-      ctlFg: this.ctlFgControl.state.dataindex,
-      bgajustFg: this.bgajustFgControl.state.dataindex,
-      bottomFg: this.bottomFgControl.state.dataindex,
-      bizFg: this.bizFgControl.state.dataindex,
+      ctlFg: this.ctlFgControl.current.state.dataindex,
+      bgajustFg: this.bgajustFgControl.current.state.dataindex,
+      bottomFg: this.bottomFgControl.current.state.dataindex,
+      bizFg: this.bizFgControl.current.state.dataindex,
       bgtCd: this.state.bgtCd,
       toDt: this.state.toDt
     }
@@ -99,10 +112,10 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
   //[230810] 원래 updateDetailInfo였던것.
   getDetailInfo = () => {
     const updateData = {
-      ctlFg: this.ctlFgControl.state.dataindex,
-      bgajustFg: this.bgajustFgControl.state.dataindex,
-      bottomFg: this.bottomFgControl.state.dataindex,
-      bizFg: this.bizFgControl.state.dataindex,
+      ctlFg: this.ctlFgControl.current.state.dataindex,
+      bgajustFg: this.bgajustFgControl.current.state.dataindex,
+      bottomFg: this.bottomFgControl.current.state.dataindex,
+      bizFg: this.bizFgControl.current.state.dataindex,
       bgtCd: this.state.bgtCd,
       toDt: this.state.toDt
     }
@@ -122,12 +135,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
     const gisu = this.props.gisu;
     const keyword = this.props.keyword;
     const groupCd = this.props.groupCd;
-    console.log("로스트아크화이팅")
-    console.log(gisu)
-    console.log(groupCd)
-    console.log(keyword)
-    console.log('tBgtCd : ?' +tBgtCd );
-    this.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "삭제", (confirmed) => {
+    this.showCommonSwalYn("삭 제", "삭제하시겠습니까?", "info", "삭 제", (confirmed) => {
       if (confirmed) {
         if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
           console.log('tBgtCd :  ? ' + tBgtCd)
@@ -145,7 +153,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
         BgtCDService.deleteRow(data, accessToken)
           .then(response => {
             if (response === 2) {
-              this.snackBarRef.current.handleUp("success" , "삭제완료")
+              this.snackBarRef.current.handleUp("success" , "삭제되었습니다")
               this.props.getRecallDataGrid();
               // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(////
               //   (response) => {
@@ -215,7 +223,8 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: yesButtonText
+      confirmButtonText: yesButtonText,
+      cancelButtonText: "취 소"
     }).then((result) => {
       if (result.isConfirmed) {
         callback(true); // 확인 버튼을 눌렀을 때 콜백 함수를 호출하고 true를 전달
@@ -235,13 +244,13 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               title={"예산통제구분"}
               ctlFg={ctlFg}
               menuItemValues={menuItemValues[0]}
-              ref={(ref) => (this.ctlFgControl = ref)}
+              ref={this.ctlFgControl}
             />
             <BgtCDDetailInfoFormControl
               title={"예산전용구분"}
               bgajustFg={bgajustFg}
               menuItemValues={menuItemValues[1]}
-              ref={(ref) => (this.bgajustFgControl = ref)}
+              ref={this.bgajustFgControl}
             />
 
             <Grid
@@ -270,7 +279,7 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               <Grid item xs={8}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
-                  disabled={true}
+                    disabled={true}
                     name="date"
                     format="YYYY-MM-DD"
                     value={dayjs(toDt)}
@@ -304,19 +313,14 @@ class BgtCDDetailInfo extends Component { //DataGrid 옆의 상세정보 창 구
               title={"최하위과목여부"}
               bottomFg={bottomFg}
               menuItemValues={menuItemValues[2]}
-              ref={(ref) => (this.bottomFgControl = ref)}
+              ref={this.bottomFgControl}
             />
             <BgtCDDetailInfoFormControl
               title={"구매성격"}
               bizFg={bizFg}
               menuItemValues={menuItemValues[3]}
-              ref={(ref) => (this.bizFgControl = ref)}
+              ref={this.bizFgControl}
             />
-            <Select sx={{width:"300px"}}
-              Value={"영차"}
-            >
-
-            </Select>
           </Grid>
         </Grid>
         <Grid

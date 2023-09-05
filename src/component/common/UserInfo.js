@@ -1,14 +1,54 @@
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { DELETE_TOKEN } from "../../store/Auth";
-import { DEL_USER } from "../../store/User";
-import { DEL_CONFIG } from "../../store/Config";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import styled from 'styled-components'; // styled-components 불러오기
+import '../../css/font.css';
 import Cookie from "../../storage/Cookie";
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import { DELETE_TOKEN } from "../../store/Auth";
+import { DEL_CONFIG } from "../../store/Config";
+import { DEL_USER } from "../../store/User";
+import CustomSwal from "./CustomSwal";
+// 스타일드 컴포넌트로 스타일링
+const UserInfoContainer = styled(Card)`
+  position: absolute;
+  top: 60px;
+  right: 150px;
+  width: 360px;
+  color: black;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  background-image: linear-gradient(to bottom, #F6F6F6, #B2CCFF); 
+`;
+
+const IconWrapper = styled.div`
+  cursor: pointer;
+  color: #6B66FF;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+`;
+
+const IconAndInfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Icon = styled(AccountBoxIcon)`
+  font-size: 75px;
+  color: #5D5D5D; /* 아이콘 색상 변경 */
+  margin-right: 16px; /* 아이콘과 정보 간격 설정 */
+`;
 
 class UserInfo extends Component {
+  // ... 이전 코드 ...
   constructor(props) {
     super(props);
 
@@ -21,12 +61,13 @@ class UserInfo extends Component {
       deptOd: "",
       empEmail: "",
       empTel: "",
-      empAuth:"",
+      empAuth: "",
+      empOd: "",
     };
     this.role = "";
   }
   componentDidMount() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.props.userInfo;
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth, empOd } = this.props.userInfo;
     this.setState({
       coNm,
       empName,
@@ -37,9 +78,11 @@ class UserInfo extends Component {
       empEmail,
       empTel,
       empAuth,
+      empOd,
     });
   }
   logout = () => {
+    CustomSwal.showCommonToast("info", "오늘도 수고하셨습니다.", "1500");
     // const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
     const accessToken = this.props.accessToken; // Redux Store에서 토큰 가져오기
     const userInfo = this.props.userInfo;
@@ -58,49 +101,45 @@ class UserInfo extends Component {
     // });
   };
   render() {
-    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth } = this.state;
-   
-    if (empAuth === "ROLE_ADMIN") { 
-      this.role = "관리자"; 
+    const { coNm, empName, empCd, divCd, divNm, deptOd, empEmail, empTel, empAuth, empOd } = this.state;
+    console.log("직책: ", empOd);
+    if (empAuth === "ROLE_ADMIN") {
+      this.role = empOd;
     } else {
-      this.role = "사원"; 
+      this.role = empOd;
     }
     return (
-      <div style={{
-        position: "absolute",
-        top: "50px",
-        right: "45px",
-        background: "white",
-        padding: "10px",
-        boxShadow: "5px 5px 5px rgba(0, 0, 0, 0.3)",
-        height: "180px",
-        width: "200px",
-        fontSize: "15px",
-        color: "black",
-        borderRadius: "15px", // 네모 모양의 코너를 둥글게 조정
-      }}>
-        <PermIdentityIcon color="primary"/>
-        <div>{coNm}</div>
-        <div>{empName}</div>
-        <div>{this.role}</div>
-        <div>{empEmail}</div>
-        <div>{empTel}</div>
-        <div style={{ marginLeft: "15px" }}>
-          <PowerSettingsNewIcon
-          onClick={this.logout}
-          style={{
-            cursor: "pointer",
-            color: "#6799FF", // 아이콘 색상을 회색으로 변경
-            position: "absolute", // 위치 조정을 위해 절대 위치 지정
-            bottom: "5px", // 아이콘을 아래쪽으로 조금 내림
-            right: "5px", // 아이콘을 오른쪽으로 조금 이동
-          }}
-        />
-        </div>
-      </div>
+      <UserInfoContainer>
+        <CardContent>
+          <IconAndInfoContainer>
+            <Icon />
+            <div>
+              <Typography variant="h6" component="div" style={{ fontFamily: 'Lora, ital' }}>
+                {empName}
+              </Typography>
+              <Typography color="textSecondary" style={{ fontFamily: 'Lora, ital' }}>
+                소속: {coNm}
+              </Typography>
+              <Typography color="textSecondary" style={{ fontFamily: 'Lora, ital' }}>
+                직책: {this.role}
+              </Typography>
+              <Typography color="textSecondary" style={{ fontFamily: 'Lora, ital' }}>
+                이메일: {empEmail}
+              </Typography>
+              <Typography color="textSecondary" style={{ fontFamily: 'Lora, ital' }}>
+                연락처: {empTel}
+              </Typography>
+            </div>
+          </IconAndInfoContainer>
+        </CardContent>
+        <IconWrapper onClick={this.logout}>
+          <PowerSettingsNewIcon />
+        </IconWrapper>
+      </UserInfoContainer>
     );
   }
 }
+
 function withNavigation(Component) {
   return (props) => <Component {...props} navigate={useNavigate()} />;
 }
@@ -116,4 +155,5 @@ const mapDispatchToProps = (dispatch) => {
     delConfig: (config) => dispatch(DEL_CONFIG(config)),
   };
 };
-export default connect(mapStateToProps,mapDispatchToProps)(withNavigation(UserInfo));
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(UserInfo));

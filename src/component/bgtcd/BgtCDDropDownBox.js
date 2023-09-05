@@ -35,7 +35,7 @@ class BgtCDDropDownBox extends React.Component {
     // console.log(event)
     console.log(params.target.name)
     const name = params.target.outerText;
-    if (name == "과목분류명등록") {
+    if (name == "과목분류명") {
       this.props.selectBgtCDDropDownBox('BgtCDDevFgCustomOpen')
     }else if(name=="간편검색"){
 
@@ -96,7 +96,7 @@ class BgtCDDropDownBox extends React.Component {
                     {/* <MenuItem onClick={this.selectFun}
                     >예산과목복사</MenuItem> */}
                     <MenuItem onClick={this.selectFun}
-                    >과목분류명등록</MenuItem>
+                    >과목분류명</MenuItem>
                     {/* <MenuItem onClick={this.selectFun}
                     >회계계정과목복사</MenuItem>
                     <MenuItem onClick={this.selectFun}

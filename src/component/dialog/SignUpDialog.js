@@ -4,7 +4,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Li
 import Button from '@mui/material/Button';
 import React, { Component } from 'react';
 import SignUpComponent from '../user/SignUpComponent';
-import { CustomButtonGridContainer, CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogTitle } from '../common/style/CommonDialogStyle';
+import { CustomCloseIcon, CustomConfirmButton, CustomDialogActions, CustomDialogTitle } from '../common/style/CommonDialogStyle';
 
 class SignUpDialog extends Component {
   constructor(props) {
@@ -16,6 +16,10 @@ class SignUpDialog extends Component {
     // SignUpComponent의 ref를 저장할 변수 선언
     this.signUpComponentRef = React.createRef();
   }
+  handleDialogClick = (e) => {
+    // 이벤트 버블링을 막아 다이얼로그를 클릭해도 닫히지 않도록 함
+    e.stopPropagation();
+  };
 
   handleOpen = () => {
     this.setState({ open: true });
@@ -39,6 +43,7 @@ class SignUpDialog extends Component {
           open={open}
           onClose={this.handleClose}
           PaperProps={{ sx: { width: 700 } }}
+          onClick={this.handleDialogClick}
         >
           <CustomDialogTitle>
             회원가입

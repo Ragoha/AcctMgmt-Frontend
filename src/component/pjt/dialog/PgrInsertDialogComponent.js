@@ -2,6 +2,7 @@ import { Button, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { Component } from "react";
+import '../styles.css'; // 스타일시트 불러오기
 import { connect } from "react-redux";
 import {
     CustomButtonGridContainer,
@@ -15,42 +16,37 @@ import {
 } from "../../common/style/CommonDialogStyle";
 import PgrService from "../../../service/PgrService";
 import { randomId } from "@mui/x-data-grid-generator";
+import CustomSwal from "../../common/CustomSwal";
 
 class PgrInsertDialogComponent extends Component {
     constructor(props) {
         super(props);
+        const userInfo = this.props.userInfo;
+        this.coCd = userInfo.coCd; // coCd를 클래스 속성으로 설정
         this.state = {
             open: false,
-            selectedRow: { coCd: "", pgrCd: "", pgrNm: "" }, //클릭된 열의 cd와 이름
+            selectedRow: { pgrCd: "", pgrNm: "" }, //클릭된 열의 cd와 이름
             pgrRows: [],
             data: {
                 columns: [
                     {
-                        field: "coCd",
-                        headerName: "",
-                        editable: false,
-                        width: 90,
-                        headerAlign: "center",
-                        align: "center",
-                    },
-                    {
                         field: "pgrCd",
                         headerName: "코드",
                         editable: true,
-                        width: 188.2,
                         headerAlign: "center",
                         align: "center",
+                        flex: 1,
                     },
                     {
                         field: "pgrNm",
                         headerName: "분류명",
                         editable: true,
-                        width: 188.2,
                         headerAlign: "center",
                         align: "center",
+                        flex: 1,
                     },
                 ],
-                rows: [{ id: 1, coCd: "", pgrCd: "", pgrNm: "" }],
+                rows: [],
             },
         };
     }
@@ -66,22 +62,17 @@ class PgrInsertDialogComponent extends Component {
     };
 
     initPgr = () => {
-        const userInfo = this.props.userInfo;
-        const { coCd } = userInfo;
         PgrService.findpgrByCoCd({
             accessToken: this.props.accessToken,
-            coCd: coCd,
+            coCd: this.coCd,
         }).then((response) => {
             const pgrRows = response.map((row) => ({
                 id: randomId(),
-                coCd: row.coCd,
                 pgrCd: row.pgrCd,
                 pgrNm: row.pgrNm,
             }));
             pgrRows.push({
                 id: randomId(),
-                coCd: coCd,
-                pgrCd: "",
                 pgrNm: "",
                 isNew: true,
             });
@@ -91,34 +82,27 @@ class PgrInsertDialogComponent extends Component {
 
     insertPgr = (data) => {
         PgrService.insertPgr({
-          accessToken: this.props.accessToken,
-          coCd: this.props.coCd,
-          Pgr: data,
+            accessToken: this.props.accessToken,
+            coCd: this.coCd,
+            pgr: data,
         }).then(() => {
-          this.initPgr();
+            this.initPgr();
         });
     }
 
-    updatePgr = (data) => {
-        console.log(data);
-        // PjtService.updatePgr({
-        //   accessToken: this.props.accessToken,
-        //   coCd: this.props.user.coCd,
-        //   coCd: data,
-        // }).then(() => {
-        //   this.initPgr();
-        // });
-    }
-
-    handleClickDelete = () => {
-        console.log(this.state.selectedRow.pgrCd);
-        PgrService.deletePgr({
-          accessToken: this.props.accessToken,
-          coCd: this.state.selectedRow.coCd,
-          pgrCd: this.state.selectedRow.pgrCd,
-        }).then(() => {
-          this.initPgr();
-        });
+    handleClickDelete = (data) => {
+        CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+            if (confirmed) {
+                PgrService.deletePgr({
+                    accessToken: this.props.accessToken,
+                    coCd: this.coCd,
+                    pgrCd: this.state.selectedRow.pgrCd,
+                }).then(() => {
+                    CustomSwal.showCommonToast("success", "삭제되었습니다.");
+                    this.initPgr();
+                });
+            }
+        })
     };
 
     handleClickConfirm = () => {
@@ -127,26 +111,22 @@ class PgrInsertDialogComponent extends Component {
 
     handleClickRow = (params) => {
         this.setState({ selectedRow: params.row }, () => {
-            console.log(this.state.selectedRow);
         });
     };
-
     processRowUpdate = (newRow) => {
-        console.log(newRow);
 
         if (newRow.isNew) {
             if (newRow.pgrCd !== "" && newRow.pgrNm !== "") {
-                console.log("저장");
                 this.insertPgr(newRow);
             }
+            this.setState({ selectedRow: newRow });
 
             return newRow;
         } else {
-            console.log("수정");
             const updatedRow = { ...newRow, isNew: false };
-            this.updatePgr(updatedRow);
 
-            return updatedRow;
+            CustomSwal.showCommonToast("warning", "그룹은 수정이 불가능합니다.");
+            return this.state.selectedRow;
         }
     };
 
@@ -186,14 +166,11 @@ class PgrInsertDialogComponent extends Component {
                                 rows={pgrRows}
                                 columns={data.columns.map((col) => {
                                     if (col.field === "pgrCd" || col.field === "pgrNm") {
-                                        return col;
+                                        return {
+                                            ...col,
+                                        };
                                     }
-
-                                    // coCd 열을 수정 불가능하게 만듭니다.
-                                    return {
-                                        ...col,
-                                        // editable: false,
-                                    };
+                                    return col;
                                 })}
                                 showColumnVerticalBorder={true}
                                 showCellVerticalBorder={true}

@@ -6,6 +6,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import BgtCDService from "../../../service/BgtCDService";
 import BgtGrService from "../../../service/BgtGrService";
+import CustomSwal from '../../common/CustomSwal.js';
 import {
   CustomButtonGridContainer,
   CustomCloseIcon,
@@ -14,8 +15,9 @@ import {
   CustomDialogContent,
   CustomDialogTitle,
   CustomShortDataGridContainer,
-  CustomShortDialog
+  CustomShortDialog,
 } from "../../common/style/CommonDialogStyle";
+// import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 class BgtCDADDSubDialog extends Component {
   constructor(props) {
     super(props);
@@ -68,43 +70,43 @@ class BgtCDADDSubDialog extends Component {
   };
   processRowUpdate = (newRow) => {
     console.log(newRow);
-
     if (newRow.isNew) {
       if (newRow.bgtGrCd !== "" && newRow.bgtGrNm !== "") {
         console.log("저장");
         this.insertBgtGr(newRow);
       }
-
-      // this.setState((prevState) => ({
-      //   rows: prevState.rows.map((row) =>
-      //     row.id === newRow.id ? newRow : row
-      //   ),
-      // }));
-
       return newRow;
-    } else {
+    } else { //[230822] From Developer --start
       console.log("수정");
-      const updatedRow = { ...newRow, isNew: false };
+      const updatedRow = {
+        ...newRow,
+        isNew: false,
+      };
 
-      //   this.setState((prevState) => ({
-      //     rows: prevState.rows.map((row) =>
-      //       row.id === newRow.id ? updatedRow : row
-      //     ),
-      //   }));
-      this.updateBgtGr(updatedRow);
-
-      return updatedRow;
+      if (newRow.bgtGrCd == this.state.selectedRow.bgtGrCd) {
+        this.updateBgtGr(updatedRow);
+        return updatedRow;
+      }
+      CustomSwal.showCommonToast("warning", "예산과목은 수정이 불가능합니다.");
+      return this.state.selectedRow;
     }
+    //[230822] From Developer --end
   };
   insertBgtGr = (data) => {
+    // 
+    // const gisu = this.props.gisu
+    console.log("기수확인해보기야dddddddd: " + this.props.gisu)
     BgtGrService.insertBgtGr({
       accessToken: this.props.accessToken,
       coCd: this.props.user.coCd,
+      insertId:this.props.user.empId,
       bgtGr: data,
+      gisu : this.props.gisu
+    
     }).then(() => {
       this.initBgtGr();
     });
-  }
+  };
   updateBgtGr = (data) => {
     BgtGrService.updateBgtGr({
       accessToken: this.props.accessToken,
@@ -117,13 +119,18 @@ class BgtCDADDSubDialog extends Component {
 
   deleteBgtGr = () => {
     console.log(this.state.selectedRow);
-    BgtGrService.deleteBgtGr({
-      accessToken: this.props.accessToken,
-      coCd: this.props.user.coCd,
-      bgtGrCd: this.state.selectedRow.bgtGrCd,
-    }).then(() => {
-      this.initBgtGr();
-    });
+    CustomSwal.showCommonSwalYn("삭제", "삭제하시겠습니까?", "info", "확인", (confirmed) => {
+      if (confirmed) {
+        BgtGrService.deleteBgtGr({
+          accessToken: this.props.accessToken,
+          coCd: this.props.user.coCd,
+          bgtGrCd: this.state.selectedRow.bgtGrCd,
+        }).then(() => {
+          CustomSwal.showCommonToast("success", "삭제되었습니다.");
+          this.initBgtGr();
+        });
+      }
+    })
   };
 
   handleClickRow = (params) => {
@@ -143,7 +150,6 @@ class BgtCDADDSubDialog extends Component {
   };
 
   handleClickConfirm = () => {
-    
     this.handleDown();
   };
 
@@ -156,7 +162,7 @@ class BgtCDADDSubDialog extends Component {
         PaperProps={{ sx: { width: 500, height: 600 } }}
       >
         <CustomDialogTitle sx={{ fontWeight: "bold" }}>
-          예산과목그룹 등록
+          예산그룹등록
           <IconButton
             size="small"
             onClick={() => this.setState({ open: false })}
@@ -190,10 +196,12 @@ class BgtCDADDSubDialog extends Component {
         </CustomDialogContent>
         <CustomDialogActions>
           <CustomButtonGridContainer container justifyContent="flex-end">
-            <CustomConfirmButton variant="outlined" onClick={this.handleClickConfirm}>
+            <CustomConfirmButton
+              variant="outlined"
+              onClick={this.handleClickConfirm}
+            >
               확인
             </CustomConfirmButton>
-
             <Button
               variant="outlined"
               onClick={() => this.setState({ open: false })}
@@ -208,7 +216,7 @@ class BgtCDADDSubDialog extends Component {
 }
 const mapStateToProps = (state) => ({
   accessToken: state.auth && state.auth.accessToken,
-  user: state.user || {}
+  user: state.user || {},
 });
 
 export default connect(mapStateToProps, null, null, { forwardRef: true })(

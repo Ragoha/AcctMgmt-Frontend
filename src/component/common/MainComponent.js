@@ -18,6 +18,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import MainListItems from "./MainListItems";
 import UserInfo from "./UserInfo";
 import { CustomTextField } from "./style/CommonStyle";
+import SearchComponent from "./SearchComponent";
 
 const drawerWidth = 240;
 
@@ -100,12 +101,13 @@ class MainComponent extends Component {
       isOnOff: false,
     });
   };
+
   render() {
     const { open } = this.state;
     const isOnOff = this.state.isOnOff; // 이 부분 추가
 
     return (
-      <ThemeProvider theme={defaultTheme}>
+      <ThemeProvider theme={defaultTheme} >
         <Box
           sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
         >
@@ -148,27 +150,27 @@ class MainComponent extends Component {
                 sx={{ flexGrow: 1 }}
               >
                 DOUZONE
-                {/* <img src="/img/logo.png"></img> */}
               </Typography>
               <IconButton
                 color="inherit"
-                onClick={isOnOff ? this.handleUserInfoClose : this.handleUserInfoClick}
+                onClick={
+                  isOnOff ? this.handleUserInfoClose : this.handleUserInfoClick
+                }
                 sx={{
                   position: "relative", // IconButton에 위치 설정 추가
-                  right:"30px",
+                  right: "30px",
                 }}
               >
-                <Badge badgeContent={12} color="secondary">
+                <Badge color="secondary">
                   <AccountCircle />
                 </Badge>
               </IconButton>
               {isOnOff && (
-                <div
-                  style={{ mt: "10px" }}
-                >
+                <div style={{ mt: "10px" }}>
                   <UserInfo />
                 </div>
               )}
+              <SearchComponent />
             </Toolbar>
           </AppBar>
 
@@ -209,6 +211,12 @@ class MainComponent extends Component {
               pl: open ? 32 : 9,
               pr: 2,
               transition: "padding 0.4s",
+              // width: "100%",
+              // height: "937px",
+              // backgroundImage: `url(${Image4})`,
+              // backgroundSize: "cover",
+              // backgroundRepeat: "no-repeat",
+              // backgroundPosition: "center",
             }}
           >
             <Outlet />
@@ -221,10 +229,8 @@ class MainComponent extends Component {
 
 // ... (중략)
 
-
-
 function withNavigation(Component) {
   return (props) => <Component {...props} navigate={useNavigate()} />;
 }
 
-export default (withNavigation(MainComponent));
+export default withNavigation(MainComponent);

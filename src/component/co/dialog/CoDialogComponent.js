@@ -39,8 +39,8 @@ class CoDialogComponent extends Component {
 // }
 
   handleUp = () => {
-    this.setState({ open: true });
     this.handleSearchCoDial();
+    this.setState({ open: true });
   }
 
   setCoKeyword = (data) => {
@@ -90,6 +90,12 @@ class CoDialogComponent extends Component {
     this.setState({ keyword: "", selectedRow:"" });
   }
 
+  handleClickCancel = () =>{
+    console.log(this.state.selectedRow);
+    this.handleDown();
+    this.setState({ keyword: "" });
+  }
+
   //열 클릭처리
   handleClickRow= (params) => {
     this.setState({ selectedRow: params.row }, () => {
@@ -107,7 +113,7 @@ class CoDialogComponent extends Component {
           회사검색
           <IconButton
             size="small"
-            onClick={() => this.setState({ open: false })}
+            onClick={this.handleClickCancel}
           >
             <CustomCloseIcon />
           </IconButton>
@@ -162,7 +168,7 @@ class CoDialogComponent extends Component {
             </CustomConfirmButton>
             <Button
               variant="outlined"
-              onClick={() => this.setState({ open: false })}
+              onClick={this.handleClickCancel}
             >
               취소
             </Button>

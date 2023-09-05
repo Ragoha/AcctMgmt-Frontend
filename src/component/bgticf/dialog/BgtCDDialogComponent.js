@@ -17,7 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React, { Component, createRef } from "react";
 import { connect } from "react-redux";
-import BgtICFService from "../../../../service/BgtICFService";
+import BgtICFService from "../../../service/BgtICFService";
 import {
   CustomConfirmButton,
   CustomDialogActions,
@@ -26,14 +26,15 @@ import {
   CustomLargeButtonGridContainer,
   CustomLargeDataGridContainer,
   CustomLargeFormGridContainer,
-} from "../../../common/style/CommonDialogStyle";
+} from "../../common/style/CommonDialogStyle";
 import {
   CustomDataGrid,
   CustomInputLabel,
   CustomSearchButton,
   CustomTextField,
-} from "../../../common/style/CommonStyle";
-import BgtGrDialogComponent from "./dialog/BgtGrDialogComponent";
+} from "../../common/style/CommonStyle";
+import BgtGrDialogComponent from "./bgtcd/BgtGrDialogComponent";
+import BgtCdBgtGrAutocomplete from "../autocomplete/bgtcd/BgtCdBgtGrAutocomplete";
 
 class BgtCDDialogComponent extends Component {
   constructor(props) {
@@ -60,10 +61,10 @@ class BgtCDDialogComponent extends Component {
     this.childBgtGrRef = createRef();
   }
 
-  setBgtCDDialog = (keyword) => {
+  setBgtCDDialog = async (keyword) => {
     let tmpRange = "";
 
-    this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
+    await this.setState({ rangeState: false, selectedRow: [], selectedRows: [] });
 
     if (this.state.rangeState) {
       tmpRange = this.state.rangeTextField;
@@ -92,23 +93,11 @@ class BgtCDDialogComponent extends Component {
       this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
       this.handleUp();
     });
+  };
 
-    // BgtICFService.findBgcCDByGisuAndGroupCdAndToDtAndKeyword({
-    //   user: this.props.user,
-    //   accessToken: this.props.accessToken,
-    //   keyword: keyword,
-    // }).then((response) => {
-    //   const bgtCDRows = response.map((row) => ({
-    //     id: randomId(),
-    //     gisu: row.gisu,
-    //     bgtGrNm: row.bgtGrNm,
-    //     bgtCd: row.bgtCd,
-    //     bgtNm: row.bgtNm,
-    //     hBgtNm: row.dataPath,
-    //   }));
-    //   this.setState({ bgtCDRows: bgtCDRows, keyword: keyword });
-    //   this.handleUp();
-    // });
+  changeBgtGrList = async (bgtGrCdList) => {
+    await this.setState({ bgtGrCdList: bgtGrCdList, bgtCDRows: [] });
+    console.log(this.state);
   };
 
   initBgtCDDialog = async () => {
@@ -165,7 +154,8 @@ class BgtCDDialogComponent extends Component {
     this.childBgtGrRef.current.setBgtGrDialog(this.state.bgtGrTextField);
   };
 
-  handleSetBgtCDTextField = (dataList) => {
+  handleSetBgtGrTextField = (dataList) => {
+    console.log(dataList);
     if (dataList.length > 0) {
       const concatenatedText = dataList
         .map((data) => data.bgtGrCd + ". " + data.bgtGrNm)
@@ -178,6 +168,8 @@ class BgtCDDialogComponent extends Component {
         bgtGrCdList: bgtGrCdList,
       });
     } else {
+      console.log(dataList);
+      console.log("asdfasfsadfasdfasfasdfas");
       if (dataList.bgtGrCd && dataList.bgtGrNm) {
         this.setState({
           bgtGrTextField: dataList.bgtGrCd + ". " + dataList.bgtGrNm,
@@ -189,7 +181,6 @@ class BgtCDDialogComponent extends Component {
           bgtGrTextField: "",
           bgtGrCd: "",
           bgtGrNm: "",
-          bgtGrCdList: [],
         });
       }
     }
@@ -221,7 +212,11 @@ class BgtCDDialogComponent extends Component {
         bgtNm: row.bgtNm,
         hBgtNm: row.dataPath,
       }));
-      this.setState({ bgtCDRows: bgtCDRows });
+      this.setState({
+        bgtCDRows: bgtCDRows,
+        selectedRow: [],
+        selectedRows: [],
+      });
     });
   };
 
@@ -253,9 +248,14 @@ class BgtCDDialogComponent extends Component {
     }
   };
 
-  // test = (data) => {
-  //   this.props.handleTest(data);
-  // }
+  resetBgtGr = () => {
+    this.setState({
+      bgtCDRows: [],
+      bgtGrCdList: [],
+      selectedRow: [],
+      selectedRows: [],
+    });
+  };
 
   render() {
     const { open, rangeState, bgtGrTextField, rangeTextField, selectedRows } =
@@ -391,21 +391,12 @@ class BgtCDDialogComponent extends Component {
                   justifyContent="center"
                 >
                   <CustomInputLabel>예산그룹</CustomInputLabel>
-                  <CustomTextField
-                    name="bgtGrTextField"
-                    value={bgtGrTextField}
-                    onChange={this.handleInputChange}
-                    onKeyDown={this.handleKeyDownBgtGrTextField}
-                    placeholder="예산그룹코드/예산그룹명"
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <SearchIcon onClick={this.handleSearchBgtGr} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  ></CustomTextField>
+                  <BgtCdBgtGrAutocomplete
+                    handleSetBgtGrTextField={this.handleSetBgtGrTextField}
+                    changeBgtGrList={this.changeBgtGrList}
+                    resetBgtGr={this.resetBgtGr}
+                    ref={this.childBgtGrRef}
+                  />
                 </Grid>
               </Grid>
               <Grid item xs={4}>
@@ -436,7 +427,7 @@ class BgtCDDialogComponent extends Component {
                   justifyContent="center"
                   sx={{ pl: "51px" }}
                 >
-                  <CustomInputLabel sx={{ mr: "34px !important" }}>
+                  <CustomInputLabel sx={{ mr: "30px !important" }}>
                     범위
                   </CustomInputLabel>
                   <FormControlLabel

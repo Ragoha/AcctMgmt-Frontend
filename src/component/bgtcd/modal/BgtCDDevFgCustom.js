@@ -77,7 +77,7 @@ class BgtCDDevFgCustom extends Component {
     const { accessToken } = this.props;
     console.log("업데이트된 목록은 ? ");
     console.log(data);
-    BgtCDService.updateBgtCDTerm(data, accessToken).then(
+    BgtCDService.updateBgtCDTerm(data, this.props.user.coCd , accessToken).then(
       this.handleDown()
     );
   };
@@ -96,7 +96,7 @@ class BgtCDDevFgCustom extends Component {
       //버튼 클릭 시 open의 값이 boolean형으로 dialog창 띄움
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          그룹레벨설정
+          과목분류명
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>

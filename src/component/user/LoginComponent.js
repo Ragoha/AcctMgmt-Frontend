@@ -12,15 +12,14 @@ import axios from "axios";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { CSSTransition } from 'react-transition-group';
 import Cookie from '../../storage/Cookie';
 import { SET_TOKEN } from '../../store/Auth';
 import { SET_CONFIG } from '../../store/Config';
 import { SET_USER } from '../../store/User';
-import ForgotPasswordDialog from '../dialog/ForgotPasswordDialog';
 import SignUpDialog from '../dialog/SignUpDialog';
 import Image4 from './back4.jpg';
 import CustomSwal from '../common/CustomSwal';
+import SyscfgService from "../../service/SyscfgService";
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -29,8 +28,9 @@ class LoginComponent extends Component {
       id: "",
       password: "",
       isIconOpen: false,
-      showForm: false,
       rememberId: false, // 아이디 저장 체크박스 상태
+      isLoggingIn: false, // 로그인 중인지 여부를 나타내는 변수
+
     };
   }
   handleRememberIdChange = (e) => {
@@ -42,9 +42,6 @@ class LoginComponent extends Component {
     if (rememberedId) {
       this.setState({ id: rememberedId, rememberId: true });
     }
-    setTimeout(() => {
-      this.setState({ showForm: true });
-    }, 10);
   }
 
   handleMouseEnter = () => {
@@ -71,6 +68,8 @@ class LoginComponent extends Component {
     } else {
       Cookie.remove("rememberedId"); // 체크 해제 시 쿠키 제거
     }
+    this.setState({ isLoggingIn: true });
+
     axios
       .post(ACCTMGMT_API_BASE_URL + "/login", loginData, {
         headers: {
@@ -84,36 +83,38 @@ class LoginComponent extends Component {
 
         const accToken = response.data.accessToken;
         const acwte = this.props.setAccessToken(accToken);
-
         const user = response.data;
         const USER = this.props.setUserInfo(user);
-        this.props.setConfig(response.data.config); //환경설정 초기데이터 리덕스 저장
         console.log(response.data);
         console.log(jwtToken);
         console.log(accToken);
         console.log("가자 : " + acwte);
-        console.log("리덕스에 있는 유저 정보 : " + USER);
-        axios
-          .get(ACCTMGMT_API_BASE_URL + "/api/configdate/" + response.data.coCd)
+        console.log("리덕스에 있는 유저 정보 : " + user.coCd);
+        SyscfgService.config({
+          coCd: user.coCd,
+          accessToken: acwte,
+        })
           .then((response) => {
             console.log("로그인 : Config Data: ", response.data);
-            // 받아온 데이터를 가공하여 userData 객체에 설정
-            this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
-            // this.props.history.push("/acctmgmt/bgt");
-            this.props.navigate("/acctmgmt/bgt");
+            const what2 = this.props.setConfig(response.data); //환경설정 초기데이터 리덕스 저장
+            console.log("2번 : ", what2);
           })
           .catch((error) => {
+            this.setState({ isLoggingIn: false });
             console.error(error);
           });
+        this.setState({ isLoggingIn: false });
+        CustomSwal.showCommonToast("success", user.empName + "님 환영합니다.", "1500");
+        this.props.navigate("/acctmgmt/home");
       })
       .catch((error) => {
         // alert("아이디 또는 비밀번호가 다릅니다.", error);
-        CustomSwal.showCommonToast("error", "아이디 또는 비밀번호를 <br/> 잘못입력하셨습니다.");
+        CustomSwal.showCommonSwal("아이디 또는 비밀번호를 <br/>잘못 입력하셨습니다.", "", "error");
       });
   };
 
   render() {
-    const { showForm, id, password, isIconOpen } = this.state;
+    const { id, password, isIconOpen } = this.state;
 
     return (
       <Box component="div" sx={{ display: "flex", height: "100vh" }}>
@@ -158,109 +159,100 @@ class LoginComponent extends Component {
               },
             }}
           >
-            <CSSTransition
-              in={showForm}
-              timeout={500}
-              classNames="text-slide"
-              unmountOnExit
+
+            <Typography
+              component="h1"
+              variant="h5"
+              style={{
+                fontFamily: '"Montserrat", sans-serif',
+                fontSize: "4vh",
+                fontweight: "bold",
+              }}
             >
-              <Typography
-                component="h1"
-                variant="h5"
-                style={{
-                  fontFamily: '"Montserrat", sans-serif',
-                  fontSize: "4vh",
-                  fontweight:"bold",
-                }}
-              >
-                DOUZONE
-              </Typography>
-            </CSSTransition>
+              DOUZONE
+            </Typography>
           </Box>
-          <CSSTransition
-            in={showForm}
-            timeout={500}
-            classNames="form-slide"
-            unmountOnExit
-          >
-            <form onSubmit={this.handleFormSubmit}>
-              <Box
+          <form onSubmit={this.handleFormSubmit}>
+            <Box
+              sx={{
+                mt: "4vh",
+                width: "30vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                "@media (max-width: 768px)": {
+                  width: "100%",
+                },
+              }}
+            >
+              <TextField
+                InputProps={{ style: { borderRadius: "8px", color: "blue" } }}
+                margin="normal"
+                label="ID"
+                required
+                fullWidth
+                name="id"
+                autoComplete="id"
+                autoFocus
+                value={id}
+                onChange={this.handleInputChange}
                 sx={{
-                  mt: "4vh",
-                  width: "30vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  "@media (max-width: 768px)": {
-                    width: "100%",
-                  },
+                  mb: "2vh",
+                }}
+              />
+              <TextField
+                InputProps={{ style: { borderRadius: "8px" } }}
+                label="Password"
+                type="password"
+                required
+                fullWidth
+                name="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={this.handleInputChange}
+                sx={{
+                  mb: "2vh",
+                }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    value="rememberId"
+                    checked={this.state.rememberId}
+                    onChange={this.handleRememberIdChange}
+                  />
+                }
+                label="아이디 저장"
+                sx={{
+                  mr: "17vh",
+                }}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}
+                sx={{
+                  mt: "5vh",
+                  mb: "3vh",
+                  bgcolor: "#7895CB",
+                  color: "#FFFFFF",
+                  "&:hover": { bgcolor: "#4A55A2", cursor: "pointer" },
+                  fontweight: "bold",
+                  fontFamily: "'Roboto Mono', monospace",
                 }}
               >
-                <TextField
-                  InputProps={{ style: { borderRadius: "8px", color: "blue" } }}
-                  margin="normal"
-                  label="ID"
-                  required
-                  fullWidth
-                  name="id"
-                  autoComplete="id"
-                  autoFocus
-                  value={id}
-                  onChange={this.handleInputChange}
-                  sx={{
-                    mb: "2vh",
-                  }}
-                />
-                <TextField
-                  InputProps={{ style: { borderRadius: "8px" } }}
-                  label="Password"
-                  type="password"
-                  required
-                  fullWidth
-                  name="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={this.handleInputChange}
-                  sx={{
-                    mb: "2vh",
-                  }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      value="rememberId"
-                      checked={this.state.rememberId}
-                      onChange={this.handleRememberIdChange}
-                    />
-                  }
-                  label="아이디 저장"
-                  sx={{
-                    mb: "2vh",
-                  }}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  onMouseEnter={this.handleMouseEnter}
-                  onMouseLeave={this.handleMouseLeave}
-                  sx={{
-                    mt: "5vh",
-                    mb: "3vh",
-                    bgcolor: "#7895CB",
-                    color: "#FFFFFF",
-                    "&:hover": { bgcolor: "#4A55A2", cursor: "pointer" },
-                    fontweight:"bold",
-                    fontFamily: "'Roboto Mono', monospace",
-                  }}
-                >
                 {isIconOpen ? <LockOpenIcon /> : <LockOutlinedIcon />}
                 로그인
               </Button>
               <Grid container>
-                <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
+                {/* <Grid item xs sx={{ "&:hover": { cursor: "pointer" } }}>
                   <ForgotPasswordDialog />
+                </Grid> */}
+                <Grid>
+                  <a></a>
                 </Grid>
                 <Grid item sx={{ "&:hover": { cursor: "pointer" } }}>
                   <SignUpDialog />
@@ -268,8 +260,7 @@ class LoginComponent extends Component {
               </Grid>
             </Box>
           </form>
-        </CSSTransition>
-      </Box>
+        </Box>
       </Box >
     );
   }
@@ -288,6 +279,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 
 };
+const mapStateToProps = (state) => ({
+  accessToken: state.auth && state.auth.accessToken, // accessToken이 존재하면 가져오고, 그렇지 않으면 undefined를 반환합니다.
+});
 
-
-export default connect(null, mapDispatchToProps)(withNavigation(LoginComponent));
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(LoginComponent));

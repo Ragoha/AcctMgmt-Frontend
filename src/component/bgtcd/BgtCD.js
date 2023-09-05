@@ -39,8 +39,9 @@ class BgtCD extends Component {
       gisuList: [],
       gisuDefaultValue: '8',
       bgtGrSearchText: '',
+      bgtCdSearchText: '',
       toDt:dayjs(new Date()).format("YYYY-MM-DD"),
-      AddRowFlag : false ,
+      AddRowFlag : false , //예산과목을 추가하면, bgtNm을 정해야하기 때문에 true, 추가하고 업데이트 완료하면 false가 들어간다. 
     }
   }
 
@@ -53,9 +54,8 @@ class BgtCD extends Component {
   handleClickSerachButton = () => { // 제일 우측 아이콘을 눌렀을때 검색!!!
     console.log('===handleClickSerachButton===')
     console.log(this.state); //gisuDefaultValue / bgtGrSearchText / bgtCdSearchText
-    const { coCd } = this.props.userInfo;
+    const coCd = this.props.userInfo.coCd;
     const gisu = this.state.gisuDefaultValue;
-    console.log("최상단 조회 검색시 gisu : " + gisu)
     const keyword = this.state.bgtCdSearchText;
     const groupCd = this.state.bgtGrSearchText;
     console.log("handleClickSerachButton 키워드/그룹=>" + keyword+"/"+groupCd)
@@ -67,10 +67,9 @@ class BgtCD extends Component {
         this.snackBarRef.current.handleUp("error", "기수선택필수");
         return null;
       }
-      
-      
     }
-    const { accessToken } = this.props;
+    const accessToken = this.props.accessToken;
+    console.log("최상단 검색버ㅡㄴ 눌렀을때")
     BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
       (response) => {
         console.log("response?")
@@ -78,57 +77,52 @@ class BgtCD extends Component {
         if (response.data != "") {
           this.setState({ rows: response.data })
         } else {
-          this.setState({ rows: [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }] })
+          this.setState({ rows: [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }] })
         }
-      }
-    )
-  }
+      })}
   setInitRow() {
-    const row = [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }]
+    const row = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }]
     this.setState({ rows: row })
   }
   /* 예산그룹검색쪽  */
-  handleBgtGrSearchInputChange = async (event) => {
-    console.log('handleBgtGrSearchInputChange')
+  handleBgtGrSearchInputChange =  (event) => {
+    // console.log('handleBgtGrSearchInputChange')
     const { name, value } = event.target;
-    console.log('name : ' + name);
-    console.log('value : ' + value);
-    this.setState({ [name]: "" });
-    await this.setState({ [name]: value });
+    // console.log('name : ' + name);
+    this.setState({ [name]: value });
   }
   handleBgtGrSearchKeyDown = (params) => {
     console.log('bgtGrSearchText...')
-    console.log(params)
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
-    const keyword = this.state.bgtGrSearchText;
-    console.log('keyword? : ' + keyword)
-    const data = {
-      coCd: coCd,
-      keyword: keyword,
-    }
+    // console.log(params)
+    // console.log(this.state.bgtGrSearchText)
     if (params.code === "Enter") {
-      this.BgtGrSearch.current.initBgtGrSearch();
+      // console.log("엔터엔터엔터엔터엔터엔터엔터엔터엔터엔터")
+      this.setState({bgtGrSearchText:this.state.bgtGrSearchText})
+      this.BgtGrSearch.current.searchIconClick();
       this.BgtGrSearch.current.setTextFieldAndDataGrid(this.state.bgtGrSearchText);
       this.BgtGrSearchOpen();
     }
-    
+    if(params.code==="Backspace"){
+      this.setState({bgtGrSearchText:""})
+    }
+    //console.log(this.state.bgtGrSearchText)
   }
   /* 예산과목검색 */
   handleInputChange = async (event) => {
     console.log('handleInputChange')
+    // console.log(event)
     const { name, value } = event.target;
-    console.log('name : ' + name);
-    console.log('value : ' + value);
+    // console.log('name : ' + name);
+    // console.log('value : ' + value);
     this.setState({ [name]: "" });
     await this.setState({ [name]: value });
   };
   handleKeyDown = (params) => {
-    console.log('handleKeyDown에서...')
-    console.log(params)
-    const { coCd } = this.props.userInfo;
+    // console.log('handleKeyDown에서...')
+    // console.log(params)
+    const coCd  = this.props.userInfo.coCd;
     const keyword = this.state.bgtCdSearchText;
-    console.log('keyword? : ' + keyword)
+    // console.log('keyword? : ' + keyword)
     const data = {
       coCd: coCd,
       keyword: keyword,
@@ -136,12 +130,15 @@ class BgtCD extends Component {
     if (params.code === "Enter") {
       this.BgtCDSubSearch.current.getBgtCdLikeSearchDataToRows(data);
       this.BgtCDSubSearch.current.handleUp();
+    } 
+    if(params.code ==="Backspace"){
+      this.setState({bgtCdSearchText:""})
     }
   }
   /*--기수 start --*/
   initGisuList = () => {
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
+    const coCd  = this.props.userInfo.coCd;
+    const  accessToken  = this.props.accessToken;
     BgtCDService.getinitGisuList(coCd, accessToken).then((response) => {
       console.log(response)
       
@@ -158,11 +155,11 @@ class BgtCD extends Component {
       
   }
   changeGisuValue = async (event, child) => {
-    console.log(event)
-    console.log(child)
+    // console.log(event)
+    // console.log(child)
     const index = event.target.value-1;
     // const index = this.state.gisuList.findIndex((value) => value === child);
-    console.log("indxd가 ? : " + index)
+    // console.log("indxd가 ? : " + index)
     await this.setState({ gisuDefaultValue: event.target.value, dataindex: index});
     this.setState({gisuRangeText: this.state.gisuRangeRows[index]});
   }
@@ -171,70 +168,71 @@ class BgtCD extends Component {
 
   /*상단 조건 검색바 end  */
   setDetailInfo = (target) => {
-    console.log(target)
     this.BgtCDDetailInfo.current.setDetailInfo(target);
   }
   getRecallDataGrid = () => {
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
+    const coCd = this.props.userInfo.coCd;
+    const accessToken = this.props.accessToken;
     const groupCd =  this.state.bgtGrSearchText;
     const keyword = this.state.bgtCdSearchText;
     const gisu = this.state.gisuDefaultValue;
-    // BgtCDService.getSearchData(coCd, gisu, keyword, groupCd, accessToken).then(
     BgtCDService.getSearchData(coCd, gisu, keyword,groupCd, accessToken).then(
       (response)=>{
         this.setState({rows:response.data});
       }
     )
-    
   }
 
   /*데이터그리드 부분 start*/
-  getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
-    const tmpRow = [{ dataPath: "수입", bgtCd: " " }, { dataPath: "수출", bgtCd: "  " }];
-    this.setState({ rows: tmpRow })
-    // { field: 'bgtCd', headerName: '예산코드', width: 140, headerAlign: 'center', },
-    // { field: 'bgtNm', headerName: '예산과목명', width: 250, headerAlign: 'center', },  getRowId={(row) => row.bgtCd}
-    const gisu = this.state.gisuDefaultValue;
-    console.log('////////////////gisu?:' + gisu)
-    console.log(groupcd);
-    if (groupcd === undefined) {
-      groupcd = "전체"
-    }
-    console.log('데이터체크')
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
-    BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
-      .then(rows => {
-        this.setState({ rows });
-      }).catch(error => {
-        console.error("Error fetching data:", error);
-      });
+  // getDataGridRows(groupcd) { //groupcd를 받아서 최초의 데이터를 뿌리는 화면 
+  //   const tmpRow = [{ dataPath: "수입", bgtCd: "          " }, { dataPath: "수출", bgtCd: "           " }];//수입 10 공백 , 수출 11 공백
+  //   this.setState({ rows: tmpRow })
+  //   const gisu = this.state.gisuDefaultValue;
+  //   // console.log(groupcd);
+  //   if (groupcd === undefined) {
+  //     groupcd = "전체"
+  //   }
+  //   // console.log('데이터체크')
+  //   const coCd= this.props.userInfo.coCd;
+  //   const accessToken = this.props.accessToken;
+  //   BgtCDService.getGridData(coCd, groupcd, gisu, accessToken)
+  //     .then(rows => {
+  //       this.setState({ rows });
+  //     })
+  // }
+  /*---로우 추가 관련된 메서드 start---*/
+  disableFlag=(flag)=>{
+    console.log("bgtcd 플래그:"+flag)
+    this.BgtCDDetailInfo.current.disableFlag(flag);
   }
 
-  /*---로우 추가 관련된 메서드 start---*/
+  chkFlag = (value) => {
+    this.setState({
+      AddRowFlag:value,
+    },()=>console.log("chkFlag 발동! : " + this.state.AddRowFlag + "/" + this.state.newBgtCd));
+  }
   //데이터 그리드에 추가하는 기능
   setClickedData = (dataPath, bgtCd, divFg) => {
     this.setState({ tDataPath: dataPath, tBgtCd: bgtCd, tDivFg: divFg })
   }
-  handleRowAdd = () => {
+  handleRowAdd = async () => {
     const { tDataPath, tBgtCd, tDivFg ,bgtGrSearchText,rows} = this.state;
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
-    console.log("여기가아니였어 ? 맞을텐ㄷ")
-    console.log(tDivFg)
+    const  coCd = this.props.userInfo.coCd;
+    const accessToken= this.props.accessToken;
+    console.log(tDivFg+"=1=1=1=1==1=1=1=1=1==1====")
     if(this.state.AddRowFlag ===true){
-      CustomSwal.showCommonSwal('warning', '작성중인 예산과목이 있습니다');
-
+      console.log('ADdRowFlag 체크 ' + this.state.AddRowFlag)
+      CustomSwal.showCommonToast("error", "작성중인 예산과목이 있습니다");
       return null;
     }
     if(tBgtCd===undefined ||tBgtCd===null||tBgtCd===""){
-      // CustomSwal.showCommonToast("warning", "예산 추가할 위치를 클릭해주세요"); //showCommonSwal showCommonToast showCommonSwalYn
-      CustomSwal.showCommonSwal('warning', '신규 예산품목 추가 위치를 지정해주세요');
+      console.log(tBgtCd) 
+      CustomSwal.showCommonToast('error', '신규 예산품목 추가 위치를 지정해주세요');
       return null;
     }
     if(tDivFg >7){
-      this.snackBarRef.current.handleUp("error", "최하위 분류단계입니다.");
+      CustomSwal.showCommonToast("error", "최하위 분류단계입니다.");
+      // this.snackBarRef.current.handleUp("error", "최하위 분류단계입니다.");
       return null;
     }
 
@@ -251,6 +249,8 @@ class BgtCD extends Component {
           const bgtCd = data.bgtCd;
           console.log("새로 추가될 로우 데이터 찎어봄 ")
           console.log("bgtCd : " + data.bgtCd + "/ divFg : " + data.divFg + "/dataPath: " + data.dataPath)
+          
+          this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
           const newRows1 = [
             ...this.state.rows,
             { dataPath: data.dataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: data.divFg, parentCd: "" },
@@ -260,6 +260,7 @@ class BgtCD extends Component {
       return null;
     }
     //rows들 중 내가 클릭한 로우를 부모로 갖는 row들 중 가장 마지막 row의 dataPath값을 갖고온 뒤 
+    console.log("1------------------------------------------------------")
     if (rows && rows.length) {
       const matchedRows = rows.filter(row => row.parentCd === tBgtCd);
       if (matchedRows.length) {
@@ -270,27 +271,38 @@ class BgtCD extends Component {
       } else {
         console.log('bgtCd와 일치하는 값이 없을때 ');
         // tBgtCd와 일치하는 parentCd를 갖는 row가 없을 때의 처리를 여기에 추가할 수 있습니다.
-        BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then(async (result) => {
-          console.log(result)
+        await BgtCDService.getDefNmFromBGTCD_TERM(coCd, tDivFg, accessToken).then((result) => {
+          console.log( "결과 " +  result)
           const bbb = tDataPath + "," + result;
-          await this.setState({ tDataPath: bbb })
+          this.setState({ tDataPath: bbb },()=>console.log(this.state.tDataPath))
+          console.log("3333------------------------------------------------------")
         })
       }
-    }
+    
+    console.log("2------------------------------------------------------")
     const bgtCd = this.BgtCDDetailInfo.current.getBgtCd();
+
     const data = { bgtCd: bgtCd, coCd: coCd, groupCd:bgtGrSearchText ,gisu : this.state.gisuDefaultValue }
-    const dataPath = this.state.tDataPath;
     const a = (parseInt(tDivFg) + 1).toString();
     BgtCDService.getAddRowData(data, accessToken)
       .then(data => {
         const bgtCd = data.bgtCd;
+        const mNum = data.multiNum;
+        if(mNum===9||mNum==='9'){
+          CustomSwal.showCommonToast("error", "최대 9개의 과목을 추가할 수 있습니다.");
+          return null;
+        }
+        this.chkFlag(true);
+        // this.setState({AddRowFlag: true},()=>console.log('애드로우플래그: '  +this.state.AddRowFlag));
+        console.log('this.state.tdataPath ' + this.state.tDataPath);
         const newRows = [
           ...this.state.rows,
           { dataPath: this.state.tDataPath, bgtCd: bgtCd, bgtNm: "", isNew: true, divFg: a, parentCd: this.state.tBgtCd },
         ];
-        this.setState({ rows: newRows });
+        this.setState({ rows: newRows },()=>this.state.rows);
         this.BgtCDDetailInfo.current.setDetailInfoAfterAddRow(data);
       })
+    }////////////////////////
   };
   updateDetailInfo = () => {
     const { accessToken } = this.props;
@@ -307,17 +319,14 @@ class BgtCD extends Component {
       }).catch(error => {
         console.error("Error fetching data:", error);
       });
-
-  } 
-  }
-
+  }}
   //추가된 로우에 데이터를 입력하고 DB로 보내는 메서드
   insertAddRow = async (data) => {
     console.log('BgtCd의 insertAddRow입니다.')
     console.log(data)
     // console.log(this.state.bgtGrSearchText)//groupCd
-    const { coCd } = this.props.userInfo;
-    const { accessToken } = this.props;
+    const  coCd  = this.props.userInfo.coCd;
+    const accessToken = this.props.accessToken;
     data.coCd = coCd;
     const detailInfo = this.BgtCDDetailInfo.current.selectData();
     console.log(this.state)
@@ -333,33 +342,13 @@ class BgtCD extends Component {
     this.handleClickSerachButton();
   }
   setClickDataPath = (tDataPath) => {
-    console.log('dataPath 저장 -setClickDataPath')
     this.setState({ tDataPath: tDataPath })
   }
-
-  // initSubList = () => {
-  //   console.log('온거야 ?')
-  //   this.setState({ bgtGrList: [] },()=>console.log(this.state.bgtGrList))
-  //   const { coCd } = this.props.userInfo;
-  //   const { accessToken } = this.props;
-  //   BgtCDService.getBgtGrData(coCd, accessToken)
-  //     .then((response) => {
-  //       console.log("여긴왜안와 ?")
-  //       const bgtGrList = [...response.map(item => `${item.bgtGrCd}.${item.bgtGrNm}`)];
-  //       this.setState({ bgtGrList: bgtGrList, defaultValue: bgtGrList[0] }, () => console.log(this.state.bgtGrList));
-  //     })
-  //     .catch(error => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }
   changeValue = (event) => { // 변경한 내용을 defaultValue로 설정해주는 함수.
-
     this.setState({ defaultValue: event.target.value }, () => console.log('바꾼뒤의 값? : ' + this.state.defaultValue));
     this.getDataGridRows(event.target.value);
   }
   /*---로우 추가 관련된 메서드 end---*/
-
-
 
   /*  데이터 그리드 부분 end */
   /* DetailInfo부분 */
@@ -367,7 +356,6 @@ class BgtCD extends Component {
   /* 모달창  */
   setText = (data) => {
     this.setState({ bgtCdSearchText: data })
-
   }
   setBgtGrCdText = (data) => {
     this.setState({ bgtGrSearchText: data })
@@ -490,29 +478,11 @@ class BgtCD extends Component {
           alignItems="center"
           spacing={2}
         >
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center" >
                 <CustomInputLabel> 기수 </CustomInputLabel>
-                {/* <Autocomplete
-                name="gisuText"
-                disableClearable
-                disablePortal
-                defaultValue={this.state.gisuDefaultValue}
-                value={this.state.gisuDefaultValue}
-                options={this.state.gisuList}
-                onChange={this.handleChangeGisuText}
-                getOptionLabel={(option) => option.toString()}
-                size="small"
-                sx={{ width: "65px", marginRight: "8px" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    value={this.state.gisuList[this.state.gisuList.length - 1]}
-                  />
-                )}
-              /> */}
                 <Select
-                  sx={{ width: "100px" ,height: "40px"}}
+                  sx={{ width: "100px" ,height: "40px",backgroundColor: "#FFEAEA" }}
                   value={this.state.gisuDefaultValue}
                   onChange={this.changeGisuValue}
                   >
@@ -531,6 +501,7 @@ class BgtCD extends Component {
                     marginTop: "8px",
                     marginBottom: "8px",
                     width: 182,
+                    backgroundColor: "#FFEAEA" ,
                   "& .MuiInputBase-root": { fontSize: "13px", height: "40px" },
                 }}
               />
@@ -563,27 +534,29 @@ class BgtCD extends Component {
                 </LocalizationProvider> */}
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산그룹</CustomInputLabel>
               <CustomTextField
                 name="bgtGrSearchText"
                 value={this.state.bgtGrSearchText}
                 onChange={this.handleBgtGrSearchInputChange}
-                onKeyPress={this.handleBgtGrSearchKeyDown}
+                onKeyDown={this.handleBgtGrSearchKeyDown}
                 placeholder="예산그룹코드/예산그룹명"
                 size="small"
-                InputProps={{
+                sx={{backgroundColor: "#FFEAEA" }}
+                inputProps={{ maxLength: 8}}
+                InputProps={{ 
                   endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon onClick={this.BgtGrSearchOpen} />
-                    </InputAdornment>
-                  ),
-                }}
+                  <InputAdornment position="end">
+                    <SearchIcon onClick={this.BgtGrSearchOpen} />
+                  </InputAdornment>
+                ),}}
+                
               />
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={3.8}>
             <Grid container direction="row" alignItems="center">
               <CustomInputLabel>예산과목검색</CustomInputLabel>
               <CustomTextField
@@ -593,7 +566,8 @@ class BgtCD extends Component {
                 onChange={this.handleInputChange}
                 onKeyPress={this.handleKeyDown}
                 size="small"
-                InputProps={{
+                inputProps={{ maxLength:30 }}
+                InputProps={{  
                   endAdornment: (
                     <InputAdornment position="end">
                       <SearchIcon onClick={this.handleClickBgtCdSerachIcon} />
@@ -603,14 +577,15 @@ class BgtCD extends Component {
               />
             </Grid>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={0.6}>
             <Grid
               container
               direction="row"
               alignItems="center"
               justifyContent="space-between"
+              sx={{ml: "16px"}}
             >
-              <Grid item>
+              <Grid item >
                 <CustomSearchButton
                   variant="outlined"
                   onClick={this.handleClickSerachButton}
@@ -630,12 +605,14 @@ class BgtCD extends Component {
               gisu = {gisuDefaultValue}
               keyword= {keyword}
               groupCd = {groupCd}
-              
+              chkFlag ={this.chkFlag}
+              AddRowFlag = {this.state.AddRowFlag}
               setDetailInfo={this.setDetailInfo}
               insertAddRow={this.insertAddRow}
-              getDataGridRows={this.getDataGridRows}
+              // getDataGridRows={this.getDataGridRows}
               setClickedData={this.setClickedData}
               setClickDataPath={this.setClickDataPath}
+              disableFlag={this.disableFlag}
             />
           </Grid>
           <Grid item xs={5}>
@@ -656,7 +633,7 @@ class BgtCD extends Component {
           </Grid>
         </Grid>
         <BgtCDDevFgCustom ref={this.BgtCDDevFgCustom} />
-        <BgtCDAddSubDialog initSubList={this.initSubList} ref={this.BgtCDAddSubDialog} />
+        <BgtCDAddSubDialog gisu={this.state.gisuDefaultValue} initSubList={this.initSubList} ref={this.BgtCDAddSubDialog} />
         {/*그룹레벨설정 */}
         <BgtCDSubSearch setText={this.setText} ref={this.BgtCDSubSearch} />
         <BgtGrSearch setBgtGrCdText={this.setBgtGrCdText} ref={this.BgtGrSearch} />

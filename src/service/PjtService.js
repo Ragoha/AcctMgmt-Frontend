@@ -4,62 +4,81 @@ import axios from "axios";
 const ACCTMGMT_API_BASE_URL = "http://localhost:8080/acctmgmt";
 
 class PjtService {
- 
-  getPjtList(coCd) {
 
+  getPjtList(data) {
+    console.log("accesstoken : ", data.accessToken);
     return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/" + coCd, {
-      })
-  }
-
-  getSelPjtList(pjtCd, coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtSelDate/" + pjtCd + "/" + coCd, {
-      })
-  }
-
-  updatePjt(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/update/" + coCd, Pjt);
-  }
-
-  insertPjt(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/insert/" + coCd, Pjt);
-  }
-
-  deletePjt(Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/delete/", Pjt);
-  }
-
-  getPjtBy(keyword, coCd) {
-    return axios
-      .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSearch/" + coCd, {
-        params: {
-          keyword: keyword
+      .get(ACCTMGMT_API_BASE_URL + "/pjt/" + data.coCd, {
+        headers: {
+          "access-token": data.accessToken,
         },
       })
-      .then((response) => response.data);
   }
 
-  getPgrBy(keyword, coCd) {
+  getSelPjtList(data) {
     return axios
-    .get(ACCTMGMT_API_BASE_URL + "/pjtDate/pgrSearch/" + coCd, {
+      .get(ACCTMGMT_API_BASE_URL + "/pjt/" + data.coCd + "/" + data.pjtCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+      })
+  }
+
+  updatePjt(data) {
+    return axios.put(ACCTMGMT_API_BASE_URL + "/pjt/" + data.coCd + "/" + data.pjtCd, data.Pjt, {
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
+  }
+
+  insertPjt(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjt", data.Pjt, {
       params: {
-          keyword: keyword
+        coCd: data.coCd,
+      },
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
+  }
+
+  deletePjt(data) {
+    console.log(data);
+
+    return axios
+      .delete(ACCTMGMT_API_BASE_URL + "/pjt/" + data.coCd + "/" + data.pjtCd, {
+        headers: {
+          "access-token": data.accessToken,
+        },
+        withCredentials: true,
+      })
+  }
+
+
+  getPjtBy(data) {
+    return axios
+      .get(ACCTMGMT_API_BASE_URL + "/dialog/pjt/" + data.coCd + "/" + data.keyword, {
+        headers: {
+          "access-token": data.accessToken,
         },
       })
       .then((response) => response.data);
   }
 
-  selPjtBy(selData) {
-    return axios
-      .post(ACCTMGMT_API_BASE_URL + "/pjtDate/pjtSel", selData)
+  duplication(data) {
+    return axios.get(ACCTMGMT_API_BASE_URL + "/pjt/pjtcd/" + data.Pjt.coCd + "/" +data.Pjt.pjtCd, {
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
-
-  duplication(coCd, Pjt) {
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/duplication/" + coCd, Pjt);
-  }
-  getGroupPjt(data){
-    return axios.post(ACCTMGMT_API_BASE_URL + "/pjtDate/groupSel/", data);
+  getGroupPjt(data) {
+    return axios.post(ACCTMGMT_API_BASE_URL + "/pjt/groupSel", data.data, {
+      headers: {
+        "access-token": data.accessToken,
+      },
+    });
   }
 }
 

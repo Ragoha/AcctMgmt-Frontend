@@ -25,20 +25,27 @@ class BgtCDSubSearch extends Component {
       ]
     };
   }
-  initBgtCDDialog=()=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
+  initBgtCDDialog=(bgtCdSearchText)=>{//처음 다이얼로그를 아무 조건 없이 검색버튼으로 눌렀을때 초기 세팅 
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
-    const keyword = null;
-    BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+    const keyword = bgtCdSearchText;
+    const data ={
+      coCd:coCd,
+      keyword:keyword
+    }
+    BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog
         (response)=>{
             this.setState({rows:response})
+            this.setState({keyword:bgtCdSearchText})
         })
+   
     this.handleUp();
   }
   getBgtCdLikeSearchDataToRows=(data)=>{ //다이얼로그를 조건으로 검색하고 enter로 열었을때 초기 세팅 
     const{accessToken} = this.props;
+    console.log('이건 ?')
     BgtCDService.getBgtCdLikeSearch(data,accessToken).then((response)=>{
-      this.setState({rows:response},()=>console.log(response));
+      this.setState({rows:response});
     })
     this.setState({keyword:data.keyword})
     this.handleUp();
@@ -54,16 +61,25 @@ class BgtCDSubSearch extends Component {
     const keyword = this.state.keyword;
     if (params.code === "Enter") {
       console.log('엔터야 ')
-      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+      const data = {
+        coCd:coCd,
+        keyword:keyword
+      }
+      BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog 닻
         (response)=>{this.setState({rows:response})}
       )
     }
+    return null;
   }
   searchIconClick=()=>{
     const{coCd} = this.props.userInfo;
     const{accessToken} = this.props;
     const keyword = this.state.keyword;
-      BgtCDService.getBgtCDdialog(coCd, keyword, accessToken).then(
+    const data = {
+      coCd : coCd,
+      keyword: keyword
+    }
+      BgtCDService.getBgtCdLikeSearch(data, accessToken).then( //getBgtCDdialog 닻
         (response)=>{this.setState({rows:response})}
       )
   }
@@ -79,7 +95,6 @@ class BgtCDSubSearch extends Component {
   
   /*default*/
   handleUp = () => {
-    this.initBgtCDDialog();
     this.setState({ open: true });
   };
 
@@ -94,7 +109,7 @@ class BgtCDSubSearch extends Component {
     return (
       <CustomShortDialog open={open}>
         <CustomDialogTitle>
-          예산코드검색 
+          예산과목검색 
           <IconButton size="small" onClick={this.handleDown}>
             <CustomCloseIcon />
           </IconButton>
@@ -120,7 +135,7 @@ class BgtCDSubSearch extends Component {
                   value={this.state.keyword}
                   onChange={this.handleInputChange}
                   variant="outlined"
-                  onKeyDown={this.handlePressEnter}
+                  onKeyPress={this.handlePressEnter}
                 ></CustomTextField>
                 <CustomSearchButton variant="outlined" sx={{ right: "-50px" }}>
                   <SearchIcon onClick = {this.searchIconClick}/>
